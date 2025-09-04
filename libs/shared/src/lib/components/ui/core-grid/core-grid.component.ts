@@ -617,43 +617,29 @@ export class CoreGridComponent
             .subscribe(({ data }) => {
               const queryName = data.resource.singleQueryName;
               if (queryName) {
-                const query = this.queryBuilder.buildQuery(
-                  {
-                    query: {
-                      ...this.settings.query,
-                      name: queryName,
-                    },
-                  },
-                  true
+                const editedRecord = get(data, queryName);
+                const dataItem = this.gridData.data.find(
+                  (x) => x.id === item.id
                 );
-                if (query) {
-                  this.apollo
-                    .query<any>({
-                      query,
-                      variables: {
-                        id: item.id,
-                        data: editedData,
-                      },
-                    })
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe(({ data }) => {
-                      const dataItem = this.gridData.data.find(
-                        (x) => x.id === item.id
-                      );
-                      // Update data item element
-                      Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
-                      );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
-                      this.loadItems();
-                    });
+                if (dataItem) {
+                  Object.assign(dataItem, editedRecord);
+                  dataItem._meta = dataItem._meta || {};
+                  const currentRaw = dataItem._meta.raw || {};
+                  dataItem._meta.raw = { ...currentRaw, ...editedData };
+                  item.saved = false;
+                  const idx = this.updatedItems.findIndex(
+                    (x) => x.id === item.id
+                  );
+                  const mergedForSave = {
+                    id: item.id,
+                    ...currentRaw,
+                    ...editedData,
+                  };
+                  if (idx >= 0) {
+                    this.updatedItems.splice(idx, 1, mergedForSave);
+                  } else {
+                    this.updatedItems.push(mergedForSave);
+                  }
                 }
               }
             });
