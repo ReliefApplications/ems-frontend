@@ -266,7 +266,7 @@ export class RecordModalComponent
   /**
    * Open a create form modal prefilled with this record's data
    */
-  public async onDuplicate(): Promise<void> {
+  public async onClone(): Promise<void> {
     if (!this.form?.id) return;
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
