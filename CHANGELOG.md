@@ -1,3 +1,11 @@
+# [2.21.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.2...v2.21.0) (2025-09-05)
+
+
+### Features
+
+* Allow to duplicate records when seeing form details & user can create new records ([fe411be](https://github.com/ReliefApplications/ems-frontend/commit/fe411bec00f3ffbc55ee34c0fb563f4996b8c45b)), closes [AB#118658](https://github.com/AB/issues/118658)
+* file explorer widget ([#2796](https://github.com/ReliefApplications/ems-frontend/issues/2796)) ([3b9dd07](https://github.com/ReliefApplications/ems-frontend/commit/3b9dd07c029d1bda5efff1440813bc7255192790)), closes [AB#113709](https://github.com/AB/issues/113709)
+
 ## [2.20.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1...v2.20.2) (2025-08-31)
 
 
