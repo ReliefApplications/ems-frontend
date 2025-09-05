@@ -181,6 +181,7 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
+		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",
@@ -499,6 +500,7 @@
 		"sendEmail": "******",
 		"separator": "******",
 		"settings": "******",
+		"sortBy": "******",
 		"status": "******",
 		"status_active": "******",
 		"status_archived": "******",
@@ -535,6 +537,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"undefined": "******",
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -1670,6 +1673,133 @@
 				"other": "******"
 			},
 			"expand": "******",
+			"fileExplorer": {
+				"accessRequestForm": {
+					"alert": "****** {{data.user}} ****** {{data.form}} ******",
+					"fields": {
+						"body": {
+							"label": "******"
+						},
+						"recipients": {
+							"errors": {
+								"duplicated": "******",
+								"invalid": "******"
+							},
+							"label": "******",
+							"placeholder": "******",
+							"tooltip": "******"
+						},
+						"subject": {
+							"label": "******"
+						}
+					},
+					"title": "******"
+				},
+				"actions": {
+					"copyLink": "******",
+					"download": "******",
+					"requestAccess": "******",
+					"requestPermission": "******",
+					"upload": "******",
+					"viewAsGrid": "******",
+					"viewAsList": "******"
+				},
+				"empty": {
+					"files": "******",
+					"folders": "******"
+				},
+				"fields": {
+					"aetiology": {
+						"label": "******"
+					},
+					"confidentiality": {
+						"label": "******"
+					},
+					"country": {
+						"label": "******"
+					},
+					"createdBy": {
+						"label": "******"
+					},
+					"createdOn": {
+						"label": "******"
+					},
+					"diseaseCondition": {
+						"label": "******"
+					},
+					"documentCategory": {
+						"label": "******"
+					},
+					"documentType": {
+						"label": "******"
+					},
+					"filename": {
+						"label": "******"
+					},
+					"hazard": {
+						"label": "******"
+					},
+					"ihrCommunication": {
+						"label": "******"
+					},
+					"imsFunction": {
+						"label": "******"
+					},
+					"imsRole": {
+						"label": "******"
+					},
+					"informationSource": {
+						"label": "******"
+					},
+					"language": {
+						"label": "******"
+					},
+					"lastUpdatedBy": {
+						"label": "******"
+					},
+					"lastUpdatedOn": {
+						"label": "******"
+					},
+					"name": {
+						"label": "******"
+					},
+					"occurrence": {
+						"label": "******"
+					},
+					"occurrenceType": {
+						"label": "******"
+					},
+					"region": {
+						"label": "******"
+					},
+					"size": {
+						"label": "******"
+					},
+					"syndrome": {
+						"label": "******"
+					},
+					"version": {
+						"label": "******"
+					}
+				},
+				"filter": {
+					"alert": "******",
+					"title": "******"
+				},
+				"folderHierarchy": {
+					"alert": "******",
+					"title": "******"
+				},
+				"folders": "******",
+				"formBinding": {
+					"title": "******"
+				},
+				"notifications": {
+					"copyLink": {
+						"success": "******"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "******",

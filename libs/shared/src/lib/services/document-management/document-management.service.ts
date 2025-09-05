@@ -9,12 +9,29 @@ import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snac
 import { RestService } from '../rest/rest.service';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  COUNT_DOCUMENTS,
+  CountDocumentsQueryResponse,
   DriveQueryResponse,
+  GET_DOCUMENT_BY_ID,
+  GET_DOCUMENT_DRIVE_ID,
+  GET_DOCUMENTS,
   GET_DRIVE_ID,
+  GET_FIELDS_OPTIONS,
   GET_OCCURRENCE_BY_ID,
+  GET_OCCURRENCE_TYPES,
+  GetDocumentByIdResponse,
+  GetDocumentDriveIdResponse,
+  GetDocumentsQueryResponse,
+  GetFieldsOptionsResponse,
+  GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { SortDescriptor } from '@progress/kendo-data-query';
+import {
+  FileExplorerTagKey,
+  FileExplorerTagSelection,
+} from '../../components/file-explorer/types/file-explorer-filter.type';
 
 /**
  * Property query response type
@@ -135,15 +152,48 @@ export class DocumentManagementService {
    */
   private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
-    const snackBarRef = this.createLoadingSnackbarRef(translationKey);
+    return this.createLoadingSnackbarRef(translationKey);
+  }
+
+  /**
+   * Get request headers
+   *
+   * @returns request headers
+   */
+  private getRequestHeaders() {
     // Should be added into the request for cs documentation api
     const token = localStorage.getItem('access_token');
-    const headers = new HttpHeaders({
+    return new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     });
-    return { snackBarRef, headers };
+  }
+
+  /**
+   * Get document drive id for target document, if does not exist, returns default drive id
+   *
+   * @param id Document id
+   * @returns Document drive id
+   */
+  public getDocumentDriveId(id: string) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient
+      .query<GetDocumentDriveIdResponse>({
+        query: GET_DOCUMENT_DRIVE_ID,
+        variables: { id },
+        fetchPolicy: 'no-cache',
+      })
+      .pipe(
+        switchMap(({ data }) => {
+          const driveId = data?.document?.occurrence?.driveid;
+          if (driveId) {
+            return of(driveId);
+          } else {
+            return this.getDriveId();
+          }
+        })
+      );
   }
 
   /**
@@ -160,14 +210,25 @@ export class DocumentManagementService {
     file: { name: string; content: { driveId: string; itemId: string } },
     options?: any
   ): void {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+    const snackBarRef = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
-    const url = `${this.environment.csApiUrl}/documents/drives/${file.content.driveId}/items/${file.content.itemId}/content`;
-    this.restService
-      .get(url, { ...options, responseType: 'blob', headers })
+    // Make sure the drive id is up to date ( changes in csdocui can affect it )
+    this.getDocumentDriveId(file.content.itemId)
+      .pipe(
+        switchMap((driveId) =>
+          this.restService.get(
+            `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${file.content.itemId}/content`,
+            {
+              ...options,
+              responseType: 'blob',
+              headers: this.getRequestHeaders(),
+            }
+          )
+        )
+      )
       .subscribe({
         next: (res) => {
           const blob = new Blob([res]);
@@ -206,6 +267,71 @@ export class DocumentManagementService {
   }
 
   /**
+   * Update file, passing new properties
+   *
+   * @param file File to update
+   * @param question Question context
+   * @returns File update
+   */
+  async updateFile(file: any, question: Question): Promise<any> {
+    const bodyFilter = Object.create({});
+    const occurrenceId = question.getPropertyValue('Occurrence');
+    let driveId = file.content.driveId;
+    let occurrenceType: number | undefined = undefined;
+    try {
+      // If occurrence, fetch related drive id
+      if (occurrenceId) {
+        const occurrence = (await this.getOccurrenceById(occurrenceId)).data
+          .occurrence;
+        if (occurrence && occurrence.driveid) {
+          driveId = occurrence.driveid;
+          occurrenceType = occurrence.occurrencetype;
+          // Set occurrence type if any
+          if (!isNil(occurrenceType)) {
+            set(bodyFilter, 'OccurrenceType', [occurrenceType]);
+          }
+        } else {
+          throw new Error('Could not fetch occurrence');
+        }
+      }
+      CS_DOCUMENTS_PROPERTIES.filter(
+        (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
+      ).forEach((prop) => {
+        const value = question.getPropertyValue(prop.bodyKey as string);
+        // OccurrenceType is single select value, but body receives it as array
+        if (!!value && value.length) {
+          set(bodyFilter, prop.bodyKey as string, value);
+        }
+      });
+      return new Promise((resolve, reject) => {
+        this.restService
+          .patch(
+            `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${file.content.itemId}`,
+            bodyFilter,
+            {
+              headers: this.getRequestHeaders(),
+            }
+          )
+          .subscribe({
+            next: (data: any) => {
+              const { itemId, driveId } = data;
+              resolve({
+                driveId,
+                itemId,
+              });
+            },
+            error: () => {
+              reject(null);
+            },
+          });
+      });
+    } catch (error) {
+      console.error('Error updating file:', error);
+      return null;
+    }
+  }
+
+  /**
    * Uploads a file
    *
    * @param file file to upload
@@ -213,7 +339,7 @@ export class DocumentManagementService {
    * @returns http upload request
    */
   async uploadFile(file: any, question: Question): Promise<any> {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+    const snackBarRef = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
@@ -239,11 +365,7 @@ export class DocumentManagementService {
         }
       }
       if (!driveId) {
-        // Get default data, if not already fetched
-        if (!this.defaultDriveId) {
-          await this.getDriveId();
-        }
-        driveId = this.defaultDriveId;
+        driveId = await firstValueFrom(this.getDriveId());
       }
       fileStream = await this.transformFileToValidInput(file);
       CS_DOCUMENTS_PROPERTIES.filter(
@@ -275,7 +397,7 @@ export class DocumentManagementService {
           `${this.environment.csApiUrl}/documents/drives/${driveId}/items`,
           body,
           {
-            headers,
+            headers: this.getRequestHeaders(),
           }
         )
         .subscribe({
@@ -328,14 +450,173 @@ export class DocumentManagementService {
    *
    * @returns Query to fetch default drive id
    */
-  public async getDriveId() {
+  public getDriveId() {
+    if (this.defaultDriveId) {
+      return of(this.defaultDriveId);
+    }
     const apolloClient = this.apollo.use('csClient');
-    return firstValueFrom(
-      apolloClient.query<DriveQueryResponse>({
+    return apolloClient
+      .query<DriveQueryResponse>({
         query: GET_DRIVE_ID,
       })
-    ).then(({ data }) => {
-      this.defaultDriveId = data.storagedrive.driveid;
+      .pipe(
+        tap(({ data }) => {
+          this.defaultDriveId = data.storagedrive.driveid;
+        }),
+        map(({ data }) => data.storagedrive.driveid)
+      );
+  }
+
+  /**
+   * List documents query
+   *
+   * @param options Query options
+   * @param options.offset Query offset
+   * @param options.filter Query filter
+   * @param options.sort Query sort descriptor
+   * @param options.tags Query tags selection
+   * @returns Query to list documents
+   */
+  public listDocuments(
+    options: {
+      offset: number;
+      filter?: any;
+      sort?: SortDescriptor[];
+      tags?: FileExplorerTagSelection;
+    } = {
+      offset: 0,
+    }
+  ) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient
+      .query<GetDocumentsQueryResponse>({
+        query: GET_DOCUMENTS,
+        variables: {
+          // countfields & distinct are used by common services to avoid duplicating documents in query result
+          countfields: 'documentid',
+          distinct: 'vw_allmetatablerelations',
+          offset: options.offset,
+          ...(options.filter && { filter: JSON.stringify(options.filter) }),
+          ...(options.sort?.length && {
+            sortField: options.sort[0].field,
+            sortDirection: options.sort[0].dir,
+          }),
+        },
+      })
+      .pipe(
+        map((response) => {
+          return {
+            ...response,
+            data: {
+              ...response.data,
+              items: response.data.items.map((item: any) => ({
+                document: {
+                  ...item.document,
+                  modifiedbyuser: item.document.modifiedbyuser
+                    ? [
+                        item.document.modifiedbyuser.firstname,
+                        item.document.modifiedbyuser.lastname,
+                      ].join(' ')
+                    : '',
+                  documenttypename: item.document.documenttypemetadatas
+                    ? item.document.documenttypemetadatas
+                        .map((meta: any) => meta.documenttype.name)
+                        .join(', ')
+                    : '',
+                },
+              })),
+            },
+          };
+        })
+      );
+  }
+
+  /**
+   * Count documents query
+   *
+   * @param options Query options
+   * @param options.byTag Tag to filter by
+   * @param options.filter Query filter
+   * @returns Query to count documents
+   */
+  public countDocuments(
+    options: {
+      byTag?: FileExplorerTagKey;
+      filter?: any;
+    } = {}
+  ) {
+    const apolloClient = this.apollo.use('csClient');
+    const byTag = options.byTag;
+
+    const countVariables = {
+      // countfields & distinct are used by common services to avoid duplicating documents in query result
+      countfields: 'documentid',
+      distinct: 'vw_allmetatablerelations',
+      ...(options.filter && { filter: JSON.stringify(options.filter) }),
+      withAetiology: byTag === 'aetiologyid',
+      withInformationConfidentiality: byTag === 'informationconfidentialityid',
+      withCountry: byTag === 'countryid',
+      withDiseaseCond: byTag === 'diseasecondid',
+      withDocumentCategory: byTag === 'documentcategoryid',
+      withDocumentType: byTag === 'documenttypeid',
+      withHazard: byTag === 'hazardid',
+      withIHRCommunication: byTag === 'ihrcommunicationid',
+      withAssignmentFunction: byTag === 'assignmentfunctionid',
+      withDocumentRole: byTag === 'roletypeid',
+      withLanguage: byTag === 'languageid',
+      withOccurrence: byTag === 'occurrenceid',
+      withOccurrenceType: byTag === 'occurrencetype',
+      withSourceOfInformation: byTag === 'sourceofinformationid',
+      withSyndrome: byTag === 'syndromeid',
+      withRegion: byTag === 'regionid',
+    };
+
+    switch (byTag) {
+      case 'occurrencetype': {
+        return forkJoin({
+          count: apolloClient.query<CountDocumentsQueryResponse>({
+            query: COUNT_DOCUMENTS,
+            variables: countVariables,
+          }),
+          occurrenceTypes: apolloClient.query<GetOccurrenceTypesResponse>({
+            query: GET_OCCURRENCE_TYPES,
+          }),
+        }).pipe(
+          map(({ count, occurrenceTypes }) => {
+            const metadata = (count.data.metadata || []).map((item: any) => ({
+              ...item,
+              name:
+                occurrenceTypes.data.occurrencetypes.find(
+                  (type) => type.id === item.id
+                )?.name || item.name,
+            }));
+            return { data: { metadata } };
+          })
+        );
+      }
+      default: {
+        return apolloClient.query<CountDocumentsQueryResponse>({
+          query: COUNT_DOCUMENTS,
+          variables: countVariables,
+        });
+      }
+    }
+  }
+
+  /**
+   * Get document properties by id
+   *
+   * @param id Document id
+   * @returns Document properties query
+   */
+  public getDocumentProperties(id: string) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetDocumentByIdResponse>({
+      query: GET_DOCUMENT_BY_ID,
+      variables: {
+        id,
+      },
+      fetchPolicy: 'no-cache',
     });
   }
 
@@ -382,6 +663,36 @@ export class DocumentManagementService {
       apolloClient.query<PropertyQueryResponse>({
         query,
       })
+    );
+  }
+
+  /**
+   * Get fields options for the document management system
+   *
+   * @returns Query to fetch fields options
+   */
+  public getFieldsOptions() {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetFieldsOptionsResponse>({
+      query: GET_FIELDS_OPTIONS,
+    });
+  }
+
+  /**
+   * Get document permissions
+   * Logic as follows:
+   * - 0: no access
+   * - 1: read access
+   * - 2: read and write access
+   * - 3: full access
+   *
+   * @param driveId Drive id
+   * @param itemId Item id
+   * @returns Query to fetch document permissions
+   */
+  public getDocumentPermissions(driveId: string, itemId: string) {
+    return this.restService.get(
+      `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${itemId}/permissions`
     );
   }
 }

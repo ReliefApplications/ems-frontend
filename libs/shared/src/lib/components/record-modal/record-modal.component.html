@@ -2,16 +2,30 @@
   <ng-container ngProjectAs="header">
     <ng-container *ngIf="!loading">
       <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <!-- Record summary -->
         <shared-record-summary
           *ngIf="!data.compareTo"
           [record]="record"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
 
-        <shared-form-actions
-          [survey]="survey"
-          [surveyNext]="surveyNext || undefined"
-        ></shared-form-actions>
+        <div class="flex gap-4 items-center mr-4">
+          <!-- Translate form -->
+          <shared-form-actions
+            [survey]="survey"
+            [surveyNext]="surveyNext || undefined"
+          ></shared-form-actions>
+
+          <!-- Open form to duplicate record -->
+          <ui-button
+            *ngIf="form?.canCreateRecords && !data.compareTo"
+            variant="primary"
+            category="secondary"
+            (click)="onDuplicate()"
+          >
+            {{ 'common.duplicateRecord' | translate }}
+          </ui-button>
+        </div>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"

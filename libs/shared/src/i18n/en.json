@@ -181,6 +181,7 @@
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
+		"duplicateRecord": "Duplicate record",
 		"edit": "Edit",
 		"email": {
 			"customTemplate": "Custom template",
@@ -499,6 +500,7 @@
 		"sendEmail": "Send email",
 		"separator": "Separator",
 		"settings": "Settings",
+		"sortBy": "Sort by",
 		"status": "Status",
 		"status_active": "Active",
 		"status_archived": "Archived",
@@ -535,6 +537,7 @@
 			"none": "No type",
 			"one": "Type"
 		},
+		"undefined": "Undefined",
 		"update": "Update",
 		"updateObject": "Update {{name}}",
 		"uploadObject": "Upload {{name}}",
@@ -1670,6 +1673,133 @@
 				"other": "Other"
 			},
 			"expand": "Expand",
+			"fileExplorer": {
+				"accessRequestForm": {
+					"alert": "<p>Customize the email that users can send if they don’t have permission to upload new records using the template.</p><p>This email will be opened in the user’s default email client.</p><p class=\"font-semibold\">Available Placeholders:</p><ul><li>{{data.user}} — replaced with the user's name.</li><li>{{data.form}} — replaced with the name of the form.</li></ul><p> Use these placeholders in the subject and body to personalize the message.</p><p>If left blank, a default message will be used.</p>",
+					"fields": {
+						"body": {
+							"label": "Body"
+						},
+						"recipients": {
+							"errors": {
+								"duplicated": "Email addresses must be unique.",
+								"invalid": "Please input a valid email address"
+							},
+							"label": "Recipients",
+							"placeholder": "Type email and press enter...",
+							"tooltip": "Default to ems2@who.int"
+						},
+						"subject": {
+							"label": "Subject"
+						}
+					},
+					"title": "Request Access Email template"
+				},
+				"actions": {
+					"copyLink": "Copy file link",
+					"download": "Download file",
+					"requestAccess": "Request access",
+					"requestPermission": "Request elevated permissions",
+					"upload": "Upload",
+					"viewAsGrid": "View as grid",
+					"viewAsList": "View as list"
+				},
+				"empty": {
+					"files": "No files found",
+					"folders": "No folders found"
+				},
+				"fields": {
+					"aetiology": {
+						"label": "Aetiology"
+					},
+					"confidentiality": {
+						"label": "Confidentiality"
+					},
+					"country": {
+						"label": "Country"
+					},
+					"createdBy": {
+						"label": "Created By"
+					},
+					"createdOn": {
+						"label": "Created On"
+					},
+					"diseaseCondition": {
+						"label": "Disease Condition"
+					},
+					"documentCategory": {
+						"label": "Document Category"
+					},
+					"documentType": {
+						"label": "Document Type"
+					},
+					"filename": {
+						"label": "Filename"
+					},
+					"hazard": {
+						"label": "Hazard"
+					},
+					"ihrCommunication": {
+						"label": "IHR communication"
+					},
+					"imsFunction": {
+						"label": "IMS Function"
+					},
+					"imsRole": {
+						"label": "IMS Role"
+					},
+					"informationSource": {
+						"label": "IHR Source of information - type"
+					},
+					"language": {
+						"label": "Language"
+					},
+					"lastUpdatedBy": {
+						"label": "Last Updated By"
+					},
+					"lastUpdatedOn": {
+						"label": "Last Updated On"
+					},
+					"name": {
+						"label": "Name"
+					},
+					"occurrence": {
+						"label": "Occurrence"
+					},
+					"occurrenceType": {
+						"label": "Occurrence Type"
+					},
+					"region": {
+						"label": "Region"
+					},
+					"size": {
+						"label": "File Size"
+					},
+					"syndrome": {
+						"label": "Syndrome"
+					},
+					"version": {
+						"label": "File Version"
+					}
+				},
+				"filter": {
+					"alert": "Define system-level filters that restrict the document set for all users. These administrative filters cannot be seen or modified by end users and will be applied in addition to any folder navigation or context filtering.",
+					"title": "Static Filters"
+				},
+				"folderHierarchy": {
+					"alert": "Choose which tags to use as folders and arrange them in your preferred order. The first tag becomes the top-level folder, with subsequent tags creating subfolders. Documents are automatically organized based on their tag values.",
+					"title": "Folder Hierarchy"
+				},
+				"folders": "Folders",
+				"formBinding": {
+					"title": "Form binding"
+				},
+				"notifications": {
+					"copyLink": {
+						"success": "File link copied to clipboard"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "Open detail",

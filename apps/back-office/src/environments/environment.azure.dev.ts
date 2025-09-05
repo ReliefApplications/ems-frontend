@@ -51,6 +51,7 @@ export const environment: Environment = {
     'map',
     'summaryCard',
     'tabs',
+    'file-explorer',
   ],
   sentry: {
     environment: 'development',

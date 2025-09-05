@@ -46,7 +46,8 @@ export type WidgetTypeComponent =
   | 'map'
   | 'editor'
   | 'summaryCard'
-  | 'tabs';
+  | 'tabs'
+  | 'file-explorer';
 
 /**
  * Widget type interface
@@ -255,6 +256,17 @@ export const WIDGET_TYPES: WidgetType[] = [
     rows: 4,
     minItemRows: 2,
     component: 'tabs',
+  },
+  {
+    id: 'file-explorer',
+    name: 'File Explorer',
+    icon: '/assets/file-explorer.svg',
+    color: '#D58080',
+    settings: { title: 'File Explorer' },
+    cols: 8,
+    rows: 4,
+    minItemRows: 2,
+    component: 'file-explorer',
   },
 ];
 

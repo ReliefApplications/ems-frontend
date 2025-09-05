@@ -1,0 +1,23 @@
+<div
+  class="flex flex-col gap-2 justify-between items-center cursor-pointer w-24"
+  [uiTooltip]="document.filename"
+>
+  <div
+    class="flex items-center justify-center w-full h-24 rounded border border-gray-300 hover:bg-primary-50"
+    [ngClass]="{ 'bg-primary-50 border-primary-500': selected }"
+  >
+    <ui-icon
+      [icon]="document.filename | fileIcon"
+      [size]="32"
+      fontFamily="fa"
+      [ngStyle]="{ color: document.filename | fileColor }"
+    ></ui-icon>
+  </div>
+
+  <div
+    class="text-center w-full truncate"
+    [ngClass]="{ 'text-primary-500': selected }"
+  >
+    {{ document.filename }}
+  </div>
+</div>
