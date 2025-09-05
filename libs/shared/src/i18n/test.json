@@ -76,6 +76,7 @@
 		},
 		"clear": "******",
 		"clone": "******",
+		"cloneRecord": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -90,6 +91,7 @@
 		"create": "******",
 		"createdBy": "******",
 		"createdOn": "******",
+		"creation": "******",
 		"cronEditor": {
 			"advanced": "******",
 			"atTime": "******",
@@ -181,7 +183,6 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
-		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",
@@ -2699,6 +2700,12 @@
 						}
 					},
 					"autoReload": "******",
+					"cloneRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
 					"editRecord": {
 						"text": "******",
 						"tooltip": {

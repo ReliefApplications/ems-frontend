@@ -201,6 +201,7 @@
                     class="flex flex-col ml-[55px]"
                     *ngIf="form.value.action.editRecord.enabled"
                   >
+                    <!-- Selection of template -->
                     <div uiFormFieldDirective class="flex-1">
                       <label>{{ 'models.form.template' | translate }}</label>
                       <ui-select-menu formControlName="template">
@@ -218,6 +219,53 @@
                         variant="grey"
                         [uiTooltip]="
                           'models.dashboard.actionButtons.actions.editRecord.tooltip.template'
+                            | translate
+                        "
+                      ></ui-icon>
+                    </div>
+                    <!-- Auto reload on save -->
+                    <ui-toggle formControlName="autoReload">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.actionButtons.actions.autoReload'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
+                  </div>
+                </ng-container>
+                <!-- Clone record -->
+                <ng-container formGroupName="cloneRecord">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.cloneRecord.text'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <div
+                    class="flex flex-col ml-[55px]"
+                    *ngIf="form.value.action.cloneRecord.enabled"
+                  >
+                    <!-- Selection of template -->
+                    <div uiFormFieldDirective class="flex-1">
+                      <label>{{ 'models.form.template' | translate }}</label>
+                      <ui-select-menu formControlName="template">
+                        <ui-select-option>-</ui-select-option>
+                        <ui-select-option
+                          *ngFor="let template of editRecordTemplates"
+                          [value]="template.id"
+                        >
+                          {{ template.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-icon
+                        uiSuffix
+                        icon="info_outline"
+                        variant="grey"
+                        [uiTooltip]="
+                          'models.dashboard.actionButtons.actions.cloneRecord.tooltip.template'
                             | translate
                         "
                       ></ui-icon>

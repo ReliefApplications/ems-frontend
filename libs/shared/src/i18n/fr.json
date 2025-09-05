@@ -76,6 +76,7 @@
 		},
 		"clear": "Annuler",
 		"clone": "Cloner",
+		"cloneRecord": "Cloner l'enregistrement",
 		"close": "Fermer",
 		"column": {
 			"few": "Colonnes",
@@ -90,6 +91,7 @@
 		"create": "Créer",
 		"createdBy": "Créé par",
 		"createdOn": "Date de création",
+		"creation": "Création",
 		"cronEditor": {
 			"advanced": "Avancé",
 			"atTime": "À",
@@ -181,7 +183,6 @@
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
-		"duplicateRecord": "Dupliquer l'enregistrement",
 		"edit": "Modifier",
 		"email": {
 			"customTemplate": "Modèle personnalisé",
@@ -1102,7 +1103,7 @@
 			"update": {
 				"confirmMessage": "************************?",
 				"exit": "Quitter sans sauvegarder les changements",
-				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
+				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
 			},
 			"updateRow": {
 				"confirmationMessage": "Souhaitez-vous mettre à jour {{quantity}} {{rowText}}?"
@@ -2702,6 +2703,12 @@
 						}
 					},
 					"autoReload": "Recharger le tableau de bord après la sauvegarde",
+					"cloneRecord": {
+						"text": "Dupliquer l'enregistrement actuel",
+						"tooltip": {
+							"template": "Sélectionner un modèle pour la duplication de l'enregistrement actuel.\n Si aucun modèle n'est sélectionné, le dernier modèle utilisé par l'enregistrement actuel sera utilisé"
+						}
+					},
 					"editRecord": {
 						"text": "Modifier l'enregistrement actuel",
 						"tooltip": {
