@@ -1,3 +1,10 @@
+## [2.21.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.0...v2.21.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* update ESRI API key ([#2814](https://github.com/ReliefApplications/ems-frontend/issues/2814)) ([9ce18de](https://github.com/ReliefApplications/ems-frontend/commit/9ce18ded4c8bd31e7a5cb1a6b2a88503bf1c8c75)), closes [AB#120030](https://github.com/AB/issues/120030)
+
 # [2.21.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.2...v2.21.0) (2025-09-05)
 
 
