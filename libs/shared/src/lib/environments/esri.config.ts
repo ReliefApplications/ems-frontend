@@ -1,0 +1,3 @@
+/** Shared ESRI API key, see documentation to find where the API key is generated */
+export const esriApiKey =
+  'AAPTxy8BH1VEsoebNVZXo8HurKSdz3I0riejTYWZfexslMeZkv7FC5kczKmvOHjdelLWzhxivcHpxse1f08SzLbakG5pW4bNoes0g5ZsaTThMbxSDtl8j0bw8CzcrZTcrLJ-ZYfct4Qo8V6rfXmxdLD6bKQoZljyL437wxUi_cTT-Q8HDzlXMJeDK5LkxNvRe3PX2IgQ0SiZ0pH0JHO16l0qwZxHidp7P8YCW8NFxxG2StY.AT1_JbVwSOda';
