@@ -160,3 +160,6 @@ export * from './lib/const/tinymce.const';
 
 // === ENUM ===
 export * from './lib/components/dashboard-filter/enums/dashboard-filters.enum';
+
+// === ENVIRONMENTS ===
+export * from './lib/environments/esri.config';
