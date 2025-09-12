@@ -10,6 +10,12 @@ export const convertToMinutes = (value: number, unit: string): number => {
   let minutes;
 
   switch (unit) {
+    case 'seconds':
+      minutes = value / 60;
+      break;
+    case 'minutes':
+      minutes = value;
+      break;
     case 'hours':
       minutes = value * 60;
       break;
