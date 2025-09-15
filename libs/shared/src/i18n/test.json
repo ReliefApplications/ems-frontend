@@ -319,7 +319,8 @@
 				},
 				"fieldselect": {
 					"placeholder": "******",
-					"tooltip": "******"
+					"tooltip": "******",
+					"tooltipTwo": "*******"
 				},
 				"footer": {
 					"logo": "******",
@@ -1001,7 +1002,6 @@
 			},
 			"saveAsDraft": "******",
 			"schedule": {
-
 				"disable": {
 					"checkbox": "***********"
 				},
