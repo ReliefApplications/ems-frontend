@@ -320,7 +320,8 @@
         },
         "fieldselect": {
           "placeholder": "Field Select",
-          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results",
+          "tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
         },
         "footer": {
           "logo": "Footer logo",
