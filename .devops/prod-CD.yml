@@ -27,8 +27,11 @@ steps:
 
 - script: |
     npx nx run front-office:build:azure-prod
+  displayName: 'Build front-office'
+
+- script: |
     npx nx run back-office:build:azure-prod
-  displayName: 'build the apps'
+  displayName: 'Build back-office'
 
 - task: ArchiveFiles@2
   inputs:
