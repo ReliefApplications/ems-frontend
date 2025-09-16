@@ -1,3 +1,10 @@
+# [2.22.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.1...v2.22.0-rc.1) (2025-09-16)
+
+
+### Features
+
+* allow to replace any field in widget filters ([#2820](https://github.com/ReliefApplications/ems-frontend/issues/2820)) ([335bb57](https://github.com/ReliefApplications/ems-frontend/commit/335bb57e272cf575229322aaaa21b88837a9f64a)), closes [AB#120295](https://github.com/AB/issues/120295)
+
 # [2.21.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1...v2.21.0-rc.1) (2025-08-29)
 
 
