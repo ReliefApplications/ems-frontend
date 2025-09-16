@@ -16,7 +16,11 @@
   <div *ngIf="this.scheduleForm.get('scheduleEnabled')?.value">
     <ng-container ngProjectAs="content" class="flex flex-col">
       <!-- Show readable value of the schedule -->
-      <ui-alert *ngIf="scheduleCron.valid" variant="primary" class="mb-6 block">
+      <ui-alert
+        *ngIf="this.scheduleForm.get('cronValue')?.value && scheduleCron.valid"
+        variant="primary"
+        class="mb-6 block"
+      >
         {{ scheduleCron.value | sharedReadableCron }}
       </ui-alert>
       <!-- Cron editor -->
