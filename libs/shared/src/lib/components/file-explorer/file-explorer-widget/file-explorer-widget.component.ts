@@ -127,11 +127,19 @@ export class FileExplorerWidgetComponent
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ data }) => {
-        this.documents = data.items.map((x) => x.document);
-        this.total = data.metadata[0].aggregate_count;
-        this.skip = (this.page.getValue() - 1) * this.pageSize;
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          this.documents = data.items.map((x) => x.document);
+          this.total = data.metadata[0].aggregate_count;
+          this.skip = (this.page.getValue() - 1) * this.pageSize;
+          this.loading = false;
+        },
+        error: () => {
+          this.documents = [];
+          this.total = 0;
+          this.skip = 0;
+          this.loading = false;
+        },
       });
     this.contextService.filter$
       .pipe(

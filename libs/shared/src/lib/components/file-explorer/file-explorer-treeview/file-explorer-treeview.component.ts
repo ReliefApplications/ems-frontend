@@ -13,7 +13,7 @@ import {
 } from '../types/file-explorer-filter.type';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { TreeItem, TreeViewModule } from '@progress/kendo-angular-treeview';
-import { map, tap } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ContextService } from '../../../services/context/context.service';
@@ -21,6 +21,7 @@ import getFilter from '../../../utils/common-services/filter.util';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { EmptyModule } from '../../ui/empty/empty.module';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Structure of data used in the tree view.
@@ -51,7 +52,10 @@ interface TreeData {
   templateUrl: './file-explorer-treeview.component.html',
   styleUrls: ['./file-explorer-treeview.component.scss'],
 })
-export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
+export class FileExplorerTreeviewComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   /** List of tags to generate folders */
   @Input() tags: FileExplorerTagKey[] = [];
   /** Selected tags */
@@ -119,24 +123,31 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
         byTag: this.tags[0],
         filter: this.getFilter(),
       })
-      .subscribe(({ data }) => {
-        this.data = data.metadata
-          .map((item) => ({
-            id: item.id,
-            compositeId: `${this.tags[0]}_${item.id}`,
-            text: item.name || this.translate.instant('common.undefined'),
-            type: this.tags[0],
-            path: [`${this.tags[0]}_${item.id}`],
-          }))
-          .sort((a, b) => a.text.localeCompare(b.text));
-        if (this.data.length === 1) {
-          // if only one folder found at root, expand it
-          this.onSelectionChange({
-            dataItem: this.data[0],
-            index: this.data[0].compositeId,
-          });
-        }
-        this.loading = false;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          this.data = data.metadata
+            .map((item) => ({
+              id: item.id,
+              compositeId: `${this.tags[0]}_${item.id}`,
+              text: item.name || this.translate.instant('common.undefined'),
+              type: this.tags[0],
+              path: [`${this.tags[0]}_${item.id}`],
+            }))
+            .sort((a, b) => a.text.localeCompare(b.text));
+          if (this.data.length === 1) {
+            // if only one folder found at root, expand it
+            this.onSelectionChange({
+              dataItem: this.data[0],
+              index: this.data[0].compositeId,
+            });
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.data = [];
+          this.loading = false;
+        },
       });
   }
 
