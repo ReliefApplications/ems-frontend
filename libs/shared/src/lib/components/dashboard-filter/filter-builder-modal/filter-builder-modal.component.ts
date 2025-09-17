@@ -172,7 +172,9 @@ export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   /** Survey creator instance */
-  surveyCreator!: SurveyCreatorModel;
+  public surveyCreator!: SurveyCreatorModel;
+  /** Indicates if the form is dirty */
+  public dirty = false;
 
   /**
    * Dialog component to build the filter
@@ -238,7 +240,7 @@ export class FilterBuilderModalComponent
     this.surveyCreator.showSidebar = true;
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+    this.surveyCreator.saveSurveyFunc = this.onSave.bind(this);
     this.surveyCreator.allowChangeThemeInPreview = false;
 
     // Block core fields edition
@@ -276,13 +278,17 @@ export class FilterBuilderModalComponent
       );
     });
 
+    this.surveyCreator.onModified.add(() => {
+      this.dirty = true;
+    });
+
     this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**
    * Custom SurveyJS method, save the survey when edited.
    */
-  saveMySurvey = () => {
+  public onSave() {
     this.validateValueNames()
       .then((canCreate: boolean) => {
         if (canCreate) {
@@ -295,7 +301,7 @@ export class FilterBuilderModalComponent
           duration: 15000,
         });
       });
-  };
+  }
 
   /**
    * Makes sure that value names are existent and snake case, to not cause backend problems.

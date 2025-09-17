@@ -5,10 +5,13 @@
   <ng-container ngProjectAs="content">
     <template #settingsContainer></template>
   </ng-container>
+  <!-- Actions -->
   <ng-container ngProjectAs="actions">
+    <!-- Close -->
     <ui-button (click)="onClose()" variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
+    <!-- Save -->
     <ui-button
       category="secondary"
       variant="primary"

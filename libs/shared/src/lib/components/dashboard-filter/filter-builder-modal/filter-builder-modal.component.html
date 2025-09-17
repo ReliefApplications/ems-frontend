@@ -14,9 +14,20 @@
       </div>
     </div>
   </ng-container>
+  <!-- Actions -->
   <ng-container ngProjectAs="actions">
+    <!-- Close -->
     <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
+    </ui-button>
+    <!-- Save -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!dirty"
+      (click)="onSave()"
+    >
+      {{ 'common.save' | translate }}
     </ui-button>
   </ng-container>
 </ui-dialog>
