@@ -31,6 +31,8 @@ import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/fil
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
 import { ContextService } from '../../../services/context/context.service';
 import getFilter from '../../../utils/common-services/filter.util';
+import { isEmpty } from 'lodash';
+import { removeEmptyArrays } from '../remove-empty-arrays';
 
 /**
  * File explorer widget component.
@@ -230,21 +232,40 @@ export class FileExplorerWidgetComponent
    *
    * @returns An object representing the filter for the file explorer.
    */
-  private getFilter(): FileExplorerTagSelection {
+  private getFilter(): { AND: FileExplorerTagSelection[] } {
+    const filters = [];
+
+    // User selected tags
+    const userSelectedTags = this.selectedTags.reduce((acc, tag) => {
+      acc[tag.tag] = tag.id;
+      return acc;
+    }, {} as any);
+
+    if (!isEmpty(userSelectedTags)) {
+      filters.push(userSelectedTags);
+    }
+
+    // Dashboard & context filters
     const contextFilter = this.contextService.replaceFilter(
       this.contextFilters
     );
     this.contextService.removeEmptyPlaceholders(contextFilter);
-    return {
-      // User selected tags
-      ...this.selectedTags.reduce((acc, tag) => {
-        acc[tag.tag] = tag.id;
-        return acc;
-      }, {} as any),
-      // Dashboard & context filters
-      ...contextFilter,
-      // Static filters, set by admin, cannot be overwritten by users
-      ...(this.settings.filter ? getFilter(this.settings.filter) : {}),
-    };
+    if (!isEmpty(contextFilter)) {
+      const cleanedContextFilter = removeEmptyArrays(contextFilter);
+      if (!isEmpty(cleanedContextFilter)) {
+        filters.push(cleanedContextFilter);
+      }
+    }
+
+    // Static filters, set by admin, cannot be overwritten by users
+    const staticFilter = getFilter(this.settings.filter);
+    if (!isEmpty(staticFilter)) {
+      const cleanedStaticFilter = removeEmptyArrays(staticFilter);
+      if (!isEmpty(cleanedStaticFilter)) {
+        filters.push(cleanedStaticFilter);
+      }
+    }
+
+    return { AND: filters };
   }
 }

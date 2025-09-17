@@ -22,6 +22,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { EmptyModule } from '../../ui/empty/empty.module';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { removeEmptyArrays } from '../remove-empty-arrays';
+import { isEmpty } from 'lodash';
 
 /**
  * Structure of data used in the tree view.
@@ -241,24 +243,47 @@ export class FileExplorerTreeviewComponent
    * @param excludeTag Exclude tag from filter
    * @returns An object representing the filter for the file explorer.
    */
-  private getFilter(excludeTag?: FileExplorerTagKey): FileExplorerTagSelection {
+  private getFilter(excludeTag?: FileExplorerTagKey): {
+    AND: FileExplorerTagSelection[];
+  } {
+    const filters = [];
+
+    // User selected tags, excluding the specified tag
+    const userSelectedTags = this.selectedTags.reduce((acc, tag) => {
+      if (tag.tag !== excludeTag) {
+        acc[tag.tag] = tag.id;
+      }
+      return acc;
+    }, {} as any);
+
+    if (!isEmpty(userSelectedTags)) {
+      filters.push(userSelectedTags);
+    }
+
+    // Dashboard & context filters
     const contextFilter = this.contextService.replaceFilter(
       this.contextFilters
     );
     this.contextService.removeEmptyPlaceholders(contextFilter);
-    return {
-      // User selected tags
-      ...this.selectedTags.reduce((acc, tag) => {
-        if (tag.tag !== excludeTag) {
-          acc[tag.tag] = tag.id;
-        }
-        return acc;
-      }, {} as any),
-      // Dashboard & context filters
-      ...contextFilter,
-      // Static filters, set by admin, cannot be overwritten by users
-      ...(this.parent && getFilter(this.parent.settings.filter)),
-    };
+    if (!isEmpty(contextFilter)) {
+      const cleanedContextFilter = removeEmptyArrays(contextFilter);
+      if (!isEmpty(cleanedContextFilter)) {
+        filters.push(cleanedContextFilter);
+      }
+    }
+
+    // Static filters, set by admin, cannot be overwritten by users
+    const staticFilter = this.parent
+      ? getFilter(this.parent.settings.filter)
+      : {};
+    if (!isEmpty(staticFilter)) {
+      const cleanedStaticFilter = removeEmptyArrays(staticFilter);
+      if (!isEmpty(cleanedStaticFilter)) {
+        filters.push(cleanedStaticFilter);
+      }
+    }
+
+    return { AND: filters };
   }
 
   /**
