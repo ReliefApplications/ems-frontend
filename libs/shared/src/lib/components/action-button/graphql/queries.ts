@@ -2,12 +2,15 @@ import { gql } from 'apollo-angular';
 
 /** Get Record By ID query */
 export const GET_RECORD_BY_ID = gql`
-  query ActionButton_GetRecordById($id: ID!) {
+  query ActionButton_GetRecordById($id: ID!, $includeResource: Boolean!) {
     record(id: $id) {
       id
       data
-      resource {
+      resource @include(if: $includeResource) {
         fields
+      }
+      form {
+        id
       }
     }
   }

@@ -10,6 +10,7 @@ import { TabsModule } from '../widgets/tabs/tabs.module';
 import 'hammerjs';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { FileExplorerWidgetComponent } from '../file-explorer/file-explorer-widget/file-explorer-widget.component';
 
 /**
  * Main Widget Module.
@@ -31,6 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TabsModule,
     TooltipModule,
     TranslateModule,
+    FileExplorerWidgetComponent,
   ],
   exports: [WidgetComponent],
 })

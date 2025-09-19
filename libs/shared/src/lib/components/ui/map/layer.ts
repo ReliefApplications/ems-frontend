@@ -878,6 +878,7 @@ export class Layer implements LayerModel {
                     'featureReduction.clusterRadius',
                     80
                   ),
+                  singleMarkerMode: true,
                   zoomToBoundsOnClick: false,
                   iconCreateFunction: (cluster) => {
                     const htmlTemplate = this.document.createElement('label');
@@ -1248,12 +1249,13 @@ export class Layer implements LayerModel {
             break;
           }
           default: {
-            // todo: handle polygon
-            const symbol: LayerSymbol | undefined = get(
-              this.layerDefinition,
-              'drawingInfo.renderer.symbol'
-            );
-            html += this.getGeoJSONFeatureLegend(geometryType, symbol);
+            if (!get(this.layerDefinition, 'featureReduction.type')) {
+              const symbol: LayerSymbol | undefined = get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol'
+              );
+              html += this.getGeoJSONFeatureLegend(geometryType, symbol);
+            }
             break;
           }
         }
@@ -1287,7 +1289,6 @@ export class Layer implements LayerModel {
                 'featureReduction.drawingInfo.renderer.symbol',
                 symbol
               );
-              html += `<div>${this.name} clusters</div>`;
               const iconDef = getIconDefinition('circle');
               const i = iconCreator(iconDef, {
                 styles: {
@@ -1296,7 +1297,6 @@ export class Layer implements LayerModel {
                   color: clusterSymbol.color,
                   'line-height': '1rem',
                   'font-size': '1rem',
-                  'padding-left': '.5rem',
                 },
               });
               html += i.html[0];

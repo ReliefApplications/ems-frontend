@@ -1,0 +1,13 @@
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <shared-filter
+    [form]="$any(formGroup.controls.filter)"
+    [fields]="fields"
+  ></shared-filter>
+</ng-container>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full h-16 flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

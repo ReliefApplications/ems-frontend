@@ -54,6 +54,21 @@ For uat, replace `azure-dev` with `azure-uat`.
 
 The compiled applications can be found there in ./dist/apps/ folder.
 
+# Deployment
+
+These steps describe how to do a deployment from your machine to target static web app.
+
+Get a deployment token:
+```
+az staticwebapp secrets list --name <static-webapp-name> --query "properties.apiKey"
+```
+
+Deploy code:
+```
+npm i -g @azure/static-web-apps-cli
+npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-token> --env production
+```
+
 # Useful commands
 
 ## Development server

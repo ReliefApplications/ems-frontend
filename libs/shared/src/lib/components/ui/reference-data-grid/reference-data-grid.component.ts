@@ -1,9 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
-import { CardT } from '../../widgets/summary-card/summary-card.component';
+import {
+  CardT,
+  SummaryCardComponent,
+} from '../../widgets/summary-card/summary-card.component';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { sortBy } from 'lodash';
+import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import get from 'lodash/get';
+
+/**
+ * Default file name when exporting grid data.
+ */
+const DEFAULT_FILE_NAME = 'Common Services';
 
 /**
  * Shared reference data grid component.
@@ -34,6 +44,8 @@ export class ReferenceDataGridComponent implements OnInit {
   public sort: SortDescriptor[] = [];
   /** Data for the gridData */
   private data: any[] = [];
+  /** Can reference data be exported */
+  public canExport = false;
 
   /** @returns current field used for sorting */
   get sortField(): string | null {
@@ -44,6 +56,30 @@ export class ReferenceDataGridComponent implements OnInit {
   get sortOrder(): string {
     return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].dir : '';
   }
+
+  /** @returns filename, from widget title, or default filename, and current date */
+  get fileName(): string {
+    const today = new Date();
+    const formatDate = `${today.toLocaleString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    })} ${today.getFullYear()}`;
+    const title = get(this.summaryCardComponent, 'widget.settings.title');
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}`;
+  }
+
+  /**
+   * Shared reference data grid component.
+   *
+   * @param summaryCardComponent Reference to parent summary card component
+   * @param cs Common Services connector
+   * @param environment Environment configuration
+   */
+  constructor(
+    @Optional() public summaryCardComponent: SummaryCardComponent,
+    private cs: CommonServicesService,
+    @Inject('environment') private environment: any
+  ) {}
 
   ngOnInit(): void {
     if (this.settings && this.settings.refDataCards) {
@@ -64,6 +100,15 @@ export class ReferenceDataGridComponent implements OnInit {
         })
       );
       this.setGridData();
+      // Set can export. Ref data must use CS & be of type graphql & use auth code connection
+      this.canExport =
+        (this.summaryCardComponent.refData?.type === 'graphql' &&
+          this.summaryCardComponent.refData.apiConfiguration?.authType ===
+            'authorizationCode' &&
+          this.summaryCardComponent.refData.apiConfiguration?.endpoint?.startsWith(
+            this.environment.csApiUrl
+          )) ||
+        false;
       this.loadingSettings = false;
     }
   }
@@ -160,5 +205,23 @@ export class ReferenceDataGridComponent implements OnInit {
     this.sort = sort;
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
+  }
+
+  /**
+   * On Export
+   */
+  public onExport() {
+    if (this.summaryCardComponent) {
+      if (
+        this.summaryCardComponent.refData &&
+        this.summaryCardComponent.refData.type === 'graphql'
+      ) {
+        const query = this.summaryCardComponent.refData.query;
+        if (query) {
+          const queryParams = this.summaryCardComponent.queryParams ?? {};
+          this.cs.graphqlToExcel(`${this.fileName}.xlsx`, query, queryParams);
+        }
+      }
+    }
   }
 }

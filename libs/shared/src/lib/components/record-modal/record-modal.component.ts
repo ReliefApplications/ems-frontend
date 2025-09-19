@@ -28,6 +28,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { CoreGridComponent } from '../ui/core-grid/core-grid.component';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -39,6 +40,7 @@ interface DialogData {
   template?: string;
   isTemporary?: boolean;
   temporaryRecordData?: any;
+  parentComponent?: CoreGridComponent;
 }
 
 /**
@@ -261,6 +263,34 @@ export class RecordModalComponent
    */
   public onEdit(): void {
     this.dialogRef.close(true as any);
+  }
+
+  /**
+   * Open a create form modal prefilled with this record's data
+   */
+  public async onClone(): Promise<void> {
+    if (!this.form?.id) return;
+    const { FormModalComponent } = await import(
+      '../form-modal/form-modal.component'
+    );
+    const dialogRef = this.dialog.open(FormModalComponent, {
+      disableClose: true,
+      data: {
+        template: this.form.id,
+        prefillData: this.record?.data,
+        askForConfirm: false,
+      },
+      autoFocus: false,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        // Ask for reload
+        if (this.data.parentComponent) {
+          this.data.parentComponent.reloadData();
+        }
+      }
+      this.dialogRef.close();
+    });
   }
 
   /**

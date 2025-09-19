@@ -247,11 +247,15 @@ export class ApplicationComponent
         icon: 'mail',
       });
     }
-    this.adminNavItems.push({
-      name: this.translate.instant('common.activity.few'),
-      path: './settings/activity-log',
-      icon: 'timeline',
-    });
+    if (
+      this.ability.can('read', subject('User', { application: application.id }))
+    ) {
+      this.adminNavItems.push({
+        name: this.translate.instant('common.activity.few'),
+        path: './settings/activity-log',
+        icon: 'timeline',
+      });
+    }
   }
 
   override ngOnDestroy(): void {

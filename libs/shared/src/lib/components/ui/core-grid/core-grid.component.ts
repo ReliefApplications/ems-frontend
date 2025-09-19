@@ -1157,6 +1157,7 @@ export class CoreGridComponent
             this.settings.actions.update &&
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
+          parentComponent: this,
         },
         autoFocus: false,
       });

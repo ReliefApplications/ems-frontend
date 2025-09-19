@@ -41,6 +41,7 @@
     position="top"
     class="export-hide"
   >
+    <!-- Searchbar -->
     <kendo-textbox
       class="!w-full export-hide"
       *ngIf="searchable"
@@ -58,6 +59,7 @@
       icon="columns"
       class="export-hide"
     ></kendo-button>
+    <!-- Column chooser dropdown -->
     <ng-template #columnChooser>
       <shared-grid-column-chooser
         [originalColumns]="grid?.columns"
@@ -67,7 +69,8 @@
         class="export-hide"
       ></shared-grid-column-chooser>
     </ng-template>
-
+    <!-- Custom actions, configurable at parent component level -->
+    <ng-content select="actions"></ng-content>
     <button
       *ngIf="actions.add && canAdd"
       kendoButton

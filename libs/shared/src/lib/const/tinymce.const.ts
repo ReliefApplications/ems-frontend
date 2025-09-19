@@ -338,6 +338,8 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
   toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
   toolbar_sticky: true,
+  paste_retain_style_properties: 'color font-size',
+  paste_webkit_styles: 'color font-size',
   image_advtab: true,
   importcss_append: true,
   height: 600,

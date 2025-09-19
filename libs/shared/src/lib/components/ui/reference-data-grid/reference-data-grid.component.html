@@ -13,4 +13,10 @@
   [blank]="!settings || !cards.length"
   [noLayout]="true"
 >
+  <!-- Custom actions, appear in toolbar -->
+  <ng-container ngProjectAs="actions">
+    <button kendoButton (click)="onExport()" *ngIf="canExport">
+      {{ 'common.export' | translate }}
+    </button>
+  </ng-container>
 </shared-grid>

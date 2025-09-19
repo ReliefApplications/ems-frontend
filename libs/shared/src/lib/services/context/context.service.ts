@@ -355,31 +355,34 @@ export class ContextService {
   ): T {
     const filter = cloneDeep(f);
     const filterValue = this.filterValue(this.filter.getValue());
-    // Regex to detect {{filter.}} in object
     const filterRegex = this.filterValueRegex;
-    // Regex to detect {{context.}} in object
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
 
-    if ('field' in filter && filter.field) {
-      // If it's a filter descriptor, replace value ( if string )
-      if (filter.value && typeof filter.value === 'string') {
-        const filterName = filter.value?.match(filterRegex)?.[0];
+    // Helper to replace a property value if it matches filter/context pattern
+    const replaceProp = (obj: any, prop: string) => {
+      if (obj[prop] && typeof obj[prop] === 'string') {
+        const filterName = obj[prop]?.match(filterRegex)?.[0];
         if (filterName) {
-          filter.value = get(filterValue, filterName);
+          obj[prop] = get(filterValue, filterName);
         } else {
-          const contextName = filter.value?.match(contextRegex)?.[0];
+          const contextName = obj[prop]?.match(contextRegex)?.[0];
           if (contextName) {
-            filter.value = get(this.context, contextName);
+            obj[prop] = get(this.context, contextName);
           }
         }
       }
+    };
+
+    if ('field' in filter && filter.field) {
+      // If it's a filter descriptor, replace value/operator/field
+      replaceProp(filter, 'value');
+      replaceProp(filter, 'operator');
+      replaceProp(filter, 'field');
     } else if ('filters' in filter && filter.filters) {
-      // If it's a composite filter, replace values in filters
+      // If it's a composite filter, replace values in filters and replace logic
       filter.filters = filter.filters
         .map((f) => this.injectContext(f))
         .filter((f) => {
-          // Filter out fields that are not in the available filter field
-          // Meaning, their values are still using the {{filter.}} syntax
           if ('value' in f) {
             return isObject(f.value)
               ? !isNil(f.value) && !isEmpty(f.value)
@@ -388,6 +391,7 @@ export class ContextService {
             return true;
           }
         });
+      replaceProp(filter, 'logic');
     }
     return filter;
   }

@@ -365,35 +365,41 @@ export class DownloadService {
   }
 
   /**
-   * to download the Distribution List template for bulk import via excel file
+   * Generic file download
+   *
+   * @param filename file name
+   * @param type file type
+   * @param observable Query that returns a file, as observable
    */
-  downloadDistributionListTemplate(): void {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+  download(
+    filename: string,
+    type: 'text/xlsx;charset=utf-8;',
+    observable: Observable<unknown>
+  ): void {
+    const { snackBarRef } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
 
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
-    this.restService
-      .get('/download/templates', { responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
-          const blob = new Blob([res], { type: `text/xlsx;charset=utf-8;` });
-          this.saveFile('template.xlsx', blob);
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.ready'
-          );
-          snackBarSpinner.instance.loading = false;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
-        },
-        () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.error'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
-        }
-      );
+    observable.subscribe({
+      next: (file: any) => {
+        const blob = new Blob([file], { type });
+        this.saveFile(filename, blob);
+        snackBarSpinner.instance.message = this.translate.instant(
+          'common.notifications.file.download.ready'
+        );
+        snackBarSpinner.instance.loading = false;
+        setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+      },
+      error: () => {
+        snackBarSpinner.instance.message = this.translate.instant(
+          'common.notifications.file.download.error'
+        );
+        snackBarSpinner.instance.loading = false;
+        snackBarSpinner.instance.error = true;
+        setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+      },
+    });
   }
 }

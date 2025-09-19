@@ -5,7 +5,7 @@ module.exports = {
     './apps/**/src/**/*.{html,ts}',
     './libs/shared/**/*.{html,ts,js,mjs}',
     './libs/ui/**/*.{html,ts,js,mjs}',
-    '.libs/doc-management/**/*.{html,ts,js,mjs}'
+    '.libs/doc-management/**/*.{html,ts,js,mjs}',
   ],
   theme: {
     extend: {

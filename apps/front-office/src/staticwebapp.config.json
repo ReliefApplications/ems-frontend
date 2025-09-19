@@ -1,0 +1,9 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/", "/.css", "/*.js"]
+  },
+  "globalHeaders": {
+    "referrer-policy": "strict-origin-when-cross-origin"
+  }
+}

@@ -119,8 +119,7 @@ export class EmailAttachmentComponent implements OnInit {
         console.error('Validation failed: Check file count and size.');
         return;
       }
-      await this.docManagement.getDriveId();
-      const driveId = this.docManagement.defaultDriveId;
+      const driveId = await firstValueFrom(this.docManagement.getDriveId());
       const token = localStorage.getItem('access_token');
       const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`,

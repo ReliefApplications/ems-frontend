@@ -1,3 +1,73 @@
+# [2.22.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.1...v2.22.0-rc.1) (2025-09-16)
+
+
+### Features
+
+* allow to replace any field in widget filters ([#2820](https://github.com/ReliefApplications/ems-frontend/issues/2820)) ([335bb57](https://github.com/ReliefApplications/ems-frontend/commit/335bb57e272cf575229322aaaa21b88837a9f64a)), closes [AB#120295](https://github.com/AB/issues/120295)
+
+# [2.21.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1...v2.21.0-rc.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* files in editor widget would download twice on click & uploading multiple files at once could mix the file ids  ([#2799](https://github.com/ReliefApplications/ems-frontend/issues/2799)) ([0dbd703](https://github.com/ReliefApplications/ems-frontend/commit/0dbd7034ff3056e4fc87a1c9b7ae24a2755b2d30)), closes [Ab#116765](https://github.com/Ab/issues/116765)
+* prevent deletion of files before sending emails from grid as quick action ([b85bfb4](https://github.com/ReliefApplications/ems-frontend/commit/b85bfb466529640ce401acc46e9e6657ce975374)), closes [AB#118682](https://github.com/AB/issues/118682)
+
+
+### Features
+
+* Allow to duplicate records when seeing form details & user can create new records ([fe411be](https://github.com/ReliefApplications/ems-frontend/commit/fe411bec00f3ffbc55ee34c0fb563f4996b8c45b)), closes [AB#118658](https://github.com/AB/issues/118658)
+* file explorer widget ([#2796](https://github.com/ReliefApplications/ems-frontend/issues/2796)) ([3b9dd07](https://github.com/ReliefApplications/ems-frontend/commit/3b9dd07c029d1bda5efff1440813bc7255192790)), closes [AB#113709](https://github.com/AB/issues/113709)
+
+## [2.20.1-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1-rc.1...v2.20.1-rc.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* some widgets using context wouldn't inject contextual data ([#2794](https://github.com/ReliefApplications/ems-frontend/issues/2794)) ([189fcc4](https://github.com/ReliefApplications/ems-frontend/commit/189fcc440f5938e98c8e32779fe014fa4e916a2b)), closes [AB#113721](https://github.com/AB/issues/113721)
+
+## [2.20.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.0...v2.20.1-rc.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* dejavu font links failling in deployed environments ([#2792](https://github.com/ReliefApplications/ems-frontend/issues/2792)) ([99c1020](https://github.com/ReliefApplications/ems-frontend/commit/99c1020f81be424302af7da5bbb17c07572b9da0)), closes [Ab#112754](https://github.com/Ab/issues/112754)
+
+# [2.20.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.0-rc.1...v2.20.0-rc.2) (2025-05-19)
+
+
+### Bug Fixes
+
+* dejavu font links failling in deployed environments ([#2792](https://github.com/ReliefApplications/ems-frontend/issues/2792)) ([99c1020](https://github.com/ReliefApplications/ems-frontend/commit/99c1020f81be424302af7da5bbb17c07572b9da0)), closes [Ab#112754](https://github.com/Ab/issues/112754)
+
+# [2.20.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.3-rc.2...v2.20.0-rc.1) (2025-05-12)
+
+
+### Features
+
+* excel export from grids that use common services graphql data  ([#2790](https://github.com/ReliefApplications/ems-frontend/issues/2790)) ([5d4e495](https://github.com/ReliefApplications/ems-frontend/commit/5d4e49502baa7fdfb819603bfbd9eb9896abd214)), closes [AB#112615](https://github.com/AB/issues/112615)
+
+## [2.19.3-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.3-rc.1...v2.19.3-rc.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* Some characters not being correctly exported by kendo in PDF / images ([#2785](https://github.com/ReliefApplications/ems-frontend/issues/2785)) ([1e3c317](https://github.com/ReliefApplications/ems-frontend/commit/1e3c317b108d15fdae96776cf5e57936822f23cd)), closes [AB#112754](https://github.com/AB/issues/112754)
+
+## [2.19.3-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.2...v2.19.3-rc.1) (2025-04-14)
+
+
+### Bug Fixes
+
+* auto reload of dashboard after button edition action not working ([99bcde9](https://github.com/ReliefApplications/ems-frontend/commit/99bcde96054de5c641010d456ec6e5c3f4411cd6)), closes [AB#112622](https://github.com/AB/issues/112622)
+
+## [2.19.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.0...v2.19.1-rc.1) (2025-04-03)
+
+
+### Bug Fixes
+
+* missing translation key for dropdownlist.noDataText ([#2782](https://github.com/ReliefApplications/ems-frontend/issues/2782)) ([22654a3](https://github.com/ReliefApplications/ems-frontend/commit/22654a3f5d3b5df28795b6748c51908f91e8cce3)), closes [AB#112154](https://github.com/AB/issues/112154)
+
 # [2.19.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0...v2.19.0-rc.1) (2025-03-20)
 
 
