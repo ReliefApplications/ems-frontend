@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EmailService } from '../../email.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { cronValidator } from '../../../../utils/validators/cron.validator';
 
 /**
  * Schedule notification configuration step.
@@ -20,7 +21,10 @@ export class ScheduleAlertComponent implements OnInit, OnDestroy {
     'schedule'
   ) as FormGroup;
   /** Schedule cron form control */
-  public scheduleCron: FormControl = new FormControl();
+  public scheduleCron: FormControl = new FormControl('', [
+    Validators.required,
+    cronValidator(),
+  ]);
 
   /**
    * Schedule notification configuration step.
@@ -43,6 +47,9 @@ export class ScheduleAlertComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('Schedule alert destroyed', this.scheduleForm);
+    console.log(
+      'Schedule alert destroyed',
+      this.scheduleForm?.get('cronValue')?.value
+    );
   }
 }
