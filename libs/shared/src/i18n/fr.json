@@ -926,6 +926,9 @@
 				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
+				"scheduler": {
+					"invalid": "Erreur! \nVeuillez saisir une valeur cron valide"
+				},
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
 				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Aller plus loin peut provoquer des erreurs.",
 				"subscribeExists": "Erreur! \n{{message}}",

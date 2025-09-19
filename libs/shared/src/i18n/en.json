@@ -926,6 +926,9 @@
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
+				"scheduler": {
+					"invalid": "Error! Please enter a valid cron value"
+				},
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
 				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
 				"subscribeExists": "Error! {{message}}",
