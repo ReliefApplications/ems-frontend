@@ -2,6 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EmailService } from '../../email.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Schedule notification configuration step.
@@ -11,7 +15,10 @@ import { cronValidator } from '../../../../utils/validators/cron.validator';
   templateUrl: './schedule-alert.component.html',
   styleUrls: ['./schedule-alert.component.scss'],
 })
-export class ScheduleAlertComponent implements OnInit, OnDestroy {
+export class ScheduleAlertComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** Flag indicating whether schedule alert is enabled. */
   schedule_alert = false;
   /** Is current cron valid */
@@ -30,11 +37,59 @@ export class ScheduleAlertComponent implements OnInit, OnDestroy {
    * Schedule notification configuration step.
    *
    *@param emailService is injecting email service to this component
+   *@param snackBar is injecting snackbar service to this component
+   *@param translate is injecting translate service to this component
    */
-  constructor(private emailService: EmailService) {}
+  constructor(
+    private emailService: EmailService,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.scheduleCron = this.scheduleForm.get('cronValue') as FormControl;
+    this.scheduleCron.setValidators([Validators.required, cronValidator()]);
+    this.scheduleCron.updateValueAndValidity();
+
+    this.scheduleCron.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.cronValid = this.scheduleCron.valid;
+        if (!this.cronValid) {
+          this.scheduleCron.setErrors({ invalid: true });
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.email.alert.scheduler.invalid',
+              {}
+            ),
+            { error: true }
+          );
+          this.emailService.disableSaveAndProceed.next(true);
+        } else {
+          this.emailService.disableSaveAndProceed.next(false);
+        }
+      });
+
+    this.scheduleForm
+      .get('scheduleEnabled')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && (!this.scheduleCron.value || !this.cronValid)) {
+          this.scheduleCron.setErrors({ invalid: true });
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.email.alert.scheduler.invalid',
+              {}
+            ),
+            { error: true }
+          );
+          this.emailService.disableSaveAndProceed.next(true);
+        } else {
+          this.emailService.disableSaveAndProceed.next(false);
+        }
+      });
   }
 
   /**
@@ -44,12 +99,5 @@ export class ScheduleAlertComponent implements OnInit, OnDestroy {
    */
   public cronIsValid(value: boolean) {
     this.cronValid = value;
-  }
-
-  ngOnDestroy() {
-    console.log(
-      'Schedule alert destroyed',
-      this.scheduleForm?.get('cronValue')?.value
-    );
   }
 }

@@ -966,6 +966,9 @@
         "noResource": "******",
         "noResourceFields": "******",
         "noSelectedFields": "******",
+        "scheduler": {
+          "invalid": "******"
+        },
         "selectChildFields": "******",
         "selectedNonEmailFields": "******",
         "subscribeExists": "****** {{message}}",
