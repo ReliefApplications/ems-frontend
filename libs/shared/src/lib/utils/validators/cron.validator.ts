@@ -14,11 +14,19 @@ const CRON_OPTIONS = {
 export const cronValidator =
   (): ValidatorFn =>
   (control: AbstractControl): ValidationErrors | null => {
-    const valid = control.value
-      ? cron.isValidCron(control.value, CRON_OPTIONS)
-      : false;
+    const value = control.value;
 
-    // Exclude specific cron expressions
+    if (!value) {
+      return { pattern: { value } };
+    }
+
+    const valid = cron.isValidCron(value, CRON_OPTIONS);
+
+    if (!valid) {
+      return { pattern: { value } };
+    }
+
+    // Exclude nonsense expressions like every 0 minutes/seconds
     const excludedExpressions = [
       '0 0/0 1/1 * *',
       '0/0 * 1/1 * *',
@@ -27,9 +35,22 @@ export const cronValidator =
       '0 undefined undefined 1/0 *',
       '0 NaN 1 undefined *',
     ];
-    if (excludedExpressions.includes(control.value)) {
-      return { pattern: { value: control.value } };
+    if (excludedExpressions.includes(value)) {
+      return { pattern: { value } };
     }
 
-    return valid ? null : { pattern: { value: control.value } };
+    // Extra validation: disallow step values of 0 in any field
+    const parts = value.trim().split(/\s+/);
+
+    for (const part of parts) {
+      if (part.includes('/')) {
+        const [, step] = part.split('/');
+        if (step === '0' || step === 'NaN' || step === 'undefined') {
+          return { pattern: { value } };
+        }
+      }
+    }
+
+    // ✅ valid cron
+    return null;
   };
