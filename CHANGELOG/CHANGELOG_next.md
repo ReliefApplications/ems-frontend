@@ -1,3 +1,10 @@
+# [2.22.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.1...v2.22.0-rc.2) (2025-09-23)
+
+
+### Bug Fixes
+
+* Custom adorners for panel questions without elements would break form edition ([d3dd7c4](https://github.com/ReliefApplications/ems-frontend/commit/d3dd7c48a120f93e83326e7e523783c0c8f7f9e3)), closes [AB#120779](https://github.com/AB/issues/120779)
+
 # [2.22.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.1...v2.22.0-rc.1) (2025-09-16)
 
 
