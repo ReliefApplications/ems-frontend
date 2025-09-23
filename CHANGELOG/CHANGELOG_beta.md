@@ -1,3 +1,15 @@
+# [2.22.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.1...v2.22.0-beta.1) (2025-09-23)
+
+
+### Bug Fixes
+
+* Custom adorners for panel questions without elements would break form edition ([d3dd7c4](https://github.com/ReliefApplications/ems-frontend/commit/d3dd7c48a120f93e83326e7e523783c0c8f7f9e3)), closes [AB#120779](https://github.com/AB/issues/120779)
+
+
+### Features
+
+* allow to replace any field in widget filters ([#2820](https://github.com/ReliefApplications/ems-frontend/issues/2820)) ([335bb57](https://github.com/ReliefApplications/ems-frontend/commit/335bb57e272cf575229322aaaa21b88837a9f64a)), closes [AB#120295](https://github.com/AB/issues/120295)
+
 # [2.17.0-beta.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.22...v2.17.0-beta.23) (2025-02-10)
 
 
