@@ -301,6 +301,115 @@ export class HtmlParserService {
   }
 
   /**
+   * Adds iteration of values within templates using for-loops. Supports data.* or aggregation.*
+   *
+   * @param html String with the content html.
+   * @param fields Context of the fields.
+   * @param fields.data Available record data for iteration
+   * @param fields.aggregation Available aggregation data for iteration
+   * @returns formatted html.
+   */
+  private replaceForLoops(
+    html: string,
+    fields: { data?: any; aggregation?: any }
+  ): string {
+    if (!html) {
+      return html;
+    }
+
+    const loopRegex =
+      /\{\{for\s+(\w+)\s+in\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
+
+    let resultHtml = html;
+    let match = loopRegex.exec(resultHtml);
+
+    // Iterate until no more loops are found
+    while (match) {
+      const [, itemVar, sourceExpr, innerTemplate] = match;
+      const sourceExprTrimmed = sourceExpr.trim();
+
+      let dataCollection: any;
+      if (sourceExprTrimmed.startsWith('data.')) {
+        dataCollection = get(
+          fields.data,
+          sourceExprTrimmed.replace(/^data\./, '')
+        );
+      } else if (sourceExprTrimmed.startsWith('aggregation.')) {
+        dataCollection = get(
+          fields.aggregation,
+          sourceExprTrimmed.replace(/^aggregation\./, '')
+        );
+      } else {
+        dataCollection = get(fields.data, sourceExprTrimmed);
+        if (dataCollection === undefined) {
+          dataCollection = get(fields.aggregation, sourceExprTrimmed);
+        }
+      }
+
+      let expandedValue = '';
+      if (Array.isArray(dataCollection)) {
+        for (const el of dataCollection) {
+          expandedValue += this.applyItemTemplate(innerTemplate, itemVar, el);
+        }
+      } else if (dataCollection && typeof dataCollection === 'object') {
+        for (const key of Object.keys(dataCollection)) {
+          expandedValue += this.applyItemTemplate(
+            innerTemplate,
+            itemVar,
+            dataCollection[key],
+            key
+          );
+        }
+      } else {
+        expandedValue = '';
+      }
+
+      resultHtml =
+        resultHtml.slice(0, match.index) +
+        expandedValue +
+        resultHtml.slice(match.index + match[0].length);
+
+      loopRegex.lastIndex = 0;
+      match = loopRegex.exec(resultHtml);
+    }
+
+    return resultHtml;
+  }
+
+  /**
+   * Replaces provided element with the item value.
+   *
+   * @param template Template string
+   * @param itemVar Item variable
+   * @param itemValue Item value
+   * @param index Index
+   * @returns Item value
+   */
+  private applyItemTemplate(
+    template: string,
+    itemVar: string,
+    itemValue: any,
+    index?: string | number
+  ): string {
+    let output = template;
+
+    const fullItemRegex = new RegExp(`\\{\\{${itemVar}\\}}`, 'g');
+    output = output.replace(fullItemRegex, () => (itemValue ?? '').toString());
+
+    const nestedRegex = new RegExp(`\\{\\{${itemVar}\\.([^}]+)\\}\\}`, 'g');
+    output = output.replace(nestedRegex, (_m, p1) => {
+      const v = get(itemValue, p1.trim());
+      return v == null ? '' : `${v}`;
+    });
+
+    if (index !== undefined) {
+      output = output.replace(/\{\{index\}\}/g, `${index}`);
+    }
+
+    return output;
+  }
+
+  /**
    * Replaces the html resource fields with the resource data.
    *
    * @param html String with the content html.
@@ -498,6 +607,10 @@ export class HtmlParserService {
         options.aggregation
       );
     }
+    formattedHtml = this.replaceForLoops(formattedHtml, {
+      data: options.data,
+      aggregation: options.aggregation,
+    });
     if (options.data) {
       formattedHtml = this.replaceRecordFields(
         formattedHtml,
