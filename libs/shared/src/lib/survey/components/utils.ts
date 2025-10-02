@@ -5,6 +5,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
+import { Apollo } from 'apollo-angular';
+import { ADD_RECORD } from '../../components/form-modal/graphql/mutations';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Build the search button for resource and resources components
@@ -216,6 +219,113 @@ export const buildAddButton = (
     }
   );
   return addButton;
+};
+
+/**
+ * Build the inline add button for resource and resources components
+ *
+ * @param question The question object
+ * @param multiselect Indicate if we need multiselect
+ * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
+ * @param apollo Apollo client
+ * @returns The button DOM element
+ */
+export const buildInlineAddButton = (
+  question: Question,
+  multiselect: boolean,
+  ngZone: NgZone,
+  document: Document,
+  apollo: Apollo
+): any => {
+  const inlineAddButton = document.createElement('button');
+  inlineAddButton.innerText = surveyLocalization.getString(
+    'oort:addInlineRecord',
+    (question.survey as SurveyModel).locale
+  );
+  inlineAddButton.className = 'sd-btn !px-3 !py-1';
+  inlineAddButton.setAttribute('data-action', 'inline-add');
+
+  if (
+    question.addInlineRecord &&
+    question.displayAsGrid &&
+    question.addRecord &&
+    question.addTemplate &&
+    !question.isReadOnly
+  ) {
+    inlineAddButton.onclick = async () => {
+      const result = await firstValueFrom(
+        apollo.mutate<{ addRecord: any }>({
+          mutation: ADD_RECORD,
+          variables: {
+            form: question.addTemplate,
+            data: {},
+            display: false,
+          },
+        })
+      );
+
+      const created = result.data?.addRecord;
+      if (!created) return;
+
+      ngZone.run(() => {
+        const createdId = created.id;
+        question.template = question.addTemplate;
+        question.draftData = {
+          ...question.draftData,
+          [createdId]: created.data || {},
+        };
+
+        if (multiselect) {
+          const newItem = {
+            value: createdId,
+            text: created.data?.[(question as any).displayField],
+          } as any;
+          question.contentQuestion.choices = [
+            newItem,
+            ...question.contentQuestion.choices,
+          ];
+          question.newCreatedRecords = question.newCreatedRecords
+            ? question.newCreatedRecords.concat(createdId)
+            : [createdId];
+          question.value = Array.isArray(question.value)
+            ? (question.value as any[]).concat(createdId)
+            : question.value
+            ? [question.value, createdId]
+            : [createdId];
+        } else {
+          const newItem = {
+            value: createdId,
+            text: created.data?.[(question as any).displayField],
+          } as any;
+          question.contentQuestion.choices = [
+            newItem,
+            ...question.contentQuestion.choices,
+          ];
+          question.newCreatedRecords = createdId;
+          question.value = createdId;
+        }
+      });
+    };
+  }
+
+  inlineAddButton.style.display =
+    question.addInlineRecord &&
+    question.displayAsGrid &&
+    question.addRecord &&
+    question.addTemplate &&
+    !question.isReadOnly
+      ? ''
+      : 'none';
+
+  question.registerFunctionOnPropertyValueChanged(
+    'readOnly',
+    (value: boolean) => {
+      inlineAddButton.style.display = value ? 'none' : '';
+    }
+  );
+
+  return inlineAddButton;
 };
 
 /**

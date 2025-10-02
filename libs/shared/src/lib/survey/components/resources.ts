@@ -26,6 +26,7 @@ import { QuestionResource } from '../types';
 import {
   buildAddButton,
   buildSearchButton,
+  buildInlineAddButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
@@ -164,6 +165,13 @@ export const init = (
     }
   };
 
+  const visibleIfResourceAndDisplayGridAndAddRecord = (obj: any) => {
+    if (!obj || !obj.resource || !obj.displayAsGrid || !obj.addRecord) {
+      return false;
+    }
+    return true;
+  };
+
   const component = {
     name: 'resources',
     title: 'Resources',
@@ -256,7 +264,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
@@ -265,6 +273,14 @@ export const init = (
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
         visibleIndex: 2,
+      });
+      Serializer.addProperty('resources', {
+        name: 'addInlineRecord:boolean',
+        displayName: 'Add inline records',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayAsGrid', 'addRecord'],
+        visibleIf: visibleIfResourceAndDisplayGridAndAddRecord,
+        visibleIndex: 4,
       });
       Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
@@ -557,16 +573,64 @@ export const init = (
             );
             actionsButtons.appendChild(addBtn);
 
+            const inlineAddBtn = buildInlineAddButton(
+              question,
+              true,
+              ngZone,
+              document,
+              apollo
+            );
+            actionsButtons.appendChild(inlineAddBtn);
+
+            question.registerFunctionOnPropertyValueChanged(
+              'addInlineRecord',
+              () => {
+                inlineAddBtn.style.display =
+                  question.addInlineRecord &&
+                  question.displayAsGrid &&
+                  question.addRecord &&
+                  question.addTemplate &&
+                  !question.isReadOnly
+                    ? ''
+                    : 'none';
+              }
+            );
+            inlineAddBtn.style.display =
+              question.addInlineRecord &&
+              question.displayAsGrid &&
+              question.addRecord &&
+              question.addTemplate &&
+              !question.isReadOnly
+                ? ''
+                : 'none';
+
             // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
             question.registerFunctionOnPropertyValueChanged(
               'addTemplate',
               () => {
                 addBtn.style.display =
                   question.addRecord && question.addTemplate ? '' : 'none';
+                inlineAddBtn.style.display =
+                  question.addInlineRecord &&
+                  question.displayAsGrid &&
+                  question.addRecord &&
+                  question.addTemplate &&
+                  !question.isReadOnly
+                    ? ''
+                    : 'none';
               }
             );
             question.registerFunctionOnPropertyValueChanged('addRecord', () => {
               addBtn.style.display =
+                question.addRecord &&
+                question.addTemplate &&
+                !question.isReadOnly
+                  ? ''
+                  : 'none';
+
+              inlineAddBtn.style.display =
+                question.addInlineRecord &&
+                question.displayAsGrid &&
                 question.addRecord &&
                 question.addTemplate &&
                 !question.isReadOnly
@@ -581,6 +645,19 @@ export const init = (
       question.registerFunctionOnPropertyValueChanged('resource', () => {
         if (question.resource && question.canSearch) {
           searchBtn.style.display = 'block';
+        }
+        const inlineAddBtn = parentElement.querySelector(
+          '#actionsButtons button[data-action="inline-add"]'
+        );
+        if (inlineAddBtn) {
+          (inlineAddBtn as HTMLButtonElement).style.display =
+            question.addInlineRecord &&
+            question.displayAsGrid &&
+            question.addRecord &&
+            question.addTemplate &&
+            !question.isReadOnly
+              ? ''
+              : 'none';
         }
       });
       question.registerFunctionOnPropertyValueChanged('canSearch', () => {
@@ -617,6 +694,19 @@ export const init = (
           if (question.canSearch) {
             searchBtn.style.display = 'block';
           }
+        }
+        const inlineAddBtn = parentElement.querySelector(
+          '#actionsButtons button[data-action="inline-add"]'
+        );
+        if (inlineAddBtn) {
+          (inlineAddBtn as HTMLButtonElement).style.display =
+            question.addInlineRecord &&
+            question.displayAsGrid &&
+            question.addRecord &&
+            question.addTemplate &&
+            !question.isReadOnly
+              ? ''
+              : 'none';
         }
       });
       question.registerFunctionOnPropertiesValueChanged(
@@ -680,6 +770,9 @@ export const init = (
     setGridInputs(grid.instance, question);
     question.survey?.onValueChanged.add((_: any, options: any) => {
       if (options.name === question.name) {
+        if ((grid.instance as CoreGridComponent).hasChanges) {
+          return;
+        }
         setGridInputs(grid.instance, question);
       }
     });

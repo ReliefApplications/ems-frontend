@@ -70,6 +70,7 @@ export interface QuestionResource
   displayField: null | string;
   relatedName?: string;
   addRecord?: boolean;
+  addInlineRecord?: boolean;
   canSearch?: boolean;
   addTemplate?: any;
   placeholder?: string;

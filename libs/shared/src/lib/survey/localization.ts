@@ -10,6 +10,13 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     },
   },
   {
+    key: 'addInlineRecord',
+    locales: {
+      en: 'Add inline record',
+      fr: 'Ajouter un enregistrement en ligne',
+    },
+  },
+  {
     key: 'fileLimitations',
     locales: {
       en: (question: any) => {
