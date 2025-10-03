@@ -1,0 +1,59 @@
+<kendo-grid
+  [loading]="loading"
+  [data]="data"
+  [pageable]="pagerSettings"
+  [pageSize]="pageSize"
+  [skip]="skip"
+  (pageChange)="pageChange.emit($event)"
+  [sortable]="true"
+  [sort]="sort"
+  (sortChange)="sortChange.emit($event)"
+  (cellClick)="onCellClick($event)"
+>
+  <kendo-grid-column
+    field="filename"
+    [title]="'components.widget.fileExplorer.fields.name.label' | translate"
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="documenttypename"
+    [title]="
+      'components.widget.fileExplorer.fields.documentType.label' | translate
+    "
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="modifiedbyuser"
+    [title]="
+      'components.widget.fileExplorer.fields.lastUpdatedBy.label' | translate
+    "
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="createddate"
+    [title]="
+      'components.widget.fileExplorer.fields.createdOn.label' | translate
+    "
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.createddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="modifieddate"
+    [title]="
+      'components.widget.fileExplorer.fields.lastUpdatedOn.label' | translate
+    "
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.modifieddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
+  </kendo-grid-column>
+  <ng-template kendoGridNoRecordsTemplate>
+    <shared-empty
+      class="m-auto"
+      icon="draft"
+      [title]="'components.widget.fileExplorer.empty.files' | translate"
+    ></shared-empty>
+  </ng-template>
+</kendo-grid>

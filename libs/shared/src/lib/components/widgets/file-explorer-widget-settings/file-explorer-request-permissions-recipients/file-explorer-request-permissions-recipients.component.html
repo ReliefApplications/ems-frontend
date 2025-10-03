@@ -1,0 +1,48 @@
+<!-- Input new emails -->
+<div uiFormFieldDirective>
+  <label class="flex items-center gap-1"
+    >{{
+      'components.widget.fileExplorer.accessRequestForm.fields.recipients.label'
+        | translate
+    }}<!-- Tooltip -->
+    <ui-icon
+      class="cursor-help self-center"
+      icon="info_outline"
+      variant="grey"
+      [size]="18"
+      [uiTooltip]="
+        'components.widget.fileExplorer.accessRequestForm.fields.recipients.tooltip'
+          | translate
+      "
+    ></ui-icon
+  ></label>
+  <ui-icon
+    icon="info_outline"
+    class="cursor-help"
+    variant="grey"
+    [uiTooltip]="'components.select.distribution.emailError' | translate"
+    uiSuffix
+  ></ui-icon>
+  <input
+    #emailInput
+    (keyup.enter)="addEmail(emailInput)"
+    autocomplete="off"
+    aria-autocomplete="none"
+    type="text"
+    [placeholder]="
+      'components.widget.fileExplorer.accessRequestForm.fields.recipients.placeholder'
+        | translate
+    "
+  />
+</div>
+<!-- Recipients list -->
+<div uiChipList class="mb-4">
+  <ui-chip
+    variant="primary"
+    class="text-xl px-1"
+    [removable]="true"
+    (removed)="removeEmail(chipIndex)"
+    *ngFor="let email of value; let chipIndex = index"
+    >{{ email }}</ui-chip
+  >
+</div>

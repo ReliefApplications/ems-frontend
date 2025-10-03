@@ -1,0 +1,68 @@
+<ui-tabs class="flex flex-col h-full grow" [vertical]="true">
+  <!-- Folder structure -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="tab"
+        [size]="24"
+        [uiTooltip]="'components.widget.fileExplorer.folders' | translate"
+      >
+      </ui-icon>
+      <span>{{ 'components.widget.fileExplorer.folders' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-file-explorer-folders-tab
+        [formGroup]="widgetFormGroup"
+      ></shared-file-explorer-folders-tab>
+    </ng-template>
+  </ui-tab>
+  <!-- Form binding-->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="sync_alt"
+        [size]="24"
+        [uiTooltip]="'components.widget.fileExplorer.formBinding.title' | translate"
+      >
+      </ui-icon>
+      <span>{{ 'components.widget.fileExplorer.formBinding.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-file-explorer-form-tab
+        [formGroup]="widgetFormGroup"
+      ></shared-file-explorer-form-tab>
+    </ng-template>
+  </ui-tab>
+  <!-- Display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-display-settings [formGroup]="widgetFormGroup">
+      </shared-display-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="filter_list"
+        [size]="24"
+        [uiTooltip]="'models.dashboard.contextFilter' | translate"
+      ></ui-icon>
+      <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-contextual-filters-settings
+        [form]="widgetFormGroup"
+        [useHistoricalDate]="false"
+      ></shared-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>

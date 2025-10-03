@@ -299,6 +299,11 @@ export class EditActionButtonModalComponent
               template: [get(data, 'editRecord.template', '')],
               autoReload: [get(data, 'editRecord.autoReload', false)],
             }),
+            cloneRecord: this.fb.group({
+              enabled: [!!get(data, 'cloneRecord', false)],
+              template: [get(data, 'cloneRecord.template', '')],
+              autoReload: [get(data, 'cloneRecord.autoReload', false)],
+            }),
             addRecord: this.fb.group(
               {
                 enabled: [!!get(data, 'addRecord', false)],
@@ -422,6 +427,7 @@ export class EditActionButtonModalComponent
     const actionControls = [
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
+      form.get('action.cloneRecord.enabled'),
       form.get('action.addRecord.enabled'),
       form.get('action.subscribeToNotification.enabled'),
       form.get('action.unsubscribeFromNotification.enabled'),
@@ -653,6 +659,13 @@ export class EditActionButtonModalComponent
           autoReload: this.form.get('action.editRecord.autoReload')?.value,
         },
       }),
+      // If cloneRecord enabled
+      ...(this.form.get('action.cloneRecord.enabled')?.value && {
+        cloneRecord: {
+          template: this.form.get('action.cloneRecord.template')?.value,
+          autoReload: this.form.get('action.cloneRecord.autoReload')?.value,
+        },
+      }),
       // If addRecord enabled
       ...(this.form.get('action.addRecord.enabled')?.value && {
         addRecord: {
@@ -737,6 +750,7 @@ export class EditActionButtonModalComponent
       const atLeastOneEnabled =
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
+        actions.cloneRecord?.enabled ||
         actions.addRecord?.enabled ||
         actions.subscribeToNotification?.enabled ||
         actions.unsubscribeFromNotification?.enabled ||

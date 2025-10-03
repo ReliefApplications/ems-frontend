@@ -197,9 +197,9 @@ export class FormModalComponent
         content: this.translate.instant(
           'components.form.update.confirmMessage',
           {
-            action: this.translate.instant(
-              this.data.recordId ? 'common.update' : 'common.create'
-            ),
+            action: this.translate
+              .instant(this.data.recordId ? 'common.update' : 'common.creation')
+              .toLowerCase(),
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),

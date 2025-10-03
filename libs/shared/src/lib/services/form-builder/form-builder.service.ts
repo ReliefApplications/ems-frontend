@@ -5,7 +5,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { isNil } from 'lodash';
 import get from 'lodash/get';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import {
   Model,
   Question,
@@ -22,6 +22,7 @@ import {
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
+import { DocumentManagementService } from '../document-management/document-management.service';
 
 /**
  * Shared form builder service.
@@ -41,6 +42,7 @@ export class FormBuilderService {
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
    * @param injector Angular injector
+   * @param documentManagementService Document management service
    * @param environment Environment
    */
   constructor(
@@ -50,6 +52,7 @@ export class FormBuilderService {
     private restService: RestService,
     private formHelpersService: FormHelpersService,
     private injector: Injector,
+    private documentManagementService: DocumentManagementService,
     @Inject('environment') private environment: any
   ) {}
 
@@ -339,9 +342,16 @@ export class FormBuilderService {
       }
     } else {
       // Using document management
-      const token = localStorage.getItem('access_token') as string;
-      const url = `${this.environment.csApiUrl}/documents/drives/${options.content.driveId}/items/${options.content.itemId}/content`;
-      buildRequest(token, url);
+      firstValueFrom(
+        this.documentManagementService.getDocumentDriveId(
+          options.content.itemId
+        )
+      ).then((driveId) => {
+        options.content.driveId = driveId;
+        const token = localStorage.getItem('access_token') as string;
+        const url = `${this.environment.csApiUrl}/documents/drives/${options.content.driveId}/items/${options.content.itemId}/content`;
+        buildRequest(token, url);
+      });
     }
   }
 

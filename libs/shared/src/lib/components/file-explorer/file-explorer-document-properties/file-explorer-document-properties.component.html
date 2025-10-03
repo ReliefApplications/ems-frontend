@@ -1,0 +1,248 @@
+<div *ngIf="loading" class="h-full flex flex-col">
+  <ui-spinner class="m-auto block"></ui-spinner>
+</div>
+<div
+  class="flex flex-col gap-3 p-2 h-full overflow-auto"
+  *ngIf="!loading && document"
+>
+  <shared-file-explorer-document-toolbar [document]="document"></shared-file-explorer-document-toolbar>
+  <!-- Filename -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.filename.label' | translate,
+        value: document.filename
+      }
+    "
+  >
+  </ng-container>
+  <!-- Confidentiality -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.confidentiality.label' | translate,
+        value: document.informationconfidentialityname
+      }
+    "
+  ></ng-container>
+  <!-- File version -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.version.label' | translate,
+        value: document.version
+      }
+    "
+  ></ng-container>
+  <!-- Created by -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.createdBy.label' | translate,
+        value: document.createdbyuser
+      }
+    "
+  ></ng-container>
+  <!-- Created on -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.createdOn.label' | translate,
+        value: document.createddate | date : 'yyyy-MM-dd HH:mm'
+      }
+    "
+  ></ng-container>
+  <!-- Last updated by -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.lastUpdatedBy.label' | translate,
+        value: document.modifiedbyuser
+      }
+    "
+  ></ng-container>
+  <!-- Last updated on -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.lastUpdatedOn.label' | translate,
+        value: document.modifieddate | date : 'yyyy-MM-dd HH:mm'
+      }
+    "
+  ></ng-container>
+  <!-- File size -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.size.label' | translate,
+        value: document.size
+      }
+    "
+  ></ng-container>
+  <!-- Occurrence -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.occurrence.label' | translate,
+        value: document.occurrence
+      }
+    "
+  ></ng-container>
+  <!-- Occurrence type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.occurrenceType.label' | translate,
+        value: document.occurrencetype
+      }
+    "
+  ></ng-container>
+  <!-- Document type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.documentType.label' | translate,
+        value: document.documenttypename
+      }
+    "
+  ></ng-container>
+  <!-- IMS function -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.imsFunction.label' | translate,
+        value: document.imsfunctionname
+      }
+    "
+  ></ng-container>
+  <!-- IMS role -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.imsRole.label' | translate,
+        value: document.documentrolename
+      }
+    "
+  ></ng-container>
+  <!-- Document category -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.documentCategory.label' | translate,
+        value: document.documentcategoryname
+      }
+    "
+  ></ng-container>
+  <!-- Region -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.region.label' | translate,
+        value: document.region
+      }
+    "
+  ></ng-container>
+  <!-- Country -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.country.label' | translate,
+        value: document.country
+      }
+    "
+  ></ng-container>
+  <!-- Hazard -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.hazard.label' | translate,
+        value: document.hazard
+      }
+    "
+  ></ng-container>
+  <!-- Syndrome -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.syndrome.label' | translate,
+        value: document.syndrome
+      }
+    "
+  ></ng-container>
+  <!-- Aetiology -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.aetiology.label' | translate,
+        value: document.aetiology
+      }
+    "
+  ></ng-container>
+  <!-- Disease condition -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.diseaseCondition.label' | translate,
+        value: document.diseasecondition
+      }
+    "
+  ></ng-container>
+  <!-- Language -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.language.label' | translate,
+        value: document.languagename
+      }
+    "
+  ></ng-container>
+  <!-- Source of information - type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.informationSource.label' | translate,
+        value: document.sourceofinformationname
+      }
+    "
+  ></ng-container>
+  <!-- IHR communication -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'components.widget.fileExplorer.fields.ihrCommunication.label' | translate,
+        value: document.ihrcommunicationname
+      }
+    "
+  ></ng-container>
+</div>
+
+<!-- Property template -->
+<ng-template #propertyTmpl let-label="label" let-value="value">
+  <div class="flex flex-row gap-1">
+    <span class="text-sm font-semibold w-36 flex-shrink-0">{{ label }} :</span>
+    <span class="text-sm">{{ value }}</span>
+  </div>
+</ng-template>

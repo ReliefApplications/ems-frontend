@@ -121,5 +121,12 @@
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-tabs>
+    <!-- File explorer -->
+    <shared-file-explorer-widget
+      *ngSwitchCase="'file-explorer'"
+      #widgetContent
+      [settings]="widget.settings"
+      class="flex-1 overflow-hidden gridster-item-content"
+    ></shared-file-explorer-widget>
   </ng-container>
 </div>

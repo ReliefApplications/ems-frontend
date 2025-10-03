@@ -34,6 +34,11 @@ export type ActionButton = {
     template?: string;
     autoReload?: boolean;
   };
+  // Clone Record
+  cloneRecord?: {
+    template?: string;
+    autoReload?: boolean;
+  };
   // Add Record
   addRecord?: {
     resource?: string;

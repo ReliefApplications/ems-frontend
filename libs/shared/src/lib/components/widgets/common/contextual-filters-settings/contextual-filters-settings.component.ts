@@ -25,10 +25,10 @@ import { AsyncMonacoEditorDirective } from '../../../../directives/async-monaco-
   styleUrls: ['./contextual-filters-settings.component.scss'],
 })
 export class ContextualFiltersSettingsComponent implements OnDestroy {
-  /**
-   * Form group
-   */
+  /** Form group */
   @Input() form!: FormGroup;
+  /** Use historical date input */
+  @Input() useHistoricalDate = true;
   /** Timeout to init editor */
   private initEditorTimeoutListener!: NodeJS.Timeout;
 

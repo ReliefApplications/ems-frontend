@@ -27,11 +27,11 @@ steps:
 
 - script: |
     npx nx run front-office:build:azure-dev
-    npx nx run back-office:build:azure-dev
-  displayName: 'build the apps'
+  displayName: 'Build front-office'
 
-# npx nx run web-widgets:build:azure-dev
-# node .scripts/build-widgets.js
+- script: |
+    npx nx run back-office:build:azure-dev
+  displayName: 'Build back-office'
 
 - task: ArchiveFiles@2
   inputs:

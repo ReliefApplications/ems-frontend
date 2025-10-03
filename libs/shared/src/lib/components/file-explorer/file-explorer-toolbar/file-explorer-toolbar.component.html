@@ -1,0 +1,130 @@
+<div class="flex flex-row gap-2 items-center">
+  <!-- Change display mode -->
+  <div class="flex flex-row">
+    <ui-button
+      [isIcon]="true"
+      icon="grid_view"
+      [category]="view === 'grid' ? 'secondary' : 'primary'"
+      [variant]="view === 'grid' ? 'primary' : 'grey'"
+      (click)="onChangeView('grid')"
+      [uiTooltip]="
+        'components.widget.fileExplorer.actions.viewAsGrid' | translate
+      "
+    ></ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="view_list"
+      [category]="view === 'list' ? 'secondary' : 'primary'"
+      [variant]="view === 'list' ? 'primary' : 'grey'"
+      (click)="onChangeView('list')"
+      [uiTooltip]="
+        'components.widget.fileExplorer.actions.viewAsList' | translate
+      "
+    ></ui-button>
+  </div>
+  <!-- Searchbar -->
+  <div uiFormFieldDirective [defaultMargin]="false" class="max-sm:flex-auto">
+    <ui-icon icon="search" uiPrefix></ui-icon>
+    <input
+      id="exampleSelect"
+      type="text"
+      [formControl]="searchControl"
+      [placeholder]="'common.placeholder.search' | translate"
+      class="w-64 relative flex py-0.5 px-2rounded-md border-0 items-center"
+    />
+    <ui-button
+      *ngIf="searchControl.value"
+      uiSuffix
+      size="small"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      uiSuffix
+      (click)="searchControl.setValue('')"
+      [uiTooltip]="'common.clear' | translate"
+    ></ui-button>
+  </div>
+  <!-- Sort -->
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <ng-template #labelTmpl>{{ 'common.sortBy' | translate }}</ng-template>
+    <ui-select-menu
+      (selectedOption)="onSortChange($any($event))"
+      [customTemplate]="{
+        template: labelTmpl,
+        context: null
+      }"
+    >
+      <ui-select-option
+        value="filename"
+        [selected]="sort[0].field === 'filename'"
+        >{{
+          'components.widget.fileExplorer.fields.name.label' | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="documenttypename"
+        [selected]="sort[0].field === 'documenttypename'"
+        >{{
+          'components.widget.fileExplorer.fields.documentType.label' | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="modifiedbyuser"
+        [selected]="sort[0].field === 'modifiedbyuser'"
+        >{{
+          'components.widget.fileExplorer.fields.lastUpdatedBy.label'
+            | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="createddate"
+        [selected]="sort[0].field === 'createddate'"
+        >{{
+          'components.widget.fileExplorer.fields.createdOn.label' | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="modifieddate"
+        [selected]="sort[0].field === 'modifieddate'"
+        >{{
+          'components.widget.fileExplorer.fields.lastUpdatedOn.label'
+            | translate
+        }}</ui-select-option
+      >
+    </ui-select-menu>
+    <ui-button
+      *ngIf="sort[0]?.dir"
+      [isIcon]="true"
+      [icon]="sort[0].dir === 'asc' ? 'arrow_upward' : 'arrow_downward'"
+      uiPrefix
+      size="small"
+      (click)="onSortDirChange()"
+      [uiTooltip]="
+        (sort[0].dir === 'asc' ? 'common.asc' : 'common.desc') | translate
+      "
+    ></ui-button>
+  </div>
+  <!-- Upload -->
+  <ng-container *ngIf="form">
+    <ui-button
+      class="ml-auto"
+      *ngIf="form.canCreateRecords"
+      icon="upload"
+      [loading]="uploading"
+      [disabled]="uploading"
+      (click)="onUpload()"
+      >{{
+        'components.widget.fileExplorer.actions.upload' | translate
+      }}</ui-button
+    >
+    <ui-button
+      class="ml-auto"
+      *ngIf="!form.canCreateRecords"
+      icon="admin_panel_settings"
+      (click)="onRequestAccess()"
+      >{{
+        'components.widget.fileExplorer.actions.requestPermission' | translate
+      }}</ui-button
+    >
+  </ng-container>
+</div>

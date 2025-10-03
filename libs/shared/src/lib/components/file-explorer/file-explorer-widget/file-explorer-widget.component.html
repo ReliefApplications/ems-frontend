@@ -1,0 +1,90 @@
+<div class="flex flex-col gap-2 h-full pt-2">
+  <!-- Toolbar -->
+  <shared-file-explorer-toolbar
+    [view]="view"
+    [sort]="sort"
+    [formId]="settings.template"
+  ></shared-file-explorer-toolbar>
+  <!-- Content -->
+  <kendo-splitter class="!flex-1 overflow-hidden">
+    <!-- Navigation through folders -->
+    <kendo-splitter-pane
+      *ngIf="settings.tags?.length > 0"
+      [collapsible]="true"
+      [collapsed]="false"
+      size="30%"
+      [scrollable]="false"
+    >
+      <div class="h-full">
+        <shared-file-explorer-treeview
+          [tags]="settings.tags"
+          [selectedTags]="selectedTags"
+        ></shared-file-explorer-treeview>
+      </div>
+    </kendo-splitter-pane>
+
+    <!-- Grid or List -->
+    <kendo-splitter-pane [scrollable]="false">
+      <div class="h-full flex flex-col">
+        <shared-file-explorer-breadcrumb
+          class="flex-shrink-0 h-8"
+          [selectedTags]="selectedTags"
+        ></shared-file-explorer-breadcrumb>
+        <shared-file-explorer-table
+          *ngIf="view === 'grid'"
+          [loading]="loading"
+          [gridData]="documents"
+          [total]="total"
+          [skip]="skip"
+          [sort]="sort"
+          (pageChange)="onPageChange($event)"
+          (sortChange)="onSortChange($event)"
+          (itemClick)="onItemClick($event)"
+          class="flex h-[calc(100%-32px)] w-full"
+        ></shared-file-explorer-table>
+        <shared-file-explorer-list
+          *ngIf="view === 'list'"
+          [loading]="loading"
+          [listData]="documents"
+          [total]="total"
+          [skip]="skip"
+          (pageChange)="onPageChange($event)"
+          (itemClick)="onItemClick($event)"
+          class="flex-1 w-full overflow-hidden"
+        ></shared-file-explorer-list>
+      </div>
+    </kendo-splitter-pane>
+
+    <!-- Document details -->
+    <kendo-splitter-pane
+      *ngIf="selectedDocumentId"
+      [collapsible]="true"
+      [collapsed]="false"
+      size="50%"
+      [scrollable]="false"
+    >
+      <div class="h-full">
+        <shared-file-explorer-document-properties
+          [documentId]="selectedDocumentId"
+        ></shared-file-explorer-document-properties>
+      </div>
+    </kendo-splitter-pane>
+  </kendo-splitter>
+</div>
+
+<!-- Header template -->
+<ng-template #headerTemplate>
+  <div class="overflow-hidden flex-1 flex gap-1 items-center">
+    <!-- Widget title -->
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+    <!-- Widget tooltip -->
+    <span
+      *ngIf="settings.widgetDisplay?.tooltip"
+      class="widget-tooltip"
+      [title]="settings.widgetDisplay.tooltip"
+      >?</span
+    >
+  </div>
+</ng-template>
