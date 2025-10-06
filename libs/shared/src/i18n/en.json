@@ -2700,6 +2700,7 @@
 							"template": "Select a resource template for addition of new records"
 						}
 					},
+					"afterCloneNavigateTo": "After clone, navigate to",
 					"autoReload": "Auto reload dashboard on save",
 					"cloneRecord": {
 						"text": "Clone record",

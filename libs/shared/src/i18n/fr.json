@@ -2703,6 +2703,7 @@
 							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
 						}
 					},
+					"afterCloneNavigateTo": "Après la duplication, naviguer vers",
 					"autoReload": "Recharger le tableau de bord après la sauvegarde",
 					"cloneRecord": {
 						"text": "Dupliquer l'enregistrement actuel",

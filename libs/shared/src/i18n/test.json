@@ -2700,6 +2700,7 @@
 							"template": "******"
 						}
 					},
+					"afterCloneNavigateTo": "******",
 					"autoReload": "******",
 					"cloneRecord": {
 						"text": "******",

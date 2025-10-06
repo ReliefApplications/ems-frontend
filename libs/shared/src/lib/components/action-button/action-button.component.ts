@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Inject,
+} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
@@ -55,10 +62,15 @@ export class ActionButtonComponent
   public contextId!: string;
   /** Email notification, for subscribe & unsubscribe actions */
   private emailNotification?: EmailNotification;
+  /** Current environment */
+  private environment: any;
 
   /** @returns Should hide button */
   get showButton(): boolean {
     if (this.actionButton.editRecord && !this.contextId) {
+      return false;
+    }
+    if (this.actionButton.cloneRecord && !this.contextId) {
       return false;
     }
     if (this.actionButton.subscribeToNotification) {
@@ -81,6 +93,7 @@ export class ActionButtonComponent
   /**
    * Dashboard action button component.
    *
+   * @param environment Current environment
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
@@ -96,6 +109,7 @@ export class ActionButtonComponent
    * @param contextService Shared context service
    */
   constructor(
+    @Inject('environment') environment: any,
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
@@ -111,6 +125,7 @@ export class ActionButtonComponent
     private contextService: ContextService
   ) {
     super();
+    this.environment = environment;
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
       next: ({ id }) => {
         this.contextId = id;
@@ -342,6 +357,7 @@ export class ActionButtonComponent
           disableClose: true,
           data: {
             ...(this.actionButton.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
+            ...(this.actionButton.cloneRecord && { recordId: this.contextId }), // button must be hidden in html if cloneRecord is enabled & no contextId
             ...(template && { template }),
             actionButtonCtx: true,
             prefillData,
@@ -419,8 +435,44 @@ export class ActionButtonComponent
                   callback();
                 }
               } else {
-                // Edit record action
-                callback();
+                // Edit or Clone record action
+                const isClone = !!this.actionButton.cloneRecord;
+                if (
+                  isClone &&
+                  this.actionButton.cloneRecord?.onSave?.navigateTo?.enabled
+                ) {
+                  const nav = this.actionButton.cloneRecord.onSave.navigateTo;
+                  if (nav.targetPage?.enabled && nav.targetPage.pageUrl) {
+                    let fullUrl = this.getPageUrl(
+                      nav.targetPage.pageUrl as string
+                    );
+                    if (nav.targetPage.field && value?.data) {
+                      const fieldPath = nav.targetPage.field;
+                      const paramValue = get(value.data, fieldPath);
+                      fullUrl = `${fullUrl}?${fieldPath}=${paramValue}`;
+                    }
+                    if (fullUrl.startsWith('./'))
+                      fullUrl = fullUrl.substring(1);
+                    this.router.navigateByUrl(fullUrl);
+                  } else if (nav.targetUrl?.enabled && nav.targetUrl.href) {
+                    const href = this.contextService.replaceContext(
+                      this.dataTemplateService.renderLink(nav.targetUrl.href)
+                    );
+                    if (nav.targetUrl.openInNewTab) {
+                      window.open(href, '_blank');
+                    } else {
+                      if (href?.startsWith('./')) {
+                        this.router.navigateByUrl(href.substring(1));
+                      } else {
+                        window.location.href = href;
+                      }
+                    }
+                  } else {
+                    callback();
+                  }
+                } else {
+                  callback();
+                }
               }
             }
           });
@@ -555,5 +607,17 @@ export class ActionButtonComponent
           this.emailNotification = data.emailNotification;
         },
       });
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
   }
 }
