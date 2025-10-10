@@ -40,14 +40,11 @@ export type ActionButton = {
     autoReload?: boolean;
     onSave?: {
       navigateTo?: {
-        enabled?: boolean;
         targetUrl?: {
-          enabled?: boolean;
           href?: string;
           openInNewTab?: boolean;
         };
         targetPage?: {
-          enabled?: boolean;
           pageUrl?: string;
           field?: string;
         };

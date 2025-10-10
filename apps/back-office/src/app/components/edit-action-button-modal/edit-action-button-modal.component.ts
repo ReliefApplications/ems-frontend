@@ -320,18 +320,24 @@ export class EditActionButtonModalComponent
               onSave: this.fb.group({
                 navigateTo: this.fb.group(
                   {
+                    // Enabled if one of the two navigateTo options is set
                     enabled: [
                       !!get(
                         data,
-                        'cloneRecord.onSave.navigateTo.enabled',
+                        'cloneRecord.onSave.navigateTo.targetUrl.href',
                         false
-                      ),
+                      ) ||
+                        !!get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                          false
+                        ),
                     ],
                     targetUrl: this.fb.group({
                       enabled: [
                         !!get(
                           data,
-                          'cloneRecord.onSave.navigateTo.targetUrl.enabled',
+                          'cloneRecord.onSave.navigateTo.targetUrl.href',
                           false
                         ),
                       ],
@@ -354,7 +360,7 @@ export class EditActionButtonModalComponent
                       enabled: [
                         !!get(
                           data,
-                          'cloneRecord.onSave.navigateTo.targetPage.enabled',
+                          'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
                           false
                         ),
                       ],
@@ -497,8 +503,9 @@ export class EditActionButtonModalComponent
       ),
     });
 
-    // Setting up mutual exclusivity for action controls and navigateTo controls
-    const actionControls = [
+    // Set up mutual exclusivity
+    // Between action controls
+    this.setupMutualExclusivity([
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.cloneRecord.enabled'),
@@ -506,18 +513,17 @@ export class EditActionButtonModalComponent
       form.get('action.subscribeToNotification.enabled'),
       form.get('action.unsubscribeFromNotification.enabled'),
       form.get('action.sendNotification.enabled'),
-    ];
-
-    const navigateToControls = [
+    ] as AbstractControl[]);
+    // Between navigateTo controls
+    this.setupMutualExclusivity([
       form.get('action.navigateTo.previousPage'),
       form.get('action.navigateTo.targetUrl.enabled'),
+    ] as AbstractControl[]);
+    // Between navigateTo controls of clone record action
+    this.setupMutualExclusivity([
+      form.get('action.cloneRecord.onSave.navigateTo.targetPage.enabled'),
       form.get('action.cloneRecord.onSave.navigateTo.targetUrl.enabled'),
-    ];
-
-    // Apply the utility function to both sets of controls
-    this.setupMutualExclusivity(actionControls as AbstractControl[]);
-    this.setupMutualExclusivity(navigateToControls as AbstractControl[]);
-
+    ] as AbstractControl[]);
     return form;
   };
 
@@ -750,7 +756,39 @@ export class EditActionButtonModalComponent
         cloneRecord: {
           template: this.form.get('action.cloneRecord.template')?.value,
           autoReload: this.form.get('action.cloneRecord.autoReload')?.value,
-          onSave: this.form.get('action.cloneRecord.onSave')?.value,
+          onSave: {
+            ...(this.form.get('action.cloneRecord.onSave.navigateTo.enabled')
+              ?.value && {
+              navigateTo: {
+                // If targetPage enabled
+                ...(this.form.get(
+                  'action.cloneRecord.onSave.navigateTo.targetPage.enabled'
+                )?.value && {
+                  targetPage: {
+                    pageUrl: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetPage.pageUrl'
+                    )?.value,
+                    field: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetPage.field'
+                    )?.value,
+                  },
+                }),
+                // If targetUrl enabled
+                ...(this.form.get(
+                  'action.cloneRecord.onSave.navigateTo.targetUrl.enabled'
+                )?.value && {
+                  targetUrl: {
+                    href: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetUrl.href'
+                    )?.value,
+                    openInNewTab: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetUrl.openInNewTab'
+                    )?.value,
+                  },
+                }),
+              },
+            }),
+          },
         },
       }),
       // If addRecord enabled

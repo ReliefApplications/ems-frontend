@@ -316,6 +316,7 @@ export class ActionButtonComponent
     // Prefill data for addRecord & cloneRecord
     const loadPrefillData$ = () => {
       if (this.actionButton.cloneRecord && this.contextId) {
+        console.log('prepare to clone');
         return this.apollo
           .query<RecordQueryResponse>({
             query: GET_RECORD_BY_ID,
@@ -356,8 +357,7 @@ export class ActionButtonComponent
         const dialogRef = this.dialog.open(FormModalComponent, {
           disableClose: true,
           data: {
-            ...(this.actionButton.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
-            ...(this.actionButton.cloneRecord && { recordId: this.contextId }), // button must be hidden in html if cloneRecord is enabled & no contextId
+            ...(this.actionButton.editRecord && { recordId: this.contextId }), // Modal will open current record
             ...(template && { template }),
             actionButtonCtx: true,
             prefillData,
@@ -436,29 +436,35 @@ export class ActionButtonComponent
                 }
               } else {
                 // Edit or Clone record action
-                const isClone = !!this.actionButton.cloneRecord;
-                if (
-                  isClone &&
-                  this.actionButton.cloneRecord?.onSave?.navigateTo?.enabled
-                ) {
-                  const nav = this.actionButton.cloneRecord.onSave.navigateTo;
-                  if (nav.targetPage?.enabled && nav.targetPage.pageUrl) {
+                if (this.actionButton.cloneRecord) {
+                  // Clone action
+                  const navigateTo =
+                    this.actionButton.cloneRecord.onSave?.navigateTo;
+                  if (navigateTo?.targetPage && navigateTo.targetPage.pageUrl) {
+                    // Navigate to page in app builder
                     let fullUrl = this.getPageUrl(
-                      nav.targetPage.pageUrl as string
+                      navigateTo.targetPage.pageUrl as string
                     );
-                    if (nav.targetPage.field && value?.data) {
-                      const fieldPath = nav.targetPage.field;
+                    if (navigateTo.targetPage.field && value?.data) {
+                      // Add query parameter
+                      const fieldPath = navigateTo.targetPage.field;
                       const paramValue = get(value.data, fieldPath);
                       fullUrl = `${fullUrl}?${fieldPath}=${paramValue}`;
                     }
-                    if (fullUrl.startsWith('./'))
-                      fullUrl = fullUrl.substring(1);
+                    // if (fullUrl.startsWith('./'))
+                    //   fullUrl = fullUrl.substring(1);
                     this.router.navigateByUrl(fullUrl);
-                  } else if (nav.targetUrl?.enabled && nav.targetUrl.href) {
+                  } else if (
+                    navigateTo?.targetUrl &&
+                    navigateTo.targetUrl.href
+                  ) {
+                    // Navigate to any other url
                     const href = this.contextService.replaceContext(
-                      this.dataTemplateService.renderLink(nav.targetUrl.href)
+                      this.dataTemplateService.renderLink(
+                        navigateTo.targetUrl.href
+                      )
                     );
-                    if (nav.targetUrl.openInNewTab) {
+                    if (navigateTo.targetUrl.openInNewTab) {
                       window.open(href, '_blank');
                     } else {
                       if (href?.startsWith('./')) {
@@ -471,6 +477,7 @@ export class ActionButtonComponent
                     callback();
                   }
                 } else {
+                  // Edit Action
                   callback();
                 }
               }
