@@ -1,3 +1,10 @@
+# [2.22.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.2...v2.22.0-rc.3) (2025-10-10)
+
+
+### Features
+
+* Admins can configure auto redirection after cloning from dashboard ([463ea7a](https://github.com/ReliefApplications/ems-frontend/commit/463ea7a8c9e8083ffb3114609a53670079449a7c)), closes [AB#118658](https://github.com/AB/issues/118658)
+
 # [2.22.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.1...v2.22.0-rc.2) (2025-09-23)
 
 
