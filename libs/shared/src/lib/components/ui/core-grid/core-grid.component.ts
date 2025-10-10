@@ -979,7 +979,7 @@ export class CoreGridComponent
           if (event.field) {
             const field = get(event, 'field', '');
             const value = get(event, `item.${field}`);
-            fullUrl = `${fullUrl}?id=${value}`;
+            fullUrl = `${fullUrl}?${field}=${value}`;
           }
           this.router.navigateByUrl(fullUrl);
         }

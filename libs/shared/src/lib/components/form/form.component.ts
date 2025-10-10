@@ -344,6 +344,9 @@ export class FormComponent
         } else {
           this.survey.showCompletedPage = true;
         }
+        this.snackBar.openSnackBar(
+          this.translate.instant('components.form.display.submissionMessage')
+        );
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
