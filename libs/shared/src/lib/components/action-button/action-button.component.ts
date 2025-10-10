@@ -451,8 +451,6 @@ export class ActionButtonComponent
                       const paramValue = get(value.data, fieldPath);
                       fullUrl = `${fullUrl}?${fieldPath}=${paramValue}`;
                     }
-                    // if (fullUrl.startsWith('./'))
-                    //   fullUrl = fullUrl.substring(1);
                     this.router.navigateByUrl(fullUrl);
                   } else if (
                     navigateTo?.targetUrl &&
