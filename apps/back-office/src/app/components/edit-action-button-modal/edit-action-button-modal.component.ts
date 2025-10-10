@@ -126,9 +126,7 @@ export class EditActionButtonModalComponent
   /** Send notification template list */
   public sendNotificationTemplates: Form[] = [];
   /** Fields, of current page context resource, if any */
-  public sendNotificationFields: any[] = [];
-  /** All fields of current context resource for targetPage field selection */
-  public availableFields: any[] = [];
+  public contextResourceFields: any[] = [];
   /** Available pages from the application for targetPage selection */
   public pages: any[] = [];
 
@@ -193,16 +191,13 @@ export class EditActionButtonModalComponent
           })
           .subscribe({
             next: ({ data }) => {
-              const queryTemp: any = data.resource;
-              const newData = this.queryBuilder.getFields(queryTemp.queryName);
               this.editRecordTemplates = data.resource.forms ?? [];
-              this.sendNotificationFields = this.queryBuilder.getFields(
-                data.resource?.queryName as string
+              this.contextResourceFields = this.queryBuilder.getFields(
+                data.resource.queryName as string
               );
               this.resourceFields = data.resource.fields.filter((f: any) =>
                 ['resource', 'resources'].includes(f.type)
               );
-              this.availableFields = newData;
             },
           });
       }
@@ -545,7 +540,6 @@ export class EditActionButtonModalComponent
             this.selectedResource = data.resource;
             this.addRecordTemplates = data.resource.forms ?? [];
             this.addRecordFields = data.resource.fields ?? [];
-            this.availableFields = data.resource.fields ?? [];
           },
         });
     }

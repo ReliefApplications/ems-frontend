@@ -346,9 +346,10 @@
                                     'components.widget.settings.grid.actions.goTo.field.placeholder'
                                       | translate
                                   "
+                                  [filterable]="true"
                                 >
                                   <ng-container
-                                    *ngFor="let field of availableFields"
+                                    *ngFor="let field of contextResourceFields"
                                   >
                                     <ui-select-option
                                       *ngIf="!field.fields"
@@ -701,12 +702,12 @@
                       <h2>
                         {{ 'components.emailBuilder.fields' | translate }}
                       </h2>
-                      <ng-container *ngIf="sendNotificationFields.length > 0">
+                      <ng-container *ngIf="contextResourceFields.length > 0">
                         <shared-tab-fields
                           [form]="
                             $any(form.get('action.sendNotification.fields'))
                           "
-                          [fields]="sendNotificationFields"
+                          [fields]="contextResourceFields"
                           [showLimit]="true"
                           [showColumnWidth]="true"
                         ></shared-tab-fields>
