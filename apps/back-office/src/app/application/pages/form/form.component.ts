@@ -18,12 +18,14 @@ import {
   StepQueryResponse,
   UnsubscribeComponent,
   WorkflowService,
+  RecordQueryResponse,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
   GET_PAGE_BY_ID,
+  GET_RECORD_BY_ID,
   GET_SHORT_FORM_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
@@ -40,7 +42,6 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** Form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
-
   /** Loading indicator */
   public loading = true;
   /** Current form id */
@@ -67,6 +68,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public isStep = false;
   /** Configured form action buttons */
   public actionButtons: ActionButton[] = [];
+  /** Current record, optional */
+  public record?: Record;
 
   /**
    * Form page in application
@@ -119,8 +122,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             switchMap(({ data }) => {
               this.step = data.step;
               this.actionButtons = data.step.buttons as ActionButton[];
-              return this.getFormQuery(this.step.content ?? '');
-            })
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.step?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
+              return this.getFormQuery(this.step?.content ?? '');
+            }),
+            takeUntil(this.destroy$)
           )
           .subscribe(({ data, loading }) => {
             this.handleFormQueryResponse(data, 'step');
@@ -138,8 +153,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             switchMap(({ data }) => {
               this.page = data.page;
               this.actionButtons = data.page.buttons as ActionButton[];
-              return this.getFormQuery(this.page.content ?? '');
-            })
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.page?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
+              return this.getFormQuery(this.page?.content ?? '');
+            }),
+            takeUntil(this.destroy$)
           )
           .subscribe(({ data, loading }) => {
             this.handleFormQueryResponse(data, 'page');
@@ -158,6 +185,21 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   private getFormQuery(id: string) {
     return this.apollo.query<FormQueryResponse>({
       query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Returns query for the given record id
+   *
+   * @param id record id
+   * @returns record query for the given id
+   */
+  private getRecordQuery(id: string) {
+    return this.apollo.query<RecordQueryResponse>({
+      query: GET_RECORD_BY_ID,
       variables: {
         id,
       },

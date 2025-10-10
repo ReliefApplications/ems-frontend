@@ -316,7 +316,6 @@ export class ActionButtonComponent
     // Prefill data for addRecord & cloneRecord
     const loadPrefillData$ = () => {
       if (this.actionButton.cloneRecord && this.contextId) {
-        console.log('prepare to clone');
         return this.apollo
           .query<RecordQueryResponse>({
             query: GET_RECORD_BY_ID,
