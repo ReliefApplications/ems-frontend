@@ -183,7 +183,6 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
-		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",
@@ -2700,9 +2699,11 @@
 							"template": "******"
 						}
 					},
-					"afterCloneNavigateTo": "******",
 					"autoReload": "******",
 					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "******"
+						},
 						"text": "******",
 						"tooltip": {
 							"template": "******"
