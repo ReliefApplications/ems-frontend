@@ -12,6 +12,7 @@ export const GET_APPLICATION_BY_ID = gql`
       name
       description
       sideMenu
+      topMenu
       hideMenu
       shortcut
       createdAt
@@ -31,6 +32,7 @@ export const GET_APPLICATION_BY_ID = gql`
         id
         icon
         showName
+        showIcon
         name
         visible
         type

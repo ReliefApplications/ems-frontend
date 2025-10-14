@@ -14,11 +14,30 @@
     'components.widget.settings.tabs.deleteTab' | translate
   }}</ui-button>
 </div>
-<!-- Tab label edition -->
-<div [formGroup]="tabGroup">
+<!-- Tab label & display options -->
+<div [formGroup]="tabGroup" class="flex flex-col gap-4">
   <div uiFormFieldDirective>
     <label>{{ 'common.label' | translate }}</label>
     <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+  <ui-toggle formControlName="showName">
+    <ng-container ngProjectAs="label">
+      {{ 'components.application.pages.settings.showName' | translate }}
+    </ng-container>
+  </ui-toggle>
+  <ui-toggle formControlName="showIcon">
+    <ng-container ngProjectAs="label">
+      {{ 'components.application.pages.settings.showIcon' | translate }}
+    </ng-container>
+  </ui-toggle>
+  <div uiFormFieldDirective>
+    <label>{{ 'components.widget.settings.tabs.icon' | translate }}</label>
+    <shared-icon-picker
+      formControlName="icon"
+      [placeholder]="
+        'components.widget.settings.iconPicker.placeholder' | translate
+      "
+    ></shared-icon-picker>
   </div>
 </div>
 <!-- tab structure edition -->

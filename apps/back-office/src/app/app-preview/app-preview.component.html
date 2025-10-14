@@ -2,6 +2,7 @@
   [title]="title"
   [leftSidenav]="leftSidenav"
   [sideMenu]="sideMenu"
+  [topMenu]="topMenu"
   [menuOpened]="!hideMenu"
 ></shared-layout>
 <ng-template #toolbar>
@@ -13,6 +14,6 @@
     [nav]="nav"
     [navGroups]="navGroups"
     [appLayout]="true"
-    [vertical]="!(!sideMenu && largeDevice)"
+    [vertical]="topMenu ? false : !(!sideMenu && largeDevice)"
   ></shared-navbar>
 </ng-template>

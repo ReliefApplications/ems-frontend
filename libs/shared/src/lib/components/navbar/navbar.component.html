@@ -23,7 +23,7 @@
             variant="grey"
             [uiTooltip]="'models.page.add' | translate"
             routerLink="./add-page"
-            (click)="largeDevice ? null : nav.toggle()"
+            (click)="largeDevice ? null : nav?.toggle()"
             class="overflow-visible"
           ></ui-button>
         </div>
@@ -79,17 +79,26 @@
             <li routerLinkActive="text-primary-600 bg-gray-50">
               <a
                 class="group"
-                (click)="largeDevice ? null : nav.toggle()"
+                (click)="largeDevice ? null : nav?.toggle()"
                 [routerLink]="item.path"
               >
                 <ui-icon
+                  *ngIf="item.showIcon !== false && item.icon"
                   variant="grey"
                   [icon]="item.icon"
                   [fontFamily]="item.fontFamily"
                   [size]="vertical ? 24 : 18"
                 >
                 </ui-icon>
-                <p class="truncate m-0" [uiTooltip]="item.name">
+                <p
+                  class="truncate m-0"
+                  [uiTooltip]="item.name"
+                  *ngIf="
+                    item.showName !== false ||
+                    item.showIcon === false ||
+                    !item.icon
+                  "
+                >
                   {{ item.name }}
                 </p>
               </a>
@@ -139,11 +148,21 @@
                 class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
               >
                 <ui-icon
+                  *ngIf="item.showIcon !== false && item.icon"
                   variant="grey"
                   [icon]="item.icon"
                   [fontFamily]="item.fontFamily"
                 ></ui-icon>
-                <div class="pl-2">{{ item.name }}</div>
+                <div
+                  class="pl-2"
+                  *ngIf="
+                    item.showName !== false ||
+                    item.showIcon === false ||
+                    !item.icon
+                  "
+                >
+                  {{ item.name }}
+                </div>
               </a>
             </li>
           </div>
@@ -161,7 +180,7 @@
     [category]="vertical ? 'secondary' : 'primary'"
     variant="primary"
     routerLink="./add-page"
-    (click)="!vertical ? null : largeDevice ? null : nav.toggle()"
+    (click)="!vertical ? null : largeDevice ? null : nav?.toggle()"
   >
     <span *ngIf="vertical">
       {{ 'models.page.add' | translate }}

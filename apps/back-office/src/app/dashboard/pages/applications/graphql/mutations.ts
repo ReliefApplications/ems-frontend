@@ -31,6 +31,7 @@ export const EDIT_APPLICATION = gql`
         id
         icon
         showName
+        showIcon
         name
         createdAt
         type
@@ -68,6 +69,7 @@ export const ADD_APPLICATION = gql`
       pages {
         id
         name
+        showIcon
         createdAt
         type
         content

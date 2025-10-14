@@ -46,6 +46,7 @@ interface DialogData {
   icon?: string;
   visible?: boolean;
   showName?: boolean;
+  showIcon?: boolean;
   accessData: AccessData;
   canUpdate: boolean;
   dashboard?: Dashboard;
@@ -156,11 +157,31 @@ export class ViewSettingsModalComponent
         }
       });
 
+    const showNameControl = this.settingsForm?.controls.showName;
+    const showIconControl = this.settingsForm?.controls.showIcon;
+
     // Listen to showName updates
-    this.settingsForm?.controls.showName?.valueChanges
+    showNameControl?.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        this.onUpdateShowName(value);
+        const normalized = value !== false;
+        if (!normalized && showIconControl?.value === false) {
+          showIconControl.setValue(true, { emitEvent: false });
+          this.onUpdateShowIcon(true);
+        }
+        this.onUpdateShowName(normalized);
+      });
+
+    // Listen to showIcon updates
+    showIconControl?.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        const normalized = value !== false;
+        if (!normalized && showNameControl?.value === false) {
+          showNameControl.setValue(true, { emitEvent: false });
+          this.onUpdateShowName(true);
+        }
+        this.onUpdateShowIcon(normalized);
       });
 
     // Listen to visibility updates (only for pages)
@@ -271,6 +292,9 @@ export class ViewSettingsModalComponent
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
       showName: this.fb.control(this.data.showName ?? true),
+      showIcon: this.fb.control(
+        isNil(this.data.showIcon) ? true : this.data.showIcon
+      ),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
@@ -392,6 +416,44 @@ export class ViewSettingsModalComponent
         this.applicationService.updatePageParameter(
           this.page as Page,
           { showName },
+          callback
+        );
+    }
+  }
+
+  /**
+   * Save dashboard icon display parameter.
+   *
+   * @param showIcon boolean
+   */
+  private onUpdateShowIcon(showIcon: boolean): void {
+    if (this.data.type === 'step' && this.step) {
+      const callback = () => {
+        this.step = {
+          ...this.step,
+          showIcon,
+        };
+        const updates = { showIcon };
+        this.onUpdate.emit(updates);
+      };
+      this.workflowService.updateStepParameter(
+        this.step as Step,
+        { showIcon },
+        callback
+      );
+    } else {
+      const callback = () => {
+        this.page = {
+          ...this.page,
+          showIcon,
+        };
+        const updates = { showIcon };
+        this.onUpdate.emit(updates);
+      };
+      this.page &&
+        this.applicationService.updatePageParameter(
+          this.page as Page,
+          { showIcon },
           callback
         );
     }

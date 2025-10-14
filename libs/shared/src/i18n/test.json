@@ -750,6 +750,7 @@
 				"settings": {
 					"actions": "******",
 					"selectIcon": "******",
+					"showIcon": "******",
 					"showName": "******",
 					"tooltip": {
 						"autoSave": "******"
@@ -795,7 +796,8 @@
 				"sideMenu": "******",
 				"tooltip": {
 					"hideMenu": "******"
-				}
+				},
+				"topMenu": "******"
 			},
 			"users": {
 				"auto": "******",

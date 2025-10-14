@@ -41,6 +41,8 @@ export class ApplicationComponent
   public application: Application | null = null;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Use header menu or not */
+  public topMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
   /** Is large device */
@@ -142,7 +144,12 @@ export class ApplicationComponent
           }
           this.application = application;
           this.sideMenu = this.application?.sideMenu ?? true;
+          this.topMenu = this.application?.topMenu ?? false;
           this.hideMenu = this.application?.hideMenu ?? false;
+          if (this.topMenu) {
+            this.sideMenu = false;
+            this.hideMenu = false;
+          }
         } else {
           this.profileRoute = '/profile';
           this.title = '';
@@ -203,6 +210,8 @@ export class ApplicationComponent
             icon: x.icon || this.getNavIcon(x.type || ''),
             fontFamily: x.icon ? 'fa' : 'material',
             visible: x.visible,
+            showName: x.showName !== false,
+            showIcon: x.showIcon !== false,
           })),
       },
     ];

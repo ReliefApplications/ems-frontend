@@ -10,6 +10,7 @@
   [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
+  [topMenu]="topMenu"
   [menuOpened]="!hideMenu"
   [profileRoute]="profileRoute"
   (openApplication)="onOpenApplication($event)"
@@ -20,7 +21,7 @@
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
-    [vertical]="!(!sideMenu && largeDevice)"
+    [vertical]="topMenu ? false : !(!sideMenu && largeDevice)"
   ></shared-navbar>
 </ng-template>
 

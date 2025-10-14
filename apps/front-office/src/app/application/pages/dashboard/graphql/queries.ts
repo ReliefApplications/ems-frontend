@@ -33,7 +33,9 @@ export const GET_DASHBOARD_BY_ID = gql`
       page {
         id
         showName
+        showIcon
         visible
+        icon
         application {
           id
           shortcut
@@ -44,7 +46,9 @@ export const GET_DASHBOARD_BY_ID = gql`
         contentWithContext
       }
       step {
+        icon
         showName
+        showIcon
         workflow {
           name
         }

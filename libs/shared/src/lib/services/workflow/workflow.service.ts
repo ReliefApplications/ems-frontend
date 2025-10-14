@@ -167,12 +167,13 @@ export class WorkflowService {
   }
 
   /**
-   * Update step parameter (icon or showName), sending a mutation to the back-end.
+   * Update step parameter (icon, showName, showIcon), sending a mutation to the back-end.
    *
    * @param step Edited step
    * @param update step update
    * @param update.icon step icon
    * @param update.showName should show step name
+   * @param update.showIcon should show step icon
    * @param callback callback method, allow the component calling the service to do some logic.
    */
   updateStepParameter(
@@ -180,6 +181,7 @@ export class WorkflowService {
     update: {
       icon?: string;
       showName?: boolean;
+      showIcon?: boolean;
     },
     callback?: any
   ): void {
@@ -192,6 +194,7 @@ export class WorkflowService {
             id: step.id,
             ...(has(update, 'icon') && { icon: update.icon }),
             ...(has(update, 'showName') && { showName: update.showName }),
+            ...(has(update, 'showIcon') && { showIcon: update.showIcon }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -209,6 +212,7 @@ export class WorkflowService {
                     ...x,
                     icon: data.editStep.icon,
                     showName: data.editStep.showName,
+                    showIcon: data.editStep.showIcon,
                   };
                 }
                 return x;

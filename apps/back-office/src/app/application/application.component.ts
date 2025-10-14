@@ -43,6 +43,8 @@ export class ApplicationComponent
   public application?: Application;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Use header menu or not */
+  public topMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
   /** Is large device */
@@ -112,6 +114,8 @@ export class ApplicationComponent
               : `./${x.type}/${x.content}`,
           icon: x.icon || this.getNavIcon(x.type || ''),
           fontFamily: x.icon ? 'fa' : 'material',
+          showName: x.showName !== false,
+          showIcon: x.showIcon !== false,
           class: null,
           orderable: true,
           visible: x.visible ?? true,
@@ -216,7 +220,12 @@ export class ApplicationComponent
           }
           this.application = application;
           this.sideMenu = this.application?.sideMenu ?? true;
+          this.topMenu = this.application?.topMenu ?? false;
           this.hideMenu = this.application?.hideMenu ?? false;
+          if (this.topMenu) {
+            this.sideMenu = false;
+            this.hideMenu = false;
+          }
         } else {
           this.title = '';
           this.navGroups = [];

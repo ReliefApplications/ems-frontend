@@ -4,6 +4,7 @@ import { TabSettingsComponent } from './tab-settings.component';
 import { WidgetGridModule } from '../../../widget-grid/widget-grid.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, FormWrapperModule, ToggleModule } from '@oort-front/ui';
+import { IconPickerModule } from '../../../controls/icon-picker/icon-picker.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -20,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonModule,
     TranslateModule,
     ToggleModule,
+    IconPickerModule,
   ],
   exports: [TabSettingsComponent],
 })

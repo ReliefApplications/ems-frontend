@@ -111,6 +111,8 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         if (application) {
           this.application = application;
           this.settingsForm = this.createSettingsForm(application);
+          this.setupMenuToggleListeners();
+          this.handleTopMenuChange(this.settingsForm.get('topMenu')?.value);
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
@@ -129,6 +131,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       name: [application.name, Validators.required],
       shortcut: [application.shortcut, shortcutValidator],
       sideMenu: [application.sideMenu],
+      topMenu: [application.topMenu],
       hideMenu: [application.hideMenu],
       description: [application.description],
       status: [application.status],
@@ -141,6 +144,44 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   onSubmit(): void {
     this.applicationService.editApplication(this.settingsForm?.value);
     this.settingsForm?.markAsPristine();
+  }
+
+  /**
+   * Ensures menu toggles do not collide.
+   */
+  private setupMenuToggleListeners() {
+    const sideMenuControl = this.settingsForm.get('sideMenu');
+    const topMenuControl = this.settingsForm.get('topMenu');
+
+    topMenuControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const isTopMenu = !!value;
+        this.handleTopMenuChange(isTopMenu);
+        if (isTopMenu && sideMenuControl?.value) {
+          sideMenuControl.setValue(false, { emitEvent: false });
+        }
+      });
+
+    sideMenuControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!!value && topMenuControl?.value) {
+          topMenuControl.setValue(false, { emitEvent: false });
+        }
+      });
+  }
+
+  /**
+   * Applies required adjustments when top menu is toggled.
+   *
+   * @param value Current top menu value
+   */
+  private handleTopMenuChange(value: boolean | null | undefined) {
+    const hideMenuControl = this.settingsForm.get('hideMenu');
+    if (!!value && hideMenuControl?.value) {
+      hideMenuControl.setValue(false, { emitEvent: false });
+    }
   }
 
   /**

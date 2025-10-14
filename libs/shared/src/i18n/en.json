@@ -750,6 +750,7 @@
 				"settings": {
 					"actions": "Actions",
 					"selectIcon": "Select an icon",
+					"showIcon": "Display icon",
 					"showName": "Display name",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"
@@ -795,7 +796,8 @@
 				"sideMenu": "Show menu on the side",
 				"tooltip": {
 					"hideMenu": "Only applies when menu is located on the side"
-				}
+				},
+				"topMenu": "Show menu on the top"
 			},
 			"users": {
 				"auto": "Automatically assigned",

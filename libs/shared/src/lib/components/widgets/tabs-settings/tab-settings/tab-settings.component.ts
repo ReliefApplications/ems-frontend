@@ -79,7 +79,27 @@ export class TabSettingsComponent
       ...this.gridOptions,
       ...this.tabGroup.controls.gridOptions.value,
     } as GridsterConfig;
-    // To avoid scroll to be called when opening the settings
+
+    const showNameControl = this.tabGroup.get('showName');
+    const showIconControl = this.tabGroup.get('showIcon');
+
+    showNameControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const normalized = value !== false;
+        if (!normalized && showIconControl?.value === false) {
+          showIconControl.setValue(true, { emitEvent: false });
+        }
+      });
+
+    showIconControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const normalized = value !== false;
+        if (!normalized && showNameControl?.value === false) {
+          showNameControl.setValue(true, { emitEvent: false });
+        }
+      });
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }

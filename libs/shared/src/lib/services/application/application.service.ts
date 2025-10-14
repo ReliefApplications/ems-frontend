@@ -416,6 +416,7 @@ export class ApplicationService {
             name: value.name,
             description: value.description,
             sideMenu: value.sideMenu,
+            topMenu: value.topMenu,
             hideMenu: value.hideMenu,
             status: value.status,
             shortcut: value.shortcut,
@@ -433,8 +434,9 @@ export class ApplicationService {
                 ...application,
                 name: data.editApplication.name,
                 description: data.editApplication.description,
-                sideMenu: value.sideMenu,
-                hideMenu: value.hideMenu,
+                sideMenu: data.editApplication.sideMenu,
+                topMenu: data.editApplication.topMenu,
+                hideMenu: data.editApplication.hideMenu,
                 status: data.editApplication.status,
                 shortcut: data.editApplication.shortcut,
               };
@@ -772,12 +774,13 @@ export class ApplicationService {
   }
 
   /**
-   * Update page parameter (icon or showName ), by sending a mutation to the back-end.
+   * Update page parameter (icon, showName, showIcon), by sending a mutation to the back-end.
    *
    * @param page Edited page
    * @param update page update
    * @param update.icon page icon
    * @param update.showName should show page name
+   * @param update.showIcon should show page icon
    * @param callback callback method, allow the component calling the service to do some logic.
    */
   updatePageParameter(
@@ -785,6 +788,7 @@ export class ApplicationService {
     update: {
       icon?: string;
       showName?: boolean;
+      showIcon?: boolean;
     },
     callback?: any
   ): void {
@@ -797,6 +801,7 @@ export class ApplicationService {
             id: page.id,
             ...(has(update, 'icon') && { icon: update.icon }),
             ...(has(update, 'showName') && { showName: update.showName }),
+            ...(has(update, 'showIcon') && { showIcon: update.showIcon }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -813,6 +818,7 @@ export class ApplicationService {
                     ...x,
                     icon: data.editPage.icon,
                     showName: data.editPage.showName,
+                    showIcon: data.editPage.showIcon,
                   };
                 }
                 return x;

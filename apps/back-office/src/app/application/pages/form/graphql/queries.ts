@@ -9,6 +9,7 @@ export const GET_STEP_BY_ID = gql`
       id
       icon
       showName
+      showIcon
       name
       createdAt
       modifiedAt
@@ -55,6 +56,7 @@ export const GET_PAGE_BY_ID = gql`
       id
       icon
       showName
+      showIcon
       name
       visible
       createdAt

@@ -2,10 +2,10 @@
 <nav
   *ngIf="showHeader"
   id="app-header"
-  class="flex p-4 items-center md:justify-between text-white"
+  class="flex flex-wrap md:flex-nowrap items-center gap-4 p-4 text-white"
   [ngClass]="theme.headerClass"
 >
-  <div class="flex-shrink-0 flex flex-wrap min-w-0">
+  <div class="flex items-center gap-2 flex-shrink-0 min-w-0">
     <ui-button
       *ngIf="nav && (sideMenu || !largeDevice)"
       [isIcon]="true"
@@ -32,53 +32,66 @@
     >
     </ui-button>
   </div>
-  <div class="min-w-0 flex items-center overflow-hidden">
+  <div class="flex items-center gap-4 flex-1 min-w-0">
     <div id="app-logo"></div>
-    <ng-container *ngIf="header; else defaultHeader">
-      <ng-container *ngTemplateOutlet="header"></ng-container>
-    </ng-container>
-    <ng-template #defaultHeader>
-      <h1 class="text-xl mb-0 whitespace-nowrap text-clip font-medium">
-        {{ theme.prefix }}
-        {{ 'common.platform.backOffice' | translate }}
-      </h1>
-    </ng-template>
+    <div class="min-w-0 flex items-center overflow-hidden">
+      <ng-container *ngIf="header; else defaultHeader">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
+      </ng-container>
+      <ng-template #defaultHeader>
+        <h1 class="text-xl mb-0 whitespace-nowrap text-clip font-medium">
+          {{ theme.prefix }}
+          {{ 'common.platform.backOffice' | translate }}
+        </h1>
+      </ng-template>
+    </div>
+    <div
+      *ngIf="topMenu && leftSidenav"
+      class="flex-1 min-w-0 overflow-hidden"
+    >
+      <ng-container
+        [ngTemplateOutlet]="leftSidenav"
+        [ngTemplateOutletContext]="{ $implicit: headerNavContext }"
+      ></ng-container>
+    </div>
   </div>
-  <!-- Account icon and info -->
-  <div
-    class="flex flex-col items-end content-center font-medium text-xs ml-auto"
-  >
-    <div class="account-property">{{ account ? account.name : '' }}</div>
-    <div class="account-property">{{ account ? account.username : '' }}</div>
-  </div>
-  <ui-button
-    [size]="'large'"
-    [isIcon]="true"
-    icon="account_circle"
-    [uiMenuTriggerFor]="accountMenu"
-    variant="light"
-    [uiTooltip]="'common.account' | translate"
-  >
-  </ui-button>
-  <kendo-badge-container>
+  <div class="flex items-center gap-2 flex-shrink-0 ml-auto">
+    <!-- Account icon and info -->
+    <div class="flex flex-col items-end content-center font-medium text-xs">
+      <div class="account-property">{{ account ? account.name : '' }}</div>
+      <div class="account-property">
+        {{ account ? account.username : '' }}
+      </div>
+    </div>
     <ui-button
       [size]="'large'"
-      variant="light"
-      [uiMenuTriggerFor]="notificationMenu"
-      [disabled]="notifications.length === 0"
-      icon="notifications"
       [isIcon]="true"
-      [uiTooltip]="'components.notifications.title' | translate"
+      icon="account_circle"
+      [uiMenuTriggerFor]="accountMenu"
+      variant="light"
+      [uiTooltip]="'common.account' | translate"
     >
     </ui-button>
-    <kendo-badge
-      shape="dot"
-      themeColor="error"
-      size="small"
-      class="!-translate-x-1/4 !translate-y-full"
-      *ngIf="notifications.length > 0"
-    ></kendo-badge>
-  </kendo-badge-container>
+    <kendo-badge-container>
+      <ui-button
+        [size]="'large'"
+        variant="light"
+        [uiMenuTriggerFor]="notificationMenu"
+        [disabled]="notifications.length === 0"
+        icon="notifications"
+        [isIcon]="true"
+        [uiTooltip]="'components.notifications.title' | translate"
+      >
+      </ui-button>
+      <kendo-badge
+        shape="dot"
+        themeColor="error"
+        size="small"
+        class="!-translate-x-1/4 !translate-y-full"
+        *ngIf="notifications.length > 0"
+      ></kendo-badge>
+    </kendo-badge-container>
+  </div>
   <ui-menu #accountMenu>
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
@@ -161,7 +174,7 @@
   </ui-menu>
 </nav>
 <!-- Vertical navigation -->
-<ng-container *ngIf="!sideMenu && largeDevice">
+<ng-container *ngIf="!sideMenu && largeDevice && !topMenu">
   <ng-container *ngIf="leftSidenav">
     <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
   </ng-container>
