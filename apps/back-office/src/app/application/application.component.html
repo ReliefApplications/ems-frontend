@@ -28,6 +28,7 @@
     [navGroups]="navGroups"
     [appLayout]="true"
     [canAddPage]="application?.canUpdate!"
+    [topMenu]="topMenu"
     [vertical]="topMenu ? false : !(!sideMenu && largeDevice)"
     (reorder)="onReorder($event)"
   ></shared-navbar>

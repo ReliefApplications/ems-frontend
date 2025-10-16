@@ -6,8 +6,9 @@
   [ngClass]="theme.headerClass"
 >
   <div class="flex items-center gap-2 flex-shrink-0 min-w-0">
+    <!-- Toggle side nav menu -->
     <ui-button
-      *ngIf="nav && (sideMenu || !largeDevice)"
+      *ngIf="!topMenu && nav && (sideMenu || !largeDevice)"
       [isIcon]="true"
       variant="light"
       [size]="'large'"
@@ -21,6 +22,7 @@
       "
     >
     </ui-button>
+    <!-- Go back to application list -->
     <ui-button
       [isIcon]="true"
       [size]="'large'"
@@ -33,7 +35,9 @@
     </ui-button>
   </div>
   <div class="flex items-center gap-4 flex-1 min-w-0">
+    <!-- Placeholder for application logo -->
     <div id="app-logo"></div>
+    <!-- Application title -->
     <div class="min-w-0 flex items-center overflow-hidden">
       <ng-container *ngIf="header; else defaultHeader">
         <ng-container *ngTemplateOutlet="header"></ng-container>
@@ -45,10 +49,8 @@
         </h1>
       </ng-template>
     </div>
-    <div
-      *ngIf="topMenu && leftSidenav"
-      class="flex-1 min-w-0 overflow-hidden"
-    >
+    <!-- Navbar, if top menu is enabled -->
+    <div *ngIf="topMenu && leftSidenav" class="flex-1 min-w-0 overflow-hidden">
       <ng-container
         [ngTemplateOutlet]="leftSidenav"
         [ngTemplateOutletContext]="{ $implicit: headerNavContext }"
@@ -63,6 +65,7 @@
         {{ account ? account.username : '' }}
       </div>
     </div>
+    <!-- Account button -->
     <ui-button
       [size]="'large'"
       [isIcon]="true"
@@ -72,6 +75,7 @@
       [uiTooltip]="'common.account' | translate"
     >
     </ui-button>
+    <!-- Notifications button -->
     <kendo-badge-container>
       <ui-button
         [size]="'large'"
@@ -92,6 +96,7 @@
       ></kendo-badge>
     </kendo-badge-container>
   </div>
+  <!-- Account menu -->
   <ui-menu #accountMenu>
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}

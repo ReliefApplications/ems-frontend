@@ -84,7 +84,7 @@
               >
                 <ui-icon
                   *ngIf="item.showIcon !== false && item.icon"
-                  variant="grey"
+                  [variant]="topMenu ? 'light' : 'grey'"
                   [icon]="item.icon"
                   [fontFamily]="item.fontFamily"
                   [size]="vertical ? 24 : 18"
