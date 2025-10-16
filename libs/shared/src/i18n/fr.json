@@ -749,11 +749,15 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"navBar": {
+						"showIcon": "Afficher l'icône dans la barre de navigation",
+						"showName": "Afficher le nom dans la barre de navigation"
+					},
 					"selectIcon": "Sélectionnez une icône",
-					"showIcon": "Afficher l'icône",
-					"showName": "Afficher le nom",
+					"showName": "Afficher le nom en en-tête sur la page",
 					"tooltip": {
-						"autoSave": "Les modifications sont automatiquement enregistrées"
+						"autoSave": "Les modifications sont automatiquement enregistrées",
+						"navBar": "Pour être visible dans la barre de navigation, l'icône ou le nom doit être affiché."
 					}
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
@@ -2416,7 +2420,15 @@
 				},
 				"tabs": {
 					"addNewTab": "Ajouter un nouvel onglet",
-					"deleteTab": "Supprimer l'onglet"
+					"deleteTab": "Supprimer l'onglet",
+					"navBar": {
+						"showIcon": "Afficher l'icône dans la barre de navigation",
+						"showName": "Afficher le nom dans la barre de navigation"
+					},
+					"selectIcon": "Sélectionner une icône",
+					"tooltip": {
+						"navBar": "Pour être visible dans la barre de navigation, l'icône ou le nom doit être affiché."
+					}
 				}
 			},
 			"styling": "Modifier le style",

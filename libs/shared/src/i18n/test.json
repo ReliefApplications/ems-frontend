@@ -749,11 +749,15 @@
 				},
 				"settings": {
 					"actions": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
 					"selectIcon": "******",
-					"showIcon": "******",
 					"showName": "******",
 					"tooltip": {
-						"autoSave": "******"
+						"autoSave": "******",
+						"navBar": "******"
 					}
 				},
 				"show": "******"
@@ -2413,7 +2417,15 @@
 				},
 				"tabs": {
 					"addNewTab": "******",
-					"deleteTab": "******"
+					"deleteTab": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
+					"selectIcon": "******",
+					"tooltip": {
+						"navBar": "******"
+					}
 				}
 			},
 			"styling": "******",
