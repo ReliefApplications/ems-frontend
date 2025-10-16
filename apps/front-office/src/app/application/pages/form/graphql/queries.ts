@@ -38,7 +38,10 @@ export const GET_STEP_BY_ID = gql`
       icon
       name
       showName
-      showIcon
+      navBar {
+        showName
+        showIcon
+      }
       createdAt
       modifiedAt
       content
@@ -61,7 +64,10 @@ export const GET_PAGE_BY_ID = gql`
       icon
       name
       showName
-      showIcon
+      navBar {
+        showName
+        showIcon
+      }
       createdAt
       modifiedAt
       type

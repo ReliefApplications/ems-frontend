@@ -3,7 +3,7 @@
     <div class="flex flex-row gap-x-3">
       <!-- Step icon -->
       <ui-icon
-        *ngIf="step.showIcon !== false"
+        *ngIf="step.navBar?.showIcon !== false"
         [icon]="step.icon || defaultIcon"
         [fontFamily]="step.icon ? 'fa' : 'material'"
         [size]="18"
@@ -12,7 +12,7 @@
       <span
         class="truncate"
         [uiTooltip]="step.name || ''"
-        *ngIf="step.showName !== false || step.showIcon === false"
+        *ngIf="step.navBar?.showName !== false"
         >{{ step.name }}
       </span>
     </div>

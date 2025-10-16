@@ -32,7 +32,10 @@ export const GET_APPLICATION_BY_ID = gql`
         id
         icon
         showName
-        showIcon
+        navBar {
+          showIcon
+          showName
+        }
         name
         visible
         type

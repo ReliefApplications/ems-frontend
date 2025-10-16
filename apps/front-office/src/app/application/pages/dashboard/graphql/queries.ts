@@ -33,7 +33,10 @@ export const GET_DASHBOARD_BY_ID = gql`
       page {
         id
         showName
-        showIcon
+        navBar {
+          showName
+          showIcon
+        }
         visible
         icon
         application {
@@ -48,7 +51,10 @@ export const GET_DASHBOARD_BY_ID = gql`
       step {
         icon
         showName
-        showIcon
+        navBar {
+          showName
+          showIcon
+        }
         workflow {
           name
         }

@@ -28,7 +28,7 @@
           </ng-container>
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" *ngIf="settingsForm">
-            <!-- Show content name -->
+            <!-- Show name as header -->
             <ui-toggle formControlName="showName">
               <ng-container ngProjectAs="label">
                 {{
@@ -36,14 +36,46 @@
                 }}
               </ng-container>
             </ui-toggle>
-            <!-- Show icon -->
-            <ui-toggle formControlName="showIcon">
-              <ng-container ngProjectAs="label">
-                {{
-                  'components.application.pages.settings.showIcon' | translate
-                }}
-              </ng-container>
-            </ui-toggle>
+            <ng-container formGroupName="navBar">
+              <!-- Show name in nav bar -->
+              <ui-toggle formControlName="showName">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.application.pages.settings.navBar.showName'
+                      | translate
+                  }}
+                  <ui-icon
+                    class="cursor-help self-center"
+                    icon="info_outline"
+                    [size]="18"
+                    variant="grey"
+                    [uiTooltip]="
+                      'components.application.pages.settings.tooltip.navBar'
+                        | translate
+                    "
+                  ></ui-icon>
+                </ng-container>
+              </ui-toggle>
+              <!-- Show icon in nav bar -->
+              <ui-toggle formControlName="showIcon">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'components.application.pages.settings.navBar.showIcon'
+                      | translate
+                  }}
+                  <ui-icon
+                    class="cursor-help self-center"
+                    icon="info_outline"
+                    [size]="18"
+                    variant="grey"
+                    [uiTooltip]="
+                      'components.application.pages.settings.tooltip.navBar'
+                        | translate
+                    "
+                  ></ui-icon>
+                </ng-container>
+              </ui-toggle>
+            </ng-container>
             <!-- Page / step icon -->
             <app-view-icon-selector
               [iconControl]="this.settingsForm.controls.icon"

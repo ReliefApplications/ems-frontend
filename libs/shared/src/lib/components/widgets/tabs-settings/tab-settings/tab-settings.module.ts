@@ -3,7 +3,13 @@ import { CommonModule } from '@angular/common';
 import { TabSettingsComponent } from './tab-settings.component';
 import { WidgetGridModule } from '../../../widget-grid/widget-grid.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule, FormWrapperModule, ToggleModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  IconModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { IconPickerModule } from '../../../controls/icon-picker/icon-picker.module';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -22,6 +28,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     ToggleModule,
     IconPickerModule,
+    IconModule,
+    TooltipModule,
   ],
   exports: [TabSettingsComponent],
 })

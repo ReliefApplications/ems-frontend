@@ -32,7 +32,7 @@ import {
   DashboardService,
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 import { GridType } from 'angular-gridster2';
@@ -46,7 +46,10 @@ interface DialogData {
   icon?: string;
   visible?: boolean;
   showName?: boolean;
-  showIcon?: boolean;
+  navBar?: {
+    showName?: boolean;
+    showIcon?: boolean;
+  };
   accessData: AccessData;
   canUpdate: boolean;
   dashboard?: Dashboard;
@@ -149,7 +152,7 @@ export class ViewSettingsModalComponent
     }
 
     // Listen to icon updates
-    this.settingsForm?.controls.icon.valueChanges
+    this.settingsForm.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: string | null) => {
         if (value) {
@@ -157,47 +160,47 @@ export class ViewSettingsModalComponent
         }
       });
 
-    const showNameControl = this.settingsForm?.controls.showName;
-    const showIconControl = this.settingsForm?.controls.showIcon;
-
     // Listen to showName updates
-    showNameControl?.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        const normalized = value !== false;
-        if (!normalized && showIconControl?.value === false) {
-          showIconControl.setValue(true, { emitEvent: false });
-          this.onUpdateShowIcon(true);
-        }
-        this.onUpdateShowName(normalized);
+    this.settingsForm.controls.showName.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        this.onUpdateShowName(value);
       });
 
-    // Listen to showIcon updates
-    showIconControl?.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        const normalized = value !== false;
-        if (!normalized && showNameControl?.value === false) {
-          showNameControl.setValue(true, { emitEvent: false });
-          this.onUpdateShowName(true);
+    // Listen to navBar updates and ensure at least one of the two options is selected
+    this.settingsForm.controls.navBar.controls.showName.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (!value) {
+          this.settingsForm.controls.navBar.controls.showIcon.setValue(true, {
+            emitEvent: false,
+          });
         }
-        this.onUpdateShowIcon(normalized);
+        this.onUpdateNavBar(this.settingsForm.controls.navBar.getRawValue());
+      });
+    this.settingsForm.controls.navBar.controls.showIcon.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (!value) {
+          this.settingsForm.controls.navBar.controls.showName.setValue(true, {
+            emitEvent: false,
+          });
+        }
+        this.onUpdateNavBar(this.settingsForm.controls.navBar.getRawValue());
       });
 
     // Listen to visibility updates (only for pages)
     if (this.data.type === 'page') {
-      this.settingsForm?.controls.visible.valueChanges
+      this.settingsForm.controls.visible.valueChanges
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value: boolean | null) => {
-          if (!isNil(value)) {
-            this.onUpdateVisibility(value);
-          }
+        .subscribe((value: boolean) => {
+          this.onUpdateVisibility(value);
         });
     }
 
     if (this.dashboard) {
       // Listen to grid settings updates
-      this.settingsForm?.controls.gridOptions?.valueChanges
+      this.settingsForm.controls.gridOptions?.valueChanges
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe((value: any) => {
           // update only if the form is valid
@@ -290,11 +293,20 @@ export class ViewSettingsModalComponent
     return this.fb.group({
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
-      visible: this.fb.control(this.data.visible ?? true),
-      showName: this.fb.control(this.data.showName ?? true),
-      showIcon: this.fb.control(
-        isNil(this.data.showIcon) ? true : this.data.showIcon
-      ),
+      visible: this.fb.control(this.data.visible ?? true, {
+        nonNullable: true,
+      }),
+      showName: this.fb.control(this.data.showName ?? true, {
+        nonNullable: true,
+      }),
+      navBar: this.fb.group({
+        showName: this.fb.control(get(this.data, 'navBar.showName', true), {
+          nonNullable: true,
+        }),
+        showIcon: this.fb.control(get(this.data, 'navBar.showIcon', true), {
+          nonNullable: true,
+        }),
+      }),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
@@ -422,38 +434,43 @@ export class ViewSettingsModalComponent
   }
 
   /**
-   * Save dashboard icon display parameter.
+   * Save nav bar parameters.
    *
-   * @param showIcon boolean
+   * @param showName boolean
    */
-  private onUpdateShowIcon(showIcon: boolean): void {
+  private onUpdateNavBar(navBar: {
+    showName: boolean;
+    showIcon: boolean;
+  }): void {
     if (this.data.type === 'step' && this.step) {
       const callback = () => {
         this.step = {
           ...this.step,
-          showIcon,
+          navBar,
         };
-        const updates = { showIcon };
+        // Updates parent component
+        const updates = { navBar };
         this.onUpdate.emit(updates);
       };
       this.workflowService.updateStepParameter(
         this.step as Step,
-        { showIcon },
+        { navBar },
         callback
       );
     } else {
       const callback = () => {
         this.page = {
           ...this.page,
-          showIcon,
+          navBar,
         };
-        const updates = { showIcon };
+        // Updates parent component
+        const updates = { navBar };
         this.onUpdate.emit(updates);
       };
       this.page &&
         this.applicationService.updatePageParameter(
           this.page as Page,
-          { showIcon },
+          { navBar },
           callback
         );
     }

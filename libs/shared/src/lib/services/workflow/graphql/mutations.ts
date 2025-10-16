@@ -26,7 +26,7 @@ export const EDIT_STEP = gql`
     $content: ID
     $permissions: JSON
     $showName: Boolean
-    $showIcon: Boolean
+    $navBar: NavBarSettingsInputType
   ) {
     editStep(
       id: $id
@@ -36,13 +36,16 @@ export const EDIT_STEP = gql`
       content: $content
       permissions: $permissions
       showName: $showName
-      showIcon: $showIcon
+      navBar: $navBar
     ) {
       id
       name
       icon
       showName
-      showIcon
+      navBar {
+        showIcon
+        showName
+      }
       type
       content
       createdAt

@@ -774,7 +774,7 @@ export class ApplicationService {
   }
 
   /**
-   * Update page parameter (icon, showName, showIcon), by sending a mutation to the back-end.
+   * Update page parameter (icon, showName, navBar), by sending a mutation to the back-end.
    *
    * @param page Edited page
    * @param update page update
@@ -788,7 +788,10 @@ export class ApplicationService {
     update: {
       icon?: string;
       showName?: boolean;
-      showIcon?: boolean;
+      navBar?: {
+        showName: boolean;
+        showIcon: boolean;
+      };
     },
     callback?: any
   ): void {
@@ -801,7 +804,7 @@ export class ApplicationService {
             id: page.id,
             ...(has(update, 'icon') && { icon: update.icon }),
             ...(has(update, 'showName') && { showName: update.showName }),
-            ...(has(update, 'showIcon') && { showIcon: update.showIcon }),
+            ...(has(update, 'navBar') && { navBar: update.navBar }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -818,7 +821,7 @@ export class ApplicationService {
                     ...x,
                     icon: data.editPage.icon,
                     showName: data.editPage.showName,
-                    showIcon: data.editPage.showIcon,
+                    navBar: data.editPage.navBar,
                   };
                 }
                 return x;

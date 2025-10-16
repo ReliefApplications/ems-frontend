@@ -75,7 +75,10 @@ export interface Page {
   visible?: boolean;
   icon?: string;
   showName?: boolean;
-  showIcon?: boolean;
+  navBar?: {
+    showIcon?: boolean;
+    showName?: boolean;
+  };
   contentWithContext?: ((
     | {
         // The element string is the value for the value field of the refData

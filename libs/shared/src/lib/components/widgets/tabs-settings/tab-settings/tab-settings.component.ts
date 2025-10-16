@@ -80,26 +80,26 @@ export class TabSettingsComponent
       ...this.tabGroup.controls.gridOptions.value,
     } as GridsterConfig;
 
-    const showNameControl = this.tabGroup.get('showName');
-    const showIconControl = this.tabGroup.get('showIcon');
-
-    showNameControl?.valueChanges
+    // Make sure at least one of icon or name is shown in navBar
+    this.tabGroup.controls.navBar.controls.showName.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        const normalized = value !== false;
-        if (!normalized && showIconControl?.value === false) {
-          showIconControl.setValue(true, { emitEvent: false });
+        if (value === false) {
+          this.tabGroup.controls.navBar.controls.showIcon.setValue(true, {
+            emitEvent: false,
+          });
+        }
+      });
+    this.tabGroup.controls.navBar.controls.showIcon.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === false) {
+          this.tabGroup.controls.navBar.controls.showName.setValue(true, {
+            emitEvent: false,
+          });
         }
       });
 
-    showIconControl?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const normalized = value !== false;
-        if (!normalized && showNameControl?.value === false) {
-          showNameControl.setValue(true, { emitEvent: false });
-        }
-      });
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }

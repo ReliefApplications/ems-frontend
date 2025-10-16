@@ -210,8 +210,8 @@ export class ApplicationComponent
             icon: x.icon || this.getNavIcon(x.type || ''),
             fontFamily: x.icon ? 'fa' : 'material',
             visible: x.visible,
-            showName: x.showName !== false,
-            showIcon: x.showIcon !== false,
+            showName: x.navBar?.showName !== false,
+            showIcon: x.navBar?.showIcon !== false,
           })),
       },
     ];

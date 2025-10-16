@@ -82,14 +82,14 @@ export const EDIT_PAGE = gql`
     $permissions: JSON
     $visible: Boolean
     $showName: Boolean
-    $showIcon: Boolean
+    $navBar: NavBarSettingsInputType
   ) {
     editPage(
       id: $id
       name: $name
       icon: $icon
       showName: $showName
-      showIcon: $showIcon
+      navBar: $navBar
       permissions: $permissions
       visible: $visible
     ) {
@@ -97,7 +97,10 @@ export const EDIT_PAGE = gql`
       name
       icon
       showName
-      showIcon
+      navBar {
+        showName
+        showIcon
+      }
       visible
       permissions {
         canSee {

@@ -36,7 +36,6 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         icon
         showName
-        showIcon
         name
         type
         content
@@ -45,7 +44,6 @@ export const GET_WORKFLOW_BY_ID = gql`
       page {
         id
         name
-        showIcon
         canUpdate
         permissions {
           canSee {
@@ -75,7 +73,6 @@ export const GET_STEP_BY_ID = gql`
       id
       icon
       showName
-      showIcon
       name
       createdAt
       modifiedAt
@@ -94,7 +91,6 @@ export const GET_PAGE_BY_ID = gql`
       id
       icon
       showName
-      showIcon
       name
       createdAt
       modifiedAt

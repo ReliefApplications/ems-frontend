@@ -29,6 +29,10 @@ export const createTabFormGroup = (value?: any) => {
     hide: fb.control<boolean>(value?.hide ?? false),
     showName: fb.control<boolean>(value?.showName ?? true),
     showIcon: fb.control<boolean>(value?.showIcon ?? true),
+    navBar: fb.group({
+      showName: fb.control<boolean>(value?.navBar?.showName ?? true),
+      showIcon: fb.control<boolean>(value?.navBar?.showIcon ?? true),
+    }),
     gridOptions: fb.group({
       minCols: fb.control(
         get<number>(value.gridOptions, 'minCols', DEFAULT_GRID_OPTIONS.minCols),

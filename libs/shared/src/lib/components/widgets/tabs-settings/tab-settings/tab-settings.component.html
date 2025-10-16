@@ -20,18 +20,44 @@
     <label>{{ 'common.label' | translate }}</label>
     <input formControlName="label" type="text" placeholder="Type a label..." />
   </div>
-  <ui-toggle formControlName="showName">
-    <ng-container ngProjectAs="label">
-      {{ 'components.application.pages.settings.showName' | translate }}
-    </ng-container>
-  </ui-toggle>
-  <ui-toggle formControlName="showIcon">
-    <ng-container ngProjectAs="label">
-      {{ 'components.application.pages.settings.showIcon' | translate }}
-    </ng-container>
-  </ui-toggle>
+  <!-- Nav bar settings -->
+  <ng-container formGroupName="navBar">
+    <!-- Show name in nav bar -->
+    <ui-toggle formControlName="showName">
+      <ng-container ngProjectAs="label">
+        {{ 'components.widget.settings.tabs.navBar.showName' | translate }}
+        <ui-icon
+          class="cursor-help self-center"
+          icon="info_outline"
+          [size]="18"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.tabs.tooltip.navBar' | translate
+          "
+        ></ui-icon>
+      </ng-container>
+    </ui-toggle>
+    <!-- Show icon in nav bar -->
+    <ui-toggle formControlName="showIcon">
+      <ng-container ngProjectAs="label">
+        {{ 'components.widget.settings.tabs.navBar.showIcon' | translate }}
+        <ui-icon
+          class="cursor-help self-center"
+          icon="info_outline"
+          [size]="18"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.tabs.tooltip.navBar' | translate
+          "
+        ></ui-icon>
+      </ng-container>
+    </ui-toggle>
+  </ng-container>
+  <!-- Icon picker -->
   <div uiFormFieldDirective>
-    <label>{{ 'components.widget.settings.tabs.icon' | translate }}</label>
+    <label>{{
+      'components.widget.settings.tabs.selectIcon' | translate
+    }}</label>
     <shared-icon-picker
       formControlName="icon"
       [placeholder]="

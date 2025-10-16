@@ -28,7 +28,10 @@ export const GET_DASHBOARD_BY_ID = gql`
       page {
         id
         showName
-        showIcon
+        navBar {
+          showName
+          showIcon
+        }
         application {
           shortcut
           id
@@ -39,7 +42,10 @@ export const GET_DASHBOARD_BY_ID = gql`
         id
         icon
         showName
-        showIcon
+        navBar {
+          showName
+          showIcon
+        }
         workflow {
           id
           page {
