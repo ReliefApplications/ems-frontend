@@ -233,6 +233,38 @@ export class HtmlParserService {
         return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
+    lowercase: {
+      signature: 'lowercase( value )',
+      /**
+       * Converts a string to lowercase.
+       *
+       * @param value The string to convert.
+       * @returns String to lowercase.
+       */
+      call: (value) => {
+        try {
+          return value.toLowerCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
+    uppercase: {
+      signature: 'uppercase( value )',
+      /**
+       * Converts a string to uppercase.
+       *
+       * @param value The string to convert.
+       * @returns String to uppercase.
+       */
+      call: (value) => {
+        try {
+          return value.toUpperCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
