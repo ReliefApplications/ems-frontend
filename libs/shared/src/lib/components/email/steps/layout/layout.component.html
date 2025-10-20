@@ -395,7 +395,7 @@
       <editor
         #headerEditor
         formControlName="header"
-        [init]="editor"
+        [init]="headerTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
@@ -570,7 +570,7 @@
         formControlName="body"
         class="rounded"
         [ngClass]="{ 'form-error': showBodyValidator }"
-        [init]="editor"
+        [init]="bodyTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
@@ -673,7 +673,7 @@
         #footerEditor
         [(ngModel)]="emailService.allLayoutdata.footerHtml"
         [ngModelOptions]="{ standalone: true }"
-        [init]="editor"
+        [init]="footerTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
