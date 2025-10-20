@@ -24,6 +24,9 @@ import {
   EmailService,
   FieldMapperComponent,
   Form,
+  Application,
+  ContentType,
+  Page,
   INLINE_EDITOR_CONFIG,
   QueryBuilderModule,
   QueryBuilderService,
@@ -123,7 +126,9 @@ export class EditActionButtonModalComponent
   /** Send notification template list */
   public sendNotificationTemplates: Form[] = [];
   /** Fields, of current page context resource, if any */
-  public sendNotificationFields: any[] = [];
+  public contextResourceFields: any[] = [];
+  /** Available pages from the application for targetPage selection */
+  public pages: any[] = [];
 
   /**
    * Component for editing a dashboard action button
@@ -169,6 +174,10 @@ export class EditActionButtonModalComponent
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
     if (!isNil(this.data.dashboard)) {
+      // Build list of pages for targetPage selection
+      this.pages = this.getPages(
+        this.applicationService.application.getValue()
+      );
       // Listen to form changes
       this.setFormListeners();
       // Get context resource data, if any
@@ -183,8 +192,8 @@ export class EditActionButtonModalComponent
           .subscribe({
             next: ({ data }) => {
               this.editRecordTemplates = data.resource.forms ?? [];
-              this.sendNotificationFields = this.queryBuilder.getFields(
-                data.resource?.queryName as string
+              this.contextResourceFields = this.queryBuilder.getFields(
+                data.resource.queryName as string
               );
               this.resourceFields = data.resource.fields.filter((f: any) =>
                 ['resource', 'resources'].includes(f.type)
@@ -303,6 +312,72 @@ export class EditActionButtonModalComponent
               enabled: [!!get(data, 'cloneRecord', false)],
               template: [get(data, 'cloneRecord.template', '')],
               autoReload: [get(data, 'cloneRecord.autoReload', false)],
+              onSave: this.fb.group({
+                navigateTo: this.fb.group(
+                  {
+                    // Enabled if one of the two navigateTo options is set
+                    enabled: [
+                      !!get(
+                        data,
+                        'cloneRecord.onSave.navigateTo.targetUrl.href',
+                        false
+                      ) ||
+                        !!get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                          false
+                        ),
+                    ],
+                    targetUrl: this.fb.group({
+                      enabled: [
+                        !!get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetUrl.href',
+                          false
+                        ),
+                      ],
+                      href: [
+                        get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetUrl.href',
+                          ''
+                        ),
+                      ],
+                      openInNewTab: [
+                        get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetUrl.openInNewTab',
+                          true
+                        ),
+                      ],
+                    }),
+                    targetPage: this.fb.group({
+                      enabled: [
+                        !!get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                          false
+                        ),
+                      ],
+                      pageUrl: [
+                        get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                          ''
+                        ),
+                      ],
+                      field: [
+                        get(
+                          data,
+                          'cloneRecord.onSave.navigateTo.targetPage.field',
+                          ''
+                        ),
+                      ],
+                    }),
+                  },
+                  { validator: this.cloneRecordNavigateToValidator }
+                ),
+              }),
             }),
             addRecord: this.fb.group(
               {
@@ -423,8 +498,9 @@ export class EditActionButtonModalComponent
       ),
     });
 
-    // Setting up mutual exclusivity for action controls and navigateTo controls
-    const actionControls = [
+    // Set up mutual exclusivity
+    // Between action controls
+    this.setupMutualExclusivity([
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.cloneRecord.enabled'),
@@ -432,17 +508,17 @@ export class EditActionButtonModalComponent
       form.get('action.subscribeToNotification.enabled'),
       form.get('action.unsubscribeFromNotification.enabled'),
       form.get('action.sendNotification.enabled'),
-    ];
-
-    const navigateToControls = [
+    ] as AbstractControl[]);
+    // Between navigateTo controls
+    this.setupMutualExclusivity([
       form.get('action.navigateTo.previousPage'),
       form.get('action.navigateTo.targetUrl.enabled'),
-    ];
-
-    // Apply the utility function to both sets of controls
-    this.setupMutualExclusivity(actionControls as AbstractControl[]);
-    this.setupMutualExclusivity(navigateToControls as AbstractControl[]);
-
+    ] as AbstractControl[]);
+    // Between navigateTo controls of clone record action
+    this.setupMutualExclusivity([
+      form.get('action.cloneRecord.onSave.navigateTo.targetPage.enabled'),
+      form.get('action.cloneRecord.onSave.navigateTo.targetUrl.enabled'),
+    ] as AbstractControl[]);
     return form;
   };
 
@@ -620,6 +696,17 @@ export class EditActionButtonModalComponent
   /** On click on the preview button open the href */
   public preview(): void {
     let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
+    let isNewTab =
+      this.form.get('action.navigateTo.targetUrl.openInNewTab')?.value ?? true;
+    if (!href) {
+      href = this.form.get(
+        'action.cloneRecord.onSave.navigateTo.targetUrl.href'
+      )?.value;
+      isNewTab =
+        this.form.get(
+          'action.cloneRecord.onSave.navigateTo.targetUrl.openInNewTab'
+        )?.value ?? true;
+    }
     if (href) {
       //regex to verify if it's a page id key
       const regex = /{{page\((.*?)\)}}/;
@@ -627,7 +714,6 @@ export class EditActionButtonModalComponent
       if (match) {
         href = this.dataTemplateService.getButtonLink(match[1]);
       }
-      const isNewTab = this.form.get('openInNewTab')?.value ?? true;
       if (isNewTab) window.open(href, '_blank');
       else this.router.navigate([href]);
     }
@@ -664,6 +750,39 @@ export class EditActionButtonModalComponent
         cloneRecord: {
           template: this.form.get('action.cloneRecord.template')?.value,
           autoReload: this.form.get('action.cloneRecord.autoReload')?.value,
+          onSave: {
+            ...(this.form.get('action.cloneRecord.onSave.navigateTo.enabled')
+              ?.value && {
+              navigateTo: {
+                // If targetPage enabled
+                ...(this.form.get(
+                  'action.cloneRecord.onSave.navigateTo.targetPage.enabled'
+                )?.value && {
+                  targetPage: {
+                    pageUrl: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetPage.pageUrl'
+                    )?.value,
+                    field: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetPage.field'
+                    )?.value,
+                  },
+                }),
+                // If targetUrl enabled
+                ...(this.form.get(
+                  'action.cloneRecord.onSave.navigateTo.targetUrl.enabled'
+                )?.value && {
+                  targetUrl: {
+                    href: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetUrl.href'
+                    )?.value,
+                    openInNewTab: this.form.get(
+                      'action.cloneRecord.onSave.navigateTo.targetUrl.openInNewTab'
+                    )?.value,
+                  },
+                }),
+              },
+            }),
+          },
         },
       }),
       // If addRecord enabled
@@ -779,6 +898,64 @@ export class EditActionButtonModalComponent
         (navigateTo.targetUrl.enabled && navigateTo.targetUrl.href);
       if (!atLeastOneEnabled) return { atLeastOneRequired: true };
       if (!hrefValid) return { hrefRequired: true };
+    }
+    return null;
+  };
+
+  /**
+   * Get available pages from app
+   *
+   * @param application application
+   * @returns list of pages and their url
+   */
+  private getPages(application: Application | null) {
+    return (
+      application?.pages?.map((page: any) => ({
+        id: page.id,
+        name: page.name,
+        urlParams: this.getPageUrlParams(application, page),
+        placeholder: `{{page(${page.id})}}`,
+      })) || []
+    );
+  }
+
+  /**
+   * Get page url params
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
+  private getPageUrlParams(application: Application, page: Page): string {
+    const applicationPath =
+      this.applicationService.getApplicationPath(application);
+    return page.type === ContentType.form
+      ? `${applicationPath}/${page.type}/${page.id}`
+      : `${applicationPath}/${page.type}/${page.content}`;
+  }
+
+  /**
+   * Validator to ensure that at least one clone record navigateTo action is enabled
+   *
+   * @param control form group
+   * @returns validation errors
+   */
+  cloneRecordNavigateToValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const navigateTo = control.value;
+    if (navigateTo?.enabled) {
+      const atLeastOneEnabled =
+        navigateTo.targetPage?.enabled || navigateTo.targetUrl?.enabled;
+      const hrefValid =
+        !navigateTo.targetUrl?.enabled ||
+        (navigateTo.targetUrl.enabled && navigateTo.targetUrl.href);
+      const pageUrlValid =
+        !navigateTo.targetPage?.enabled ||
+        (navigateTo.targetPage.enabled && navigateTo.targetPage.pageUrl);
+      if (!atLeastOneEnabled) return { atLeastOneRequired: true };
+      if (!hrefValid) return { hrefRequired: true };
+      if (!pageUrlValid) return { pageUrlRequired: true };
     }
     return null;
   };

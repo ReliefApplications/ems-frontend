@@ -233,6 +233,38 @@ export class HtmlParserService {
         return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
+    lowercase: {
+      signature: 'lowercase( value )',
+      /**
+       * Converts a string to lowercase.
+       *
+       * @param value The string to convert.
+       * @returns String to lowercase.
+       */
+      call: (value) => {
+        try {
+          return value.toLowerCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
+    uppercase: {
+      signature: 'uppercase( value )',
+      /**
+       * Converts a string to uppercase.
+       *
+       * @param value The string to convert.
+       * @returns String to uppercase.
+       */
+      call: (value) => {
+        try {
+          return value.toUpperCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
@@ -276,6 +308,7 @@ export class HtmlParserService {
         // get the arguments and clean the numbers to be parsed correctly
         const args =
           result[2]
+            .replace(/&nbsp;/g, ' ') // Replace &nbsp; with a regular space
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */

@@ -14,10 +14,12 @@ import {
   ContextService,
   Record,
   BreadcrumbService,
+  RecordQueryResponse,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
   GET_PAGE_BY_ID,
+  GET_RECORD_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
@@ -49,8 +51,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public querySubscription?: Subscription;
   /** Prevents new records to be created */
   public hideNewRecord = false;
-  /** Prevents new records to be created */
-  public canCreateRecords = false;
+  /** Can view form */
+  public canViewForm = false;
   /** Current page */
   public page?: Page;
   /** Current step if nested in workflow */
@@ -59,6 +61,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public isStep = false;
   /** Form button actions */
   public actionButtons: ActionButton[] = [];
+  /** Current record, optional */
+  public record?: Record;
 
   /**
    * Form page.
@@ -107,8 +111,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             switchMap(({ data }) => {
               this.step = data.step;
               this.actionButtons = data.step.buttons as ActionButton[];
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.step?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
               return this.getFormQuery(this.step.content ?? '');
-            })
+            }),
+            takeUntil(this.destroy$)
           )
           .subscribe(({ data, loading }) => {
             this.handleApplicationLoadResponse(data, loading);
@@ -125,8 +141,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             switchMap(({ data }) => {
               this.page = data.page;
               this.actionButtons = data.page.buttons as ActionButton[];
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.page?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
               return this.getFormQuery(this.page.content ?? '');
-            })
+            }),
+            takeUntil(this.destroy$)
           )
           .subscribe(({ data, loading }) => {
             this.handleApplicationLoadResponse(data, loading);
@@ -151,10 +179,25 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Returns query for the given record id
+   *
+   * @param id record id
+   * @returns record query for the given id
+   */
+  private getRecordQuery(id: string) {
+    return this.apollo.query<RecordQueryResponse>({
+      query: GET_RECORD_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Handles the response for the given form query response data and loading state
    *
    * @param {FormQueryResponse} data data retrieved from the form query
-   * @param {boolean} loading loadin state
+   * @param {boolean} loading loading state
    */
   private handleApplicationLoadResponse(
     data: FormQueryResponse,
@@ -171,7 +214,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     if (
       !this.form ||
       this.form.status !== 'active' ||
-      !this.form.canCreateRecords
+      (this.record && !this.record.canUpdate) ||
+      (!this.record && !this.form.canCreateRecords)
     ) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.accessNotProvided', {
@@ -181,7 +225,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         { error: true }
       );
     } else {
-      this.canCreateRecords = true;
+      this.canViewForm = true;
     }
     this.loading = loading;
   }

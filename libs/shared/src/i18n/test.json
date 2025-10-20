@@ -2701,6 +2701,9 @@
 					},
 					"autoReload": "******",
 					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "******"
+						},
 						"text": "******",
 						"tooltip": {
 							"template": "******"

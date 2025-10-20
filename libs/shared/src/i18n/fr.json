@@ -2704,6 +2704,9 @@
 					},
 					"autoReload": "Recharger le tableau de bord après la sauvegarde",
 					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "Après la duplication, naviguer vers"
+						},
 						"text": "Dupliquer l'enregistrement actuel",
 						"tooltip": {
 							"template": "Sélectionner un modèle pour la duplication de l'enregistrement actuel.\n Si aucun modèle n'est sélectionné, le dernier modèle utilisé par l'enregistrement actuel sera utilisé"

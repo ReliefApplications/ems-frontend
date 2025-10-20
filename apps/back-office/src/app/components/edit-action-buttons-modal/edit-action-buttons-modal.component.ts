@@ -204,6 +204,21 @@ export class EditActionButtonsModalComponent
   }
 
   /**
+   * Duplicates action button
+   *
+   * @param actionButton action button
+   */
+  public async onDuplicateActionButton(actionButton: ActionButton) {
+    const newActionButton = structuredClone(actionButton);
+    newActionButton.text = `${
+      newActionButton.text
+    } (${this.translateService.instant('common.copy')})`;
+    this.actionButtons.push(newActionButton);
+    this.searchTerm = '';
+    this.updateTable();
+  }
+
+  /**
    * Get the roles names from the roles ids
    *
    * @param roles ids of roles
