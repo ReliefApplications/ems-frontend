@@ -308,6 +308,7 @@ export class HtmlParserService {
         // get the arguments and clean the numbers to be parsed correctly
         const args =
           result[2]
+            .replace(/&nbsp;/g, ' ') // Replace &nbsp; with a regular space
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
