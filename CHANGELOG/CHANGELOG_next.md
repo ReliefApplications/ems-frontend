@@ -1,3 +1,10 @@
+# [2.22.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.3...v2.22.0-rc.4) (2025-10-20)
+
+
+### Features
+
+* Add lowercase & uppercase methods to widget templating ([#2827](https://github.com/ReliefApplications/ems-frontend/issues/2827)) ([8db5524](https://github.com/ReliefApplications/ems-frontend/commit/8db55240d21226aebae2e8063c92d7b91720e576)), closes [AB#122364](https://github.com/AB/issues/122364)
+
 # [2.22.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.2...v2.22.0-rc.3) (2025-10-10)
 
 
