@@ -128,8 +128,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       : true;
   }
 
-  /** @returns list of active floating buttons */
-  get floatingButtons() {
+  /** @returns list of active grid actions */
+  get gridActions() {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 

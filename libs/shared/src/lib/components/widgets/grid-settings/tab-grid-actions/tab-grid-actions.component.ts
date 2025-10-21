@@ -5,22 +5,55 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { createButtonFormGroup } from '../grid-settings.forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormArray,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { createGridActionFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { TabsComponent } from '@oort-front/ui';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import {
+  AlertModule,
+  ButtonModule,
+  IconModule,
+  TabsComponent,
+  TabsModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { GridActionSettingsComponent } from '../grid-action-settings/grid-action-settings.component';
 
 /**
- * Buttons tab of grid widget configuration modal.
+ * Grid Actions configuration tab.
  */
 @Component({
-  selector: 'shared-tab-buttons',
-  templateUrl: './tab-buttons.component.html',
-  styleUrls: ['./tab-buttons.component.scss'],
+  standalone: true,
+  selector: 'shared-tab-grid-actions',
+  templateUrl: './tab-grid-actions.component.html',
+  styleUrls: ['./tab-grid-actions.component.scss'],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IconModule,
+    TabsModule,
+    DragDropModule,
+    GridActionSettingsComponent,
+    ButtonModule,
+    AlertModule,
+    TooltipModule,
+  ],
 })
-export class TabButtonsComponent {
+export class TabGridActionsComponent {
   /** Form group */
   @Input() formGroup!: UntypedFormGroup;
   /** List of fields */
@@ -39,36 +72,36 @@ export class TabButtonsComponent {
   /** Tabs component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
-  /** @returns List of the floating buttons */
-  get buttons(): UntypedFormArray {
+  /** @returns List of grid actions */
+  get gridActions(): UntypedFormArray {
     return (
       (this.formGroup?.controls.floatingButtons as UntypedFormArray) || null
     );
   }
 
   /**
-   * Adds a floating button configuration.
+   * Adds a grid action configuration.
    *
-   * @param event sf
+   * @param event Mouse event
    */
-  public addButton(event: MouseEvent): void {
-    const floatingButtons = this.formGroup?.get(
+  public addAction(event: MouseEvent): void {
+    const gridActions = this.formGroup?.get(
       'floatingButtons'
     ) as UntypedFormArray;
-    floatingButtons.push(createButtonFormGroup({ show: true }));
+    gridActions.push(createGridActionFormGroup({ show: true }));
     event.stopPropagation();
   }
 
   /**
-   * Deletes a floating button configuration.
+   * Deletes a grid action configuration.
    *
-   * @param index index of button to remove
+   * @param index index of action to remove
    */
-  public deleteButton(index: number): void {
-    const floatingButtons = this.formGroup?.get(
+  public deleteAction(index: number): void {
+    const gridActions = this.formGroup?.get(
       'floatingButtons'
     ) as UntypedFormArray;
-    floatingButtons.removeAt(index);
+    gridActions.removeAt(index);
   }
 
   /**
@@ -78,7 +111,7 @@ export class TabButtonsComponent {
    */
   onReorder(event: CdkDragDrop<string[]>): void {
     moveItemInArray(
-      this.buttons.controls,
+      this.gridActions.controls,
       event.previousIndex,
       event.currentIndex
     );

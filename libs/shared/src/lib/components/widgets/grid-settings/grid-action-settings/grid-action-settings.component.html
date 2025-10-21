@@ -9,7 +9,7 @@
       <ui-button
         icon="remove_circle_outline"
         variant="danger"
-        (click)="emitDeleteButton()"
+        (click)="deleteAction.emit(true)"
       >
         {{ 'common.delete' | translate }}
       </ui-button>
