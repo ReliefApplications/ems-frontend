@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Injector, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -20,6 +20,7 @@ import { Role } from '../../../../models/user.model';
 import { ActionButton } from '../../grid/action-button.type';
 import { Dialog } from '@angular/cdk/dialog';
 import { Resource } from '../../../../models/resource.model';
+import { GridSettingsFormFactory } from '../grid-settings.forms';
 
 /**
  * Custom row actions settings component.
@@ -44,7 +45,14 @@ import { Resource } from '../../../../models/resource.model';
   templateUrl: './custom-row-actions.component.html',
   styleUrls: ['./custom-row-actions.component.scss'],
 })
-export class CustomRowActionsComponent extends UnsubscribeComponent {
+export class CustomRowActionsComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
+  /** Widget form group */
+  @Input() formGroup!: ReturnType<
+    typeof GridSettingsFormFactory.prototype.createGridWidgetFormGroup
+  >;
   /** Resource associated with the grid */
   @Input() resource: Resource | null = null;
   /** List of action buttons from dashboard */
@@ -61,6 +69,19 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
   private translate = inject(TranslateService);
   /** Dialog service */
   private dialog = inject(Dialog);
+  /** Angular injector */
+  private injector = inject(Injector);
+  /** Form factory */
+  private formFactory = new GridSettingsFormFactory(
+    this.injector,
+    this.destroy$
+  );
+
+  ngOnInit(): void {
+    this.actionButtons =
+      (this.formGroup.controls.customRowActions.value as any[]) || [];
+    this.updateTable();
+  }
 
   /**
    * Add new action button
@@ -83,6 +104,9 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
+        this.formGroup.controls.customRowActions.push(
+          this.formFactory.createCustomRowActionFormGroup(button)
+        );
         this.actionButtons.push(button);
         this.searchTerm = '';
         this.updateTable();
@@ -115,6 +139,10 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
         if (!button) return;
         const index = this.actionButtons.indexOf(actionButton);
         if (index > -1) {
+          this.formGroup.controls.customRowActions.setControl(
+            index,
+            this.formFactory.createCustomRowActionFormGroup(button)
+          );
           this.actionButtons[index] = button;
           this.updateTable();
         }
@@ -148,6 +176,7 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       if (value) {
         const index = this.actionButtons.indexOf(actionButton);
         if (index > -1) {
+          this.formGroup.controls.customRowActions.removeAt(index);
           this.actionButtons.splice(index, 1);
           this.searchTerm = '';
           this.updateTable();
@@ -166,6 +195,9 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
     newActionButton.text = `${newActionButton.text} (${this.translate.instant(
       'common.copy'
     )})`;
+    this.formGroup.controls.customRowActions.push(
+      this.formFactory.createCustomRowActionFormGroup(newActionButton)
+    );
     this.actionButtons.push(newActionButton);
     this.searchTerm = '';
     this.updateTable();

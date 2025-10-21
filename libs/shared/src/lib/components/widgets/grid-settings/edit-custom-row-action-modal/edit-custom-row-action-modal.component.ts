@@ -118,7 +118,7 @@ export class EditCustomRowActionModalComponent
     super();
     this.roles = this.applicationService.application.value?.roles || [];
     const factory = new GridSettingsFormFactory(this.injector, this.destroy$);
-    this.form = factory.createCustomRowActionFormGroup(data.button);
+    this.form = factory.createCustomRowActionFormGroupForEdition(data.button);
     this.isNew = !data.button;
 
     // Set the editor base url based on the environment file

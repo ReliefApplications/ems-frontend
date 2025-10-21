@@ -181,14 +181,13 @@ export class GridSettingsFormFactory {
               )
             : [this.createGridActionFormGroup(null)]
         ) as FormArray<FormControl<typeof this.createGridActionFormGroup>>,
-        customRowActions: this.fb.array(
-          configuration.customRowActions &&
-            configuration.customRowActions.length
-            ? configuration.customRowActions.map((x: any) =>
-                this.createCustomRowActionFormGroup(x)
-              )
-            : []
-        ) as FormArray<FormControl<typeof this.createCustomRowActionFormGroup>>,
+        customRowActions: this.fb.array<
+          ReturnType<typeof this.createCustomRowActionFormGroup>
+        >(
+          (configuration.customRowActions || []).map((x: any) =>
+            this.createCustomRowActionFormGroup(x)
+          )
+        ),
         sortFields: new FormArray<any>([]),
         contextFilters: [
           get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
@@ -286,12 +285,114 @@ export class GridSettingsFormFactory {
   };
 
   /**
-   * Create new custom row action form group
+   * Creates a form group for a custom row action, this is the model we save in the database
    *
    * @param value initial value
    * @returns Form group
    */
   public createCustomRowActionFormGroup = (value: ActionButton) => {
+    const form = this.fb.group({
+      text: [get(value, 'text', ''), Validators.required],
+      hasRoleRestriction: [
+        get(value, 'hasRoleRestriction', false),
+        Validators.required,
+      ],
+      roles: [get(value, 'roles', [])],
+      category: [get(value, 'category', 'secondary')],
+      variant: [get(value, 'variant', 'primary')],
+      ...((!!get(value, 'href', false) || get(value, 'previousPage')) && {
+        navigateTo: this.fb.group({
+          previousPage: [get(value, 'previousPage', false)],
+          ...(!!get(value, 'href', false) && {
+            targetUrl: this.fb.group({
+              href: [get(value, 'href', '')],
+              openInNewTab: [get(value, 'openInNewTab', true)],
+            }),
+          }),
+        }),
+      }),
+      ...(!!get(value, 'editRecord', false) && {
+        editRecord: this.fb.group({
+          template: [get(value, 'editRecord.template', '')],
+          autoReload: [get(value, 'editRecord.autoReload', false)],
+        }),
+      }),
+      ...(!!get(value, 'cloneRecord', false) && {
+        cloneRecord: this.fb.group({
+          template: [get(value, 'cloneRecord.template', '')],
+          autoReload: [get(value, 'cloneRecord.autoReload', false)],
+          onSave: this.fb.group({
+            ...((!!get(
+              value,
+              'cloneRecord.onSave.navigateTo.targetUrl.href',
+              false
+            ) ||
+              !!get(
+                value,
+                'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                false
+              )) && {
+              navigateTo: this.fb.group({
+                ...(!!get(
+                  value,
+                  'cloneRecord.onSave.navigateTo.targetUrl.href',
+                  false
+                ) && {
+                  targetUrl: this.fb.group({
+                    href: [
+                      get(
+                        value,
+                        'cloneRecord.onSave.navigateTo.targetUrl.href',
+                        ''
+                      ),
+                    ],
+                    openInNewTab: [
+                      get(
+                        value,
+                        'cloneRecord.onSave.navigateTo.targetUrl.openInNewTab',
+                        true
+                      ),
+                    ],
+                  }),
+                }),
+                ...(!!get(
+                  value,
+                  'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                  false
+                ) && {
+                  targetPage: this.fb.group({
+                    pageUrl: [
+                      get(
+                        value,
+                        'cloneRecord.onSave.navigateTo.targetPage.pageUrl',
+                        ''
+                      ),
+                    ],
+                    field: [
+                      get(
+                        value,
+                        'cloneRecord.onSave.navigateTo.targetPage.field',
+                        ''
+                      ),
+                    ],
+                  }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }),
+    });
+    return form;
+  };
+
+  /**
+   * Create new custom row action form group, optimized for edition modal
+   *
+   * @param value initial value
+   * @returns Form group
+   */
+  public createCustomRowActionFormGroupForEdition = (value: ActionButton) => {
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(value, 'text', ''), Validators.required],
