@@ -2371,8 +2371,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Grid actions",
-							"tooltip": "Enabled grid actions"
+							"title": "Row Actions",
+							"tooltip": "Row Actions (grid mode)"
 						},
 						"preview": {
 							"title": "Preview"

@@ -2374,8 +2374,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Actions de grille",
-							"tooltip": "Actions de grille activées"
+							"title": "Actions par ligne",
+							"tooltip": "Actions par ligne ( mode grille )"
 						},
 						"preview": {
 							"title": "Prévisualisation"
