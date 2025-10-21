@@ -1,22 +1,9 @@
-import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
-import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
-  ActionButton,
-  ApplicationService,
-  Dashboard,
-  EmptyModule,
-  Page,
-  Role,
-  Step,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
-import {
   ButtonModule,
-  DialogModule,
   DividerModule,
   FormWrapperModule,
   IconModule,
@@ -24,16 +11,20 @@ import {
   TableModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { isNil } from 'lodash';
+import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { BehaviorSubject, takeUntil } from 'rxjs';
+import { EmptyModule } from '../../../ui/empty/empty.module';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { ApplicationService } from '../../../../services/application/application.service';
+import { Role } from '../../../../models/user.model';
+import { ActionButton } from '../../grid/action-button.type';
+import { Dialog } from '@angular/cdk/dialog';
 
-/** Component for editing dashboard action buttons */
 @Component({
-  selector: 'app-edit-action-buttons-modal',
+  selector: 'shared-custom-row-actions',
   standalone: true,
   imports: [
     CommonModule,
-    DialogModule,
     FormsModule,
     TranslateModule,
     FormWrapperModule,
@@ -46,13 +37,10 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
     DragDropModule,
     EmptyModule,
   ],
-  templateUrl: './edit-action-buttons-modal.component.html',
-  styleUrls: ['./edit-action-buttons-modal.component.scss'],
+  templateUrl: './custom-row-actions.component.html',
+  styleUrls: ['./custom-row-actions.component.scss'],
 })
-export class EditActionButtonsModalComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class CustomRowActionsComponent extends UnsubscribeComponent {
   /** List of action buttons from dashboard */
   public actionButtons: ActionButton[] = [];
   /** Behavior subject to track change in action buttons */
@@ -61,57 +49,18 @@ export class EditActionButtonsModalComponent
   public searchTerm = '';
   /** Columns to display */
   public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  private applicationService = inject(ApplicationService);
+  private translate = inject(TranslateService);
+  private dialog = inject(Dialog);
 
-  /**
-   * Component for editing dashboard action buttons
-   *
-   * @param dialogRef dialog reference
-   * @param data data passed to the modal
-   * @param data.dashboard Current dashboard
-   * @param data.form Current form
-   * @param dialog dialog module for button edition / creation / deletion
-   * @param translate used to translate modal text
-   * @param applicationService shared application service
-   */
-  constructor(
-    public dialogRef: DialogRef<ActionButton[]>,
-    @Inject(DIALOG_DATA)
-    private data: { dashboard?: Dashboard; form?: Page | Step },
-    public dialog: Dialog,
-    public translate: TranslateService,
-    public applicationService: ApplicationService
-  ) {
-    super();
-  }
-
-  ngOnInit(): void {
-    if (this.data) {
-      const buttons =
-        this.data.dashboard?.buttons ?? this.data.form?.buttons ?? [];
-      this.actionButtons = [...buttons];
-      this.updateTable();
-    }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
-  /** Open modal to add new action button */
   public async onAddActionButton() {
-    const { EditActionButtonModalComponent } = await import(
-      '../edit-action-button-modal/edit-action-button-modal.component'
+    const { EditCustomRowActionModalComponent } = await import(
+      '../edit-custom-row-action-modal/edit-custom-row-action-modal.component'
     );
     const dialogRef = this.dialog.open<ActionButton | undefined>(
-      EditActionButtonModalComponent,
+      EditCustomRowActionModalComponent,
       {
         data: {
-          ...(!isNil(this.data.dashboard) && {
-            dashboard: this.data.dashboard,
-          }),
-          ...(!isNil(this.data.form) && {
-            form: this.data.form,
-          }),
           disableClose: true,
         },
       }
@@ -127,28 +76,17 @@ export class EditActionButtonsModalComponent
       });
   }
 
-  /**
-   * Open modal to edit action button
-   *
-   * @param actionButton action button to edit
-   */
   public async onEditActionButton(actionButton: ActionButton) {
-    const { EditActionButtonModalComponent } = await import(
-      '../edit-action-button-modal/edit-action-button-modal.component'
+    const { EditCustomRowActionModalComponent } = await import(
+      '../edit-custom-row-action-modal/edit-custom-row-action-modal.component'
     );
     const dialogRef = this.dialog.open<ActionButton | undefined>(
-      EditActionButtonModalComponent,
+      EditCustomRowActionModalComponent,
       {
         data: {
           button: actionButton,
-          ...(!isNil(this.data.dashboard) && {
-            dashboard: this.data.dashboard,
-          }),
-          ...(!isNil(this.data.form) && {
-            form: this.data.form,
-          }),
+          disableClose: true,
         },
-        disableClose: true,
       }
     );
 
@@ -164,13 +102,10 @@ export class EditActionButtonsModalComponent
       });
   }
 
-  /**
-   * Removes action button
-   *
-   * @param actionButton action button
-   */
   public async onDeleteActionButton(actionButton: ActionButton) {
-    const { ConfirmModalComponent } = await import('@oort-front/shared');
+    const { ConfirmModalComponent } = await import(
+      '../../../confirm-modal/confirm-modal.component'
+    );
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
@@ -197,11 +132,6 @@ export class EditActionButtonsModalComponent
     });
   }
 
-  /**
-   * Duplicates action button
-   *
-   * @param actionButton action button
-   */
   public async onDuplicateActionButton(actionButton: ActionButton) {
     const newActionButton = structuredClone(actionButton);
     newActionButton.text = `${newActionButton.text} (${this.translate.instant(
@@ -240,16 +170,11 @@ export class EditActionButtonsModalComponent
     this.updateTable();
   }
 
-  /** On click on the save button close the dialog with the form value */
-  public onSubmit(): void {
-    this.dialogRef.close(this.actionButtons);
-  }
-
   /**
    * Updates the datasource to reflect the state of the action buttons and to apply the filter
    */
   public updateTable() {
-    let actionButtons: ActionButton[];
+    let actionButtons: any[];
 
     if (this.searchTerm !== '') {
       actionButtons = this.actionButtons.filter((action) =>

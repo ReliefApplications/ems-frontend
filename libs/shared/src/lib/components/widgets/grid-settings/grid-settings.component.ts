@@ -45,6 +45,7 @@ import { SortingSettingsModule } from '../common/sorting-settings/sorting-settin
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.component';
+import { CustomRowActionsComponent } from './custom-row-actions/custom-row-actions.component';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -69,6 +70,7 @@ import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.com
     SortingSettingsModule,
     ToggleModule,
     ContextualFiltersSettingsComponent,
+    CustomRowActionsComponent,
   ],
 })
 export class GridSettingsComponent

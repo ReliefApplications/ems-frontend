@@ -1,0 +1,39 @@
+import { Category, Variant } from '@oort-front/ui';
+
+/**
+ * Action button Type
+ */
+export type ActionButton = {
+  text: string;
+  // Display
+  variant: Variant;
+  category: Category;
+  // Role restriction
+  hasRoleRestriction: boolean;
+  roles: string[];
+  // Navigation
+  href?: string;
+  openInNewTab: boolean;
+  previousPage?: boolean;
+  // Edit Record
+  editRecord?: {
+    template?: string;
+  };
+  // Clone Record
+  cloneRecord?: {
+    template?: string;
+    autoReload?: boolean;
+    onSave?: {
+      navigateTo?: {
+        targetUrl?: {
+          href?: string;
+          openInNewTab?: boolean;
+        };
+        targetPage?: {
+          pageUrl?: string;
+          field?: string;
+        };
+      };
+    };
+  };
+};
