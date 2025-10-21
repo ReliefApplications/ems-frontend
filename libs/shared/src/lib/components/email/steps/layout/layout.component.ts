@@ -304,7 +304,7 @@ export class LayoutComponent
       query.emailDistributionList.bcc =
         this.emailService.quickEmailDistributionListQuery.bcc;
     }
-    //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
+    //Start:- When We are checking from Grid Row Action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
     if (
       this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName !==
@@ -1118,7 +1118,7 @@ export class LayoutComponent
   }
 
   /**
-   * Validate Quick action To emails when we cehck from Quick Action grid
+   * Validate Grid Row Action To emails
    */
   validateQuickActionToEmails() {
     if (this.emailService.isQuickAction) {

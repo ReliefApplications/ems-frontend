@@ -293,11 +293,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   }
 
   /**
-   * Executes sequentially actions enabled by settings for the floating button
+   * Executes sequentially actions enabled by settings for the grid action
    *
    * @param options action options.
    */
-  public async onQuickAction(options: any): Promise<void> {
+  public async onGridAction(options: any): Promise<void> {
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -721,7 +721,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   }
 
   /**
-   * Build email query for quick action button.
+   * Build email query for Grid Row Action.
    *
    * @param selectedIds Ids selected in the grid for email sending
    * @param fields List of fields to pass to email

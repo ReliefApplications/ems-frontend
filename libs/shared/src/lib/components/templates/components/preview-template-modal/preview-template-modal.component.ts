@@ -286,7 +286,7 @@ export class PreviewTemplateModalComponent implements OnInit {
   }
 
   /**
-   * Validate Quick action To emails when we cehck from Quick Action grid
+   * Validate Grid Row Action To emails
    *
    * @returns value for button disable or enable
    */

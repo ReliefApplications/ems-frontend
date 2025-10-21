@@ -120,7 +120,7 @@ export class SelectDistributionComponent
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
-  /** DL dialog data from Quick Action  */
+  /** DL dialog data from Grid Row Action  */
   @Input() quickActionDistribution: any;
 
   ngOnInit(): void {

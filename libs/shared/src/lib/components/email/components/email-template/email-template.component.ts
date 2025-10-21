@@ -135,7 +135,7 @@ export class EmailTemplateComponent
   public distributionCommonQuery!: FormGroup | any;
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
-  /** DL dialog data from Quick Action  */
+  /** DL dialog data from Grid Row Action  */
   @Input() quickActionDistribution: any;
 
   /**
@@ -835,7 +835,7 @@ export class EmailTemplateComponent
         this.previewEmails = [];
         this.isPreviewEmail = true;
         this.expandedIndex = 0;
-        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        //Get Resource Details when Selecting Grid Row Action from Grid for adding New DL
         if (this.quickActionDistribution?.resource) {
           this.distributionList
             ?.get('resource')
@@ -855,7 +855,7 @@ export class EmailTemplateComponent
       case 2: {
         this.previewEmails = [];
         this.isPreviewEmail = true;
-        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        //Get Resource Details when Selecting Grid Row Action from Grid for adding New DL
         if (this.quickActionDistribution?.resource) {
           this.distributionList
             ?.get('resource')

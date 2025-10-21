@@ -82,7 +82,7 @@
   ></shared-reference-data-grid>
 </ng-template>
 
-<!-- Quick action buttons -->
+<!-- Row Actions -->
 <ng-template #floatingButtonsTemplate>
   <div
     class="flex overflow-hidden flex-1 max-w-fit"
@@ -91,7 +91,7 @@
     <ng-container *ngFor="let floatingButton of floatingButtons">
       <ui-button
         variant="primary"
-        (click)="onQuickAction(floatingButton)"
+        (click)="onGridAction(floatingButton)"
         *ngIf="floatingButton.show"
         class="whitespace-nowrap"
       >

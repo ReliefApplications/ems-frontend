@@ -197,13 +197,13 @@ export class EmailService {
   public isCustomTemplateEdit = false;
   /** custom template ID */
   public customTemplateId = '';
-  /** Quick action flag */
+  /** Grid Row Action flag */
   public isQuickAction = false;
   /** Custom Layout tile */
   public layoutTitle = '';
   /** Custom Template list names*/
   public customTemplateNames: string[] = [];
-  /** Disable Quick Action screen Next Button error state*/
+  /** Disable Grid Row Action screen Next Button error state*/
   public disableNextActionBtn = false;
   /** Distribution List Name */
   public distributionListName = '';
