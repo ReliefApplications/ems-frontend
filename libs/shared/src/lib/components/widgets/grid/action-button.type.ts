@@ -22,7 +22,6 @@ export type ActionButton = {
   // Clone Record
   cloneRecord?: {
     template?: string;
-    autoReload?: boolean;
     onSave?: {
       navigateTo?: {
         targetUrl?: {

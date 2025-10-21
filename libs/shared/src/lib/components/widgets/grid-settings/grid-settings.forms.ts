@@ -300,27 +300,17 @@ export class GridSettingsFormFactory {
       roles: [get(value, 'roles', [])],
       category: [get(value, 'category', 'secondary')],
       variant: [get(value, 'variant', 'primary')],
-      ...((!!get(value, 'href', false) || get(value, 'previousPage')) && {
-        navigateTo: this.fb.group({
-          previousPage: [get(value, 'previousPage', false)],
-          ...(!!get(value, 'href', false) && {
-            targetUrl: this.fb.group({
-              href: [get(value, 'href', '')],
-              openInNewTab: [get(value, 'openInNewTab', true)],
-            }),
-          }),
-        }),
-      }),
+      previousPage: [get(value, 'previousPage', false)],
+      href: [get(value, 'href', '')],
+      openInNewTab: [get(value, 'openInNewTab', true)],
       ...(!!get(value, 'editRecord', false) && {
         editRecord: this.fb.group({
           template: [get(value, 'editRecord.template', '')],
-          autoReload: [get(value, 'editRecord.autoReload', false)],
         }),
       }),
       ...(!!get(value, 'cloneRecord', false) && {
         cloneRecord: this.fb.group({
           template: [get(value, 'cloneRecord.template', '')],
-          autoReload: [get(value, 'cloneRecord.autoReload', false)],
           onSave: this.fb.group({
             ...((!!get(
               value,

@@ -191,14 +191,12 @@ export class EditCustomRowActionModalComponent
       ...(this.form.get('action.editRecord.enabled')?.value && {
         editRecord: {
           template: this.form.get('action.editRecord.template')?.value,
-          autoReload: this.form.get('action.editRecord.autoReload')?.value,
         },
       }),
       // If cloneRecord enabled
       ...(this.form.get('action.cloneRecord.enabled')?.value && {
         cloneRecord: {
           template: this.form.get('action.cloneRecord.template')?.value,
-          autoReload: this.form.get('action.cloneRecord.autoReload')?.value,
           onSave: {
             ...(this.form.get('action.cloneRecord.onSave.navigateTo.enabled')
               ?.value && {
@@ -235,6 +233,8 @@ export class EditCustomRowActionModalComponent
         },
       }),
     };
+
+    console.log(button);
 
     this.dialogRef.close(button);
   }
