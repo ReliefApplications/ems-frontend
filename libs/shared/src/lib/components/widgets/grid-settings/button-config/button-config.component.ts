@@ -408,7 +408,7 @@ export class ButtonConfigComponent
   public async addDistributionList() {
     this.emailService.selectedDistributionListName = '';
     this.emailService.isDistributionListEdit = true;
-    this.emailService.isQuickAction = true;
+    this.emailService.isGridAction = true;
     this.emailService.setDatasetForm();
     this.emailService.resetPreviewData();
     this.emailService.datasetsForm.reset();

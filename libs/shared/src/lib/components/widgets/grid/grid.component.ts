@@ -721,7 +721,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   }
 
   /**
-   * Build email query for Grid Row Action.
+   * Build email query for Grid Action.
    *
    * @param selectedIds Ids selected in the grid for email sending
    * @param fields List of fields to pass to email

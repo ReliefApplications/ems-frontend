@@ -43,7 +43,7 @@
         *ngIf="currentStep !== 1"
         type="submit"
         category="secondary"
-        [disabled]="validateQuickActionNextBtn()"
+        [disabled]="validateNext()"
         (click)="next()"
       >
         {{ 'common.next' | translate }}

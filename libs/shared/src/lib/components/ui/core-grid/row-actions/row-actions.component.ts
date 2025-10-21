@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-/** Component for grid row actions */
+/** Component for Grid Row Actions */
 @Component({
   selector: 'shared-grid-row-actions',
   templateUrl: './row-actions.component.html',

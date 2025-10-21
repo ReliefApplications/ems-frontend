@@ -146,7 +146,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
   ngOnInit(): void {
     this.emailService.showFileUpload = false;
-    this.emailService.isQuickAction = false;
+    this.emailService.isGridAction = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;
@@ -498,7 +498,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     isSendEmail?: boolean
   ) {
     this.emailService.isDistributionListEdit = false;
-    this.emailService.isQuickAction = false;
+    this.emailService.isGridAction = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
@@ -1400,7 +1400,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   getDistributionDetails(name: string) {
     this.emailService.setDatasetForm();
     this.emailService.selectedDistributionListName = '';
-    this.emailService.isQuickAction = false;
+    this.emailService.isGridAction = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);

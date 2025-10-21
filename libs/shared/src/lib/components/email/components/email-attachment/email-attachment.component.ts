@@ -106,7 +106,7 @@ export class EmailAttachmentComponent implements OnInit {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
-      if (this.emailService.isQuickAction) {
+      if (this.emailService.isGridAction) {
         this.emailService.disableNextActionBtn = true;
       } else {
         this.emailService.disableSaveAndProceed.next(true);
@@ -149,7 +149,7 @@ export class EmailAttachmentComponent implements OnInit {
               resolve(data);
             },
             error: (error: any) => {
-              if (this.emailService.isQuickAction) {
+              if (this.emailService.isGridAction) {
                 this.emailService.disableNextActionBtn = false;
               } else {
                 this.emailService.disableSaveAndProceed.next(false);
@@ -186,13 +186,13 @@ export class EmailAttachmentComponent implements OnInit {
         this.emailService.datasetsForm.patchValue({
           attachments: attachments,
         });
-        if (this.emailService.isQuickAction) {
+        if (this.emailService.isGridAction) {
           this.emailService.disableNextActionBtn = false;
         } else {
           this.emailService.disableSaveAndProceed.next(false);
         }
       } else {
-        if (this.emailService.isQuickAction) {
+        if (this.emailService.isGridAction) {
           this.emailService.disableNextActionBtn = false;
         } else {
           this.emailService.disableSaveAndProceed.next(false);

@@ -76,7 +76,7 @@ export class PreviewTemplateModalComponent implements OnInit {
   ) {
     this.emailService.disableNextActionBtn = false;
     this.emailService.setDatasetForm();
-    this.emailService.isQuickAction = true;
+    this.emailService.isGridAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDistributionListQuery = [];
     // Show File upload in step 1 only on clicking the action button from Grid and send email in step 2
@@ -223,7 +223,7 @@ export class PreviewTemplateModalComponent implements OnInit {
   send() {
     const previewData: any = this.emailService.allPreviewData?.[0];
     const payload: any = this.emailService.datasetsForm.getRawValue();
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       if (payload?.datasets.length > 0) {
         previewData.emailDistributionList.to = {
           inputEmails: this.emailService.emailDistributionList.to,
@@ -286,11 +286,11 @@ export class PreviewTemplateModalComponent implements OnInit {
   }
 
   /**
-   * Validate Grid Row Action To emails
+   * Validate Grid Action To emails
    *
    * @returns value for button disable or enable
    */
-  validateQuickActionNextBtn() {
+  validateNext() {
     this.steps = this.steps.map((step, index) => {
       if (index > this.currentStep) {
         step.disabled = this.emailService.disableNextActionBtn;
