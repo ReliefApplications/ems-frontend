@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,11 @@ import { ApplicationService } from '../../../../services/application/application
 import { Role } from '../../../../models/user.model';
 import { ActionButton } from '../../grid/action-button.type';
 import { Dialog } from '@angular/cdk/dialog';
+import { Resource } from '../../../../models/resource.model';
 
+/**
+ * Custom row actions settings component.
+ */
 @Component({
   selector: 'shared-custom-row-actions',
   standalone: true,
@@ -41,6 +45,8 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['./custom-row-actions.component.scss'],
 })
 export class CustomRowActionsComponent extends UnsubscribeComponent {
+  /** Resource associated with the grid */
+  @Input() resource: Resource | null = null;
   /** List of action buttons from dashboard */
   public actionButtons: ActionButton[] = [];
   /** Behavior subject to track change in action buttons */
@@ -49,10 +55,16 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
   public searchTerm = '';
   /** Columns to display */
   public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  /** Shared application service */
   private applicationService = inject(ApplicationService);
+  /** Translate service */
   private translate = inject(TranslateService);
+  /** Dialog service */
   private dialog = inject(Dialog);
 
+  /**
+   * Add new action button
+   */
   public async onAddActionButton() {
     const { EditCustomRowActionModalComponent } = await import(
       '../edit-custom-row-action-modal/edit-custom-row-action-modal.component'
@@ -61,6 +73,7 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       EditCustomRowActionModalComponent,
       {
         data: {
+          resource: this.resource,
           disableClose: true,
         },
       }
@@ -76,6 +89,11 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       });
   }
 
+  /**
+   * Edit action button
+   *
+   * @param actionButton Action button to edit
+   */
   public async onEditActionButton(actionButton: ActionButton) {
     const { EditCustomRowActionModalComponent } = await import(
       '../edit-custom-row-action-modal/edit-custom-row-action-modal.component'
@@ -84,6 +102,7 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       EditCustomRowActionModalComponent,
       {
         data: {
+          resource: this.resource,
           button: actionButton,
           disableClose: true,
         },
@@ -102,6 +121,11 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
       });
   }
 
+  /**
+   * Delete action button
+   *
+   * @param actionButton Action button to delete
+   */
   public async onDeleteActionButton(actionButton: ActionButton) {
     const { ConfirmModalComponent } = await import(
       '../../../confirm-modal/confirm-modal.component'
@@ -132,6 +156,11 @@ export class CustomRowActionsComponent extends UnsubscribeComponent {
     });
   }
 
+  /**
+   * Duplication action button
+   *
+   * @param actionButton Action button to duplicate
+   */
   public async onDuplicateActionButton(actionButton: ActionButton) {
     const newActionButton = structuredClone(actionButton);
     newActionButton.text = `${newActionButton.text} (${this.translate.instant(

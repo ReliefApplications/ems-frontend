@@ -1,6 +1,8 @@
 import {
   Component,
   EventEmitter,
+  inject,
+  Injector,
   Input,
   Output,
   ViewChild,
@@ -11,7 +13,7 @@ import {
   UntypedFormArray,
   UntypedFormGroup,
 } from '@angular/forms';
-import { createGridActionFormGroup } from '../grid-settings.forms';
+import { GridSettingsFormFactory } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
 import {
@@ -30,6 +32,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridActionSettingsComponent } from '../grid-action-settings/grid-action-settings.component';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Grid Actions configuration tab.
@@ -53,7 +56,7 @@ import { GridActionSettingsComponent } from '../grid-action-settings/grid-action
     TooltipModule,
   ],
 })
-export class TabGridActionsComponent {
+export class TabGridActionsComponent extends UnsubscribeComponent {
   /** Form group */
   @Input() formGroup!: UntypedFormGroup;
   /** List of fields */
@@ -68,6 +71,8 @@ export class TabGridActionsComponent {
   @Input() distributionLists: any[] = [];
   /** Emits when the select channel is opened for the first time */
   @Output() loadChannels = new EventEmitter<void>();
+  /** Angular injector */
+  private injector = inject(Injector);
 
   /** Tabs component */
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
@@ -85,10 +90,11 @@ export class TabGridActionsComponent {
    * @param event Mouse event
    */
   public addAction(event: MouseEvent): void {
+    const factory = new GridSettingsFormFactory(this.injector, this.destroy$);
     const gridActions = this.formGroup?.get(
       'floatingButtons'
     ) as UntypedFormArray;
-    gridActions.push(createGridActionFormGroup({ show: true }));
+    gridActions.push(factory.createGridActionFormGroup({ show: true }));
     // Open new action
     this.tabGroup.selectedIndex = gridActions.length - 1;
     event.stopPropagation();
