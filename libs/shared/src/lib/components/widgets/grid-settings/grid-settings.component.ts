@@ -43,8 +43,8 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
-import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.component';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -62,7 +62,7 @@ import { TabMainModule } from './tab-main/tab-main.module';
     TranslateModule,
     IconModule,
     TabActionsModule,
-    TabButtonsModule,
+    TabGridActionsComponent,
     TabMainModule,
     TooltipModule,
     DisplaySettingsComponent,
@@ -156,26 +156,26 @@ export class GridSettingsComponent
             this.widgetFormGroup?.get('aggregations')?.setValue([]);
             this.widgetFormGroup?.get('template')?.setValue(null);
             this.widgetFormGroup?.get('template')?.enable();
-            const floatingButtons = this.widgetFormGroup?.get(
+            const gridActions = this.widgetFormGroup?.get(
               'floatingButtons'
             ) as UntypedFormArray;
-            let floatingButtonIndex = 0;
-            for (const floatingButton of floatingButtons.controls) {
-              const modifications = floatingButton.get(
+            let gridActionIndex = 0;
+            for (const gridAction of gridActions.controls) {
+              const modifications = gridAction.get(
                 'modifications'
               ) as UntypedFormArray;
               modifications.clear();
               (
                 this.widgetFormGroup?.get('floatingButtons') as UntypedFormArray
               ).controls
-                .at(floatingButtonIndex)
+                .at(gridActionIndex)
                 ?.get('modifySelectedRows')
                 ?.setValue(false);
-              const bodyFields = floatingButton.get(
+              const bodyFields = gridAction.get(
                 'bodyFields'
               ) as UntypedFormArray;
               bodyFields.clear();
-              floatingButtonIndex++;
+              gridActionIndex++;
             }
           }
           this.getQueryMetaData();

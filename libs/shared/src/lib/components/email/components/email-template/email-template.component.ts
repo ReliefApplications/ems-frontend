@@ -135,8 +135,8 @@ export class EmailTemplateComponent
   public distributionCommonQuery!: FormGroup | any;
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
-  /** DL dialog data from Quick Action  */
-  @Input() quickActionDistribution: any;
+  /** DL dialog data from Grid Action  */
+  @Input() gridActionDistribution: any;
 
   /**
    * Email template to create distribution list.
@@ -835,11 +835,11 @@ export class EmailTemplateComponent
         this.previewEmails = [];
         this.isPreviewEmail = true;
         this.expandedIndex = 0;
-        //Get Resource Details when Selecting Quick action from Grid for adding New DL
-        if (this.quickActionDistribution?.resource) {
+        //Get Resource Details when Selecting Action from Grid for adding New DL
+        if (this.gridActionDistribution?.resource) {
           this.distributionList
             ?.get('resource')
-            ?.setValue(this.quickActionDistribution.resource);
+            ?.setValue(this.gridActionDistribution.resource);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -855,11 +855,11 @@ export class EmailTemplateComponent
       case 2: {
         this.previewEmails = [];
         this.isPreviewEmail = true;
-        //Get Resource Details when Selecting Quick action from Grid for adding New DL
-        if (this.quickActionDistribution?.resource) {
+        //Get Resource Details when Selecting Grid Action from Grid for adding New DL
+        if (this.gridActionDistribution?.resource) {
           this.distributionList
             ?.get('resource')
-            ?.setValue(this.quickActionDistribution.resource);
+            ?.setValue(this.gridActionDistribution.resource);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';

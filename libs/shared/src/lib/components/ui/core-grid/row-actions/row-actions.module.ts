@@ -5,7 +5,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { MenuModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
-/** Module for the grid row actions component */
+/** Module for the Grid Row Actions component */
 @NgModule({
   declarations: [GridRowActionsComponent],
   imports: [CommonModule, ButtonModule, MenuModule, TranslateModule],

@@ -1995,7 +1995,7 @@
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
-						"title": "Enabled actions",
+						"title": "Row Actions",
 						"update": "Update records",
 						"useRecordId": "Pass id as query parameter"
 					},
@@ -2032,13 +2032,13 @@
 								"previous": "Go to previous step"
 							}
 						},
-						"create": "Add a button",
+						"create": "Add Custom Grid Action",
 						"defaultName": "Action button",
 						"enable": "Enable",
 						"placeholder": {
 							"modifyValue": "Set as null"
 						},
-						"title": "Quick action buttons",
+						"title": "Grid Actions",
 						"tooltip": {
 							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
 							"mail": {
@@ -2062,7 +2062,6 @@
 							"update": "If authorized, user can update visible records"
 						},
 						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
 						"executionOrder": "Selected actions will be executed in the displayed order",
 						"prefillForm": "If no record is created at this point, the action will be canceled"
 					},
@@ -2372,8 +2371,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Grid actions",
-							"tooltip": "Enabled grid actions"
+							"title": "Row Actions",
+							"tooltip": "Row Actions (grid mode)"
 						},
 						"preview": {
 							"title": "Preview"
