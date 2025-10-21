@@ -3,8 +3,9 @@
   <shared-action-button
     *ngFor="let button of actionButtons; let i = index"
     [actionButton]="button"
-    [dashboard]="dashboard"
+    [recordId]="contextId"
+    [resourceId]="dashboard?.page?.context?.resource"
     [refresh]="refresh"
-    (reloadDashboard)="reloadDashboard.emit()"
+    (reloadParent)="reloadDashboard.emit()"
   ></shared-action-button>
 </div>
