@@ -302,10 +302,7 @@ export class PreviewComponent
 
       this.query.emailLayout =
         this.emailService.datasetsForm.getRawValue().emailLayout;
-      if (
-        this.query?.datasets?.length > 0 &&
-        this.emailService?.isGridAction
-      ) {
+      if (this.query?.datasets?.length > 0 && this.emailService?.isGridAction) {
         this.query.datasets[0].resource = '';
       }
       const objData: any = cloneDeep(this.query);
