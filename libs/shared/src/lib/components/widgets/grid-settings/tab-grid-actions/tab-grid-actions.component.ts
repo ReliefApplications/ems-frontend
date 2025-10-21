@@ -89,6 +89,8 @@ export class TabGridActionsComponent {
       'floatingButtons'
     ) as UntypedFormArray;
     gridActions.push(createGridActionFormGroup({ show: true }));
+    // Open new action
+    this.tabGroup.selectedIndex = gridActions.length - 1;
     event.stopPropagation();
   }
 
@@ -102,6 +104,13 @@ export class TabGridActionsComponent {
       'floatingButtons'
     ) as UntypedFormArray;
     gridActions.removeAt(index);
+    if (this.tabGroup.selectedIndex === index && gridActions.length > 0) {
+      // Open previous action if possible, or first action
+      this.tabGroup.selectedIndex = Math.max(
+        0,
+        this.tabGroup.selectedIndex - 1
+      );
+    }
   }
 
   /**
