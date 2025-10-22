@@ -101,6 +101,8 @@ export class AppPreviewComponent
   public sideMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
+  /** Should show navigation (hidden when only one visible page) */
+  public showNavigation = true;
   /**
    * Is large device.
    */
@@ -249,6 +251,11 @@ export class AppPreviewComponent
               navItems: this.buildAdminNavItems(application),
             },
           ];
+          // Hides navigation if only one page is visible
+          const visiblePagesCount =
+            application.pages?.filter((p) => !!p.content && !!p.visible)
+              .length || 0;
+          this.showNavigation = visiblePagesCount > 1;
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
             if (
