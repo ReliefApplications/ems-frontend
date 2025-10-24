@@ -28,7 +28,8 @@
               <!-- Column label -->
               <div uiFormFieldDirective>
                 <label>{{
-                  'components.widget.grid.rowAction.fields.columnLabel.text' | translate
+                  'components.widget.grid.rowAction.fields.columnLabel.text'
+                    | translate
                 }}</label>
                 <input formControlName="columnLabel" type="string" />
               </div>
@@ -422,6 +423,26 @@
                 </div>
               </ng-container>
             </div>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Visibility filter -->
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="filter_list"
+              [size]="18"
+              uiTooltip="{{ 'common.filter.one' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.filter.one' | translate }}</span>
+          </ng-container>
+          <ng-template uiTabContent>
+            <ui-spinner *ngIf="loading"></ui-spinner>
+            <shared-filter
+              *ngIf="!loading"
+              [form]="$any(form.controls.filter)"
+              [fields]="filterFields"
+            ></shared-filter>
           </ng-template>
         </ui-tab>
       </ui-tabs>

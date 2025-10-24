@@ -10,6 +10,7 @@ import {
 import get from 'lodash/get';
 import {
   addNewField,
+  createFilterGroup,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -373,6 +374,7 @@ export class GridSettingsFormFactory {
           }),
         }),
       }),
+      filter: createFilterGroup(get(value, 'filter', null)),
     });
     return form;
   };
@@ -497,6 +499,7 @@ export class GridSettingsFormFactory {
         },
         { validator: this.actionValidator }
       ),
+      filter: createFilterGroup(get(value, 'filter', null)),
     });
 
     // Set up mutual exclusivity

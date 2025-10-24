@@ -13,6 +13,7 @@ import {
   TooltipModule,
   categories as ButtonCategories,
   variants as ButtonVariants,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,8 +34,15 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { Form } from '../../../../models/form.model';
-import { Resource } from '../../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../../models/resource.model';
 import { GridSettingsFormFactory } from '../grid-settings.forms';
+import { FilterModule } from '../../../filter/filter.module';
+import { Apollo } from 'apollo-angular';
+import { takeUntil } from 'rxjs';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 
 /** Dialog data interface */
 interface DialogData {
@@ -66,6 +74,8 @@ interface DialogData {
     TooltipModule,
     QueryBuilderModule,
     AlertModule,
+    FilterModule,
+    SpinnerModule,
   ],
   templateUrl: './edit-custom-row-action-modal.component.html',
   styleUrls: ['./edit-custom-row-action-modal.component.scss'],
@@ -92,6 +102,10 @@ export class EditCustomRowActionModalComponent
   public editRecordTemplates: Form[] = [];
   /** Available pages from the application for targetPage selection */
   public pages: any[] = [];
+  /** Filters available to set filters from */
+  public filterFields: any[] = [];
+  /** Loading state */
+  public loading = true;
 
   /**
    * Edit custom row action modal component.
@@ -104,6 +118,7 @@ export class EditCustomRowActionModalComponent
    * @param applicationService Shared application service
    * @param queryBuilder Shared query builder
    * @param injector Angular injector
+   * @param apollo Apollo service
    */
   constructor(
     public dialogRef: DialogRef<ActionButton>,
@@ -113,7 +128,8 @@ export class EditCustomRowActionModalComponent
     private router: Router,
     public applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
-    private injector: Injector
+    private injector: Injector,
+    private apollo: Apollo
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
@@ -140,6 +156,8 @@ export class EditCustomRowActionModalComponent
     this.gridResourceFields = this.queryBuilder.getFields(
       this.data.resource.queryName as string
     );
+    // Get filter fields
+    this.getFilterFields();
   }
 
   /** On click on the preview button open the href */
@@ -233,9 +251,9 @@ export class EditCustomRowActionModalComponent
           },
         },
       }),
+      // Filter
+      filter: this.form.get('filter')?.value,
     };
-
-    console.log(button);
 
     this.dialogRef.close(button);
   }
@@ -270,5 +288,24 @@ export class EditCustomRowActionModalComponent
     return page.type === ContentType.form
       ? `${applicationPath}/${page.type}/${page.id}`
       : `${applicationPath}/${page.type}/${page.content}`;
+  }
+
+  /**
+   * Get filter fields for the resource
+   */
+  private getFilterFields() {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE_METADATA,
+        variables: {
+          id: this.data.resource.id,
+        },
+        fetchPolicy: 'cache-first',
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.filterFields = data.resource.metadata ?? [];
+        this.loading = false;
+      });
   }
 }

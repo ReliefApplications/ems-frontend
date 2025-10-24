@@ -36,4 +36,6 @@ export type ActionButton = {
       };
     };
   };
+  // Visibility filter
+  filter: any;
 };
