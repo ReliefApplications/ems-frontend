@@ -6,7 +6,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
-import { isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import get from 'lodash/get';
 import {
   ComponentCollection,
@@ -705,9 +705,6 @@ export const init = (
    * @param question survey question.
    */
   const setGridInputs = async (instance: CoreGridComponent, question: any) => {
-    if (question.displayOnly) {
-      question.readOnly = true;
-    }
     instance.multiSelect = !question.displayOnly;
     instance.selectable = !question.displayOnly;
     const promises: any[] = [];
@@ -735,37 +732,26 @@ export const init = (
       temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
     if (question.displayOnly) {
-      const filtersToMerge: any[] = [];
-      const dynamicFilter = question.filters;
-      const preBuiltFilter = question.gridFieldsSettings?.filter;
+      const filters: any[] = [];
 
-      if (dynamicFilter) {
-        if (dynamicFilter.filters) {
-          filtersToMerge.push(dynamicFilter);
-        } else if (Array.isArray(dynamicFilter)) {
-          filtersToMerge.push(...dynamicFilter);
-        } else {
-          filtersToMerge.push(dynamicFilter);
-        }
+      if (question.filters) {
+        filters.push(question.filters);
+      }
+      if (question.gridFieldsSettings?.filter) {
+        filters.push(question.gridFieldsSettings.filter);
       }
 
-      if (preBuiltFilter) {
-        if (preBuiltFilter.filters) {
-          filtersToMerge.push(preBuiltFilter);
-        } else if (Array.isArray(preBuiltFilter)) {
-          filtersToMerge.push(...preBuiltFilter);
-        } else {
-          filtersToMerge.push(preBuiltFilter);
-        }
-      }
-
-      settings.query.filter = filtersToMerge.length
-        ? { logic: 'and', filters: filtersToMerge }
-        : { logic: 'and', filters: [] };
+      settings.query.filter = {
+        logic: 'and',
+        filters: filters,
+      };
     }
-    instance.settings = settings;
     Promise.allSettled(promises).then(() => {
-      instance.configureGrid();
+      // Only update grid if needed
+      if (!isEqual(instance.settings, settings)) {
+        instance.settings = settings;
+        instance.configureGrid();
+      }
     });
   };
 };
