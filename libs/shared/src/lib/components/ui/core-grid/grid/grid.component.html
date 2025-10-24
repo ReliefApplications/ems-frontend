@@ -1139,7 +1139,7 @@
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <div class="flex flex-row gap-2">
-          <ng-container *ngFor="let customRowAction of group.actions">
+          <ng-container *ngFor="let customRowAction of dataItem.actions">
             <shared-action-button
               [actionButton]="$any(customRowAction)"
               [recordId]="dataItem.id"
