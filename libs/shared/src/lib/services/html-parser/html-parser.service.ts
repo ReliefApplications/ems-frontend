@@ -14,6 +14,7 @@ import {
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
+import Handlebars from 'handlebars';
 
 type Shape = 'circle' | 'square';
 
@@ -524,6 +525,34 @@ export class HtmlParserService {
       styles?: any[];
     }
   ) {
+    // Uppercase helper
+    Handlebars.registerHelper('uppercase', (text: string) => {
+      try {
+        return text.toUpperCase();
+      } catch {
+        return text;
+      }
+    });
+    // Lowercase helper
+    Handlebars.registerHelper('lowercase', (text: string) => {
+      try {
+        return text.toLowerCase();
+      } catch {
+        return text;
+      }
+    });
+    // Date helper
+    Handlebars.registerHelper('date', (text: string, format: string) => {
+      try {
+        return this.datePipe.transform(new Date(text), format);
+      } catch {
+        return text;
+      }
+    });
+    const template = Handlebars.compile(html);
+    const result = template({ data: options.data });
+    return result;
+
     let formattedHtml = replacePages(html, options.pages);
     if (Object.keys(options.aggregation || {})?.length) {
       formattedHtml = this.replaceAggregationData(
