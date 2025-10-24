@@ -62,7 +62,13 @@ export class CustomRowActionsComponent
   /** Current search string */
   public searchTerm = '';
   /** Columns to display */
-  public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  public displayedColumns = [
+    'dragDrop',
+    'columnLabel',
+    'text',
+    'roles',
+    'actions',
+  ];
   /** Shared application service */
   private applicationService = inject(ApplicationService);
   /** Translate service */
@@ -238,8 +244,12 @@ export class CustomRowActionsComponent
     let actionButtons: any[];
 
     if (this.searchTerm !== '') {
-      actionButtons = this.actionButtons.filter((action) =>
-        action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
+      actionButtons = this.actionButtons.filter(
+        (action) =>
+          action.columnLabel
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     } else {
       actionButtons = this.actionButtons;

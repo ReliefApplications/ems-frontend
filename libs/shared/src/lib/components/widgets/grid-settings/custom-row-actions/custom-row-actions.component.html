@@ -43,9 +43,27 @@
             </td>
           </ng-container>
 
-          <ng-container cdkColumnDef="name">
+          <!-- Button text -->
+          <ng-container cdkColumnDef="columnLabel">
             <th uiCellHeader *cdkHeaderCellDef class="w-[200px]">
-              {{ 'common.title' | translate }}
+              {{
+                'components.widget.grid.rowAction.fields.columnLabel.text'
+                  | translate
+              }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
+            >
+              {{ element.columnLabel }}
+            </td>
+          </ng-container>
+
+          <!-- Button text -->
+          <ng-container cdkColumnDef="text">
+            <th uiCellHeader *cdkHeaderCellDef class="w-[200px]">
+              {{ 'models.dashboard.actionButtons.text' | translate }}
             </th>
             <td
               uiCell
@@ -56,6 +74,7 @@
             </td>
           </ng-container>
 
+          <!-- Visibility -->
           <ng-container cdkColumnDef="roles">
             <th uiCellHeader *cdkHeaderCellDef>
               {{ 'models.dashboard.actionButtons.visibleTo' | translate }}
@@ -73,6 +92,7 @@
             </td>
           </ng-container>
 
+          <!-- Actions -->
           <ng-container cdkColumnDef="actions" [stickyEnd]="true">
             <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
             <td uiCell *cdkCellDef="let element">
