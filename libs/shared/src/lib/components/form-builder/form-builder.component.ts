@@ -590,14 +590,33 @@ export class FormBuilderComponent
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {
-      if (question.relatedName) {
-        question.relatedName = this.formHelpersService.toSnakeCase(
-          question.relatedName
-        );
-        if (this.relatedNames.includes(question.relatedName)) {
+      if (!question.displayOnly) {
+        if (question.relatedName) {
+          question.relatedName = this.formHelpersService.toSnakeCase(
+            question.relatedName
+          );
+          if (this.relatedNames.includes(question.relatedName)) {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.formBuilder.errors.duplicatedRelatedName',
+                {
+                  question: question.name,
+                  page: page.name,
+                }
+              ),
+              {
+                error: true,
+                duration: 15000,
+              }
+            );
+            return false;
+          } else {
+            this.relatedNames.push(question.relatedName);
+          }
+        } else {
           this.snackBar.openSnackBar(
             this.translate.instant(
-              'components.formBuilder.errors.duplicatedRelatedName',
+              'components.formBuilder.errors.missingRelatedName',
               {
                 question: question.name,
                 page: page.name,
@@ -609,24 +628,7 @@ export class FormBuilderComponent
             }
           );
           return false;
-        } else {
-          this.relatedNames.push(question.relatedName);
         }
-      } else {
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.formBuilder.errors.missingRelatedName',
-            {
-              question: question.name,
-              page: page.name,
-            }
-          ),
-          {
-            error: true,
-            duration: 15000,
-          }
-        );
-        return false;
       }
       if (question.addRecord && !question.addTemplate) {
         this.snackBar.openSnackBar(

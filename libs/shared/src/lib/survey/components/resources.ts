@@ -14,6 +14,7 @@ import {
   Serializer,
   SurveyModel,
   SvgRegistry,
+  surveyLocalization,
 } from 'survey-core';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { ResourceQueryResponse } from '../../models/resource.model';
@@ -179,6 +180,13 @@ export const init = (
     resourceFieldsName: [] as any[],
     onInit: (): void => {
       Serializer.addProperty('resources', {
+        name: 'displayOnly:boolean',
+        category: 'general',
+        displayName: surveyLocalization.getString('oort:displayOnly'),
+        visibleIndex: 7,
+        default: false,
+      });
+      Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
         type: CustomPropertyGridComponentTypes.resourcesDropdown,
@@ -218,7 +226,7 @@ export const init = (
         dependsOn: 'resource',
         required: true,
         description: 'unique name for this resource question',
-        visibleIf: visibleIfResource,
+        visibleIf: (obj: any) => visibleIfResource(obj) && !obj.displayOnly,
         visibleIndex: 4,
       });
 
@@ -540,14 +548,17 @@ export const init = (
       );
       searchBtn.style.display = 'none';
       if (question.resource) {
-        searchBtn.style.display = 'block';
+        searchBtn.style.display = question.displayOnly ? 'none' : 'block';
+        if (question.displayOnly) {
+          question.canSearch = false;
+        }
         if (parentElement) {
           if (question.displayAsGrid) {
             gridComponentRef = buildGridDisplay(question, parentElement);
           }
 
           if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = 'block';
+            searchBtn.style.display = question.displayOnly ? 'none' : 'block';
             const addBtn = buildAddButton(
               question,
               true,
@@ -579,7 +590,7 @@ export const init = (
       actionsButtons.appendChild(searchBtn);
       parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       question.registerFunctionOnPropertyValueChanged('resource', () => {
-        if (question.resource && question.canSearch) {
+        if (question.resource && question.canSearch && !question.displayOnly) {
           searchBtn.style.display = 'block';
         }
       });
@@ -587,7 +598,8 @@ export const init = (
         if (question.displayAsGrid) {
           setGridInputs(gridComponentRef.instance, question);
         } else {
-          searchBtn.style.display = question.canSearch ? 'block' : 'none';
+          searchBtn.style.display =
+            question.canSearch && !question.displayOnly ? 'block' : 'none';
         }
       });
       question.registerFunctionOnPropertyValueChanged(
@@ -614,7 +626,7 @@ export const init = (
           if (element) {
             element.style.display = 'block';
           }
-          if (question.canSearch) {
+          if (question.canSearch && !question.displayOnly) {
             searchBtn.style.display = 'block';
           }
         }
@@ -679,7 +691,7 @@ export const init = (
     );
     setGridInputs(grid.instance, question);
     question.survey?.onValueChanged.add((_: any, options: any) => {
-      if (options.name === question.name) {
+      if (question.displayOnly || options.name === question.name) {
         setGridInputs(grid.instance, question);
       }
     });
@@ -693,7 +705,11 @@ export const init = (
    * @param question survey question.
    */
   const setGridInputs = async (instance: CoreGridComponent, question: any) => {
-    instance.multiSelect = true;
+    if (question.displayOnly) {
+      question.readOnly = true;
+    }
+    instance.multiSelect = !question.displayOnly;
+    instance.selectable = !question.displayOnly;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
     if (
@@ -717,6 +733,35 @@ export const init = (
     // If search button exists, updates grid displayed records
     if (question.canSearch) {
       temporaryRecordsForm.setValue(settings.query.temporaryRecords);
+    }
+    if (question.displayOnly) {
+      const filtersToMerge: any[] = [];
+      const dynamicFilter = question.filters;
+      const preBuiltFilter = question.gridFieldsSettings?.filter;
+
+      if (dynamicFilter) {
+        if (dynamicFilter.filters) {
+          filtersToMerge.push(dynamicFilter);
+        } else if (Array.isArray(dynamicFilter)) {
+          filtersToMerge.push(...dynamicFilter);
+        } else {
+          filtersToMerge.push(dynamicFilter);
+        }
+      }
+
+      if (preBuiltFilter) {
+        if (preBuiltFilter.filters) {
+          filtersToMerge.push(preBuiltFilter);
+        } else if (Array.isArray(preBuiltFilter)) {
+          filtersToMerge.push(...preBuiltFilter);
+        } else {
+          filtersToMerge.push(preBuiltFilter);
+        }
+      }
+
+      settings.query.filter = filtersToMerge.length
+        ? { logic: 'and', filters: filtersToMerge }
+        : { logic: 'and', filters: [] };
     }
     instance.settings = settings;
     Promise.allSettled(promises).then(() => {
