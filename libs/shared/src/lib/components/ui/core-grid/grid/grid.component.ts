@@ -36,7 +36,7 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { get, has, intersection, isEqual, isNil } from 'lodash';
+import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
@@ -54,7 +54,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
-import { ActionButton } from '../../../action-button/action-button.type';
+import { ActionButton } from '../../../widgets/grid/action-button.type';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -233,8 +233,9 @@ export class GridComponent
   private columnChooserRef: PopupRef | null = null;
   /** Prevent next column reset */
   private preventColumnResize = false;
-  /** Custom row action buttons */
-  public customRowActions: ActionButton[] = [];
+  /** Custom row action button groups */
+  public customRowActionGroups: { label: string; actions: ActionButton[] }[] =
+    [];
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -414,15 +415,13 @@ export class GridComponent
         'settings.customRowActions',
         []
       );
-      this.customRowActions = customRowActions.map((action) => {
-        if (action.cloneRecord) {
-          action.cloneRecord.autoReload = true;
-        }
-        if (action.editRecord) {
-          action.editRecord.autoReload = true;
-        }
-        return action;
-      });
+      this.customRowActionGroups = map(
+        groupBy(customRowActions, 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+        })
+      );
     }
   }
 

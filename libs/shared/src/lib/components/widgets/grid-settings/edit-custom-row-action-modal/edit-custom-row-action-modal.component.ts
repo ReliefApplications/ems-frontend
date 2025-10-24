@@ -171,6 +171,7 @@ export class EditCustomRowActionModalComponent
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
     const button: ActionButton = {
+      columnLabel: this.form.get('general.columnLabel')?.value,
       text: this.form.get('general.buttonText')?.value,
       hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
       roles: this.form.get('general.roles')?.value,

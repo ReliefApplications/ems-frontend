@@ -1870,6 +1870,13 @@
 				},
 				"openEditor": "Open html",
 				"openSettings": "Open settings",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Column label"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",

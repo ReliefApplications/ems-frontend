@@ -4,6 +4,7 @@ import { Category, Variant } from '@oort-front/ui';
  * Action button Type
  */
 export type ActionButton = {
+  columnLabel: string;
   text: string;
   // Display
   variant: Variant;

@@ -292,6 +292,7 @@ export class GridSettingsFormFactory {
    */
   public createCustomRowActionFormGroup = (value: ActionButton) => {
     const form = this.fb.group({
+      columnLabel: [get(value, 'columnLabel', ''), Validators.required],
       text: [get(value, 'text', ''), Validators.required],
       hasRoleRestriction: [
         get(value, 'hasRoleRestriction', false),
@@ -385,6 +386,7 @@ export class GridSettingsFormFactory {
   public createCustomRowActionFormGroupForEdition = (value: ActionButton) => {
     const form = this.fb.group({
       general: this.fb.group({
+        columnLabel: [get(value, 'columnLabel', ''), Validators.required],
         buttonText: [get(value, 'text', ''), Validators.required],
         hasRoleRestriction: [
           get(value, 'hasRoleRestriction', false),

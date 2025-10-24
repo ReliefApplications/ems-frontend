@@ -25,6 +25,14 @@
           </ng-container>
           <ng-template uiTabContent>
             <div class="flex gap-4 flex-col">
+              <!-- Column label -->
+              <div uiFormFieldDirective>
+                <label>{{
+                  'components.widget.grid.rowAction.fields.columnLabel.text' | translate
+                }}</label>
+                <input formControlName="columnLabel" type="string" />
+              </div>
+
               <!-- Button text -->
               <div uiFormFieldDirective>
                 <label>{{

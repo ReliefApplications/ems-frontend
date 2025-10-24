@@ -1131,20 +1131,23 @@
     </ng-container>
     <!-- CUSTOM ROW ACTIONS -->
     <kendo-grid-column
-      *ngFor="let customRowAction of customRowActions"
+      *ngFor="let group of customRowActionGroups"
       [columnMenu]="false"
       [width]="108"
       [resizable]="true"
-      [title]="customRowAction.text"
-      [sticky]="true"
+      [title]="group.label"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-        <shared-action-button
-          [actionButton]="customRowAction"
-          [recordId]="dataItem.id"
-          [resourceId]="widget?.settings.resource"
-          (reloadParent)="reload.emit()"
-        ></shared-action-button>
+        <div class="flex flex-row gap-2">
+          <ng-container *ngFor="let customRowAction of group.actions">
+            <shared-action-button
+              [actionButton]="$any(customRowAction)"
+              [recordId]="dataItem.id"
+              [resourceId]="widget?.settings.resource"
+              (reloadParent)="reload.emit()"
+            ></shared-action-button>
+          </ng-container>
+        </div>
       </ng-template>
     </kendo-grid-column>
     <!-- ROW DETAILS -->
