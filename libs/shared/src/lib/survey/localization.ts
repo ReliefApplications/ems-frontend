@@ -17,6 +17,13 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     },
   },
   {
+    key: 'onSelect',
+    locales: {
+      en: 'On select',
+      fr: 'Au sélection',
+    },
+  },
+  {
     key: 'fileLimitations',
     locales: {
       en: (question: any) => {

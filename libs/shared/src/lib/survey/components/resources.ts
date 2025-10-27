@@ -23,6 +23,7 @@ import {
   GET_RESOURCE_BY_ID,
   GET_SHORT_RESOURCE_BY_ID,
 } from '../graphql/queries';
+import { GET_RECORD_BY_ID } from '../../components/widgets/grid/graphql/queries';
 import { QuestionResource } from '../types';
 import {
   buildAddButton,
@@ -265,6 +266,17 @@ export const init = (
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
         visibleIndex: 3,
+      });
+      // On select JSON mapping (only for display-only grid)
+      Serializer.addProperty('resources', {
+        category: 'Custom Questions',
+        type: CustomPropertyGridComponentTypes.jsonEditor,
+        name: 'onSelect',
+        displayName: surveyLocalization.getString('oort:onSelect'),
+        dependsOn: ['resource', 'displayAsGrid', 'displayOnly'],
+        visibleIf: (obj: any) =>
+          visibleIfResource(obj) && obj.displayOnly && obj.displayAsGrid,
+        visibleIndex: 9,
       });
       Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
@@ -669,6 +681,42 @@ export const init = (
           (id: string) => !ids.includes(id)
         );
       });
+      if (
+        question.displayOnly &&
+        question.displayAsGrid &&
+        question.onSelect &&
+        question.onSelect.trim()
+      ) {
+        grid.instance.selectionChange.subscribe((selection: any) => {
+          try {
+            const selectedRows = selection?.selectedRows || [];
+            if (!selectedRows.length) return;
+            const selectedId = selectedRows[0]?.dataItem?.id;
+            if (!selectedId) return;
+            const mapping = JSON.parse(question.onSelect || '{}');
+            if (Object.keys(mapping).length === 0) return;
+            apollo
+              .query<any>({
+                query: GET_RECORD_BY_ID,
+                variables: { id: selectedId },
+                fetchPolicy: 'no-cache',
+              })
+              .subscribe(({ data }) => {
+                const record = data?.record;
+                if (!record || !record.data) return;
+                const survey = question.survey as SurveyModel;
+                for (const source in mapping) {
+                  const target = mapping[source];
+                  if (!target) continue;
+                  const value = get(record.data, source);
+                  survey.setValue(target, value);
+                }
+              });
+          } catch (e) {
+            console.error('Error applying on select mapping', e);
+          }
+        });
+      }
     }
     return grid;
   }
@@ -708,8 +756,14 @@ export const init = (
     if (question.displayOnly) {
       question.readOnly = true;
     }
-    instance.multiSelect = !question.displayOnly;
-    instance.selectable = !question.displayOnly;
+    const hasOnSelect =
+      !!question.onSelect &&
+      JSON.parse(question.onSelect || '{}') &&
+      Object.keys(JSON.parse(question.onSelect || '{}')).length > 0 &&
+      typeof question.onSelect === 'string' &&
+      question.onSelect.trim().length > 0;
+    instance.multiSelect = hasOnSelect ? false : !question.displayOnly;
+    instance.selectable = hasOnSelect ? true : !question.displayOnly;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
     if (
