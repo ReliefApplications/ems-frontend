@@ -746,8 +746,6 @@ export const init = (
         filters.push(question.gridFieldsSettings.filter);
       }
 
-      console.log(filters);
-
       settings.query.filter = {
         logic: 'and',
         filters: filters,
