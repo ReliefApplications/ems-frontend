@@ -101,7 +101,7 @@ export class AppPreviewComponent
   public sideMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
-  /** Should show navigation (hidden when only one visible page) */
+  /** Should show navigation. False if only one or less page visible */
   public showNavigation = true;
   /**
    * Is large device.

@@ -43,7 +43,7 @@ export class ApplicationComponent
   public sideMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
-  /** Shows navigation (left/top). Hidden when only one page is visible) */
+  /** Should show navigation. False if only one or less page visible */
   public showNavigation = true;
   /** Is large device */
   public largeDevice: boolean;
