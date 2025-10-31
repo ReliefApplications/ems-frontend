@@ -8,7 +8,7 @@
   *ngIf="!loading"
   [applications]="applications"
   [header]="header"
-  [leftSidenav]="pages"
+  [leftSidenav]="showNavigation ? pages : undefined"
   [sideMenu]="sideMenu"
   [menuOpened]="!hideMenu"
   [profileRoute]="profileRoute"

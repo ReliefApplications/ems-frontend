@@ -590,7 +590,9 @@ export class FormBuilderComponent
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {
+      // Check that relatedName is set and not duplicated
       if (!question.displayOnly) {
+        // Skip check if display only
         if (question.relatedName) {
           question.relatedName = this.formHelpersService.toSnakeCase(
             question.relatedName
@@ -630,6 +632,8 @@ export class FormBuilderComponent
           return false;
         }
       }
+
+      // Error if the user selected Add Record without adding a template.
       if (question.addRecord && !question.addTemplate) {
         this.snackBar.openSnackBar(
           this.translate.instant(
