@@ -53,8 +53,12 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   /** Input decorator for textField */
   @Input() textField = '';
+  /** Optional display formatter */
+  @Input() displayFormatter?: (element: any) => string;
   /** Input decorator for path */
   @Input() path = '';
+  /** Debounce time (ms) for emitting searchChange */
+  @Input() searchDebounce = 500;
   /** Whether you can select multiple items or not */
   @Input() multiselect = false;
   /** Whether it is a survey question or not */
@@ -333,7 +337,11 @@ export class GraphQLSelectComponent
       });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(this.searchDebounce),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.cachedElements = [];
         this.elementSelect.resetSubscriptions();
@@ -342,9 +350,10 @@ export class GraphQLSelectComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['query'] && changes['query'].previousValue) {
-      // Unsubscribe from the old query
-      this.queryChange$.next();
+    if (changes['query']) {
+      if (changes['query'].previousValue) {
+        this.queryChange$.next();
+      }
 
       // Reset the loading and pageInfo states
       this.loading = true;
@@ -353,42 +362,31 @@ export class GraphQLSelectComponent
         hasNextPage: true,
       };
 
-      // Clear the cached elements
+      // Clear the cached elements and visible list
       this.cachedElements = [];
-
-      // Clear the selected elements
-      this.selectedElements = [];
-
-      // Clear the elements
       this.elements.next([]);
 
-      // Clear the search control
-      this.searchControl.setValue('');
-
-      // Clear the form control
-      this.ngControl?.control?.setValue(null);
-
-      // Emit the selection change
-      this.selectionChange.emit(null);
-
       // Subscribe to the new query
-      this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
-        });
-    } else {
-      const elements = this.elements.getValue();
-      const selectedElements = this.selectedElements.filter(
-        (selectedElement) =>
-          selectedElement &&
-          !elements.find(
-            (node) => node[this.valueField] === selectedElement[this.valueField]
-          )
-      );
-      this.elements.next([...selectedElements, ...elements]);
+      if (changes['query'].currentValue) {
+        this.query.valueChanges
+          .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+          .subscribe(({ data, loading }) => {
+            this.queryName = Object.keys(data)[0];
+            this.updateValues(data, loading);
+          });
+      }
+      return;
     }
+
+    const elements = this.elements.getValue();
+    const selectedElements = this.selectedElements.filter(
+      (selectedElement) =>
+        selectedElement &&
+        !elements.find(
+          (node) => node[this.valueField] === selectedElement[this.valueField]
+        )
+    );
+    this.elements.next([...selectedElements, ...elements]);
   }
 
   ngOnDestroy(): void {
@@ -540,13 +538,40 @@ export class GraphQLSelectComponent
           (node) => node[this.valueField] === selectedElement[this.valueField]
         )
     );
-    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
-      ...selectedElements,
-      ...elements,
-    ]);
+    const prevLength = this.cachedElements.length;
+    this.cachedElements = updateQueryUniqueValues(
+      this.cachedElements,
+      [...selectedElements, ...elements],
+      this.valueField
+    );
     this.elements.next(this.cachedElements);
     this.queryElements = this.cachedElements;
-    this.pageInfo = get(data, path).pageInfo;
+    const resultPageInfo = get(data, path)?.pageInfo;
+    if (resultPageInfo) {
+      this.pageInfo = resultPageInfo;
+    } else {
+      // If pageInfo is missing and query uses skip, assume hasNextPage true
+      const queryDefinition = this.query?.options?.query
+        ?.definitions?.[0] as any;
+      const isSkip =
+        queryDefinition?.kind === 'OperationDefinition' &&
+        !!queryDefinition.variableDefinitions?.find(
+          (x: any) => x?.variable?.name?.value === 'skip'
+        );
+      if (isSkip) {
+        // If no new items were added, we reached the end
+        const addedCount = this.cachedElements.length - prevLength;
+        this.pageInfo = {
+          endCursor: this.pageInfo?.endCursor || '',
+          hasNextPage: addedCount > 0,
+        };
+      } else {
+        this.pageInfo = {
+          endCursor: this.pageInfo?.endCursor || '',
+          hasNextPage: false,
+        };
+      }
+    }
     this.loading = loading;
     // If it's used as a survey question, then change detector have to be manually triggered
     if (this.isSurveyQuestion) {
@@ -561,6 +586,13 @@ export class GraphQLSelectComponent
    * @returns the display value
    */
   public getDisplayValue(element: any) {
+    if (this.displayFormatter) {
+      try {
+        return this.displayFormatter(element);
+      } catch {
+        return get(element, this.textField);
+      }
+    }
     return get(element, this.textField);
   }
 }

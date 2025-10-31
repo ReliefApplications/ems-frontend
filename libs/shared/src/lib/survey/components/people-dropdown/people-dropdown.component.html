@@ -1,0 +1,14 @@
+<ui-graphql-select
+  valueField="userid"
+  textField="userid"
+  [query]="query"
+  [formControl]="control"
+  [selectedElements]="initialSelection"
+  (searchChange)="onSearchChange($event)"
+  [filterable]="true"
+  [isSurveyQuestion]="true"
+  [searchDebounce]="searchDebounce"
+  [placeholder]="placeholder"
+  [displayFormatter]="displayFormatter"
+>
+</ui-graphql-select>
