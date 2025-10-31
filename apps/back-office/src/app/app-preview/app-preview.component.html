@@ -1,6 +1,6 @@
 <shared-layout
   [title]="title"
-  [leftSidenav]="leftSidenav"
+  [leftSidenav]="showNavigation ? leftSidenav : undefined"
   [sideMenu]="sideMenu"
   [menuOpened]="!hideMenu"
 ></shared-layout>
