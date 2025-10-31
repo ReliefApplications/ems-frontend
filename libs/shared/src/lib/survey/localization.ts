@@ -10,6 +10,13 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     },
   },
   {
+    key: 'displayOnly',
+    locales: {
+      en: 'Display only',
+      fr: 'Affichage seul',
+    },
+  },
+  {
     key: 'fileLimitations',
     locales: {
       en: (question: any) => {
