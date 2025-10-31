@@ -592,6 +592,7 @@ export class FormBuilderComponent
     if (['resource', 'resources'].includes(question.getType())) {
       // Check that relatedName is set and not duplicated
       if (!question.displayOnly) {
+        // Skip check if display only
         if (question.relatedName) {
           question.relatedName = this.formHelpersService.toSnakeCase(
             question.relatedName
