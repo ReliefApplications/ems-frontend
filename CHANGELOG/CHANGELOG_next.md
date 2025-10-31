@@ -1,3 +1,10 @@
+# [2.22.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.5...v2.22.0-rc.6) (2025-10-31)
+
+
+### Features
+
+* When there is only one sub-menu item assigned to the current role, hide the menu ([#2830](https://github.com/ReliefApplications/ems-frontend/issues/2830)) ([d66745d](https://github.com/ReliefApplications/ems-frontend/commit/d66745d8f637dbf3786e0eaf27a7e439de29c6a3)), closes [AB#122254](https://github.com/AB/issues/122254)
+
 # [2.22.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.4...v2.22.0-rc.5) (2025-10-31)
 
 
