@@ -457,7 +457,6 @@ export const init = (
         if (question.customFilter && question.customFilter.trim().length > 0) {
           // Subscribe to survey value changes
           question.survey?.onValueChanged.add(() => {
-            console.log('Survey data changed');
             this.getQuestionFilters(question);
           });
         } else {
@@ -474,7 +473,6 @@ export const init = (
      * @param question Current question
      */
     populateChoices: (question: any): void => {
-      console.log('populate choices called');
       getResourceRecordsById(question).subscribe(({ data }) => {
         const choices = mapQuestionChoices(data, question);
         question.contentQuestion.choices = choices;
@@ -516,8 +514,6 @@ export const init = (
 
       // Load question choices
       if (!question.displayAsGrid) {
-        console.log('should populate choices');
-        // (this as any).populateChoices(question);
         this.populateChoices(question);
       }
     },
@@ -561,9 +557,6 @@ export const init = (
       searchBtn.style.display = 'none';
       if (question.resource) {
         searchBtn.style.display = question.displayOnly ? 'none' : 'block';
-        if (question.displayOnly) {
-          question.canSearch = false;
-        }
         if (parentElement) {
           if (question.displayAsGrid) {
             gridComponentRef = buildGridDisplay(question, parentElement);
