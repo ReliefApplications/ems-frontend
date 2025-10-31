@@ -1,3 +1,10 @@
+# [2.22.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.4...v2.22.0-rc.5) (2025-10-31)
+
+
+### Features
+
+* Display only resources questions ([#2831](https://github.com/ReliefApplications/ems-frontend/issues/2831)) ([e2c1f31](https://github.com/ReliefApplications/ems-frontend/commit/e2c1f31314b079ff0c2ec5334b6d3bb76e5c22c3)), closes [AB#122462](https://github.com/AB/issues/122462)
+
 # [2.22.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.3...v2.22.0-rc.4) (2025-10-20)
 
 
