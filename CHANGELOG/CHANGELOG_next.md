@@ -1,3 +1,10 @@
+# [2.22.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.6...v2.22.0-rc.7) (2025-11-06)
+
+
+### Bug Fixes
+
+* custom survey methods using record not always working ([#2834](https://github.com/ReliefApplications/ems-frontend/issues/2834)) ([2ff86f8](https://github.com/ReliefApplications/ems-frontend/commit/2ff86f8e6166a9a684b63f6ee2ff2c340c88105c)), closes [Ab#123067](https://github.com/Ab/issues/123067)
+
 # [2.22.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.5...v2.22.0-rc.6) (2025-10-31)
 
 
