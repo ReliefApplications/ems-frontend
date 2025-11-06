@@ -92,6 +92,9 @@ const addCustomFunctions = (authService: AuthService): void => {
         name: 'weekday',
         /**
          * Get weekday from a date.
+         * Example:
+         * - expression: weekday(now())
+         * - returns: 3
          *
          * @param params Date
          * @returns Weekday of the date
@@ -293,11 +296,15 @@ const addCustomFunctions = (authService: AuthService): void => {
         name: 'length',
         /**
          * Get length of an array.
+         * Example:
+         * - expression: length({multiselect})
+         * - returns: 3
          *
          * @param params Array
          * @returns Length of the array
          */
         function: (params: any[]) => {
+          console.log('Calling length with params:', params);
           if (!Array.isArray(params[0])) return 0;
           return params[0].length;
         },
@@ -319,6 +326,9 @@ const addCustomFunctions = (authService: AuthService): void => {
         name: 'now',
         /**
          * Get current date in ISO format.
+         * Example:
+         * - expression: now()
+         * - returns: 2024-06-12T14:23:30.123Z
          *
          * @returns Current date in ISO format.
          */
