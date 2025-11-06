@@ -710,11 +710,11 @@ export const init = (
                 const record = data?.record;
                 if (!record || !record.data) return;
                 const survey = question.survey as SurveyModel;
-                for (const source in mapping) {
-                  const target = mapping[source];
-                  if (!target) continue;
-                  const value = get(record.data, source);
-                  survey.setValue(target, value);
+                for (const targetQuestion in mapping) {
+                  const sourceField = mapping[targetQuestion];
+                  if (!sourceField) continue;
+                  const value = get(record.data, sourceField);
+                  survey.setValue(targetQuestion, value);
                 }
               });
           } catch (e) {

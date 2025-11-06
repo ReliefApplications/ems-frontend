@@ -1,4 +1,5 @@
 import { surveyLocalization } from 'survey-core';
+import { editorLocalization } from 'survey-creator-core';
 
 /** Available localizable strings, for survey */
 const SURVEY_LOCALIZABLE_STRINGS = [
@@ -93,4 +94,10 @@ export const initLocalization = () => {
       surveyLocalization.locales[locale][`oort:${item.key}`] = value;
     }
   }
+  // Also add to survey creator localization
+  const editorEn = editorLocalization.getLocale('en');
+  editorEn.pehelp.onSelect =
+    'Define the mapping to pre-fill form questions from selected record.\n\n' +
+    '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
+    '• **On the right (Value):** The name of the field in the selected *data record* (e.g., "region").';
 };
