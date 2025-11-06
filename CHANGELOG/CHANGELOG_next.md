@@ -1,3 +1,10 @@
+# [2.22.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.7...v2.22.0-rc.8) (2025-11-06)
+
+
+### Features
+
+* can configure pre filling on select display only resources ([#2832](https://github.com/ReliefApplications/ems-frontend/issues/2832)) ([f8fb972](https://github.com/ReliefApplications/ems-frontend/commit/f8fb97253c2b811b11ae81a8da88d9f05e36827e)), closes [AB#121363](https://github.com/AB/issues/121363)
+
 # [2.22.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.6...v2.22.0-rc.7) (2025-11-06)
 
 
