@@ -319,7 +319,7 @@ export class FormModalComponent
           this.survey.setValue(question, notNullValues[question]);
         });
       }
-      addCustomFunctions(this.authService, this.record);
+      addCustomFunctions(this.authService);
       this.survey.showCompletedPage = false;
       this.form?.fields?.forEach((field) => {
         if (field.readOnly && this.survey.getQuestionByName(field.name))
