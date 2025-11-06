@@ -237,7 +237,6 @@ export class RecordModalComponent
         }
       );
     }
-    console.log(this.survey.getPropertyValue('record'));
     addCustomFunctions(this.authService);
     this.loading = false;
   }

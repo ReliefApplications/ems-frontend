@@ -82,9 +82,7 @@ const addCustomFunctions = (authService: AuthService): void => {
          * @returns ID of the record
          */
         function: function (this: { survey: SurveyModel }) {
-          console.log(this.survey);
           const record = this.survey.record as Record | undefined;
-          console.log(record);
           return record ? record.id : 'unknown id';
         },
       },
@@ -304,7 +302,6 @@ const addCustomFunctions = (authService: AuthService): void => {
          * @returns Length of the array
          */
         function: (params: any[]) => {
-          console.log('Calling length with params:', params);
           if (!Array.isArray(params[0])) return 0;
           return params[0].length;
         },
