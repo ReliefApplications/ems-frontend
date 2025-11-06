@@ -1,4 +1,5 @@
 import { surveyLocalization } from 'survey-core';
+import { editorLocalization } from 'survey-creator-core';
 
 /** Available localizable strings, for survey */
 const SURVEY_LOCALIZABLE_STRINGS = [
@@ -14,6 +15,13 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'Display only',
       fr: 'Affichage seul',
+    },
+  },
+  {
+    key: 'onSelect',
+    locales: {
+      en: 'On select',
+      fr: 'A la sélection',
     },
   },
   {
@@ -86,4 +94,10 @@ export const initLocalization = () => {
       surveyLocalization.locales[locale][`oort:${item.key}`] = value;
     }
   }
+  // Also add to survey creator localization
+  const editorEn = editorLocalization.getLocale('en');
+  editorEn.pehelp.onSelect =
+    'Define the mapping to pre-fill form questions from selected record.\n\n' +
+    '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
+    '• **On the right (Value):** Expression running on selected *data record* (e.g., "{region}", "length({regions})").';
 };
