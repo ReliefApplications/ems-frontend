@@ -158,6 +158,8 @@ export class FormBuilderService {
         options.question.dragAreaPlaceholder = text;
       }
     });
+    // Add record to survey properties
+    survey.setPropertyValue('record', record);
     return survey;
   }
 
