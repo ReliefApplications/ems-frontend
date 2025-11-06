@@ -10,6 +10,7 @@ import { isEqual, isNil } from 'lodash';
 import get from 'lodash/get';
 import {
   ComponentCollection,
+  ExpressionRunner,
   JsonObject,
   Serializer,
   SurveyModel,
@@ -711,10 +712,15 @@ export const init = (
                 if (!record || !record.data) return;
                 const survey = question.survey as SurveyModel;
                 for (const targetQuestion in mapping) {
-                  const sourceField = mapping[targetQuestion];
-                  if (!sourceField) continue;
-                  const value = get(record.data, sourceField);
-                  survey.setValue(targetQuestion, value);
+                  try {
+                    const expression = mapping[targetQuestion];
+                    if (!expression) continue;
+                    const runner = new ExpressionRunner(expression);
+                    const value = runner.run(record.data);
+                    survey.setValue(targetQuestion, value);
+                  } catch (error) {
+                    console.error(error);
+                  }
                 }
               });
           } catch (e) {

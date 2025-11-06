@@ -99,5 +99,5 @@ export const initLocalization = () => {
   editorEn.pehelp.onSelect =
     'Define the mapping to pre-fill form questions from selected record.\n\n' +
     '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
-    '• **On the right (Value):** The name of the field in the selected *data record* (e.g., "region").';
+    '• **On the right (Value):** Expression running on selected *data record* (e.g., "{region}", "length({regions})").';
 };
