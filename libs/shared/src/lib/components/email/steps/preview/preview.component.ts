@@ -154,7 +154,7 @@ export class PreviewComponent
       }
     });
 
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       this.distributionListTo = this.emailService.emailDistributionList?.to;
       this.distributionListCc = this.emailService.emailDistributionList?.cc;
       this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
@@ -170,7 +170,7 @@ export class PreviewComponent
     this.query.emailDistributionList = this.emailService?.datasetsForm
       ?.get('emailDistributionList')
       ?.getRawValue();
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       this.query.emailDistributionList.to =
         this.emailService.quickEmailDistributionListQuery.to;
       this.query.emailDistributionList.cc =
@@ -178,7 +178,7 @@ export class PreviewComponent
       this.query.emailDistributionList.bcc =
         this.emailService.quickEmailDistributionListQuery.bcc;
     }
-    if (!this.emailService.isQuickAction) {
+    if (!this.emailService.isGridAction) {
       this.loadDistributionList();
     }
     this.loadFinalEmailPreview();
@@ -270,7 +270,7 @@ export class PreviewComponent
       this.emailService.datasetsForm.value.emailLayout !== undefined &&
       !this.emailService.datasetsForm.value.emailLayout
     ) {
-      this.emailService.isQuickAction = true;
+      this.emailService.isGridAction = true;
       this.emailService.quickEmailDistributionListQuery = [];
     }
     this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
@@ -281,7 +281,7 @@ export class PreviewComponent
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
 
-      if (this.emailService.isQuickAction) {
+      if (this.emailService.isGridAction) {
         if (this.query?.datasets.length > 0) {
           this.query.datasets[0].name = 'Block 1';
           this.query.datasets[0].query.filter = previewData?.dataQuery?.filter
@@ -302,15 +302,12 @@ export class PreviewComponent
 
       this.query.emailLayout =
         this.emailService.datasetsForm.getRawValue().emailLayout;
-      if (
-        this.query?.datasets?.length > 0 &&
-        this.emailService?.isQuickAction
-      ) {
+      if (this.query?.datasets?.length > 0 && this.emailService?.isGridAction) {
         this.query.datasets[0].resource = '';
       }
       const objData: any = cloneDeep(this.query);
       objData.emailLayout.name = this.emailService?.layoutTitle;
-      if (!this.emailService.isQuickAction) {
+      if (!this.emailService.isGridAction) {
         //Updating payload
         objData.emailDistributionList.to.commonServiceFilter =
           this.emailService.setCommonServicePayload(

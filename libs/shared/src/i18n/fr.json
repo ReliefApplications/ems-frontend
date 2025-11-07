@@ -2004,7 +2004,7 @@
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
-						"title": "Actions activées",
+						"title": "Actions par ligne",
 						"update": "Modifier les enregistrements",
 						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
@@ -2047,7 +2047,7 @@
 						"placeholder": {
 							"modifyValue": "Supprimer la valeur"
 						},
-						"title": "Bouton d'action rapide",
+						"title": "Barre d'outils",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
 							"mail": {
@@ -2071,7 +2071,6 @@
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
 						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
-						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
 						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
 						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
 					},
@@ -2381,8 +2380,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Actions de grille",
-							"tooltip": "Actions de grille activées"
+							"title": "Actions par ligne",
+							"tooltip": "Actions par ligne ( mode grille )"
 						},
 						"preview": {
 							"title": "Prévisualisation"

@@ -1,3 +1,38 @@
+# [2.22.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.7...v2.22.0-rc.8) (2025-11-06)
+
+
+### Features
+
+* can configure pre filling on select display only resources ([#2832](https://github.com/ReliefApplications/ems-frontend/issues/2832)) ([f8fb972](https://github.com/ReliefApplications/ems-frontend/commit/f8fb97253c2b811b11ae81a8da88d9f05e36827e)), closes [AB#121363](https://github.com/AB/issues/121363)
+
+# [2.22.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.6...v2.22.0-rc.7) (2025-11-06)
+
+
+### Bug Fixes
+
+* custom survey methods using record not always working ([#2834](https://github.com/ReliefApplications/ems-frontend/issues/2834)) ([2ff86f8](https://github.com/ReliefApplications/ems-frontend/commit/2ff86f8e6166a9a684b63f6ee2ff2c340c88105c)), closes [Ab#123067](https://github.com/Ab/issues/123067)
+
+# [2.22.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.5...v2.22.0-rc.6) (2025-10-31)
+
+
+### Features
+
+* When there is only one sub-menu item assigned to the current role, hide the menu ([#2830](https://github.com/ReliefApplications/ems-frontend/issues/2830)) ([d66745d](https://github.com/ReliefApplications/ems-frontend/commit/d66745d8f637dbf3786e0eaf27a7e439de29c6a3)), closes [AB#122254](https://github.com/AB/issues/122254)
+
+# [2.22.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.4...v2.22.0-rc.5) (2025-10-31)
+
+
+### Features
+
+* Display only resources questions ([#2831](https://github.com/ReliefApplications/ems-frontend/issues/2831)) ([e2c1f31](https://github.com/ReliefApplications/ems-frontend/commit/e2c1f31314b079ff0c2ec5334b6d3bb76e5c22c3)), closes [AB#122462](https://github.com/AB/issues/122462)
+
+# [2.22.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.3...v2.22.0-rc.4) (2025-10-20)
+
+
+### Features
+
+* Add lowercase & uppercase methods to widget templating ([#2827](https://github.com/ReliefApplications/ems-frontend/issues/2827)) ([8db5524](https://github.com/ReliefApplications/ems-frontend/commit/8db55240d21226aebae2e8063c92d7b91720e576)), closes [AB#122364](https://github.com/AB/issues/122364)
+
 # [2.22.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.2...v2.22.0-rc.3) (2025-10-10)
 
 

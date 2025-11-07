@@ -179,16 +179,11 @@ export class RecordModalComponent
    * Initializes the form
    */
   private initSurvey() {
-    this.data.isTemporary
-      ? (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata,
-          this.record
-        ))
-      : (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata
-        ));
+    this.survey = this.formBuilderService.createSurvey(
+      this.form?.structure || '',
+      this.form?.metadata,
+      this.record
+    );
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events
@@ -242,7 +237,7 @@ export class RecordModalComponent
         }
       );
     }
-    addCustomFunctions(this.authService, this.record);
+    addCustomFunctions(this.authService);
     this.loading = false;
   }
 

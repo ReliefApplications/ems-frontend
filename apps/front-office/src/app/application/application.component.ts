@@ -45,6 +45,8 @@ export class ApplicationComponent
   public topMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
+  /** Should show navigation. False if only one or less page visible */
+  public showNavigation = true;
   /** Is large device */
   public largeDevice: boolean;
   /** Is loading */
@@ -117,6 +119,11 @@ export class ApplicationComponent
           this.adminNavItems = [];
           this.setAdminNavItems(application);
           this.setNavGroups(application);
+          // Hides navigation if only one page is visible
+          const visiblePagesCount =
+            application.pages?.filter((p) => !!p.content && !!p.visible)
+              .length || 0;
+          this.showNavigation = visiblePagesCount > 1;
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
             if (
