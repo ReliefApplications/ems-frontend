@@ -801,7 +801,7 @@
 				"tooltip": {
 					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
 				},
-				"topMenu": "Afficher le menu en haut"
+				"topMenu": "Afficher le menu dans l'en-tête"
 			},
 			"users": {
 				"auto": "Attribution automatique",

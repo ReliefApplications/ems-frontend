@@ -801,7 +801,7 @@
 				"tooltip": {
 					"hideMenu": "Only applies when menu is located on the side"
 				},
-				"topMenu": "Show menu on the top"
+				"topMenu": "Show menu in the header"
 			},
 			"users": {
 				"auto": "Automatically assigned",
