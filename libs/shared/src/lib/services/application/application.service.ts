@@ -780,7 +780,9 @@ export class ApplicationService {
    * @param update page update
    * @param update.icon page icon
    * @param update.showName should show page name
-   * @param update.showIcon should show page icon
+   * @param update.navBar navBar settings
+   * @param update.navBar.showName should show navBar name
+   * @param update.navBar.showIcon should show navBar icon
    * @param callback callback method, allow the component calling the service to do some logic.
    */
   updatePageParameter(

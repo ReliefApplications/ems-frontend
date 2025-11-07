@@ -436,7 +436,9 @@ export class ViewSettingsModalComponent
   /**
    * Save nav bar parameters.
    *
-   * @param showName boolean
+   * @param navBar Navbar settings
+   * @param navBar.showName Navbar show name
+   * @param navBar.showIcon Navbar show icon
    */
   private onUpdateNavBar(navBar: {
     showName: boolean;

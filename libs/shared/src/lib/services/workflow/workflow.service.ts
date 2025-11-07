@@ -173,7 +173,9 @@ export class WorkflowService {
    * @param update step update
    * @param update.icon step icon
    * @param update.showName should show step name
-   * @param update.navBar should show step icon
+   * @param update.navBar navBar settings
+   * @param update.navBar.showName should show navBar name
+   * @param update.navBar.showIcon should show navBar icon
    * @param callback callback method, allow the component calling the service to do some logic.
    */
   updateStepParameter(
