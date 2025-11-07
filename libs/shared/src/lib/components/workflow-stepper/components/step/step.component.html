@@ -1,6 +1,6 @@
 <div class="flex h-8">
   <div class="flex items-center show-icons">
-    <div class="flex flex-row gap-x-3">
+    <div class="flex flex-row gap-x-3" [uiTooltip]="step.name || ''">
       <!-- Step icon -->
       <ui-icon
         *ngIf="step.navBar?.showIcon !== false"
@@ -11,7 +11,6 @@
       <!-- Step name -->
       <span
         class="truncate"
-        [uiTooltip]="step.name || ''"
         *ngIf="step.navBar?.showName !== false"
         >{{ step.name }}
       </span>

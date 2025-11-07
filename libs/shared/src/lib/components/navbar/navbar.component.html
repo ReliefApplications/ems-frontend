@@ -83,6 +83,7 @@
                 class="group"
                 (click)="largeDevice ? null : nav?.toggle()"
                 [routerLink]="item.path"
+                [uiTooltip]="item.name"
               >
                 <ui-icon
                   *ngIf="item.showIcon !== false && item.icon"
@@ -95,7 +96,6 @@
                 <p
                   *ngIf="item.showName !== false"
                   class="truncate m-0"
-                  [uiTooltip]="item.name"
                 >
                   {{ item.name }}
                 </p>
