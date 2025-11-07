@@ -16,7 +16,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: normal;
-  @media only screen and (max-width: 600px) {
-    display: none;
-  }
+  width: 100%;
+  @apply max-md:hidden;
 }
