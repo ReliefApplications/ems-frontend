@@ -155,7 +155,7 @@ export class ViewSettingsModalComponent
     this.settingsForm.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: string | null) => {
-        if (value) {
+        if (value || value === null) {
           this.onUpdateIcon(value);
         }
       });
@@ -358,12 +358,12 @@ export class ViewSettingsModalComponent
    *
    * @param icon new icon name
    */
-  private onUpdateIcon(icon: string): void {
+  private onUpdateIcon(icon: string | null): void {
     if (this.data.type === 'step' && this.step) {
       const callback = () => {
         this.step = {
           ...this.step,
-          icon,
+          icon: icon || undefined,
         };
         // Updates parent component
         const updates = { icon };
@@ -371,14 +371,14 @@ export class ViewSettingsModalComponent
       };
       this.workflowService.updateStepParameter(
         this.step as Step,
-        { icon },
+        { icon: icon || '' },
         callback
       );
     } else {
       const callback = () => {
         this.page = {
           ...this.page,
-          icon,
+          icon: icon || undefined,
         };
         // Updates parent component
         const updates = { icon };
@@ -387,7 +387,7 @@ export class ViewSettingsModalComponent
       this.page &&
         this.applicationService.updatePageParameter(
           this.page as Page,
-          { icon },
+          { icon: icon || '' },
           callback
         );
     }
