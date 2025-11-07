@@ -18,6 +18,10 @@ export interface Step {
   canDelete?: boolean;
   icon?: string;
   showName?: boolean;
+  navBar?: {
+    showName?: boolean;
+    showIcon?: boolean;
+  };
   buttons?: ActionButton[];
 }
 
