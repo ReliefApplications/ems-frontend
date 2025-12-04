@@ -213,6 +213,27 @@ export class GridDataFormatterService {
           field
         );
         break;
+      case 'people': {
+        // People field stores: { userid, firstname, lastname, emailaddress }
+        // Format as "FirstName LastName (email)" for display
+        const personData = getPropertyValue(rowData, field, parent);
+        if (personData && typeof personData === 'object') {
+          const firstName = personData.firstname || '';
+          const lastName = personData.lastname || '';
+          const email = personData.emailaddress || '';
+          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+          const displayValue = email
+            ? name
+              ? `${name} (${email})`
+              : email
+            : name || personData.userid || '';
+          finalText = this.htmlParserService.applyLayoutFormat(
+            displayValue,
+            field
+          );
+        }
+        break;
+      }
       default:
         finalText = this.htmlParserService.applyLayoutFormat(
           getPropertyValue(rowData, field, parent),

@@ -30,6 +30,16 @@ const MIN_SEARCH_LENGTH = 2;
 const DEBOUNCE_TIME = 500;
 
 /**
+ * Value stored for a people field - includes userid and display metadata
+ */
+export interface PeopleFieldValue {
+  userid: string;
+  firstname?: string;
+  lastname?: string;
+  emailaddress?: string;
+}
+
+/**
  * Dropdown component to search/select a person
  */
 @Component({
@@ -46,10 +56,10 @@ const DEBOUNCE_TIME = 500;
   styleUrls: ['./people-dropdown.component.scss'],
 })
 export class PeopleDropdownComponent implements OnInit, OnDestroy {
-  /** Initial selected userid */
-  @Input() initialSelectionID: string | null = null;
-  /** Emits selected userid when selection changes */
-  @Output() selectionChange = new EventEmitter<string | null>();
+  /** Initial selected userid or full PeopleFieldValue */
+  @Input() initialSelectionID: string | PeopleFieldValue | null = null;
+  /** Emits full people data when selection changes (includes metadata for grid/export) */
+  @Output() selectionChange = new EventEmitter<PeopleFieldValue | null>();
 
   /** Backing control for selected value */
   public control = new FormControl<string | null>(null);
@@ -61,6 +71,8 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
   private csClient: ApolloBase;
   /** Destroy notifier */
   private destroy$ = new Subject<void>();
+  /** Cache of loaded people for lookup on selection */
+  private peopleCache: Map<string, People> = new Map();
 
   /** Placeholder, debounce, page size, and minimum search length (configurable via People Settings) */
   public placeholder = DEFAULT_PLACEHOLDER;
@@ -95,19 +107,36 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Emit selection changes
+    // Emit selection changes with full person data
     this.control.valueChanges
       ?.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.selectionChange.emit(value ?? null);
+      .subscribe((userid) => {
+        if (!userid) {
+          this.selectionChange.emit(null);
+          return;
+        }
+        // Look up the full person data from cache
+        const person = this.peopleCache.get(userid);
+        if (person) {
+          this.selectionChange.emit({
+            userid: person.userid,
+            firstname: person.firstname,
+            lastname: person.lastname,
+            emailaddress: person.emailaddress,
+          });
+        } else {
+          // Fallback: emit just the userid if not in cache
+          this.selectionChange.emit({ userid });
+        }
       });
 
     // Load initial selection if provided
-    if (this.initialSelectionID) {
+    const initialId = this.getInitialUserId();
+    if (initialId) {
       this.csClient
         .query<GetPeopleByIdResponse>({
           query: GET_PEOPLE_BY_ID,
-          variables: { ids: [this.initialSelectionID] },
+          variables: { ids: [initialId] },
           fetchPolicy: 'no-cache',
         })
         .pipe(takeUntil(this.destroy$))
@@ -115,10 +144,26 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
           const user = (data.users ?? [])[0];
           if (user) {
             this.initialSelection = [user];
+            this.peopleCache.set(user.userid, user);
             this.control.setValue(user.userid, { emitEvent: false });
           }
         });
     }
+  }
+
+  /**
+   * Gets the initial userid from either a string or PeopleFieldValue
+   *
+   * @returns The userid string or null
+   */
+  private getInitialUserId(): string | null {
+    if (!this.initialSelectionID) {
+      return null;
+    }
+    if (typeof this.initialSelectionID === 'string') {
+      return this.initialSelectionID;
+    }
+    return this.initialSelectionID.userid;
   }
 
   ngOnDestroy(): void {
@@ -156,8 +201,25 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
         variables: { filter, first: this.pageSize, skip: 0 },
         fetchPolicy: 'no-cache',
       });
+      // Subscribe to cache people as they are loaded
+      this.query.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          this.cachePeople(data?.users || []);
+        });
     } else {
       this.query.refetch({ filter, first: this.pageSize, skip: 0 });
+    }
+  }
+
+  /**
+   * Caches people data for lookup when selection changes
+   *
+   * @param people List of people to cache
+   */
+  private cachePeople(people: People[]): void {
+    for (const person of people) {
+      this.peopleCache.set(person.userid, person);
     }
   }
 }

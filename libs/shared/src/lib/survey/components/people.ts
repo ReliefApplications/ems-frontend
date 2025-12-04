@@ -1,7 +1,10 @@
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
-import { PeopleDropdownComponent } from './people-dropdown/people-dropdown.component';
+import {
+  PeopleDropdownComponent,
+  PeopleFieldValue,
+} from './people-dropdown/people-dropdown.component';
 
 /**
  * Inits the people component.
@@ -70,11 +73,15 @@ export const init = (
       ) {
         instance.pageSize = (question as any).pageSize;
       }
+      // Pass initial value (could be a string userid or full PeopleFieldValue)
       if (question.value) instance.initialSelectionID = question.value as any;
 
-      instance.selectionChange.subscribe((userid: string | null) => {
-        (question as any).value = userid ?? null;
-      });
+      // Store full person data including metadata for grid/export
+      instance.selectionChange.subscribe(
+        (personData: PeopleFieldValue | null) => {
+          (question as any).value = personData ?? null;
+        }
+      );
 
       if ((question as any).isReadOnly) {
         instance.control.disable();
