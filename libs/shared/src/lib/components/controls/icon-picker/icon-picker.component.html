@@ -1,11 +1,21 @@
 <div
-  class="w-full cursor-pointer"
+  class="w-full cursor-pointer flex items-center"
   (click)="onOpenSelect()"
   #trigger="cdkOverlayOrigin"
   cdkOverlayOrigin
 >
   <ng-container *ngIf="value; else defaultTemplate">
     <span class="mr-2"></span>{{ value }}
+    <ui-button
+      *ngIf="nullable"
+      class="ml-auto"
+      size="small"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      (click)="$event.stopPropagation(); setIcon(null)"
+      [uiTooltip]="'common.remove' | translate"
+    ></ui-button>
   </ng-container>
 </div>
 

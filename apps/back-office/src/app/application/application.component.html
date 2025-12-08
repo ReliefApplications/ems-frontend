@@ -10,6 +10,7 @@
   [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
+  [topMenu]="topMenu"
   [menuOpened]="!hideMenu"
 ></shared-layout>
 <ng-template #header>
@@ -27,7 +28,8 @@
     [navGroups]="navGroups"
     [appLayout]="true"
     [canAddPage]="application?.canUpdate!"
-    [vertical]="!(!sideMenu && largeDevice)"
+    [topMenu]="topMenu"
+    [vertical]="topMenu ? false : !(!sideMenu && largeDevice)"
     (reorder)="onReorder($event)"
   ></shared-navbar>
 </ng-template>

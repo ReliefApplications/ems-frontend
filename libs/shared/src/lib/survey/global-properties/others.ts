@@ -76,6 +76,13 @@ export const init = (environment: any): void => {
     },
   });
 
+  // Adds property to hold the current record
+  serializer.addProperty('survey', {
+    name: 'record',
+    visible: false,
+    isSerializable: false,
+  });
+
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
   /** Size per file is mandatory */

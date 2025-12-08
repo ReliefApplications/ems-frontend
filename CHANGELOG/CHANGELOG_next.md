@@ -1,3 +1,24 @@
+# [2.22.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.8...v2.22.0-rc.9) (2025-11-07)
+
+
+### Features
+
+* Enable menu and account on one line, and icon-only menu items ([#2826](https://github.com/ReliefApplications/ems-frontend/issues/2826)) ([b6c0082](https://github.com/ReliefApplications/ems-frontend/commit/b6c0082a8b7c9f51e613c5757b36a66f37f6302b)), closes [AB#121668](https://github.com/AB/issues/121668)
+
+# [2.22.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.7...v2.22.0-rc.8) (2025-11-06)
+
+
+### Features
+
+* can configure pre filling on select display only resources ([#2832](https://github.com/ReliefApplications/ems-frontend/issues/2832)) ([f8fb972](https://github.com/ReliefApplications/ems-frontend/commit/f8fb97253c2b811b11ae81a8da88d9f05e36827e)), closes [AB#121363](https://github.com/AB/issues/121363)
+
+# [2.22.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.6...v2.22.0-rc.7) (2025-11-06)
+
+
+### Bug Fixes
+
+* custom survey methods using record not always working ([#2834](https://github.com/ReliefApplications/ems-frontend/issues/2834)) ([2ff86f8](https://github.com/ReliefApplications/ems-frontend/commit/2ff86f8e6166a9a684b63f6ee2ff2c340c88105c)), closes [Ab#123067](https://github.com/Ab/issues/123067)
+
 # [2.22.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.5...v2.22.0-rc.6) (2025-10-31)
 
 

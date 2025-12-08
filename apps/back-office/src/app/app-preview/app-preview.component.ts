@@ -99,6 +99,10 @@ export class AppPreviewComponent
    * Use side menu or not.
    */
   public sideMenu = false;
+  /**
+   * Use header menu or not.
+   */
+  public topMenu = false;
   /** Should hide menu by default ( only when vertical ) */
   public hideMenu = false;
   /** Should show navigation. False if only one or less page visible */
@@ -158,6 +162,8 @@ export class AppPreviewComponent
           icon: x.icon || this.getNavIcon(x.type || ''),
           fontFamily: x.icon ? 'fa' : 'material',
           visible: x.visible ?? false,
+          showName: x.navBar?.showName !== false,
+          showIcon: x.navBar?.showIcon !== false,
         })) || []
     );
   }
@@ -282,7 +288,12 @@ export class AppPreviewComponent
           }
           this.application = application;
           this.sideMenu = this.application?.sideMenu ?? true;
+          this.topMenu = this.application?.topMenu ?? false;
           this.hideMenu = this.application?.hideMenu ?? false;
+          if (this.topMenu) {
+            this.sideMenu = false;
+            this.hideMenu = false;
+          }
         } else {
           this.navGroups = [];
         }
