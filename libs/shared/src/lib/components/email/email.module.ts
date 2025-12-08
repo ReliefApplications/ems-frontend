@@ -50,10 +50,13 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
 import { EmptyModule } from '../ui/empty/empty.module';
 import { FilterModule } from '../filter/filter.module';
 import { ResourceSelectComponent } from '../controls/public-api';
+import { ReferenceDataSelectComponent } from '../controls/reference-data-select/reference-data-select.component';
+import { QueryParamsMappingComponent } from '../widgets/common/query-params-mapping/query-params-mapping.component';
 import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
 import { EmailAttachmentComponent } from './components/email-attachment/email-attachment.component';
 import { CreateDistributionComponent } from './components/create-distribution/create-distribution.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * Email module.
@@ -115,8 +118,11 @@ import { PreviewDistributionComponent } from './components/preview-distribution/
     ErrorMessageModule,
     FilterModule,
     ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    QueryParamsMappingComponent,
     ExpansionPanelModule,
     DialogModule,
+    SurveyModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [

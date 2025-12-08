@@ -31,6 +31,11 @@ import {
   ContentType,
   Page,
 } from '../../../../../index';
+import { ReferenceData } from '../../../../models/reference-data.model';
+import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
+import { FormBuilderService } from '../../../../services/form-builder/form-builder.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { Model } from 'survey-core';
 /**
  * Component for filtering, selecting fields and styling block data sets.
  */
@@ -58,13 +63,13 @@ export class DatasetFilterComponent
   /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   /** Selected resource. */
-  public resource!: Resource;
+  public resource: Resource | null = null;
   /** Response of the data set. */
   public datasetResponse: any;
   /** Fields of the data set. */
   public datasetFields!: any[];
   /** Selected resource ID. */
-  public selectedResourceId!: string;
+  public selectedResourceId: string | null = null;
   /** List of data. */
   public dataList!: { [key: string]: any }[];
   /** Selected search field. */
@@ -129,10 +134,27 @@ export class DatasetFilterComponent
   public isReferenceData = false;
   /** List of data types */
   public dataTypeList: any = ['Resource', 'Reference Data'];
+  /** Currently selected reference data */
+  public referenceData: ReferenceData | null = null;
+  /** Survey model for variable inputs */
+  public referenceInputsSurvey: Model | null = null;
+  /** Reference data loading flag */
+  public referenceDataLoading = false;
   /** Available pages from the application */
   public pages: any[] = [];
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning_SSE = false;
+
+  /**
+   * Reference variable mapping control helper
+   *
+   * @returns reference data mapping control if available
+   */
+  get referenceMappingControl(): FormControl | null {
+    return (
+      (this.query?.get('referenceDataVariableMapping') as FormControl) || null
+    );
+  }
 
   /**
    * To use helper functions, Apollo serve
@@ -145,6 +167,9 @@ export class DatasetFilterComponent
    * @param restService rest service
    * @param sanitizer html sanitizer
    * @param applicationService application service
+   * @param referenceDataService reference data service
+   * @param formBuilderService form builder service
+   * @param dialog dialog service
    */
   constructor(
     public emailService: EmailService,
@@ -154,7 +179,10 @@ export class DatasetFilterComponent
     private http: HttpClient,
     private restService: RestService,
     private sanitizer: DomSanitizer,
-    public applicationService: ApplicationService
+    public applicationService: ApplicationService,
+    private referenceDataService: ReferenceDataService,
+    private formBuilderService: FormBuilderService,
+    private dialog: Dialog
   ) {
     super();
   }
@@ -162,13 +190,65 @@ export class DatasetFilterComponent
   ngOnInit(): void {
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
-    if (this.query.controls.resource.value && !this.resource) {
+    const dataTypeControl = this.query.get('dataType');
+    const selectedDataType = dataTypeControl?.value ?? this.dataTypeList[0];
+    if (!dataTypeControl?.value) {
+      dataTypeControl?.setValue(selectedDataType, { emitEvent: false });
+    }
+    this.isReferenceData = selectedDataType === this.dataTypeList[1];
+
+    dataTypeControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.isReferenceData = value === this.dataTypeList[1];
+        if (this.isReferenceData) {
+          this.query.get('resource')?.setValue(null, { emitEvent: false });
+          this.resource = null;
+          this.availableFields = [];
+          this.selectedFields = [];
+          this.selectedFieldsIndividualEmail = [];
+          this.referenceInputsSurvey = null;
+          this.resetQuery(this.query.get('query'));
+          if (!this.query.get('referenceDataVariableMapping')?.value) {
+            this.query.get('referenceDataVariableMapping')?.setValue('{}');
+          }
+          const referenceId = this.query.get('reference')?.value;
+          if (referenceId) {
+            this.loadReferenceData(referenceId as string);
+          }
+          this.emailService.disableSaveAndProceed.next(true);
+        } else {
+          this.query.get('reference')?.setValue(null, { emitEvent: false });
+          this.referenceData = null;
+          this.referenceInputsSurvey = null;
+          this.query
+            .get('referenceDataVariableMapping')
+            ?.setValue(null, { emitEvent: false });
+          this.query
+            .get('referenceDataInputConfig')
+            ?.setValue(null, { emitEvent: false });
+          this.query
+            .get('referenceDataInputs')
+            ?.setValue(null, { emitEvent: false });
+          if (this.query.controls.resource.value) {
+            this.selectedResourceId = this.query.controls.resource.value;
+            this.getResourceData(false);
+          }
+        }
+      });
+
+    if (
+      this.query.controls.resource.value &&
+      !this.resource &&
+      !this.isReferenceData
+    ) {
       this.selectedResourceId = this.query.controls.resource.value;
       this.getResourceData(false);
     }
     this.query.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
+        if (this.isReferenceData) return;
         if (
           value !== undefined &&
           value !== null &&
@@ -185,6 +265,19 @@ export class DatasetFilterComponent
           if (this.resource?.fields) {
             this.resource.fields = [];
           }
+        }
+      });
+    const referenceControl = this.query.get('reference');
+    referenceControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (!this.isReferenceData) return;
+        if (value) {
+          this.loadReferenceData(value);
+        } else {
+          this.referenceData = null;
+          this.referenceInputsSurvey = null;
+          this.updateReferenceDataValidity();
         }
       });
     this.query.controls.name.valueChanges
@@ -211,18 +304,25 @@ export class DatasetFilterComponent
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
     );
-    if (this.query.value.name == null) {
+    if (!this.query.value.name) {
       const name = 'Block ' + this.activeTab.blockHeaderCount;
       this.query.controls['name'].setValue(name);
     }
 
-    if (this.query?.value?.resource) {
+    if (this.query?.value?.resource && !this.isReferenceData) {
       this.selectedResourceId = this.query?.value?.resource;
       this.getResourceData(false);
     }
 
+    if (this.isReferenceData && this.query?.value?.reference) {
+      this.loadReferenceData(this.query.value.reference);
+    }
+
     this.filteredFields = this.resource?.fields;
-    if (this.query.controls.query.get('cacheData')?.value) {
+    if (
+      !this.isReferenceData &&
+      this.query.controls.query.get('cacheData')?.value
+    ) {
       const {
         dataList,
         resource,
@@ -252,6 +352,7 @@ export class DatasetFilterComponent
     this.query.controls.individualEmail.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
+        if (this.isReferenceData) return;
         if (
           value === true &&
           this.selectedFieldsIndividualEmail?.length === 0 &&
@@ -372,6 +473,8 @@ export class DatasetFilterComponent
       this.resetQuery(this.query.get('query'));
     }
     if (this.selectedResourceId) {
+      // Show tabs while loading to avoid empty UI
+      this.resourcePopulated = true;
       this.emailService
         .fetchResourceData(this.selectedResourceId)
         .pipe(takeUntil(this.destroy$))
@@ -382,9 +485,9 @@ export class DatasetFilterComponent
             this.query.controls.query.addControl('name', new FormControl(''));
           }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
-          this.availableFields = newData;
-          this.availableFieldsIndividualEmail = cloneDeep(newData);
-          this.filterFields = cloneDeep(newData);
+          this.availableFields = newData || [];
+          this.availableFieldsIndividualEmail = cloneDeep(newData || []);
+          this.filterFields = cloneDeep(newData || []);
           this.loading = false;
           this.resourcePopulated = true;
           this.resource = data.resource;
@@ -409,6 +512,96 @@ export class DatasetFilterComponent
     filters.push(this.emailService.getNewFilterFields);
 
     query.get('name')?.setValue('');
+  }
+
+  /**
+   * Loads reference data metadata and builds survey for inputs.
+   *
+   * @param referenceId Reference data id
+   */
+  async loadReferenceData(referenceId: string) {
+    this.referenceDataLoading = true;
+    try {
+      this.referenceData = await this.referenceDataService.loadReferenceData(
+        referenceId
+      );
+      this.buildReferenceInputsSurvey(
+        this.query.get('referenceDataInputConfig')?.value
+      );
+    } catch (err) {
+      console.error(err);
+      this.referenceData = null;
+    } finally {
+      this.referenceDataLoading = false;
+      this.updateReferenceDataValidity();
+    }
+  }
+
+  /**
+   * Opens Survey builder to configure variable inputs.
+   */
+  openReferenceInputBuilder(): void {
+    import(
+      '../../../dashboard-filter/filter-builder-modal/filter-builder-modal.component'
+    ).then(({ FilterBuilderModalComponent }) => {
+      const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
+        data: {
+          surveyStructure: this.query.get('referenceDataInputConfig')?.value,
+        },
+        autoFocus: false,
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          this.query.get('referenceDataInputConfig')?.setValue(value);
+          this.buildReferenceInputsSurvey(value);
+        }
+      });
+    });
+  }
+
+  /**
+   * Build survey instance for variable inputs.
+   *
+   * @param structure Survey JSON definition
+   */
+  buildReferenceInputsSurvey(structure?: any): void {
+    if (!structure) {
+      this.referenceInputsSurvey = null;
+      this.updateReferenceDataValidity();
+      return;
+    }
+    try {
+      const surveyStructure =
+        typeof structure === 'string' ? structure : JSON.stringify(structure);
+      const survey = this.formBuilderService.createSurvey(surveyStructure);
+      const currentInputs = this.query.get('referenceDataInputs')?.value;
+      if (currentInputs) {
+        survey.data = currentInputs;
+      }
+      survey.onValueChanged.add(() => {
+        this.query
+          .get('referenceDataInputs')
+          ?.setValue({ ...(survey.data as any) });
+        this.updateReferenceDataValidity();
+      });
+      this.referenceInputsSurvey = survey;
+      this.updateReferenceDataValidity();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  /**
+   * Update save/proceed availability for reference data datasets.
+   */
+  updateReferenceDataValidity(): void {
+    if (!this.isReferenceData) return;
+    const hasReference = !!this.query.get('reference')?.value;
+    const mappingControl = this.query.get('referenceDataVariableMapping');
+    const mappingValid = mappingControl ? mappingControl.valid : true;
+    const isValid = hasReference && mappingValid;
+    this.emailService.disableSaveAndProceed.next(!isValid);
+    this.emailService.disableSaveAsDraft.next(false);
   }
 
   /**
@@ -466,6 +659,11 @@ export class DatasetFilterComponent
    * @param validCheck - Check if data needs validation
    */
   getDataSet(tabName?: any, validCheck?: boolean): void {
+    if (this.isReferenceData) {
+      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
+      return;
+    }
     if (
       this.query.controls['name'].value !== null &&
       this.query.controls['name'].value !== ''
@@ -779,13 +977,26 @@ export class DatasetFilterComponent
    * @param event click event
    */
   clearFormField(formField: string, event: Event) {
-    if (this.query.controls[formField]?.value) {
-      this.query.controls[formField].setValue(null);
-      this.query.controls.resource.value = null;
+    const control = this.query.get(formField);
+    if (control?.value) {
+      control.setValue(null);
     }
-    this.resetQuery(this.query.get('query'));
-    this.resource.fields = [];
-    this.selectedResourceId = '';
+    if (formField === 'resource') {
+      this.query.controls.resource.value = null;
+      this.resetQuery(this.query.get('query'));
+      if (this.resource) {
+        this.resource.fields = [];
+      }
+      this.selectedResourceId = '';
+    }
+    if (formField === 'reference') {
+      this.referenceData = null;
+      this.referenceInputsSurvey = null;
+      this.query.get('referenceDataVariableMapping')?.setValue('{}');
+      this.query.get('referenceDataInputConfig')?.setValue(null);
+      this.query.get('referenceDataInputs')?.setValue(null);
+      this.updateReferenceDataValidity();
+    }
     event.stopPropagation();
   }
 

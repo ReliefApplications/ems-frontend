@@ -218,8 +218,12 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
               filter
               fields
             }
+            dataType
             resource
             reference
+            referenceDataVariableMapping
+            referenceDataInputConfig
+            referenceDataInputs
             tableStyle
             blockType
             textStyle
@@ -259,8 +263,12 @@ export const ADD_EMAIL_NOTIFICATION = gql`
           filter
           fields
         }
+        dataType
         resource
         reference
+        referenceDataVariableMapping
+        referenceDataInputConfig
+        referenceDataInputs
         tableStyle
         blockType
         textStyle
@@ -311,8 +319,12 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
           filter
           fields
         }
+        dataType
         resource
         reference
+        referenceDataVariableMapping
+        referenceDataInputConfig
+        referenceDataInputs
         tableStyle
         blockType
         textStyle

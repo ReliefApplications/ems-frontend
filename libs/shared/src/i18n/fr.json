@@ -84,6 +84,7 @@
 			"one": "Colonne"
 		},
 		"comma": "virgule",
+		"configure": "Configurer",
 		"copy": "Copier",
 		"copyright": {
 			"who": "Copyright © World Health Organization 2024."
@@ -922,6 +923,7 @@
 				"dlPreview": "Tous les e-mails répertoriés ci-dessous seront utilisés pour créer la liste de distribution.",
 				"individualEmailsInfo": "Sélectionnez les champs de courrier électronique que vous souhaitez utiliser pour envoyer des courriers électroniques spécifiques à un enregistrement.",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noReferenceSelected": "Veuillez sélectionner des données de référence pour continuer",
 				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
@@ -940,8 +942,17 @@
 					"label": "Titre du Bloc",
 					"title": "Bloc"
 				},
+				"dataSource": "Source de données",
 				"navigateToPage": {
 					"title": "Aller à la page"
+				},
+				"reference": {
+					"inputConfiguration": "Configuration des entrées",
+					"inputConfigured": "Entrées configurées",
+					"inputs": "Valeurs des variables",
+					"mapping": "Correspondance des variables",
+					"noInputConfiguration": "Ajoutez une configuration d'entrée pour saisir les valeurs.",
+					"title": "Données de référence"
 				}
 			},
 			"distributionList": {

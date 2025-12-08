@@ -888,6 +888,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       resource: new FormControl(ele.resource),
       reference: new FormControl(ele.reference),
       dataType: new FormControl(ele.resource ? 'Resource' : 'Reference Data'),
+      referenceDataVariableMapping: new FormControl(
+        ele.referenceDataVariableMapping
+      ),
+      referenceDataInputConfig: new FormControl(ele.referenceDataInputConfig),
+      referenceDataInputs: new FormControl(ele.referenceDataInputs),
       pageSize: new FormControl(ele.pageSize),
       blockType: new FormControl('table'),
       tableStyle: new FormControl(this.emailService.getTableStyles()),

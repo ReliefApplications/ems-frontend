@@ -254,6 +254,11 @@ export class EmailService {
       name: null,
       query: this.createQuerygroup(),
       resource: null,
+      reference: null,
+      dataType: 'Resource',
+      referenceDataVariableMapping: null,
+      referenceDataInputConfig: null,
+      referenceDataInputs: null,
       pageSize: 10,
       tableStyle: this.defaultTableStyle,
       blockType: 'table', // Either Table or Text
@@ -264,8 +269,6 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
-      dataType: null,
-      reference: null,
       navigateToPage: false,
       navigateSettings: this.formBuilder.group({
         title: get('', 'actions.navigateSettings.title', 'Details view'),
