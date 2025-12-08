@@ -45,7 +45,8 @@ const CUSTOM_COMPONENTS = [
   'resources',
   'owner',
   'users',
-  'people',
+  'people-dropdown',
+  'people-tagbox',
   'geospatial',
   'editor',
 ];

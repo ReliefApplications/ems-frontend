@@ -96,6 +96,18 @@ export class CommonServicesService {
   }
 
   /**
+   * Search Azure users via REST endpoint.
+   *
+   * @param searchText Text to search for in firstname, lastname, or email
+   * @returns Observable of search results
+   */
+  public searchAzureUsers(searchText: string) {
+    const url = `${this.environment.csApiUrl}/api/users/searchazure(q=${encodeURIComponent(searchText)})`;
+    const headers = this.buildHeaders();
+    return this.restService.get(url, { headers });
+  }
+
+  /**
    * Create Apollo Client to contact CS API.
    */
   private createApolloClient() {

@@ -464,12 +464,12 @@
               </div>
             </div>
           </ng-template>
-          <!-- DISPLAY ( dropdown / radiogroup / people / form ) -->
+          <!-- DISPLAY ( dropdown / radiogroup / people-dropdown / people-tagbox / form ) -->
           <ng-template
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['dropdown', 'radiogroup', 'people'].includes(field.meta.type)"
+            *ngIf="['dropdown', 'radiogroup', 'people-dropdown', 'people-tagbox'].includes(field.meta.type)"
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <div

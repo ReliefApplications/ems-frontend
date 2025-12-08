@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -25,9 +24,13 @@ import {
   distinctUntilChanged,
   takeUntil,
 } from 'rxjs';
-import { GET_PEOPLE_BY_ID } from './graphql/queries';
+import { GET_PEOPLE_BY_ID } from '../people-dropdown/graphql/queries';
 import { GetPeopleByIdResponse, People } from '../../../models/people.model';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import {
+  PeopleFieldValue,
+  formatPersonDisplay,
+} from '../people-dropdown/people-dropdown.component';
 
 /** Default placeholder text */
 const DEFAULT_PLACEHOLDER = 'Begin typing and select';
@@ -37,34 +40,7 @@ const MIN_SEARCH_LENGTH = 2;
 const DEBOUNCE_TIME = 500;
 
 /**
- * Value stored for a people field - includes userid and display metadata
- */
-export interface PeopleFieldValue {
-  userid: string;
-  firstname?: string;
-  lastname?: string;
-  emailaddress?: string;
-}
-
-/**
- * Formats a person's display text as "FirstName LastName (email)"
- *
- * @param person The person data
- * @returns Formatted display string
- */
-export function formatPersonDisplay(person: PeopleFieldValue | People): string {
-  const firstName = person.firstname || '';
-  const lastName = person.lastname || '';
-  const email = person.emailaddress || '';
-  const name = [firstName, lastName].filter(Boolean).join(' ').trim();
-  if (email) {
-    return name ? `${name} (${email})` : email;
-  }
-  return name || person.userid || '';
-}
-
-/**
- * Dropdown component to search/select a person (single select)
+ * Tagbox component to search/select multiple people (multi-select)
  */
 @Component({
   standalone: true,
@@ -79,24 +55,24 @@ export function formatPersonDisplay(person: PeopleFieldValue | People): string {
     ButtonModule,
     IconModule,
   ],
-  selector: 'shared-people-dropdown',
-  templateUrl: './people-dropdown.component.html',
-  styleUrls: ['./people-dropdown.component.scss'],
+  selector: 'shared-people-tagbox',
+  templateUrl: './people-tagbox.component.html',
+  styleUrls: ['./people-tagbox.component.scss'],
 })
-export class PeopleDropdownComponent implements OnInit, OnDestroy {
-  /** Initial selected value (can be userid string or full PeopleFieldValue) */
-  @Input() initialSelection: string | PeopleFieldValue | null = null;
-  /** Emits full people data when selection changes */
-  @Output() selectionChange = new EventEmitter<PeopleFieldValue | null>();
+export class PeopleTagboxComponent implements OnInit, OnDestroy {
+  /** Initial selected values (can be userid strings or full PeopleFieldValue array) */
+  @Input() initialSelection: (string | PeopleFieldValue)[] | null = null;
+  /** Emits full people data array when selection changes */
+  @Output() selectionChange = new EventEmitter<PeopleFieldValue[]>();
 
-  /** Backing control for selected value (stores userid) */
-  public control = new FormControl<string | null>(null);
+  /** Backing control for selected values (stores userids) */
+  public control = new FormControl<string[]>([], { nonNullable: true });
   /** Search control for filtering */
   public searchControl = new FormControl<string>('', { nonNullable: true });
   /** Available options from search */
   public options: People[] = [];
-  /** Selected person for display */
-  public selectedPerson: People | null = null;
+  /** Selected people for display */
+  public selectedPeople: People[] = [];
   /** Loading state */
   public loading = false;
   /** CS named client for GraphQL */
@@ -143,24 +119,25 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
     // Emit selection changes with full person data
     this.control.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((userid) => {
-        if (!userid) {
-          this.selectedPerson = null;
-          this.selectionChange.emit(null);
-          return;
+      .subscribe((userids) => {
+        const selectedValues: PeopleFieldValue[] = [];
+        this.selectedPeople = [];
+
+        for (const userid of userids || []) {
+          const person = this.peopleCache.get(userid);
+          if (person) {
+            this.selectedPeople.push(person);
+            selectedValues.push({
+              userid: person.userid,
+              firstname: person.firstname,
+              lastname: person.lastname,
+              emailaddress: person.emailaddress,
+            });
+          } else {
+            selectedValues.push({ userid });
+          }
         }
-        const person = this.peopleCache.get(userid);
-        if (person) {
-          this.selectedPerson = person;
-          this.selectionChange.emit({
-            userid: person.userid,
-            firstname: person.firstname,
-            lastname: person.lastname,
-            emailaddress: person.emailaddress,
-          });
-        } else {
-          this.selectionChange.emit({ userid });
-        }
+        this.selectionChange.emit(selectedValues);
         this.cdr.detectChanges();
       });
 
@@ -177,8 +154,8 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
    * Loads initial selection if provided
    */
   private loadInitialSelection(): void {
-    const initialId = this.getInitialUserId();
-    if (!initialId) {
+    const initialIds = this.getInitialUserIds();
+    if (!initialIds.length) {
       return;
     }
 
@@ -186,19 +163,20 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
     this.csClient
       .query<GetPeopleByIdResponse>({
         query: GET_PEOPLE_BY_ID,
-        variables: { ids: [initialId] },
+        variables: { ids: initialIds },
         fetchPolicy: 'no-cache',
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
-          const user = (data.users ?? [])[0];
-          if (user) {
-            this.cachePeople([user]);
-            this.selectedPerson = user;
-            this.options = [user];
-            this.control.setValue(user.userid, { emitEvent: false });
-          }
+          const users = data.users ?? [];
+          this.cachePeople(users);
+          this.selectedPeople = users;
+          this.options = [...users];
+          this.control.setValue(
+            users.map((u) => u.userid),
+            { emitEvent: false }
+          );
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -210,16 +188,15 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets the initial userid from either a string or PeopleFieldValue
+   * Gets the initial userids from the input
    */
-  private getInitialUserId(): string | null {
-    if (!this.initialSelection) {
-      return null;
+  private getInitialUserIds(): string[] {
+    if (!this.initialSelection || !Array.isArray(this.initialSelection)) {
+      return [];
     }
-    if (typeof this.initialSelection === 'string') {
-      return this.initialSelection;
-    }
-    return this.initialSelection.userid;
+    return this.initialSelection.map((item) =>
+      typeof item === 'string' ? item : item.userid
+    );
   }
 
   /**
@@ -230,8 +207,8 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
   private onSearch(searchText: string): void {
     const trimmed = (searchText || '').trim();
     if (trimmed.length < this.minSearchLength) {
-      // Keep selected person in options if present
-      this.options = this.selectedPerson ? [this.selectedPerson] : [];
+      // Keep selected people in options
+      this.options = [...this.selectedPeople];
       this.cdr.detectChanges();
       return;
     }
@@ -244,20 +221,20 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
         next: (results: any) => {
           const users: People[] = Array.isArray(results) ? results : [];
           this.cachePeople(users);
-          // Include selected person if not in results
-          if (
-            this.selectedPerson &&
-            !users.find((u) => u.userid === this.selectedPerson?.userid)
-          ) {
-            this.options = [this.selectedPerson, ...users];
-          } else {
-            this.options = users;
-          }
+          // Merge selected people with search results (avoid duplicates)
+          const selectedIds = new Set(
+            this.selectedPeople.map((p) => p.userid)
+          );
+          const newOptions = [
+            ...this.selectedPeople,
+            ...users.filter((u) => !selectedIds.has(u.userid)),
+          ];
+          this.options = newOptions;
           this.loading = false;
           this.cdr.detectChanges();
         },
         error: () => {
-          this.options = this.selectedPerson ? [this.selectedPerson] : [];
+          this.options = [...this.selectedPeople];
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -306,3 +283,4 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 }
+
