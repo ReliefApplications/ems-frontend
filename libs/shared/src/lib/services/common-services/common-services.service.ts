@@ -97,12 +97,15 @@ export class CommonServicesService {
 
   /**
    * Search Azure users via REST endpoint.
+   * Note: This endpoint searches for whole words only (e.g., "Antoine" not "Antoi").
    *
    * @param searchText Text to search for in firstname, lastname, or email
    * @returns Observable of search results
    */
   public searchAzureUsers(searchText: string) {
-    const url = `${this.environment.csApiUrl}/api/users/searchazure(q=${encodeURIComponent(searchText)})`;
+    const url = `${
+      this.environment.csApiUrl
+    }/users/searchazure(q=${encodeURIComponent(searchText)})`;
     const headers = this.buildHeaders();
     return this.restService.get(url, { headers });
   }

@@ -3,11 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Inject,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,12 +20,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { Apollo, ApolloBase } from 'apollo-angular';
-import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  takeUntil,
-} from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { GET_PEOPLE_BY_ID } from './graphql/queries';
 import { GetPeopleByIdResponse, People } from '../../../models/people.model';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
@@ -83,7 +79,7 @@ export function formatPersonDisplay(person: PeopleFieldValue | People): string {
   templateUrl: './people-dropdown.component.html',
   styleUrls: ['./people-dropdown.component.scss'],
 })
-export class PeopleDropdownComponent implements OnInit, OnDestroy {
+export class PeopleDropdownComponent implements OnInit, OnChanges, OnDestroy {
   /** Initial selected value (can be userid string or full PeopleFieldValue) */
   @Input() initialSelection: string | PeopleFieldValue | null = null;
   /** Emits full people data when selection changes */
@@ -168,6 +164,15 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
     this.loadInitialSelection();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['initialSelection'] &&
+      !changes['initialSelection'].firstChange
+    ) {
+      this.loadInitialSelection();
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -177,7 +182,33 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
    * Loads initial selection if provided
    */
   private loadInitialSelection(): void {
-    const initialId = this.getInitialUserId();
+    if (!this.initialSelection) {
+      return;
+    }
+
+    if (
+      typeof this.initialSelection === 'object' &&
+      this.initialSelection.userid
+    ) {
+      const person: People = {
+        userid: this.initialSelection.userid,
+        firstname: this.initialSelection.firstname,
+        lastname: this.initialSelection.lastname,
+        emailaddress: this.initialSelection.emailaddress,
+      };
+      this.cachePeople([person]);
+      this.selectedPerson = person;
+      this.options = [person];
+      this.control.setValue(person.userid, { emitEvent: false });
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const initialId =
+      typeof this.initialSelection === 'string'
+        ? this.initialSelection
+        : this.initialSelection.userid;
+
     if (!initialId) {
       return;
     }
@@ -210,19 +241,6 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets the initial userid from either a string or PeopleFieldValue
-   */
-  private getInitialUserId(): string | null {
-    if (!this.initialSelection) {
-      return null;
-    }
-    if (typeof this.initialSelection === 'string') {
-      return this.initialSelection;
-    }
-    return this.initialSelection.userid;
-  }
-
-  /**
    * Performs search via REST API
    *
    * @param searchText Search text
@@ -241,8 +259,14 @@ export class PeopleDropdownComponent implements OnInit, OnDestroy {
       .searchAzureUsers(trimmed)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (results: any) => {
-          const users: People[] = Array.isArray(results) ? results : [];
+        next: (response: any) => {
+          const rawUsers = response?.value || [];
+          const users: People[] = rawUsers.map((u: any) => ({
+            userid: u.userId,
+            firstname: u.firstName,
+            lastname: u.lastName,
+            emailaddress: u.emailAddress,
+          }));
           this.cachePeople(users);
           // Include selected person if not in results
           if (

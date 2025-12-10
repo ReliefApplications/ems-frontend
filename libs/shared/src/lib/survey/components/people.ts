@@ -49,20 +49,16 @@ export const initPeopleDropdown = (
     category: 'Custom Questions',
     questionJSON: {
       name: 'people-dropdown',
-      type: 'dropdown',
+      type: 'text',
       placeholder: 'Begin typing and select',
-      optionsCaption: 'Begin typing and select',
-      choices: [] as any[],
     },
     onInit: (): void => {
       addPeopleProperties('people-dropdown');
     },
     onAfterRender: (question: Question, el: HTMLElement) => {
-      // Hide the default dropdown
-      const defaultDropdown =
-        el.querySelector('kendo-combobox')?.parentElement;
-      if (defaultDropdown) {
-        defaultDropdown.style.display = 'none';
+      const defaultInput = el.querySelector('.sd-input');
+      if (defaultInput) {
+        (defaultInput as HTMLElement).style.display = 'none';
       }
 
       const peopleDropdown = domService.appendComponentToBody(
@@ -77,12 +73,19 @@ export const initPeopleDropdown = (
       instance.minSearchLength =
         (question as any).minSearchCharactersLength || 2;
 
-      // Pass initial value
       if (question.value) {
         instance.initialSelection = question.value as any;
       }
 
-      // Store full person data including metadata for grid/export
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        (newValue: PeopleFieldValue | null) => {
+          if (newValue && !instance.selectedPerson) {
+            instance.initialSelection = newValue as any;
+          }
+        }
+      );
+
       instance.selectionChange.subscribe(
         (personData: PeopleFieldValue | null) => {
           (question as any).value = personData ?? null;
@@ -126,20 +129,16 @@ export const initPeopleTagbox = (
     category: 'Custom Questions',
     questionJSON: {
       name: 'people-tagbox',
-      type: 'tagbox',
+      type: 'text',
       placeholder: 'Begin typing and select',
-      optionsCaption: 'Begin typing and select',
-      choices: [] as any[],
     },
     onInit: (): void => {
       addPeopleProperties('people-tagbox');
     },
     onAfterRender: (question: Question, el: HTMLElement) => {
-      // Hide the default tagbox
-      const defaultTagbox =
-        el.querySelector('kendo-multiselect')?.parentElement;
-      if (defaultTagbox) {
-        defaultTagbox.style.display = 'none';
+      const defaultInput = el.querySelector('.sd-input');
+      if (defaultInput) {
+        (defaultInput as HTMLElement).style.display = 'none';
       }
 
       const peopleTagbox = domService.appendComponentToBody(
@@ -158,6 +157,19 @@ export const initPeopleTagbox = (
       if (question.value && Array.isArray(question.value)) {
         instance.initialSelection = question.value;
       }
+
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        (newValue: PeopleFieldValue[] | null) => {
+          if (
+            newValue &&
+            Array.isArray(newValue) &&
+            instance.selectedPeople.length === 0
+          ) {
+            instance.initialSelection = newValue;
+          }
+        }
+      );
 
       // Store full person data array including metadata for grid/export
       instance.selectionChange.subscribe((peopleData: PeopleFieldValue[]) => {

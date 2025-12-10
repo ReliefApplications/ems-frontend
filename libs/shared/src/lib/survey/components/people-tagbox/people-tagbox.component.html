@@ -1,10 +1,34 @@
+<!-- Selected people displayed as chips -->
+<div class="selected-people-chips" *ngIf="selectedPeople.length > 0">
+  <div class="chip" *ngFor="let person of selectedPeople">
+    <span class="chip-text">{{ getDisplayText(person) }}</span>
+    <button
+      type="button"
+      class="chip-remove"
+      (click)="removePerson(person.userid)"
+      [attr.aria-label]="'Remove ' + getDisplayText(person)"
+    >
+      <ui-icon icon="close" [size]="14"></ui-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Custom display template to show just the placeholder -->
+<ng-template #customDisplay>
+  <span class="block truncate text-sm text-neutral-400">
+    {{ selectedPeople.length > 0 ? 'Add more people...' : placeholder }}
+  </span>
+</ng-template>
+
+<!-- Select menu for searching and adding people -->
 <ui-select-menu
   [formControl]="control"
   (opened)="onSelectOpen()"
   (closed)="onSelectClose()"
   [isGraphQlSelect]="true"
-  [placeholder]="placeholder"
+  [placeholder]="selectedPeople.length > 0 ? 'Add more people...' : placeholder"
   [multiselect]="true"
+  [customTemplate]="{ template: customDisplay, context: {} }"
 >
   <!-- Search -->
   <div

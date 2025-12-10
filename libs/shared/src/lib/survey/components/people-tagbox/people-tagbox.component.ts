@@ -4,9 +4,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,12 +20,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { Apollo, ApolloBase } from 'apollo-angular';
-import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  takeUntil,
-} from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { GET_PEOPLE_BY_ID } from '../people-dropdown/graphql/queries';
 import { GetPeopleByIdResponse, People } from '../../../models/people.model';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
@@ -59,7 +56,7 @@ const DEBOUNCE_TIME = 500;
   templateUrl: './people-tagbox.component.html',
   styleUrls: ['./people-tagbox.component.scss'],
 })
-export class PeopleTagboxComponent implements OnInit, OnDestroy {
+export class PeopleTagboxComponent implements OnInit, OnChanges, OnDestroy {
   /** Initial selected values (can be userid strings or full PeopleFieldValue array) */
   @Input() initialSelection: (string | PeopleFieldValue)[] | null = null;
   /** Emits full people data array when selection changes */
@@ -119,11 +116,15 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
     // Emit selection changes with full person data
     this.control.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((userids) => {
+      .subscribe((rawValues) => {
+        const userids = (rawValues || []).filter(
+          (v): v is string => typeof v === 'string' && v.length > 0
+        );
+
         const selectedValues: PeopleFieldValue[] = [];
         this.selectedPeople = [];
 
-        for (const userid of userids || []) {
+        for (const userid of userids) {
           const person = this.peopleCache.get(userid);
           if (person) {
             this.selectedPeople.push(person);
@@ -133,8 +134,6 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
               lastname: person.lastname,
               emailaddress: person.emailaddress,
             });
-          } else {
-            selectedValues.push({ userid });
           }
         }
         this.selectionChange.emit(selectedValues);
@@ -143,6 +142,15 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
 
     // Load initial selection
     this.loadInitialSelection();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['initialSelection'] &&
+      !changes['initialSelection'].firstChange
+    ) {
+      this.loadInitialSelection();
+    }
   }
 
   ngOnDestroy(): void {
@@ -154,7 +162,42 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
    * Loads initial selection if provided
    */
   private loadInitialSelection(): void {
-    const initialIds = this.getInitialUserIds();
+    if (!this.initialSelection || !Array.isArray(this.initialSelection)) {
+      return;
+    }
+
+    const hasFullObjects = this.initialSelection.some(
+      (item) => typeof item === 'object' && item.userid && item.firstname
+    );
+
+    if (hasFullObjects) {
+      const people: People[] = this.initialSelection
+        .filter(
+          (item): item is PeopleFieldValue =>
+            typeof item === 'object' && !!item.userid
+        )
+        .map((item) => ({
+          userid: item.userid,
+          firstname: item.firstname,
+          lastname: item.lastname,
+          emailaddress: item.emailaddress,
+        }));
+
+      this.cachePeople(people);
+      this.selectedPeople = people;
+      this.options = [...people];
+      this.control.setValue(
+        people.map((p) => p.userid),
+        { emitEvent: false }
+      );
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const initialIds = this.initialSelection
+      .map((item) => (typeof item === 'string' ? item : item.userid))
+      .filter((id): id is string => typeof id === 'string' && id.length > 0);
+
     if (!initialIds.length) {
       return;
     }
@@ -188,18 +231,6 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets the initial userids from the input
-   */
-  private getInitialUserIds(): string[] {
-    if (!this.initialSelection || !Array.isArray(this.initialSelection)) {
-      return [];
-    }
-    return this.initialSelection.map((item) =>
-      typeof item === 'string' ? item : item.userid
-    );
-  }
-
-  /**
    * Performs search via REST API
    *
    * @param searchText Search text
@@ -218,13 +249,17 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
       .searchAzureUsers(trimmed)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (results: any) => {
-          const users: People[] = Array.isArray(results) ? results : [];
+        next: (response: any) => {
+          const rawUsers = response?.value || [];
+          const users: People[] = rawUsers.map((u: any) => ({
+            userid: u.userId,
+            firstname: u.firstName,
+            lastname: u.lastName,
+            emailaddress: u.emailAddress,
+          }));
           this.cachePeople(users);
           // Merge selected people with search results (avoid duplicates)
-          const selectedIds = new Set(
-            this.selectedPeople.map((p) => p.userid)
-          );
+          const selectedIds = new Set(this.selectedPeople.map((p) => p.userid));
           const newOptions = [
             ...this.selectedPeople,
             ...users.filter((u) => !selectedIds.has(u.userid)),
@@ -263,6 +298,19 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Removes a person from the selection
+   *
+   * @param userid User ID to remove
+   */
+  public removePerson(userid: string): void {
+    const currentValue = this.control.value;
+    const newValue = currentValue.filter(
+      (id): id is string => typeof id === 'string' && id !== userid
+    );
+    this.control.setValue(newValue);
+  }
+
+  /**
    * Clears the search input
    */
   public clearSearch(): void {
@@ -283,4 +331,3 @@ export class PeopleTagboxComponent implements OnInit, OnDestroy {
     this.searchControl.setValue('');
   }
 }
-
