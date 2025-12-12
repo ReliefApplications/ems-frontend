@@ -308,6 +308,22 @@ export const dataFormatElement = {
  `,
   after: `<p>66fa9502760ab688bf8508e9s</p><p>Published</p><p>I can't believe this is a title</p><p>Super duper dubi dat gua trikili dup description</p><p><input type="checkbox" style="margin: 0; height: 16px; width: 16px;" checked disabled></input></p><p><span style=''>9/28/2024, 0:21 PM</span></p><p><span style=''>9/30/2024</span></p> `,
 };
+/** Html with table generated through for-loop */
+export const forLoopTableElement = {
+  before: `
+  <table border="1">
+    <tbody>
+      {{for row in data.rows}}
+        <tr>
+          <td>{{row.title}}</td>
+          <td>{{calc.date(row.date ; 'dd/MM/yyyy')}}</td>
+        </tr>
+      {{endfor}}
+    </tbody>
+  </table>
+  `,
+  after: `<table border="1" style="border-width: 1px;"><tbody><tr><td>First row</td><td>28/09/2024</td></tr><tr><td>Second row</td><td>05/10/2024</td></tr></tbody></table>`,
+};
 /** Record data */
 export const optionsData = {
   __typename: 'TestsMockData',
@@ -318,6 +334,13 @@ export const optionsData = {
   check_box: true,
   modifiedAt: '2024-09-30T12:21:21.498Z',
   createdAt: '2024-09-28T12:21:21.498Z',
+};
+/** Record data for loop table */
+export const forLoopTableData = {
+  rows: [
+    { title: 'First row', date: '2024-09-28T12:00:00.000Z' },
+    { title: 'Second row', date: '2024-10-05T12:00:00.000Z' },
+  ],
 };
 /** Option data fields metadata to inject */
 export const optionFields = [

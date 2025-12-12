@@ -279,11 +279,14 @@ export class HtmlParserService {
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
-              return result?.[1] === 'date'
-                ? arg.trim()
-                : // Replace below replaces the space space between span and style property from arg as elements,
-                  // breaking any style application from given element
-                  arg.replace(/[\s,]/gm, '');
+              if (result?.[1] === 'date') {
+                const trimmedArg = arg.trim();
+                // Strip optional surrounding quotes from format/value while preserving inner quotes
+                return trimmedArg.replace(/^['"](.*)['"]$/, '$1');
+              }
+              // Replace below replaces the space space between span and style property from arg as elements,
+              // breaking any style application from given element
+              return arg.replace(/[\s,]/gm, '');
             })
             .filter((arg) => !!arg) || [];
         // apply the function
@@ -405,6 +408,26 @@ export class HtmlParserService {
     if (index !== undefined) {
       output = output.replace(/\{\{index\}\}/g, `${index}`);
     }
+
+    const expressionRegex = /\{\{([^}]*)\}\}/g;
+    output = output.replace(
+      expressionRegex,
+      (match: string, expressionBody: string) => {
+        const replacedExpression = expressionBody
+          .replace(
+            new RegExp(`\\b${itemVar}\\.([\\w.[\\]]+)`, 'g'),
+            (_exprMatch: string, path: string) => {
+              const value = get(itemValue, path.trim());
+              return value == null ? '' : `${value}`;
+            }
+          )
+          .replace(/\bindex\b/g, () =>
+            index !== undefined ? `${index}` : 'index'
+          );
+
+        return `{{${replacedExpression}}}`;
+      }
+    );
 
     return output;
   }
