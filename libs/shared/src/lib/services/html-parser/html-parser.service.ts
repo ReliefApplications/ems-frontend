@@ -815,6 +815,55 @@ export class HtmlParserService {
         convertedValue += '</span>';
         break;
       }
+      case 'people-dropdown': {
+        if (value && typeof value === 'object') {
+          const firstName = value.firstname || '';
+          const lastName = value.lastname || '';
+          const email = value.emailaddress || '';
+          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+          const displayValue = email
+            ? name
+              ? `${name} (${email})`
+              : email
+            : name || value.userid || '';
+          const formattedValue = this.applyLayoutFormat(displayValue, field);
+          convertedValue = style
+            ? `<span style='${style}'>${formattedValue}</span>`
+            : isNil(formattedValue)
+            ? ''
+            : formattedValue;
+        } else {
+          convertedValue = `<span style='${style}'>${value}</span>`;
+        }
+        break;
+      }
+      case 'people-tagbox': {
+        if (isArray(value) && value.length > 0) {
+          const displayValues = value.map((person: any) => {
+            const firstName = person.firstname || '';
+            const lastName = person.lastname || '';
+            const email = person.emailaddress || '';
+            const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+            return email
+              ? name
+                ? `${name} (${email})`
+                : email
+              : name || person.userid || '';
+          });
+          const formattedValue = this.applyLayoutFormat(
+            displayValues.join(', '),
+            field
+          );
+          convertedValue = style
+            ? `<span style='${style}'>${formattedValue}</span>`
+            : isNil(formattedValue)
+            ? ''
+            : formattedValue;
+        } else {
+          convertedValue = `<span style='${style}'>${value}</span>`;
+        }
+        break;
+      }
       default:
         const formattedValue = this.applyLayoutFormat(value, field);
         convertedValue = style
@@ -839,7 +888,10 @@ export class HtmlParserService {
     // If object is of type resource, transform each associated record
     if (['resources', 'checkbox', 'tagbox'].includes(field.type)) {
       value = (value || []).map((x: any) => this.toReadableObject(x));
-    } else if (field.type === 'file') {
+    } else if (
+      ['file', 'people-dropdown', 'people-tagbox'].includes(field.type)
+    ) {
+      // Keep the data as it is
       value = get(data, field.name);
     } else {
       // Else, transform value into readable one
