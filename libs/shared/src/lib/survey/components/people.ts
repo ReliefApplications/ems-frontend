@@ -2,10 +2,11 @@ import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import {
-  PeopleDropdownComponent,
+  // PeopleDropdownComponent,
   PeopleFieldValue,
 } from './people-dropdown/people-dropdown.component';
-import { PeopleTagboxComponent } from './people-tagbox/people-tagbox.component';
+import { PeopleDropdownComponent } from '../../components/people/people-dropdown/people-dropdown.component';
+import { PeopleTagboxComponent } from '../../components/people/people-tagbox/people-tagbox.component';
 
 /** People icon SVG */
 const PEOPLE_ICON =
@@ -173,7 +174,8 @@ export const initPeopleTagbox = (
 
       // Store full person data array including metadata for grid/export
       instance.selectionChange.subscribe((peopleData: PeopleFieldValue[]) => {
-        (question as any).value = peopleData.length > 0 ? peopleData : null;
+        console.log('PeopleTagbox selection changed:', peopleData);
+        (question as any).value = peopleData.length > 0 ? peopleData : [];
       });
 
       if ((question as any).isReadOnly) {

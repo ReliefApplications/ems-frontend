@@ -1,0 +1,26 @@
+<kendo-combobox
+  [formControl]="control"
+  [data]="data"
+  [placeholder]="placeholder"
+  (selectionChange)="onSelectionChange($event)"
+  (filterChange)="handleFilter($event)"
+  [filterable]="true"
+  textField="displayLabel" 
+  valueField="userid"
+  [valuePrimitive]="false"
+  [loading]="loading"
+>
+  <ng-template kendoComboBoxNoDataTemplate>
+    <ng-container *ngIf="filterDisplay$ | async as searchText; else emptyState">
+      <ng-container *ngIf="loading; else noResultsState">
+        Searching...
+      </ng-container>
+
+      <ng-template #noResultsState>
+        No results found for <strong>"{{ searchText }}"</strong>.
+      </ng-template>
+    </ng-container>
+
+    <ng-template #emptyState> Type to search for people. </ng-template>
+  </ng-template>
+</kendo-combobox>
