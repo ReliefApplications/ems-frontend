@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   inject,
   Input,
@@ -24,15 +25,11 @@ import {
 } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import { People } from '../people.type';
 
-export interface PeopleFieldValue {
-  userid: string;
-  firstname?: string;
-  lastname?: string;
-  emailaddress?: string;
-  displayLabel?: string;
-}
-
+/**
+ * People Dropdown Component
+ */
 @Component({
   selector: 'shared-people-dropdown',
   standalone: true,
@@ -44,21 +41,32 @@ export class PeopleDropdownComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Placeholder text */
   @Input() placeholder = 'Begin typing and select';
+  /** Search debounce time in milliseconds */
   @Input() searchDebounce = 500;
+  /** Minimum search length to trigger search */
   @Input() minSearchLength = 2;
-  @Input() initialSelection: PeopleFieldValue | null = null;
-
-  @Output() selectionChange = new EventEmitter<PeopleFieldValue | null>();
-
+  /** Initial selected person */
+  @Input() initialSelection: People | null = null;
+  /** Emits when the selected person changes */
+  @Output() selectionChange = new EventEmitter<People | null>();
+  /** Form control for the dropdown */
   control = new FormControl();
-  data: PeopleFieldValue[] = [];
-  selectedPerson: PeopleFieldValue | null = null;
+  /** List of people to display in the dropdown */
+  data: People[] = [];
+  /** Currently selected person */
+  selectedPerson: People | null = null;
+  /** Subject to handle filter input */
   private filter$ = new Subject<string>();
+  /** Observable for filter display */
   public filterDisplay$ = this.filter$.asObservable().pipe(startWith(''));
+  /** Loading state */
   public loading = false;
-
+  /** Common services connector */
   private commonServices = inject(CommonServicesService);
+  /** Element reference */
+  public elementRef = inject(ElementRef);
 
   ngOnInit(): void {
     if (this.initialSelection) {
@@ -110,12 +118,22 @@ export class PeopleDropdownComponent
     }
   }
 
-  onSelectionChange(value: PeopleFieldValue): void {
+  /**
+   * Handle selection change
+   *
+   * @param value New value
+   */
+  onSelectionChange(value: People): void {
     this.selectedPerson = value;
     this.data = [this.selectedPerson];
     this.selectionChange.emit(this.selectedPerson);
   }
 
+  /**
+   * Handle filter input
+   *
+   * @param value New filter
+   */
   handleFilter(value: string): void {
     if (value.length >= this.minSearchLength) {
       this.loading = true;
@@ -123,6 +141,12 @@ export class PeopleDropdownComponent
     this.filter$.next(value);
   }
 
+  /**
+   * Format display label for a user
+   *
+   * @param user User object
+   * @returns Formatted display label
+   */
   private formatDisplayLabel(user: any): string {
     // FIX: Check for both lowercase (Interface) and CamelCase (API) just in case,
     // but prefer the interface keys.

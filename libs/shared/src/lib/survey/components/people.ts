@@ -1,12 +1,9 @@
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
-import {
-  // PeopleDropdownComponent,
-  PeopleFieldValue,
-} from './people-dropdown/people-dropdown.component';
 import { PeopleDropdownComponent } from '../../components/people/people-dropdown/people-dropdown.component';
 import { PeopleTagboxComponent } from '../../components/people/people-tagbox/people-tagbox.component';
+import { People } from '../../components/people/people.type';
 
 /** People icon SVG */
 const PEOPLE_ICON =
@@ -20,13 +17,13 @@ const PEOPLE_ICON =
 const addPeopleProperties = (questionType: string): void => {
   Serializer.addProperty(questionType, {
     name: 'placeholder',
-    category: 'People Settings',
-    visibleIndex: 3,
+    category: 'general',
+    visibleIndex: -1,
   });
   Serializer.addProperty(questionType, {
     name: 'minSearchCharactersLength:number',
-    category: 'People Settings',
-    visibleIndex: 4,
+    category: 'general',
+    visibleIndex: -1,
   });
 };
 
@@ -58,21 +55,24 @@ export const initPeopleDropdown = (
     },
     onAfterRender: (question: Question, el: HTMLElement) => {
       const defaultInput = el.querySelector('.sd-input');
-      if (defaultInput) {
-        (defaultInput as HTMLElement).style.display = 'none';
-      }
+
+      const div = document.createElement('div');
+      div.classList.add('flex', 'min-h-[36px]');
 
       const peopleDropdown = domService.appendComponentToBody(
         PeopleDropdownComponent,
-        el
+        div
       );
+
       const instance: PeopleDropdownComponent = peopleDropdown.instance;
 
-      instance.placeholder =
-        (question as any).placeholder || 'Begin typing and select';
-      instance.searchDebounce = (question as any).searchDebounce || 500;
-      instance.minSearchLength =
-        (question as any).minSearchCharactersLength || 2;
+      instance.elementRef.nativeElement.classList.add('flex', 'flex-1');
+
+      defaultInput?.replaceWith(div);
+
+      if (question.placeholder) {
+        instance.placeholder = question.placeholder;
+      }
 
       if (question.value) {
         instance.initialSelection = question.value as any;
@@ -80,18 +80,17 @@ export const initPeopleDropdown = (
 
       question.registerFunctionOnPropertyValueChanged(
         'value',
-        (newValue: PeopleFieldValue | null) => {
+        (newValue: People | null) => {
           if (newValue && !instance.selectedPerson) {
             instance.initialSelection = newValue as any;
           }
+          instance.initialSelection = newValue as any;
         }
       );
 
-      instance.selectionChange.subscribe(
-        (personData: PeopleFieldValue | null) => {
-          (question as any).value = personData ?? null;
-        }
-      );
+      instance.selectionChange.subscribe((personData: People | null) => {
+        (question as any).value = personData ?? null;
+      });
 
       if ((question as any).isReadOnly) {
         instance.control.disable();
@@ -102,6 +101,13 @@ export const initPeopleDropdown = (
         (value: boolean) => {
           if (value) instance.control.disable();
           else instance.control.enable();
+        }
+      );
+
+      question.registerFunctionOnPropertyValueChanged(
+        'placeholder',
+        (value: string) => {
+          instance.placeholder = value;
         }
       );
     },
@@ -138,30 +144,33 @@ export const initPeopleTagbox = (
     },
     onAfterRender: (question: Question, el: HTMLElement) => {
       const defaultInput = el.querySelector('.sd-input');
-      if (defaultInput) {
-        (defaultInput as HTMLElement).style.display = 'none';
-      }
+
+      const div = document.createElement('div');
+      div.classList.add('flex', 'min-h-[36px]');
 
       const peopleTagbox = domService.appendComponentToBody(
         PeopleTagboxComponent,
-        el
+        div
       );
+
       const instance: PeopleTagboxComponent = peopleTagbox.instance;
 
-      instance.placeholder =
-        (question as any).placeholder || 'Begin typing and select';
-      instance.searchDebounce = (question as any).searchDebounce || 500;
-      instance.minSearchLength =
-        (question as any).minSearchCharactersLength || 2;
+      instance.elementRef.nativeElement.classList.add('flex', 'flex-1');
 
-      // Pass initial value (array of PeopleFieldValue or userids)
+      defaultInput?.replaceWith(div);
+
+      if (question.placeholder) {
+        instance.placeholder = question.placeholder;
+      }
+
+      // Pass initial value (array of People or userids)
       if (question.value && Array.isArray(question.value)) {
         instance.initialSelection = question.value;
       }
 
       question.registerFunctionOnPropertyValueChanged(
         'value',
-        (newValue: PeopleFieldValue[] | null) => {
+        (newValue: People[] | null) => {
           if (
             newValue &&
             Array.isArray(newValue) &&
@@ -172,9 +181,7 @@ export const initPeopleTagbox = (
         }
       );
 
-      // Store full person data array including metadata for grid/export
-      instance.selectionChange.subscribe((peopleData: PeopleFieldValue[]) => {
-        console.log('PeopleTagbox selection changed:', peopleData);
+      instance.selectionChange.subscribe((peopleData: People[]) => {
         (question as any).value = peopleData.length > 0 ? peopleData : [];
       });
 
@@ -187,6 +194,13 @@ export const initPeopleTagbox = (
         (value: boolean) => {
           if (value) instance.control.disable();
           else instance.control.enable();
+        }
+      );
+
+      question.registerFunctionOnPropertyValueChanged(
+        'placeholder',
+        (value: string) => {
+          instance.placeholder = value;
         }
       );
     },
