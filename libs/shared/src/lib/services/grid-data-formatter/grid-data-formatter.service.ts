@@ -256,51 +256,10 @@ export class GridDataFormatterService {
         break;
       }
       default: {
-        const value = getPropertyValue(rowData, field, parent);
-        if (
-          value &&
-          typeof value === 'object' &&
-          !Array.isArray(value) &&
-          value.userid
-        ) {
-          // Single person object
-          const firstName = value.firstname || '';
-          const lastName = value.lastname || '';
-          const email = value.emailaddress || '';
-          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
-          finalText = this.htmlParserService.applyLayoutFormat(
-            email
-              ? name
-                ? `${name} (${email})`
-                : email
-              : name || value.userid || '',
-            field
-          );
-        } else if (
-          Array.isArray(value) &&
-          value.length > 0 &&
-          value[0]?.userid
-        ) {
-          // Array of person objects
-          const displayValues = value.map((person: any) => {
-            const firstName = person.firstname || '';
-            const lastName = person.lastname || '';
-            const email = person.emailaddress || '';
-            const name = [firstName, lastName].filter(Boolean).join(' ').trim();
-            return email
-              ? name
-                ? `${name} (${email})`
-                : email
-              : name || person.userid || '';
-          });
-          finalText = this.htmlParserService.applyLayoutFormat(
-            displayValues.join(', '),
-            field
-          );
-        } else {
-          finalText = this.htmlParserService.applyLayoutFormat(value, field);
-        }
-        break;
+        finalText = this.htmlParserService.applyLayoutFormat(
+          getPropertyValue(rowData, field, parent),
+          field
+        );
       }
     }
     return finalText ?? '';
