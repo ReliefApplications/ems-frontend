@@ -74,9 +74,12 @@
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{
-              !isEmailNotification
-                ? field.text || field.name
-                : (this.emailService.replaceUnderscores(field.name) | titlecase)
+              field.isCommonService && field.graphQLFieldName?.label
+                ? field.graphQLFieldName.label
+                : (!isEmailNotification
+                    ? (field.text || field.name)
+                    : (this.emailService.replaceUnderscores(field.name) | titlecase)
+                  )
             }}
           </ui-select-option>
 

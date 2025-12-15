@@ -19,6 +19,7 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
+import { commonServiceFields } from '../../email/constant';
 
 /**
  * Composite filter row.
@@ -108,11 +109,15 @@ export class FilterRowComponent
       .subscribe(async (value) => {
         // remove value
         const selectedField = this.fields.filter((x: any) => x.name == value);
+        const commonServiceField = commonServiceFields.find(
+          (field) => field.key === value
+        );
+        const namePath = commonServiceField?.namePath;
         if (
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.getCsData(value, selectedField[0]);
+          await this.getCsData(value, selectedField[0], namePath);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -180,7 +185,11 @@ export class FilterRowComponent
 
     //Calling the common service function for getting value for Select type of data
     if (this.field?.isCommonService) {
-      this.field.options = this.getCsData(this.field?.name, this.field);
+      const commonServiceField = commonServiceFields.find(
+        (field) => field.key === this.field?.name
+      );
+      const namePath = commonServiceField?.namePath;
+      this.getCsData(this.field?.name, this.field, namePath);
     }
   }
 
@@ -381,7 +390,7 @@ export class FilterRowComponent
    * @param key selected key name
    * @param selectedField selected field object
    */
-  async getCsData(key: string, selectedField: any) {
+  async getCsData(key: string, selectedField: any, path?: string) {
     if (
       this.emailService?.userTableFields?.filter((x) => x === key).length === 0
     ) {
@@ -389,11 +398,19 @@ export class FilterRowComponent
       await firstValueFrom(this.cs.restRequest(key))
         .then((data) => {
           this.loading = false;
-          selectedField.options =
-            data?.value.map((x: any) => ({
-              text: x?.Name,
-              value: x?.Name,
-            })) || [];
+          if (path) {
+            selectedField.options =
+              data?.value.map((x: any) => ({
+                text: get(x, path),
+                value: get(x, path),
+              })) || [];
+          } else {
+            selectedField.options =
+              data?.value.map((x: any) => ({
+                text: x?.Name,
+                value: x?.Name,
+              })) || [];
+          }
         })
         .catch((error) => {
           console.error(`Error while fetching reference data ${key}:`, error);
