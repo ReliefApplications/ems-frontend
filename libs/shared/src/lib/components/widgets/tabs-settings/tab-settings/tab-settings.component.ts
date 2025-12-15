@@ -79,7 +79,27 @@ export class TabSettingsComponent
       ...this.gridOptions,
       ...this.tabGroup.controls.gridOptions.value,
     } as GridsterConfig;
-    // To avoid scroll to be called when opening the settings
+
+    // Make sure at least one of icon or name is shown in navBar
+    this.tabGroup.controls.navBar.controls.showName.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === false) {
+          this.tabGroup.controls.navBar.controls.showIcon.setValue(true, {
+            emitEvent: false,
+          });
+        }
+      });
+    this.tabGroup.controls.navBar.controls.showIcon.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === false) {
+          this.tabGroup.controls.navBar.controls.showName.setValue(true, {
+            emitEvent: false,
+          });
+        }
+      });
+
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }

@@ -8,8 +8,9 @@
   *ngIf="!loading"
   [applications]="applications"
   [header]="header"
-  [leftSidenav]="pages"
+  [leftSidenav]="showNavigation ? pages : undefined"
   [sideMenu]="sideMenu"
+  [topMenu]="topMenu"
   [menuOpened]="!hideMenu"
   [profileRoute]="profileRoute"
   (openApplication)="onOpenApplication($event)"
@@ -20,7 +21,8 @@
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
-    [vertical]="!(!sideMenu && largeDevice)"
+    [vertical]="topMenu ? false : !(!sideMenu && largeDevice)"
+    [topMenu]="topMenu"
   ></shared-navbar>
 </ng-template>
 

@@ -157,7 +157,7 @@ export class LayoutComponent
   }
 
   ngOnInit(): void {
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       this.emailService.resetPreviewData();
       if (
         !this.emailService.isCustomTemplateEdit &&
@@ -192,7 +192,7 @@ export class LayoutComponent
 
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.allLayoutdata.bodyHtml =
-        this.emailService.isQuickAction &&
+        this.emailService.isGridAction &&
         this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
           ? '<p>{{Block 1}}</p>'
           : this.emailService.allLayoutdata.bodyHtml;
@@ -231,7 +231,7 @@ export class LayoutComponent
             ?.bodyHtml,
         ],
       });
-      if (this.emailService.isQuickAction) {
+      if (this.emailService.isGridAction) {
         const dlForm = this.fb.group({
           ...this.layoutForm,
           to: [''],
@@ -275,7 +275,7 @@ export class LayoutComponent
       }
     }
     this.getBlockData();
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       this.loadDistributionList();
     }
   }
@@ -296,7 +296,7 @@ export class LayoutComponent
     query.emailDistributionList = this.emailService?.datasetsForm
       ?.get('emailDistributionList')
       ?.getRawValue();
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       query.emailDistributionList.to =
         this.emailService.quickEmailDistributionListQuery.to;
       query.emailDistributionList.cc =
@@ -304,7 +304,7 @@ export class LayoutComponent
       query.emailDistributionList.bcc =
         this.emailService.quickEmailDistributionListQuery.bcc;
     }
-    //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
+    //Start:- When We are checking from Grid Action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
     if (
       this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName !==
@@ -349,7 +349,7 @@ export class LayoutComponent
    * Populates dataset Form using custom template DL object
    */
   populateDLForm() {
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
       const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
       const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
@@ -439,7 +439,7 @@ export class LayoutComponent
           error: true,
         }
       );
-      if (this.emailService.isQuickAction && !this.showBodyValidator) {
+      if (this.emailService.isGridAction && !this.showBodyValidator) {
         this.emailService.disableNextActionBtn = true;
       }
     }
@@ -470,7 +470,7 @@ export class LayoutComponent
     if (
       this.showSubjectValidator ||
       this.showBodyValidator ||
-      (checkDuplicateName && this.emailService.isQuickAction)
+      (checkDuplicateName && this.emailService.isGridAction)
     ) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });
@@ -1118,10 +1118,10 @@ export class LayoutComponent
   }
 
   /**
-   * Validate Quick action To emails when we cehck from Quick Action grid
+   * Validate Grid Action To emails
    */
   validateQuickActionToEmails() {
-    if (this.emailService.isQuickAction) {
+    if (this.emailService.isGridAction) {
       this.emailService.disableNextActionBtn =
         this.layoutForm?.getRawValue()?.to?.length === 0 ? true : false;
     }

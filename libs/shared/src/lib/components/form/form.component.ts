@@ -112,7 +112,7 @@ export class FormComponent
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService, this.record);
+    addCustomFunctions(this.authService);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
@@ -344,6 +344,9 @@ export class FormComponent
         } else {
           this.survey.showCompletedPage = true;
         }
+        this.snackBar.openSnackBar(
+          this.translate.instant('components.form.display.submissionMessage')
+        );
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,

@@ -2,6 +2,8 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   UntypedFormArray,
   Validators,
 } from '@angular/forms';
@@ -19,23 +21,60 @@ import { DistributionModalComponent } from '../../../distribution-lists/componen
 import { takeUntil } from 'rxjs/operators';
 import { EmailService } from '../../../email/email.service';
 import isNil from 'lodash/isNil';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ToggleModule,
+  CheckboxModule,
+  TabsModule,
+  TooltipModule,
+  IconModule,
+  ButtonModule,
+  FormWrapperModule,
+  SelectMenuModule,
+  ErrorMessageModule,
+  AlertModule,
+} from '@oort-front/ui';
+import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
+
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
 /**
- * Configuration component for grid widget button.
+ * Grid Action configuration component.
  */
 @Component({
-  selector: 'shared-button-config',
-  templateUrl: './button-config.component.html',
-  styleUrls: ['./button-config.component.scss'],
+  standalone: true,
+  selector: 'shared-grid-action-settings',
+  templateUrl: './grid-action-settings.component.html',
+  styleUrls: ['./grid-action-settings.component.scss'],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToggleModule,
+    CheckboxModule,
+    TabsModule,
+    TooltipModule,
+    IconModule,
+    QueryBuilderModule,
+    ButtonModule,
+    FormWrapperModule,
+    SelectMenuModule,
+    ErrorMessageModule,
+    IconModule,
+    SelectMenuModule,
+    TabsModule,
+    AlertModule,
+  ],
 })
-export class ButtonConfigComponent
+export class GridActionSettingsComponent
   extends UnsubscribeComponent
   implements OnInit
 {
   /** Event emitted when the user clicks on the delete button */
-  @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  @Output() deleteAction: EventEmitter<boolean> = new EventEmitter();
   /** Widget form group */
   @Input() widgetFormGroup!: FormGroup;
   /** Form group */
@@ -80,7 +119,7 @@ export class ButtonConfigComponent
   }
 
   /**
-   * Configuration component for grid widget button.
+   * Grid Action configuration component.
    *
    * @param fb Form builder
    * @param router Angular Router service
@@ -408,7 +447,7 @@ export class ButtonConfigComponent
   public async addDistributionList() {
     this.emailService.selectedDistributionListName = '';
     this.emailService.isDistributionListEdit = true;
-    this.emailService.isQuickAction = true;
+    this.emailService.isGridAction = true;
     this.emailService.setDatasetForm();
     this.emailService.resetPreviewData();
     this.emailService.datasetsForm.reset();
@@ -456,13 +495,6 @@ export class ButtonConfigComponent
         this.formGroup.get('templates')?.setValue(data.id);
       }
     });
-  }
-
-  /**
-   * Emit the event to delete the button
-   */
-  public emitDeleteButton(): void {
-    this.deleteButton.emit(true);
   }
 
   /**

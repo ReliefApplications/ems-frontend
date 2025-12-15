@@ -233,6 +233,38 @@ export class HtmlParserService {
         return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
+    lowercase: {
+      signature: 'lowercase( value )',
+      /**
+       * Converts a string to lowercase.
+       *
+       * @param value The string to convert.
+       * @returns String to lowercase.
+       */
+      call: (value) => {
+        try {
+          return value.toLowerCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
+    uppercase: {
+      signature: 'uppercase( value )',
+      /**
+       * Converts a string to uppercase.
+       *
+       * @param value The string to convert.
+       * @returns String to uppercase.
+       */
+      call: (value) => {
+        try {
+          return value.toUpperCase();
+        } catch {
+          return value || '';
+        }
+      },
+    },
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
@@ -276,6 +308,7 @@ export class HtmlParserService {
         // get the arguments and clean the numbers to be parsed correctly
         const args =
           result[2]
+            .replace(/&nbsp;/g, ' ') // Replace &nbsp; with a regular space
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
@@ -918,6 +951,55 @@ export class HtmlParserService {
         convertedValue += '</span>';
         break;
       }
+      case 'people-dropdown': {
+        if (value && typeof value === 'object') {
+          const firstName = value.firstname || '';
+          const lastName = value.lastname || '';
+          const email = value.emailaddress || '';
+          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+          const displayValue = email
+            ? name
+              ? `${name} (${email})`
+              : email
+            : name || value.userid || '';
+          const formattedValue = this.applyLayoutFormat(displayValue, field);
+          convertedValue = style
+            ? `<span style='${style}'>${formattedValue}</span>`
+            : isNil(formattedValue)
+            ? ''
+            : formattedValue;
+        } else {
+          convertedValue = `<span style='${style}'>${value}</span>`;
+        }
+        break;
+      }
+      case 'people-tagbox': {
+        if (isArray(value) && value.length > 0) {
+          const displayValues = value.map((person: any) => {
+            const firstName = person.firstname || '';
+            const lastName = person.lastname || '';
+            const email = person.emailaddress || '';
+            const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+            return email
+              ? name
+                ? `${name} (${email})`
+                : email
+              : name || person.userid || '';
+          });
+          const formattedValue = this.applyLayoutFormat(
+            displayValues.join(', '),
+            field
+          );
+          convertedValue = style
+            ? `<span style='${style}'>${formattedValue}</span>`
+            : isNil(formattedValue)
+            ? ''
+            : formattedValue;
+        } else {
+          convertedValue = `<span style='${style}'>${value}</span>`;
+        }
+        break;
+      }
       default:
         const formattedValue = this.applyLayoutFormat(value, field);
         convertedValue = style
@@ -942,7 +1024,10 @@ export class HtmlParserService {
     // If object is of type resource, transform each associated record
     if (['resources', 'checkbox', 'tagbox'].includes(field.type)) {
       value = (value || []).map((x: any) => this.toReadableObject(x));
-    } else if (field.type === 'file') {
+    } else if (
+      ['file', 'people-dropdown', 'people-tagbox'].includes(field.type)
+    ) {
+      // Keep the data as it is
       value = get(data, field.name);
     } else {
       // Else, transform value into readable one

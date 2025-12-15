@@ -749,10 +749,15 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"navBar": {
+						"showIcon": "Afficher l'icône dans la barre de navigation",
+						"showName": "Afficher le nom dans la barre de navigation"
+					},
 					"selectIcon": "Sélectionnez une icône",
-					"showName": "Afficher le nom",
+					"showName": "Afficher le nom en en-tête sur la page",
 					"tooltip": {
-						"autoSave": "Les modifications sont automatiquement enregistrées"
+						"autoSave": "Les modifications sont automatiquement enregistrées",
+						"navBar": "Pour être visible dans la barre de navigation, l'icône ou le nom doit être affiché."
 					}
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
@@ -795,7 +800,8 @@
 				"sideMenu": "Afficher le menu sur le côté",
 				"tooltip": {
 					"hideMenu": "Ne s'applique que lorsque le menu est sur le côté"
-				}
+				},
+				"topMenu": "Afficher le menu dans l'en-tête"
 			},
 			"users": {
 				"auto": "Attribution automatique",
@@ -1998,7 +2004,7 @@
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
-						"title": "Actions activées",
+						"title": "Actions par ligne",
 						"update": "Modifier les enregistrements",
 						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
@@ -2041,7 +2047,7 @@
 						"placeholder": {
 							"modifyValue": "Supprimer la valeur"
 						},
-						"title": "Bouton d'action rapide",
+						"title": "Barre d'outils",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
 							"mail": {
@@ -2065,7 +2071,6 @@
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
 						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
-						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
 						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
 						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
 					},
@@ -2375,8 +2380,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Actions de grille",
-							"tooltip": "Actions de grille activées"
+							"title": "Actions par ligne",
+							"tooltip": "Actions par ligne ( mode grille )"
 						},
 						"preview": {
 							"title": "Prévisualisation"
@@ -2414,7 +2419,15 @@
 				},
 				"tabs": {
 					"addNewTab": "Ajouter un nouvel onglet",
-					"deleteTab": "Supprimer l'onglet"
+					"deleteTab": "Supprimer l'onglet",
+					"navBar": {
+						"showIcon": "Afficher l'icône dans la barre de navigation",
+						"showName": "Afficher le nom dans la barre de navigation"
+					},
+					"selectIcon": "Sélectionner une icône",
+					"tooltip": {
+						"navBar": "Pour être visible dans la barre de navigation, l'icône ou le nom doit être affiché."
+					}
 				}
 			},
 			"styling": "Modifier le style",
@@ -2704,6 +2717,9 @@
 					},
 					"autoReload": "Recharger le tableau de bord après la sauvegarde",
 					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "Après la duplication, naviguer vers"
+						},
 						"text": "Dupliquer l'enregistrement actuel",
 						"tooltip": {
 							"template": "Sélectionner un modèle pour la duplication de l'enregistrement actuel.\n Si aucun modèle n'est sélectionné, le dernier modèle utilisé par l'enregistrement actuel sera utilisé"

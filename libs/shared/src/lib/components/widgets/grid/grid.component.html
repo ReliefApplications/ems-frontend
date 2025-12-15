@@ -38,7 +38,7 @@
   <!-- Core grid actions -->
   <ng-container *ngIf="aggregations.length === 0 && !useReferenceData">
     <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
-    <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="gridActionsTemplate"></ng-container>
   </ng-container>
   <!-- Aggregation grid actions -->
   <ng-container *ngIf="aggregations.length > 0">
@@ -82,20 +82,20 @@
   ></shared-reference-data-grid>
 </ng-template>
 
-<!-- Quick action buttons -->
-<ng-template #floatingButtonsTemplate>
+<!-- Row Actions -->
+<ng-template #gridActionsTemplate>
   <div
     class="flex overflow-hidden flex-1 max-w-fit"
-    *ngIf="floatingButtons.length > 0"
+    *ngIf="gridActions.length > 0"
   >
-    <ng-container *ngFor="let floatingButton of floatingButtons">
+    <ng-container *ngFor="let gridAction of gridActions">
       <ui-button
         variant="primary"
-        (click)="onQuickAction(floatingButton)"
-        *ngIf="floatingButton.show"
+        (click)="onGridAction(gridAction)"
+        *ngIf="gridAction.show"
         class="whitespace-nowrap"
       >
-        {{ floatingButton.name }}
+        {{ gridAction.name }}
       </ui-button>
     </ng-container>
   </div>

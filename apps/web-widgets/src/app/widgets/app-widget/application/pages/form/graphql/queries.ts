@@ -65,3 +65,22 @@ export const GET_PAGE_BY_ID = gql`
     }
   }
 `;
+
+/** Graphql request for getting a record by its id */
+export const GET_RECORD_BY_ID = gql`
+  query GetRecordById($id: ID!) {
+    record(id: $id) {
+      id
+      data
+      createdAt
+      createdBy {
+        name
+      }
+      modifiedAt
+      modifiedBy {
+        name
+      }
+      canUpdate
+    }
+  }
+`;

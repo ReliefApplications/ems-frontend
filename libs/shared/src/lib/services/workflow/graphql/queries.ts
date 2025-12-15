@@ -29,6 +29,10 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         icon
         showName
+        navBar {
+          showIcon
+          showName
+        }
         name
         type
         content
@@ -39,6 +43,10 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         icon
         showName
+        navBar {
+          showIcon
+          showName
+        }
         name
         visible
         canUpdate

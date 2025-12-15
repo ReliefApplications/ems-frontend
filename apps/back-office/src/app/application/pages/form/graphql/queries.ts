@@ -9,6 +9,10 @@ export const GET_STEP_BY_ID = gql`
       id
       icon
       showName
+      navBar {
+        showName
+        showIcon
+      }
       name
       createdAt
       modifiedAt
@@ -55,6 +59,10 @@ export const GET_PAGE_BY_ID = gql`
       id
       icon
       showName
+      navBar {
+        showName
+        showIcon
+      }
       name
       visible
       createdAt
@@ -125,6 +133,24 @@ export const GET_SHORT_FORM_BY_ID = gql`
         canUpdate
       }
       canUpdate
+    }
+  }
+`;
+
+/** Graphql request for getting a record by its id */
+export const GET_RECORD_BY_ID = gql`
+  query GetRecordById($id: ID!) {
+    record(id: $id) {
+      id
+      data
+      createdAt
+      createdBy {
+        name
+      }
+      modifiedAt
+      modifiedBy {
+        name
+      }
     }
   }
 `;

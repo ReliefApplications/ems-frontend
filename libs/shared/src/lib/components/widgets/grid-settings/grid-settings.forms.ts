@@ -26,12 +26,12 @@ const DEFAULT_CONTEXT_FILTER = `{
 const fb = new FormBuilder();
 
 /**
- * Floating button form factory.
+ * Create Grid Action.
  *
  * @param value default value ( if any )
- * @returns new form group for the floating button.
+ * @returns Grid Action Form Group
  */
-export const createButtonFormGroup = (value: any) => {
+export const createGridActionFormGroup = (value: any) => {
   const formGroup = fb.group({
     show: [value && value.show ? value.show : false, Validators.required],
     name: [
@@ -149,10 +149,10 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       floatingButtons: fb.array(
         configuration.floatingButtons && configuration.floatingButtons.length
           ? configuration.floatingButtons.map((x: any) =>
-              createButtonFormGroup(x)
+              createGridActionFormGroup(x)
             )
-          : [createButtonFormGroup(null)]
-      ) as FormArray<FormControl<typeof createButtonFormGroup>>,
+          : [createGridActionFormGroup(null)]
+      ) as FormArray<FormControl<typeof createGridActionFormGroup>>,
       sortFields: new FormArray<any>([]),
       contextFilters: [
         get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),

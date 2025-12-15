@@ -30,9 +30,9 @@
       <ui-icon
         icon="toggle_on"
         [size]="24"
-        uiTooltip="{{
+        [uiTooltip]="
           'components.widget.settings.grid.actions.title' | translate
-        }}"
+        "
       ></ui-icon>
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
@@ -74,7 +74,7 @@
       }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-buttons
+      <shared-tab-grid-actions
         class="flex flex-col h-full"
         [formGroup]="widgetFormGroup"
         [fields]="fields"
@@ -83,7 +83,7 @@
         [relatedForms]="relatedForms"
         [channels]="channels"
         (loadChannels)="getChannels()"
-      ></shared-tab-buttons>
+      ></shared-tab-grid-actions>
     </ng-template>
   </ui-tab>
   <!-- Context filter settings -->
