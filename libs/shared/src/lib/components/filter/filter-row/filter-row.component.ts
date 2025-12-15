@@ -19,6 +19,7 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
+import { commonServiceFields } from '../../email/constant';
 
 /** Operators that keep attribute comparisons tied to another record field. */
 const ATTRIBUTE_FIELD_OPERATORS = ['eq', 'neq', 'in', 'notin'];
@@ -203,11 +204,15 @@ export class FilterRowComponent
       .subscribe(async (value) => {
         // remove value
         const selectedField = this.fields.filter((x: any) => x.name == value);
+        const commonServiceField = commonServiceFields.find(
+          (field) => field.key === value
+        );
+        const namePath = commonServiceField?.namePath;
         if (
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.loadCommonServiceOptions(selectedField[0]);
+          await this.getCsData(value, selectedField[0], namePath);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -286,6 +291,15 @@ export class FilterRowComponent
             .map((x) => x.graphQLFieldName)
             .filter((x) => x.label === this.form.getRawValue().field)?.[0]?.key
         );
+    }
+
+    //Calling the common service function for getting value for Select type of data
+    if (this.field?.isCommonService) {
+      const commonServiceField = commonServiceFields.find(
+        (field) => field.key === this.field?.name
+      );
+      const namePath = commonServiceField?.namePath;
+      this.getCsData(this.field?.name, this.field, namePath);
     }
   }
 
@@ -600,6 +614,46 @@ export class FilterRowComponent
       console.error(`Error while fetching reference data ${key}:`, error);
     } finally {
       this.loading = false;
+    }
+  }
+
+  /**
+   * Loads Common Services value options onto a select field, supporting an
+   * optional nested path for the display value (used by user-group filtering).
+   *
+   * @param key the reference-data key
+   * @param selectedField field object to assign options onto
+   * @param path optional nested path to the option value (else uses Name)
+   */
+  async getCsData(
+    key: string,
+    selectedField: any,
+    path?: string
+  ): Promise<void> {
+    if (
+      this.emailService?.userTableFields?.filter((x) => x === key).length === 0
+    ) {
+      this.loading = true;
+      await firstValueFrom(this.cs.restRequest(key))
+        .then((data) => {
+          this.loading = false;
+          if (path) {
+            selectedField.options =
+              data?.value.map((x: any) => ({
+                text: get(x, path),
+                value: get(x, path),
+              })) || [];
+          } else {
+            selectedField.options =
+              data?.value.map((x: any) => ({
+                text: x?.Name,
+                value: x?.Name,
+              })) || [];
+          }
+        })
+        .catch((error) => {
+          console.error(`Error while fetching reference data ${key}:`, error);
+        });
     }
   }
 }

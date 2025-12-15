@@ -2091,13 +2091,14 @@ export class EmailService {
    */
   processFilters(distributionListCommonQuery: any) {
     distributionListCommonQuery?.filters?.forEach((ele: any) => {
-      let preDefineFields: any = [];
       if (!ele.filters) {
-        preDefineFields = this.commonServiceFields.filter(
-          (x: any) => x.key === ele?.field
+        // Always normalize to key for backend logic
+        const preDefineField = this.commonServiceFields.find(
+          (x: any) => x.key === ele?.field || x.label === ele?.field
         );
-        ele.field =
-          preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
+        if (preDefineField) {
+          ele.field = preDefineField.key;
+        }
       } else {
         this.processFilters(ele);
       }
