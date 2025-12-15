@@ -353,34 +353,71 @@ export class HtmlParserService {
       return html;
     }
 
-    const loopRegex =
+    // Regex for {{for ...}} loops
+    const forLoopRegex =
       /\{\{for\s+(\w+)\s+in\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
+    // Regex for data-for attribute loops
+    const dataForRegex =
+      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+in\s+([^"]+)"([^>]*?)>([\s\S]*?)<\/\1>/gm;
 
     let resultHtml = html;
-    let match = loopRegex.exec(resultHtml);
 
-    // Iterate until no more loops are found
-    while (match) {
-      const [, itemVar, sourceExpr, innerTemplate] = match;
+    // Process data-for loops first
+    let dataForMatch = dataForRegex.exec(resultHtml);
+    while (dataForMatch) {
+      const [
+        fullMatch,
+        tag,
+        attrsBefore,
+        itemVar,
+        sourceExpr,
+        attrsAfter,
+        innerTemplate,
+      ] = dataForMatch;
+
       const sourceExprTrimmed = sourceExpr.trim();
+      const dataCollection = this.getLoopDataCollection(
+        sourceExprTrimmed,
+        fields
+      );
 
-      let dataCollection: any;
-      if (sourceExprTrimmed.startsWith('data.')) {
-        dataCollection = get(
-          fields.data,
-          sourceExprTrimmed.replace(/^data\./, '')
-        );
-      } else if (sourceExprTrimmed.startsWith('aggregation.')) {
-        dataCollection = get(
-          fields.aggregation,
-          sourceExprTrimmed.replace(/^aggregation\./, '')
-        );
-      } else {
-        dataCollection = get(fields.data, sourceExprTrimmed);
-        if (dataCollection === undefined) {
-          dataCollection = get(fields.aggregation, sourceExprTrimmed);
+      let expandedValue = '';
+      if (Array.isArray(dataCollection)) {
+        for (const el of dataCollection) {
+          const itemTemplate = this.applyItemTemplate(
+            innerTemplate,
+            itemVar,
+            el
+          );
+          expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
+        }
+      } else if (dataCollection && typeof dataCollection === 'object') {
+        for (const key of Object.keys(dataCollection)) {
+          const itemTemplate = this.applyItemTemplate(
+            innerTemplate,
+            itemVar,
+            dataCollection[key],
+            key
+          );
+          expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
         }
       }
+
+      resultHtml = resultHtml.replace(fullMatch, expandedValue);
+      dataForRegex.lastIndex = 0; // Reset regex for next iteration
+      dataForMatch = dataForRegex.exec(resultHtml);
+    }
+
+    // Process {{for ...}} loops
+    let forMatch = forLoopRegex.exec(resultHtml);
+    while (forMatch) {
+      const [fullMatch, itemVar, sourceExpr, innerTemplate] = forMatch;
+      const sourceExprTrimmed = sourceExpr.trim();
+
+      const dataCollection = this.getLoopDataCollection(
+        sourceExprTrimmed,
+        fields
+      );
 
       let expandedValue = '';
       if (Array.isArray(dataCollection)) {
@@ -396,20 +433,45 @@ export class HtmlParserService {
             key
           );
         }
-      } else {
-        expandedValue = '';
       }
 
-      resultHtml =
-        resultHtml.slice(0, match.index) +
-        expandedValue +
-        resultHtml.slice(match.index + match[0].length);
-
-      loopRegex.lastIndex = 0;
-      match = loopRegex.exec(resultHtml);
+      resultHtml = resultHtml.replace(fullMatch, expandedValue);
+      forLoopRegex.lastIndex = 0; // Reset regex for next iteration
+      forMatch = forLoopRegex.exec(resultHtml);
     }
 
     return resultHtml;
+  }
+
+  /**
+   * Gets the data collection for a loop from the given fields.
+   *
+   * @param sourceExprTrimmed The trimmed source expression.
+   * @param fields The fields containing data and aggregation.
+   * @returns The data collection.
+   */
+  private getLoopDataCollection(
+    sourceExprTrimmed: string,
+    fields: { data?: any; aggregation?: any }
+  ): any {
+    let dataCollection: any;
+    if (sourceExprTrimmed.startsWith('data.')) {
+      dataCollection = get(
+        fields.data,
+        sourceExprTrimmed.replace(/^data\./, '')
+      );
+    } else if (sourceExprTrimmed.startsWith('aggregation.')) {
+      dataCollection = get(
+        fields.aggregation,
+        sourceExprTrimmed.replace(/^aggregation\./, '')
+      );
+    } else {
+      dataCollection = get(fields.data, sourceExprTrimmed);
+      if (dataCollection === undefined) {
+        dataCollection = get(fields.aggregation, sourceExprTrimmed);
+      }
+    }
+    return dataCollection;
   }
 
   /**
