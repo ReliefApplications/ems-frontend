@@ -89,6 +89,7 @@
           <shared-reference-data-select
             [ngClass]="{ 'w-[80%]': this.query.get('reference').value }"
             formControlName="reference"
+            [selectedElements]="referenceData ? [referenceData] : []"
           ></shared-reference-data-select>
           <ui-button
             *ngIf="query?.value.reference"
