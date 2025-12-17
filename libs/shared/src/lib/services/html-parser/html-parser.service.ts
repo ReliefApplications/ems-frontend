@@ -292,9 +292,10 @@ export class HtmlParserService {
    * Apply the calc functions on the html body.
    *
    * @param html The html body on which we want to apply the functions
+   * @param data available data for nested placeholders
    * @returns The html body with the calculated result of the functions
    */
-  private applyOperations(html: string): string {
+  private applyOperations(html: string, data?: any): string {
     const regex = new RegExp(
       `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
@@ -305,18 +306,34 @@ export class HtmlParserService {
       // get the function
       const calcFunc = get(this.calcFunctions, result[1]);
       if (calcFunc) {
+        // Pre-process arguments for any nested placeholders
+        let processedArgs = result[2];
+        if (data) {
+          const placeholderRegex = /\{\{([^}]+)\}\}/g;
+          processedArgs = processedArgs.replace(
+            placeholderRegex,
+            (match, placeholder) => {
+              const value = get(data, placeholder.trim());
+              return value ?? match;
+            }
+          );
+        }
+
         // get the arguments and clean the numbers to be parsed correctly
         const args =
-          result[2]
+          processedArgs
             .replace(/&nbsp;/g, ' ') // Replace &nbsp; with a regular space
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
-              return result?.[1] === 'date'
-                ? arg.trim()
-                : // Replace below replaces the space space between span and style property from arg as elements,
-                  // breaking any style application from given element
-                  arg.replace(/[\s,]/gm, '');
+              if (result?.[1] === 'date') {
+                const trimmedArg = arg.trim();
+                // Strip optional surrounding quotes from format/value while preserving inner quotes
+                return trimmedArg.replace(/^['"](.*)['"]$/, '$1');
+              }
+              // Replace below replaces the space space between span and style property from arg as elements,
+              // breaking any style application from given element
+              return arg.replace(/[\s,]/gm, '');
             })
             .filter((arg) => !!arg) || [];
         // apply the function
@@ -331,6 +348,205 @@ export class HtmlParserService {
       result = regex.exec(html);
     }
     return parsedHtml;
+  }
+
+  /**
+   * Adds iteration of values within templates using for-loops. Supports data.* or aggregation.*
+   *
+   * @param html String with the content html.
+   * @param collections Available collections
+   * @param collections.data Available record data for iteration
+   * @param collections.aggregation Available aggregation data for iteration
+   * @returns formatted html.
+   */
+  private replaceForLoops(
+    html: string,
+    collections: { data?: any; aggregation?: any }
+  ): string {
+    if (!html) {
+      return html;
+    }
+
+    const forLoopRegex =
+      /\{\{for\s+(\w+)\s+of\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
+    const dataForRegex =
+      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+of\s+([^"]+)"([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/gm;
+
+    let resultHtml = html;
+    let loopsFound = true;
+
+    // Continue processing as long as we find loops to replace
+    while (loopsFound) {
+      const matches = [
+        ...Array.from(resultHtml.matchAll(forLoopRegex)).map((m) => ({
+          match: m,
+          type: 'for',
+        })),
+        ...Array.from(resultHtml.matchAll(dataForRegex)).map((m) => ({
+          match: m,
+          type: 'data-for',
+        })),
+      ];
+
+      if (matches.length === 0) {
+        loopsFound = false;
+        continue;
+      }
+
+      // Sort by start index to process from the inside out
+      matches.sort((a, b) => (b.match.index ?? 0) - (a.match.index ?? 0));
+
+      for (const { match, type } of matches) {
+        if (match.index === undefined) {
+          continue;
+        }
+        let expandedValue = '';
+        let fullMatch: string;
+
+        if (type === 'for') {
+          const [, itemVar, sourceExpr, innerTemplate] = match;
+          fullMatch = match[0];
+          const sourceExprTrimmed = sourceExpr.trim();
+          const dataCollection = this.getLoopDataCollection(
+            sourceExprTrimmed,
+            collections
+          );
+
+          if (Array.isArray(dataCollection)) {
+            for (const el of dataCollection) {
+              expandedValue += this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                el
+              );
+            }
+          } else if (dataCollection && typeof dataCollection === 'object') {
+            for (const key of Object.keys(dataCollection)) {
+              expandedValue += this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                dataCollection[key],
+                key
+              );
+            }
+          }
+        } else {
+          // data-for
+          const [
+            fm,
+            tag,
+            attrsBefore,
+            itemVar,
+            sourceExpr,
+            attrsAfter,
+            innerTemplate = '',
+          ] = match;
+          fullMatch = fm;
+          const sourceExprTrimmed = sourceExpr.trim();
+          const dataCollection = this.getLoopDataCollection(
+            sourceExprTrimmed,
+            collections
+          );
+
+          if (Array.isArray(dataCollection)) {
+            for (const el of dataCollection) {
+              const itemTemplate = this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                el
+              );
+              expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
+            }
+          } else if (dataCollection && typeof dataCollection === 'object') {
+            for (const key of Object.keys(dataCollection)) {
+              const itemTemplate = this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                dataCollection[key],
+                key
+              );
+              expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
+            }
+          }
+        }
+
+        resultHtml =
+          resultHtml.slice(0, match.index) +
+          expandedValue +
+          resultHtml.slice(match.index + fullMatch.length);
+      }
+    }
+
+    return resultHtml;
+  }
+
+  /**
+   * Gets the data collection for a loop from the given fields.
+   *
+   * @param sourceExprTrimmed The trimmed source expression.
+   * @param collections Available collections
+   * @param collections.data Available record data
+   * @param collections.aggregation Available aggregation data
+   * @returns The data collection.
+   */
+  private getLoopDataCollection(
+    sourceExprTrimmed: string,
+    collections: { data?: any; aggregation?: any }
+  ): any {
+    let dataCollection: any;
+    if (sourceExprTrimmed.startsWith('data.')) {
+      dataCollection = get(
+        collections.data,
+        sourceExprTrimmed.replace(/^data\./, '')
+      );
+    } else if (sourceExprTrimmed.startsWith('aggregation.')) {
+      dataCollection = get(
+        collections.aggregation,
+        sourceExprTrimmed.replace(/^aggregation\./, '')
+      );
+    } else {
+      dataCollection = get(collections.data, sourceExprTrimmed);
+      if (dataCollection === undefined) {
+        dataCollection = get(collections.aggregation, sourceExprTrimmed);
+      }
+    }
+    return dataCollection;
+  }
+
+  /**
+   * Replaces provided element with the item value.
+   *
+   * @param template Template string
+   * @param itemVar Item variable
+   * @param itemValue Item value
+   * @param index Index
+   * @returns Item value
+   */
+  private applyItemTemplate(
+    template: string,
+    itemVar: string,
+    itemValue: any,
+    index?: string | number
+  ): string {
+    let output = template;
+
+    // More specific regex to avoid conflicts.
+    const nestedRegex = new RegExp(`\\{\\{${itemVar}\\.([^}]+)\\}\\}`, 'g');
+    output = output.replace(nestedRegex, (_m, p1) => {
+      const v = get(itemValue, p1.trim());
+      return v == null ? '' : `${v}`;
+    });
+
+    const fullItemRegex = new RegExp(`\\{\\{${itemVar}\\}}`, 'g');
+    output = output.replace(fullItemRegex, () =>
+      !isNil(itemValue) ? itemValue.toString() : ''
+    );
+
+    if (index !== undefined) {
+      output = output.replace(/\{\{index\}\}/g, `${index}`);
+    }
+
+    return output;
   }
 
   /**
@@ -531,6 +747,10 @@ export class HtmlParserService {
         options.aggregation
       );
     }
+    formattedHtml = this.replaceForLoops(formattedHtml, {
+      data: options.data,
+      aggregation: options.aggregation,
+    });
     if (options.data) {
       formattedHtml = this.replaceRecordFields(
         formattedHtml,
@@ -540,7 +760,7 @@ export class HtmlParserService {
       );
     }
     formattedHtml = applyTableStyle(formattedHtml);
-    return this.applyOperations(formattedHtml);
+    return this.applyOperations(formattedHtml, options.data);
   }
 
   /**
@@ -611,6 +831,20 @@ export class HtmlParserService {
       value: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
       text: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
     }));
+  }
+
+  /**
+   * Returns an array with the helper keys.
+   *
+   * @returns List of helper keys
+   */
+  public getHelpersKeys(): { value: string; text: string }[] {
+    return [
+      {
+        value: '{{for item of collection}}...{{endfor}}',
+        text: '{{for item of collection}}...{{endfor}}',
+      },
+    ];
   }
 
   /**
