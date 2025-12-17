@@ -292,9 +292,10 @@ export class HtmlParserService {
    * Apply the calc functions on the html body.
    *
    * @param html The html body on which we want to apply the functions
+   * @param data available data for nested placeholders
    * @returns The html body with the calculated result of the functions
    */
-  private applyOperations(html: string, fields?: { data?: any }): string {
+  private applyOperations(html: string, data?: any): string {
     const regex = new RegExp(
       `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
@@ -307,12 +308,12 @@ export class HtmlParserService {
       if (calcFunc) {
         // Pre-process arguments for any nested placeholders
         let processedArgs = result[2];
-        if (fields?.data) {
+        if (data) {
           const placeholderRegex = /\{\{([^}]+)\}\}/g;
           processedArgs = processedArgs.replace(
             placeholderRegex,
             (match, placeholder) => {
-              const value = get(fields.data, placeholder.trim());
+              const value = get(data, placeholder.trim());
               return value ?? match;
             }
           );
@@ -353,23 +354,23 @@ export class HtmlParserService {
    * Adds iteration of values within templates using for-loops. Supports data.* or aggregation.*
    *
    * @param html String with the content html.
-   * @param fields Context of the fields.
-   * @param fields.data Available record data for iteration
-   * @param fields.aggregation Available aggregation data for iteration
+   * @param collections Available collections
+   * @param collections.data Available record data for iteration
+   * @param collections.aggregation Available aggregation data for iteration
    * @returns formatted html.
    */
   private replaceForLoops(
     html: string,
-    fields: { data?: any; aggregation?: any }
+    collections: { data?: any; aggregation?: any }
   ): string {
     if (!html) {
       return html;
     }
 
     const forLoopRegex =
-      /\{\{for\s+(\w+)\s+in\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
+      /\{\{for\s+(\w+)\s+of\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
     const dataForRegex =
-      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+in\s+([^"]+)"([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/gm;
+      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+of\s+([^"]+)"([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/gm;
 
     let resultHtml = html;
     let loopsFound = true;
@@ -408,7 +409,7 @@ export class HtmlParserService {
           const sourceExprTrimmed = sourceExpr.trim();
           const dataCollection = this.getLoopDataCollection(
             sourceExprTrimmed,
-            fields
+            collections
           );
 
           if (Array.isArray(dataCollection)) {
@@ -444,7 +445,7 @@ export class HtmlParserService {
           const sourceExprTrimmed = sourceExpr.trim();
           const dataCollection = this.getLoopDataCollection(
             sourceExprTrimmed,
-            fields
+            collections
           );
 
           if (Array.isArray(dataCollection)) {
@@ -483,28 +484,30 @@ export class HtmlParserService {
    * Gets the data collection for a loop from the given fields.
    *
    * @param sourceExprTrimmed The trimmed source expression.
-   * @param fields The fields containing data and aggregation.
+   * @param collections Available collections
+   * @param collections.data Available record data
+   * @param collections.aggregation Available aggregation data
    * @returns The data collection.
    */
   private getLoopDataCollection(
     sourceExprTrimmed: string,
-    fields: { data?: any; aggregation?: any }
+    collections: { data?: any; aggregation?: any }
   ): any {
     let dataCollection: any;
     if (sourceExprTrimmed.startsWith('data.')) {
       dataCollection = get(
-        fields.data,
+        collections.data,
         sourceExprTrimmed.replace(/^data\./, '')
       );
     } else if (sourceExprTrimmed.startsWith('aggregation.')) {
       dataCollection = get(
-        fields.aggregation,
+        collections.aggregation,
         sourceExprTrimmed.replace(/^aggregation\./, '')
       );
     } else {
-      dataCollection = get(fields.data, sourceExprTrimmed);
+      dataCollection = get(collections.data, sourceExprTrimmed);
       if (dataCollection === undefined) {
-        dataCollection = get(fields.aggregation, sourceExprTrimmed);
+        dataCollection = get(collections.aggregation, sourceExprTrimmed);
       }
     }
     return dataCollection;
@@ -757,7 +760,7 @@ export class HtmlParserService {
       );
     }
     formattedHtml = applyTableStyle(formattedHtml);
-    return this.applyOperations(formattedHtml, { data: options.data });
+    return this.applyOperations(formattedHtml, options.data);
   }
 
   /**
@@ -828,6 +831,20 @@ export class HtmlParserService {
       value: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
       text: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
     }));
+  }
+
+  /**
+   * Returns an array with the helper keys.
+   *
+   * @returns List of helper keys
+   */
+  public getHelpersKeys(): { value: string; text: string }[] {
+    return [
+      {
+        value: '{{for item of collection}}...{{endfor}}',
+        text: '{{for item of collection}}...{{endfor}}',
+      },
+    ];
   }
 
   /**
