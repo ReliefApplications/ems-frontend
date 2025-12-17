@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import get from 'lodash/get';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import {
@@ -116,6 +116,7 @@ export class FormBuilderService {
           }
         }
       }
+      this.appendDynamicPanelHistoryEntriesOnSave(survey);
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
@@ -161,6 +162,207 @@ export class FormBuilderService {
     // Add record to survey properties
     survey.setPropertyValue('record', record);
     return survey;
+  }
+
+  /**
+   * Make the panel be normalized to render saved entries.
+   *
+   * @param survey Survey instance
+   */
+  public normalizeHistoryPanels(survey: SurveyModel): void {
+    const normalizeArray = (value: unknown): any[] => {
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed;
+          if (parsed && typeof parsed === 'object') return [parsed];
+        } catch {
+          return [];
+        }
+      }
+      if (value && typeof value === 'object') return [value];
+      return [];
+    };
+
+    survey
+      .getAllQuestions()
+      .filter((q) => q.getType() === 'paneldynamic')
+      .forEach((q: any) => {
+        if (!q.getPropertyValue('appendOnSave')) return;
+        const key = q.valueName || q.name;
+        const raw = survey.getValue(key);
+        const entries = normalizeArray(raw);
+        survey.setValue(key, entries);
+        q.value = entries;
+        if (
+          typeof q.panelCount === 'number' &&
+          q.panelCount !== entries.length
+        ) {
+          q.panelCount = entries.length;
+        }
+      });
+  }
+
+  /**
+   * Append dynamic panel history entries on save.
+   *
+   * @param survey Survey instance
+   */
+  private appendDynamicPanelHistoryEntriesOnSave(survey: SurveyModel): void {
+    const normalizeArray = (value: unknown): any[] => {
+      if (Array.isArray(value)) {
+        if (value.every((v) => typeof v === 'string')) {
+          const parsed = (value as string[])
+            .map((v) => {
+              try {
+                return JSON.parse(v);
+              } catch {
+                return null;
+              }
+            })
+            .filter((v) => v && typeof v === 'object');
+          return parsed.length ? (parsed as any[]) : [];
+        }
+        return value;
+      }
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed;
+          if (parsed && typeof parsed === 'object') return [parsed];
+        } catch {
+          return [];
+        }
+      }
+      if (value && typeof value === 'object') return [value];
+      return [];
+    };
+
+    const isEmpty = (value: any): boolean => {
+      if (isNil(value) || value === '') return true;
+      if (Array.isArray(value) && value.length === 0) return true;
+      return false;
+    };
+
+    const normalizeKey = (value: any): string =>
+      String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
+
+    const resolveTemplateKey = (panelQuestion: any, logicalName: string) => {
+      const templateElements: any[] =
+        panelQuestion?.template?.elements ||
+        panelQuestion?.template?.questions ||
+        panelQuestion?.templateElements ||
+        [];
+
+      const wanted = normalizeKey(logicalName);
+
+      const match = (q: any) => {
+        const name = normalizeKey(q?.name);
+        const valueName = normalizeKey(q?.valueName);
+        const title = normalizeKey(q?.title);
+        const placeholder = normalizeKey(q?.placeholder);
+        return (
+          name === wanted ||
+          valueName === wanted ||
+          title === wanted ||
+          placeholder === wanted
+        );
+      };
+
+      const found = templateElements.find(match);
+      return found?.valueName || found?.name;
+    };
+
+    survey
+      .getAllQuestions()
+      .filter((q) => q.getType() === 'paneldynamic')
+      .forEach((question: any) => {
+        if (!question.getPropertyValue('appendOnSave')) {
+          return;
+        }
+
+        const fromField = question.getPropertyValue('fromField');
+        const toField = question.getPropertyValue('toField');
+        const subjectField = question.getPropertyValue('subjectField');
+        const sentOnField = question.getPropertyValue('sentOnField');
+        const bodyField = question.getPropertyValue('bodyField');
+        const commentField = question.getPropertyValue('commentField');
+        const clearCommentFieldOnSave = !!question.getPropertyValue(
+          'clearCommentFieldOnSave'
+        );
+
+        const fromKey = resolveTemplateKey(question, 'from') || 'from';
+        const toKey = resolveTemplateKey(question, 'to') || 'to';
+        const subjectKey = resolveTemplateKey(question, 'subject') || 'subject';
+        const sentOnKey = resolveTemplateKey(question, 'sentOn') || 'sentOn';
+        const bodyKey = resolveTemplateKey(question, 'body') || 'body';
+        const commentKey = resolveTemplateKey(question, 'comment') || 'comment';
+
+        const entry: Record<string, any> = {};
+        entry[fromKey] = fromField ? survey.getValue(fromField) : undefined;
+        entry[toKey] = toField ? survey.getValue(toField) : undefined;
+        entry[subjectKey] = subjectField
+          ? survey.getValue(subjectField)
+          : undefined;
+        entry[sentOnKey] = sentOnField
+          ? survey.getValue(sentOnField)
+          : undefined;
+        entry[bodyKey] = bodyField ? survey.getValue(bodyField) : undefined;
+        entry[commentKey] = commentField
+          ? survey.getValue(commentField)
+          : undefined;
+
+        if (
+          Object.values(entry).every((value) => isEmpty(value)) ||
+          (!fromField &&
+            !toField &&
+            !subjectField &&
+            !sentOnField &&
+            !bodyField &&
+            !commentField)
+        ) {
+          return;
+        }
+
+        const existing = normalizeArray(question.value);
+        const newestFirst = !!question.getPropertyValue('newestFirst');
+        const allowDuplicates = !!question.getPropertyValue('allowDuplicates');
+
+        if (!allowDuplicates && existing.length > 0) {
+          const last = newestFirst
+            ? existing[0]
+            : existing[existing.length - 1];
+          if (isEqual(last, entry)) {
+            return;
+          }
+        }
+
+        let updated = newestFirst ? [entry, ...existing] : [...existing, entry];
+
+        const maxEntries = Number(question.getPropertyValue('maxEntries') || 0);
+        if (maxEntries > 0 && updated.length > maxEntries) {
+          updated = newestFirst
+            ? updated.slice(0, maxEntries)
+            : updated.slice(updated.length - maxEntries);
+        }
+
+        const key = question.valueName || question.name;
+        survey.setValue(key, updated);
+        question.value = updated;
+        if (
+          typeof question.panelCount === 'number' &&
+          question.panelCount !== updated.length
+        ) {
+          question.panelCount = updated.length;
+        }
+
+        if (commentField && clearCommentFieldOnSave) {
+          survey.setValue(commentField, null);
+        }
+      });
   }
 
   /**

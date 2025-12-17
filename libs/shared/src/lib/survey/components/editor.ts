@@ -67,9 +67,6 @@ export const init = (
         if (!value) {
           return;
         }
-        if (!question.value && question.defaultValueExpression) {
-          question.value = question.defaultValueExpression;
-        }
         if (question.value) {
           instance.editor.editor.writeValue(question.value);
         }

@@ -318,6 +318,7 @@ export class FormModalComponent
         Object.keys(notNullValues).forEach((question) => {
           this.survey.setValue(question, notNullValues[question]);
         });
+        this.formBuilderService.normalizeHistoryPanels(this.survey);
       }
       addCustomFunctions(this.authService);
       this.survey.showCompletedPage = false;

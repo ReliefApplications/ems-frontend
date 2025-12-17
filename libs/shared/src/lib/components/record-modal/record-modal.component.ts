@@ -193,6 +193,7 @@ export class RecordModalComponent
       {}
     );
     this.survey.data = this.record.data;
+    this.formBuilderService.normalizeHistoryPanels(this.survey);
 
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -208,6 +209,7 @@ export class RecordModalComponent
         {}
       );
       this.surveyNext.data = this.data.compareTo.data;
+      this.formBuilderService.normalizeHistoryPanels(this.surveyNext);
 
       // Set list of updated questions
       const updatedQuestions: string[] = [];

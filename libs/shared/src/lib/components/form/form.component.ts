@@ -178,9 +178,11 @@ export class FormComponent
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+      this.formBuilderService.normalizeHistoryPanels(this.survey);
     } else if (this.record && this.record.data) {
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
+      this.formBuilderService.normalizeHistoryPanels(this.survey);
     }
 
     // if (this.survey.getUsedLocales().length > 1) {

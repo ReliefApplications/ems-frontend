@@ -83,6 +83,88 @@ export const init = (environment: any): void => {
     isSerializable: false,
   });
 
+  // === Communication history (email chain) ===
+  // Allows forms to append a snapshot entry into a paneldynamic question only on save.
+  serializer.addProperty('paneldynamic', {
+    name: 'appendOnSave:boolean',
+    category: 'Custom Questions',
+    displayName: 'Append entry on save',
+    default: false,
+    visibleIndex: 1,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'allowDuplicates:boolean',
+    category: 'Custom Questions',
+    displayName: 'Allow duplicate entries',
+    default: false,
+    visibleIndex: 2,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'newestFirst:boolean',
+    category: 'Custom Questions',
+    displayName: 'Newest first',
+    default: false,
+    visibleIndex: 3,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'maxEntries:number',
+    category: 'Custom Questions',
+    displayName: 'Maximum entries (0 = unlimited)',
+    default: 0,
+    visibleIndex: 4,
+  });
+
+  serializer.addProperty('paneldynamic', {
+    name: 'fromField',
+    category: 'Custom Questions',
+    displayName: 'From field',
+    description: 'Question name to snapshot into history.from',
+    visibleIndex: 10,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'toField',
+    category: 'Custom Questions',
+    displayName: 'To field',
+    description: 'Question name to snapshot into history.to',
+    visibleIndex: 11,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'subjectField',
+    category: 'Custom Questions',
+    displayName: 'Subject field',
+    description: 'Question name to snapshot into history.subject',
+    visibleIndex: 12,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'sentOnField',
+    category: 'Custom Questions',
+    displayName: 'Sent on field',
+    description: 'Question name to snapshot into history.sentOn',
+    visibleIndex: 13,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'bodyField',
+    category: 'Custom Questions',
+    displayName: 'Body field',
+    description: 'Question name to snapshot into history.body',
+    visibleIndex: 14,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'commentField',
+    category: 'Custom Questions',
+    displayName: 'Comment field (optional)',
+    description:
+      'Question name containing an optional comment attached to the entry (history.comment)',
+    visibleIndex: 15,
+  });
+  serializer.addProperty('paneldynamic', {
+    name: 'clearCommentFieldOnSave:boolean',
+    category: 'logic',
+    displayName: 'Clear comment field on save',
+    default: true,
+    visibleIndex: 16,
+  });
+
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
   /** Size per file is mandatory */
@@ -130,5 +212,13 @@ export const render = (question: Question): void => {
   // define the default max size for files
   if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
     (question as QuestionFileModel).maxSize = 7340032;
+  }
+
+  // Ensure dynamic panels that store a history thread render all saved entries.
+  if (
+    question.getType() === 'paneldynamic' &&
+    !question.getPropertyValue('appendOnSave')
+  ) {
+    // No-op: panel count is handled during append; avoid extra hooks to keep behavior simple.
   }
 };
