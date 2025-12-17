@@ -132,7 +132,10 @@
       >
         {{ 'components.email.alert.noReferenceSelected' | translate }}
       </ui-alert>
-      <ui-tabs>
+      <ui-tabs
+        [selectedIndex]="currentTabIndex"
+        (selectedIndexChange)="onTabSelect($event, true)"
+      >
         <ui-tab title="Variable Mapping" [selected]="true">
           <ng-container ngProjectAs="label">
             {{ 'components.email.dataset.reference.mapping' | translate }}
@@ -187,6 +190,23 @@
                 "
               ></shared-empty>
             </ng-template>
+          </ng-template>
+        </ui-tab>
+        <ui-tab
+          title="Preview"
+          [disabled]="!query.value.reference"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.preview' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <div
+              *ngIf="!showDatasetLimitWarning"
+              class="overflow-x-auto"
+              formGroupName="query"
+            >
+              <div id="tblPreview" [innerHTML]="previewHTML"></div>
+            </div>
           </ng-template>
         </ui-tab>
       </ui-tabs>

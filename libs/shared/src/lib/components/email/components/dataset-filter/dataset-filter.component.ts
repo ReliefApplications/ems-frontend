@@ -410,6 +410,19 @@ export class DatasetFilterComponent
     const newIndex = event;
     const previewTabIndex = 3;
 
+    if (this.isReferenceData) {
+      this.showDatasetLimitWarning = false;
+      this.currentTabIndex = newIndex;
+      if (
+        fromHTML &&
+        newIndex === previewTabIndex &&
+        this.query.value.reference
+      ) {
+        this.getDataSet('preview');
+      }
+      return;
+    }
+
     const isSeparateEmailValid =
       (this.query.get('individualEmail').value === true &&
         this.selectedFieldsIndividualEmail.length > 0) ||
@@ -659,15 +672,52 @@ export class DatasetFilterComponent
    * @param validCheck - Check if data needs validation
    */
   getDataSet(tabName?: any, validCheck?: boolean): void {
-    if (this.isReferenceData) {
-      this.emailService.disableSaveAndProceed.next(false);
-      this.emailService.disableSaveAsDraft.next(false);
-      return;
-    }
     if (
       this.query.controls['name'].value !== null &&
       this.query.controls['name'].value !== ''
     ) {
+      if (this.isReferenceData) {
+        if (tabName === 'preview' && this.query.value.reference) {
+          this.loading = true;
+          const objPreview: any = {
+            resource: '',
+            reference: this.query.get('reference')?.value || '',
+            name: this.query.get('name')?.value,
+            query: this.query.get('query')?.value,
+            referenceDataVariableMapping: this.query.get(
+              'referenceDataVariableMapping'
+            )?.value,
+            referenceDataInputConfig: this.query.get('referenceDataInputConfig')
+              ?.value,
+            referenceDataInputs: this.query.get('referenceDataInputs')?.value,
+            navigateSettings: this.query.value.navigateSettings,
+            navigateToPage: this.query.value.navigateToPage,
+          };
+
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/preview-dataset`,
+              objPreview
+            )
+            .subscribe(
+              (response: any) => {
+                const previewRes = window.atob(response.tableHtml);
+                setTimeout(() => {
+                  this.previewHTML =
+                    this.sanitizer.bypassSecurityTrustHtml(previewRes);
+                }, 100);
+                this.loading = false;
+              },
+              (error: string) => {
+                console.error('Error:', error);
+                this.loading = false;
+              }
+            );
+        }
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+        return;
+      }
       if (tabName == 'fields') {
         this.onTabSelect(1, false);
         if (this.selectedFields.length) {
