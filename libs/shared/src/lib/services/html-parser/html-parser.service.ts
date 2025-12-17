@@ -294,7 +294,7 @@ export class HtmlParserService {
    * @param html The html body on which we want to apply the functions
    * @returns The html body with the calculated result of the functions
    */
-  private applyOperations(html: string): string {
+  private applyOperations(html: string, fields?: { data?: any }): string {
     const regex = new RegExp(
       `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
@@ -305,9 +305,22 @@ export class HtmlParserService {
       // get the function
       const calcFunc = get(this.calcFunctions, result[1]);
       if (calcFunc) {
+        // Pre-process arguments for any nested placeholders
+        let processedArgs = result[2];
+        if (fields?.data) {
+          const placeholderRegex = /\{\{([^}]+)\}\}/g;
+          processedArgs = processedArgs.replace(
+            placeholderRegex,
+            (match, placeholder) => {
+              const value = get(fields.data, placeholder.trim());
+              return value ?? match;
+            }
+          );
+        }
+
         // get the arguments and clean the numbers to be parsed correctly
         const args =
-          result[2]
+          processedArgs
             .replace(/&nbsp;/g, ' ') // Replace &nbsp; with a regular space
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
@@ -353,91 +366,114 @@ export class HtmlParserService {
       return html;
     }
 
-    // Regex for {{for ...}} loops
     const forLoopRegex =
       /\{\{for\s+(\w+)\s+in\s+([^}]+)\}\}([\s\S]*?)\{\{endfor\}\}/gm;
-    // Regex for data-for attribute loops
     const dataForRegex =
-      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+in\s+([^"]+)"([^>]*?)>([\s\S]*?)<\/\1>/gm;
+      /<(\w+)([^>]*?)\s+data-for="(\w+)\s+in\s+([^"]+)"([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/gm;
 
     let resultHtml = html;
+    let loopsFound = true;
 
-    // Process data-for loops first
-    let dataForMatch = dataForRegex.exec(resultHtml);
-    while (dataForMatch) {
-      const [
-        fullMatch,
-        tag,
-        attrsBefore,
-        itemVar,
-        sourceExpr,
-        attrsAfter,
-        innerTemplate,
-      ] = dataForMatch;
+    // Continue processing as long as we find loops to replace
+    while (loopsFound) {
+      const matches = [
+        ...Array.from(resultHtml.matchAll(forLoopRegex)).map((m) => ({
+          match: m,
+          type: 'for',
+        })),
+        ...Array.from(resultHtml.matchAll(dataForRegex)).map((m) => ({
+          match: m,
+          type: 'data-for',
+        })),
+      ];
 
-      const sourceExprTrimmed = sourceExpr.trim();
-      const dataCollection = this.getLoopDataCollection(
-        sourceExprTrimmed,
-        fields
-      );
-
-      let expandedValue = '';
-      if (Array.isArray(dataCollection)) {
-        for (const el of dataCollection) {
-          const itemTemplate = this.applyItemTemplate(
-            innerTemplate,
-            itemVar,
-            el
-          );
-          expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
-        }
-      } else if (dataCollection && typeof dataCollection === 'object') {
-        for (const key of Object.keys(dataCollection)) {
-          const itemTemplate = this.applyItemTemplate(
-            innerTemplate,
-            itemVar,
-            dataCollection[key],
-            key
-          );
-          expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
-        }
+      if (matches.length === 0) {
+        loopsFound = false;
+        continue;
       }
 
-      resultHtml = resultHtml.replace(fullMatch, expandedValue);
-      dataForRegex.lastIndex = 0; // Reset regex for next iteration
-      dataForMatch = dataForRegex.exec(resultHtml);
-    }
+      // Sort by start index to process from the inside out
+      matches.sort((a, b) => (b.match.index ?? 0) - (a.match.index ?? 0));
 
-    // Process {{for ...}} loops
-    let forMatch = forLoopRegex.exec(resultHtml);
-    while (forMatch) {
-      const [fullMatch, itemVar, sourceExpr, innerTemplate] = forMatch;
-      const sourceExprTrimmed = sourceExpr.trim();
-
-      const dataCollection = this.getLoopDataCollection(
-        sourceExprTrimmed,
-        fields
-      );
-
-      let expandedValue = '';
-      if (Array.isArray(dataCollection)) {
-        for (const el of dataCollection) {
-          expandedValue += this.applyItemTemplate(innerTemplate, itemVar, el);
+      for (const { match, type } of matches) {
+        if (match.index === undefined) {
+          continue;
         }
-      } else if (dataCollection && typeof dataCollection === 'object') {
-        for (const key of Object.keys(dataCollection)) {
-          expandedValue += this.applyItemTemplate(
-            innerTemplate,
-            itemVar,
-            dataCollection[key],
-            key
+        let expandedValue = '';
+        let fullMatch: string;
+
+        if (type === 'for') {
+          const [, itemVar, sourceExpr, innerTemplate] = match;
+          fullMatch = match[0];
+          const sourceExprTrimmed = sourceExpr.trim();
+          const dataCollection = this.getLoopDataCollection(
+            sourceExprTrimmed,
+            fields
           );
-        }
-      }
 
-      resultHtml = resultHtml.replace(fullMatch, expandedValue);
-      forLoopRegex.lastIndex = 0; // Reset regex for next iteration
-      forMatch = forLoopRegex.exec(resultHtml);
+          if (Array.isArray(dataCollection)) {
+            for (const el of dataCollection) {
+              expandedValue += this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                el
+              );
+            }
+          } else if (dataCollection && typeof dataCollection === 'object') {
+            for (const key of Object.keys(dataCollection)) {
+              expandedValue += this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                dataCollection[key],
+                key
+              );
+            }
+          }
+        } else {
+          // data-for
+          const [
+            fm,
+            tag,
+            attrsBefore,
+            itemVar,
+            sourceExpr,
+            attrsAfter,
+            innerTemplate = '',
+          ] = match;
+          fullMatch = fm;
+          const sourceExprTrimmed = sourceExpr.trim();
+          const dataCollection = this.getLoopDataCollection(
+            sourceExprTrimmed,
+            fields
+          );
+
+          if (Array.isArray(dataCollection)) {
+            for (const el of dataCollection) {
+              const itemTemplate = this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                el
+              );
+              expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
+            }
+          } else if (dataCollection && typeof dataCollection === 'object') {
+            for (const key of Object.keys(dataCollection)) {
+              const itemTemplate = this.applyItemTemplate(
+                innerTemplate,
+                itemVar,
+                dataCollection[key],
+                key
+              );
+              expandedValue += `<${tag}${attrsBefore}${attrsAfter}>${itemTemplate}</${tag}>`;
+            }
+          }
+        }
+
+        resultHtml =
+          resultHtml.slice(0, match.index) +
+          expandedValue +
+          resultHtml.slice(match.index + fullMatch.length);
+      }
     }
 
     return resultHtml;
@@ -491,38 +527,21 @@ export class HtmlParserService {
   ): string {
     let output = template;
 
-    const fullItemRegex = new RegExp(`\\{\\{${itemVar}\\}}`, 'g');
-    output = output.replace(fullItemRegex, () => (itemValue ?? '').toString());
-
+    // More specific regex to avoid conflicts.
     const nestedRegex = new RegExp(`\\{\\{${itemVar}\\.([^}]+)\\}\\}`, 'g');
     output = output.replace(nestedRegex, (_m, p1) => {
       const v = get(itemValue, p1.trim());
       return v == null ? '' : `${v}`;
     });
 
+    const fullItemRegex = new RegExp(`\\{\\{${itemVar}\\}}`, 'g');
+    output = output.replace(fullItemRegex, () =>
+      !isNil(itemValue) ? itemValue.toString() : ''
+    );
+
     if (index !== undefined) {
       output = output.replace(/\{\{index\}\}/g, `${index}`);
     }
-
-    const expressionRegex = /\{\{([^}]*)\}\}/g;
-    output = output.replace(
-      expressionRegex,
-      (match: string, expressionBody: string) => {
-        const replacedExpression = expressionBody
-          .replace(
-            new RegExp(`\\b${itemVar}\\.([\\w.[\\]]+)`, 'g'),
-            (_exprMatch: string, path: string) => {
-              const value = get(itemValue, path.trim());
-              return value == null ? '' : `${value}`;
-            }
-          )
-          .replace(/\bindex\b/g, () =>
-            index !== undefined ? `${index}` : 'index'
-          );
-
-        return `{{${replacedExpression}}}`;
-      }
-    );
 
     return output;
   }
@@ -738,7 +757,7 @@ export class HtmlParserService {
       );
     }
     formattedHtml = applyTableStyle(formattedHtml);
-    return this.applyOperations(formattedHtml);
+    return this.applyOperations(formattedHtml, { data: options.data });
   }
 
   /**
