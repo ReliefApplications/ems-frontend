@@ -405,13 +405,23 @@ export class LayoutComponent
    * Block Data for Body
    */
   getBlockData() {
-    if (
-      this.emailService.datasetsForm.get('datasets')?.value?.[0]?.query?.fields
-        ?.length > 0
-    ) {
+    const datasets =
+      this.emailService.datasetsForm.get('datasets')?.value || [];
+    const hasConfiguredDataset = datasets.some(
+      (ds: any) =>
+        (ds.resource && ds.query?.fields?.length > 0) ||
+        (ds.reference &&
+          (ds.referenceDataVariableMapping ||
+            ds.referenceDataInputConfig ||
+            ds.referenceDataInputs))
+    );
+
+    if (hasConfiguredDataset) {
       this.blockData =
-        this.emailService.previewData?.datasets ??
-        this.emailService.getAllPreviewData();
+        this.emailService.previewData?.datasets &&
+        this.emailService.previewData.datasets.length
+          ? this.emailService.previewData.datasets
+          : this.emailService.getAllPreviewData();
     } else {
       this.blockData = [];
     }

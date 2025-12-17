@@ -706,6 +706,16 @@ export class DatasetFilterComponent
                   this.previewHTML =
                     this.sanitizer.bypassSecurityTrustHtml(previewRes);
                 }, 100);
+
+                const datasetEntry = {
+                  dataList: response,
+                  datasetFields:
+                    this.referenceData?.fields?.map((f: any) => f.name) || [],
+                  tabIndex: this.activeTab?.index,
+                  tabName: this.activeTab?.title,
+                };
+                this.emailService.setAllPreviewData([datasetEntry]);
+
                 this.loading = false;
               },
               (error: string) => {

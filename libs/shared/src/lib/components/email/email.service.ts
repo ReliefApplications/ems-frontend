@@ -991,12 +991,15 @@ export class EmailService {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
       datasetsValues.forEach((dataset: any) => {
-        if (dataset.query.name && dataset.resource) {
+        const hasResource =
+          dataset.resource && dataset.query && dataset.query.name;
+        const hasReference =
+          dataset.reference &&
+          (dataset.referenceDataVariableMapping ||
+            dataset.referenceDataInputConfig ||
+            dataset.referenceDataInputs);
+        if (hasResource || hasReference) {
           datasets.push(dataset.name);
-        } else {
-          dataset.query.name && dataset.reference
-            ? datasets.push(dataset.name)
-            : '';
         }
       });
       const fields: string[] = [];
