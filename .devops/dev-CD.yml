@@ -26,11 +26,11 @@ steps:
     KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
 
 - script: |
-    npx nx run front-office:build:azure-dev
+    npx nx run front-office:build:azure-dev --skip-nx-cache
   displayName: 'Build front-office'
 
 - script: |
-    npx nx run back-office:build:azure-dev
+    npx nx run back-office:build:azure-dev --skip-nx-cache
   displayName: 'Build back-office'
 
 - task: ArchiveFiles@2
