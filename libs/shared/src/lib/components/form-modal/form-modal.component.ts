@@ -120,8 +120,10 @@ export class FormModalComponent
   protected isMultiEdition = false;
   /** Temporary storage of files */
   protected temporaryFilesStorage: any = {};
+  /** Stored cloned data */
+  private prefillClonedData: any;
   /** Stored merged data */
-  private storedMergedData: any;
+  private prefillMergedData: any;
 
   /**
    * Display a form instance in a modal.
@@ -253,16 +255,20 @@ export class FormModalComponent
         ).then(({ data }) => {
           this.form = data.form;
           if (this.data.prefillData) {
-            this.storedMergedData = this.data.prefillData;
-          }
-          if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
-            this.storedMergedData = this.mergedData(this.data.prefillRecords);
+            // Prefill with cloned data
+            this.prefillClonedData = this.data.prefillData;
+          } else if (
+            this.data.prefillRecords &&
+            this.data.prefillRecords.length > 0
+          ) {
+            // Prefill with merged data from records
+            this.prefillMergedData = this.mergedData(this.data.prefillRecords);
             const resId = this.data.prefillRecords[0].form?.resource?.id;
             const resourcesField = this.form.fields?.find(
               (x) => x.type === 'resources' && x.resource === resId
             );
             if (resourcesField) {
-              this.storedMergedData[resourcesField.name] =
+              this.prefillMergedData[resourcesField.name] =
                 this.data.prefillRecords.map((x) => x.id);
             } else {
               this.snackBar.openSnackBar(
@@ -296,10 +302,26 @@ export class FormModalComponent
       this.disableSaveAsDraft = false;
     });
     this.survey.onComplete.add(this.onComplete);
-    if (this.storedMergedData) {
-      const notNullValues = omitBy(this.storedMergedData, isNil);
-      Object.keys(notNullValues).forEach((question) => {
-        this.survey.setValue(question, notNullValues[question]);
+
+    if (this.prefillMergedData) {
+      // Prefill with merged data from records
+      const cleanedData = omitBy(this.prefillMergedData, isNil);
+      Object.keys(cleanedData).forEach((question) => {
+        this.survey.setValue(question, cleanedData[question]);
+      });
+    } else if (this.prefillClonedData) {
+      // Prefill with cloned data
+      const resourcesFields = this.survey
+        .getAllQuestions()
+        .filter((q) => q.getType() === 'resources');
+      const resourceNames = new Set(resourcesFields.map((f) => f.name));
+      // Omit nil values and resources questions from prefill data
+      const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
+        console.log({ key, value });
+        return isNil(value) || resourceNames.has(key);
+      });
+      Object.keys(cleanedData).forEach((question) => {
+        this.survey.setValue(question, cleanedData[question]);
       });
     }
 
@@ -314,9 +336,9 @@ export class FormModalComponent
       if (this.isMultiEdition) {
         this.survey.data = null;
       } else {
-        const notNullValues = omitBy(this.record.data, isNil);
-        Object.keys(notNullValues).forEach((question) => {
-          this.survey.setValue(question, notNullValues[question]);
+        const cleanedData = omitBy(this.record.data, isNil);
+        Object.keys(cleanedData).forEach((question) => {
+          this.survey.setValue(question, cleanedData[question]);
         });
       }
       addCustomFunctions(this.authService);
