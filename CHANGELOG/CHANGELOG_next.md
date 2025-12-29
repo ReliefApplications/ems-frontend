@@ -1,3 +1,10 @@
+# [2.22.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.10...v2.22.0-rc.11) (2025-12-29)
+
+
+### Bug Fixes
+
+* clean resources field on clone ([#2836](https://github.com/ReliefApplications/ems-frontend/issues/2836)) ([6b27fe8](https://github.com/ReliefApplications/ems-frontend/commit/6b27fe88689e548a7dfb3dc163e701cb6c9b8a7e)), closes [AB#118658](https://github.com/AB/issues/118658)
+
 # [2.22.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.9...v2.22.0-rc.10) (2025-12-29)
 
 
