@@ -1,3 +1,16 @@
+# [2.22.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.9...v2.22.0-rc.10) (2025-12-29)
+
+
+### Bug Fixes
+
+* issue with people dropdown / tagbox display ([46ee9c4](https://github.com/ReliefApplications/ems-frontend/commit/46ee9c423f824cfcd76b2703fe002f388b9c510e))
+
+
+### Features
+
+* Allow iterating through records in a text widget ([#2824](https://github.com/ReliefApplications/ems-frontend/issues/2824)) ([b8928ee](https://github.com/ReliefApplications/ems-frontend/commit/b8928ee036d27b6bafee95567bb1b61142202884)), closes [AB#121364](https://github.com/AB/issues/121364)
+* People picker in forms ([#2833](https://github.com/ReliefApplications/ems-frontend/issues/2833)) ([bd6af42](https://github.com/ReliefApplications/ems-frontend/commit/bd6af424fb2e64d71913d145192fd6863408bc1d)), closes [AB#68534](https://github.com/AB/issues/68534)
+
 # [2.22.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.8...v2.22.0-rc.9) (2025-11-07)
 
 
