@@ -313,12 +313,10 @@ export const forLoopTableElement = {
   before: `
   <table border="1">
     <tbody>
-      {{for row in data.rows}}
-        <tr>
-          <td>{{row.title}}</td>
-          <td>{{calc.date(row.date ; 'dd/MM/yyyy')}}</td>
-        </tr>
-      {{endfor}}
+      <tr data-for="row of data.rows">
+        <td>{{row.title}}</td>
+        <td>{{calc.date({{row.date}} ; dd/MM/yyyy)}}</td>
+      </tr>
     </tbody>
   </table>
   `,
