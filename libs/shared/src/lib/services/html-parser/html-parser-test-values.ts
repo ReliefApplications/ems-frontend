@@ -394,3 +394,22 @@ export const optionFields = [
     __typename: 'FieldMetaData',
   },
 ];
+
+/** Html with table generated through for-loop */
+export const forLoopDivElement = {
+  before: `
+  {{for item of data.items}}
+  <div>
+    <span>{{item.title}}</span>
+    <span>{{calc.date({{item.date}} ; dd/MM/yyyy)}}</span>
+  </div>
+  {{endfor}}
+  `,
+  after: `<div><span>First item</span><span>28/09/2024</span></div><div><span>Second item</span><span>05/10/2024</span></div>`,
+  data: {
+    items: [
+      { title: 'First item', date: '2024-09-28T12:00:00.000Z' },
+      { title: 'Second item', date: '2024-10-05T12:00:00.000Z' },
+    ],
+  },
+};
