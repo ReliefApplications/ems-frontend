@@ -262,6 +262,14 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    // Set values from expressions setValueOnComplete
+    this.survey.getAllQuestions().forEach((question) => {
+      const expression = question.getPropertyValue('setValueOnComplete');
+      if (expression) {
+        const result = this.survey.runExpression(expression);
+        question.value = result;
+      }
+    });
     let mutation: any;
     this.surveyActive = false;
 
