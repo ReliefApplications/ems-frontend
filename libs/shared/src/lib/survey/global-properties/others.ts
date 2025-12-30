@@ -119,6 +119,15 @@ export const init = (environment: any): void => {
     default: 5,
     minValue: 2,
   });
+
+  // Add set value on complete expression to questions
+  serializer.addProperty('question', {
+    name: 'setValueOnComplete',
+    type: 'expression',
+    visibleIndex: -1,
+    category: 'logic',
+    default: '',
+  });
 };
 
 /**

@@ -425,6 +425,14 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
+    // Set values from expressions setValueOnComplete
+    this.survey.getAllQuestions().forEach((question) => {
+      const expression = question.getPropertyValue('setValueOnComplete');
+      if (expression) {
+        const result = this.survey.runExpression(expression);
+        question.value = result;
+      }
+    });
     // await Promise.allSettled(promises);
     await this.formHelpersService.createTemporaryRecords(survey);
 
