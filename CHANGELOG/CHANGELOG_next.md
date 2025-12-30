@@ -1,3 +1,10 @@
+# [2.22.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.11...v2.22.0-rc.12) (2025-12-30)
+
+
+### Features
+
+* New expression field to set values on complete ([#2837](https://github.com/ReliefApplications/ems-frontend/issues/2837)) ([3d940ba](https://github.com/ReliefApplications/ems-frontend/commit/3d940ba41a9f776d386a5f8c03563dc9f716adf5)), closes [AB#124987](https://github.com/AB/issues/124987)
+
 # [2.22.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.10...v2.22.0-rc.11) (2025-12-29)
 
 
