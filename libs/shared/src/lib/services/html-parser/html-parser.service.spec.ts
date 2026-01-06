@@ -9,6 +9,9 @@ import {
   calcFormatElement,
   customDateFormats,
   dataFormatElement,
+  forLoopDivElement,
+  forLoopTableData,
+  forLoopTableElement,
   maxMinValues,
   notNumberValueExamples,
   optionFields,
@@ -361,6 +364,26 @@ describe('HtmlParserService', () => {
       expect(result).toEqual(
         calcFormatElement.after.replace(new RegExp('\\n', 'g'), '')
       );
+    });
+  });
+  describe('Parse HTML with for-loop generated tables', () => {
+    it('renders rows from iterable data and applies expressions inside the loop', () => {
+      const result = service.parseHtml(forLoopTableElement.before, {
+        data: forLoopTableData,
+        fields: [],
+      });
+      const normalize = (value: string) => value.replace(/\s+/g, '');
+      expect(normalize(result)).toEqual(normalize(forLoopTableElement.after));
+    });
+  });
+  describe('Parse HTML with for-loop generated divs', () => {
+    it('renders rows from iterable data and applies expressions inside the loop', () => {
+      const result = service.parseHtml(forLoopDivElement.before, {
+        data: forLoopDivElement.data,
+        fields: [],
+      });
+      const normalize = (value: string) => value.replace(/\s+/g, '');
+      expect(normalize(result)).toEqual(normalize(forLoopDivElement.after));
     });
   });
 });

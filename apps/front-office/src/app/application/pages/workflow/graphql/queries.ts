@@ -36,6 +36,10 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         icon
         showName
+        navBar {
+          showName
+          showIcon
+        }
         name
         type
         content
@@ -45,6 +49,10 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         name
         showName
+        navBar {
+          showName
+          showIcon
+        }
         canUpdate
         permissions {
           canSee {
@@ -74,6 +82,10 @@ export const GET_STEP_BY_ID = gql`
       id
       icon
       showName
+      navBar {
+        showName
+        showIcon
+      }
       name
       createdAt
       modifiedAt
@@ -92,6 +104,10 @@ export const GET_PAGE_BY_ID = gql`
       id
       icon
       showName
+      navBar {
+        showName
+        showIcon
+      }
       name
       createdAt
       modifiedAt

@@ -76,6 +76,13 @@ export const init = (environment: any): void => {
     },
   });
 
+  // Adds property to hold the current record
+  serializer.addProperty('survey', {
+    name: 'record',
+    visible: false,
+    isSerializable: false,
+  });
+
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
   /** Size per file is mandatory */
@@ -111,6 +118,15 @@ export const init = (environment: any): void => {
     visibleIndex: 10,
     default: 5,
     minValue: 2,
+  });
+
+  // Add set value on complete expression to questions
+  serializer.addProperty('question', {
+    name: 'setValueOnComplete',
+    type: 'expression',
+    visibleIndex: -1,
+    category: 'logic',
+    default: '',
   });
 };
 

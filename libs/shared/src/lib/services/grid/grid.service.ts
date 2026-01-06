@@ -228,7 +228,8 @@ export class GridService {
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 get(metaData, 'readOnly', false) ||
-                get(metaData, 'isCalculated', false),
+                get(metaData, 'isCalculated', false) ||
+                this.isFieldDisabled(metaData),
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               fixedWidth: f.width, // width used to overwrite autocalculation
@@ -241,6 +242,24 @@ export class GridService {
     )
       .filter((f) => f.canSee)
       .sort((a, b) => a.order - b.order);
+  }
+
+  /**
+   * Based on field definition, return if the field should be disabled in inline edition
+   *
+   * @param fieldDefinition field definition
+   * @returns true if the field should be disabled
+   */
+  private isFieldDisabled(fieldDefinition: any) {
+    if (fieldDefinition && fieldDefinition.type) {
+      if (['people-dropdown', 'people-tagbox'].includes(fieldDefinition.type)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   /**
