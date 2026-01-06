@@ -35,8 +35,13 @@ export const GET_STEP_BY_ID = gql`
   query GetStepById($id: ID!) {
     step(id: $id) {
       id
+      icon
       name
       showName
+      navBar {
+        showName
+        showIcon
+      }
       createdAt
       modifiedAt
       content
@@ -56,8 +61,13 @@ export const GET_PAGE_BY_ID = gql`
   query GetPageById($id: ID!) {
     page(id: $id) {
       id
+      icon
       name
       showName
+      navBar {
+        showName
+        showIcon
+      }
       createdAt
       modifiedAt
       type

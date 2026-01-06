@@ -873,6 +873,35 @@
           </div>
         </ng-template>
       </kendo-grid-column>
+      <!-- People Dropdown / Tagbox -->
+      <kendo-grid-column
+        *ngIf="
+          field.type === 'JSON' &&
+          (field.meta.type === 'people-dropdown' ||
+            field.meta.type === 'people-tagbox')
+        "
+        [field]="field.name"
+        [title]="field.title"
+        [format]="field.format"
+        [editable]="false"
+        [filterable]="false"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="truncate"
+              [uiTooltip]="dataItem.text[field.name]"
+              tooltipEnableBy="truncate"
+            >
+              {{ dataItem.text[field.name] }}
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
       <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
       <kendo-grid-column-group
         [title]="field.title"
@@ -880,7 +909,9 @@
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
           field.meta.type !== 'file' &&
-          field.meta.type !== 'geospatial'
+          field.meta.type !== 'geospatial' &&
+          field.meta.type !== 'people-dropdown' &&
+          field.meta.type !== 'people-tagbox'
         "
       >
         <ng-container

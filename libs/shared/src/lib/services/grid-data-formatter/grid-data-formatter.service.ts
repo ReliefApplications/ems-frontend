@@ -233,12 +233,54 @@ export class GridDataFormatterService {
           field
         );
         break;
-      default:
+      case 'people-dropdown': {
+        // People dropdown: { userid, firstname, lastname, emailaddress }
+        const personData = getPropertyValue(rowData, field, parent);
+        if (personData && typeof personData === 'object') {
+          const firstName = personData.firstname || '';
+          const lastName = personData.lastname || '';
+          const email = personData.emailaddress || '';
+          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+          const displayValue = email
+            ? name
+              ? `${name} (${email})`
+              : email
+            : name || personData.userid || '';
+          finalText = this.htmlParserService.applyLayoutFormat(
+            displayValue,
+            field
+          );
+        }
+        break;
+      }
+      case 'people-tagbox': {
+        // People tagbox: array of { userid, firstname, lastname, emailaddress }
+        const peopleData = getPropertyValue(rowData, field, parent);
+        if (Array.isArray(peopleData) && peopleData.length > 0) {
+          const displayValues = peopleData.map((person: any) => {
+            const firstName = person.firstname || '';
+            const lastName = person.lastname || '';
+            const email = person.emailaddress || '';
+            const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+            return email
+              ? name
+                ? `${name} (${email})`
+                : email
+              : name || person.userid || '';
+          });
+          finalText = this.htmlParserService.applyLayoutFormat(
+            displayValues.join(', '),
+            field
+          );
+        }
+        break;
+      }
+      default: {
         finalText = this.htmlParserService.applyLayoutFormat(
           getPropertyValue(rowData, field, parent),
           field
         );
-        break;
+      }
     }
     return finalText ?? '';
   }

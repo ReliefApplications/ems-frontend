@@ -14,11 +14,57 @@
     'components.widget.settings.tabs.deleteTab' | translate
   }}</ui-button>
 </div>
-<!-- Tab label edition -->
-<div [formGroup]="tabGroup">
+<!-- Tab label & display options -->
+<div [formGroup]="tabGroup" class="flex flex-col gap-4">
   <div uiFormFieldDirective>
     <label>{{ 'common.label' | translate }}</label>
     <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+  <!-- Nav bar settings -->
+  <ng-container formGroupName="navBar">
+    <!-- Show name in nav bar -->
+    <ui-toggle formControlName="showName">
+      <ng-container ngProjectAs="label">
+        {{ 'components.widget.settings.tabs.navBar.showName' | translate }}
+        <ui-icon
+          class="cursor-help self-center"
+          icon="info_outline"
+          [size]="18"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.tabs.tooltip.navBar' | translate
+          "
+        ></ui-icon>
+      </ng-container>
+    </ui-toggle>
+    <!-- Show icon in nav bar -->
+    <ui-toggle formControlName="showIcon">
+      <ng-container ngProjectAs="label">
+        {{ 'components.widget.settings.tabs.navBar.showIcon' | translate }}
+        <ui-icon
+          class="cursor-help self-center"
+          icon="info_outline"
+          [size]="18"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.tabs.tooltip.navBar' | translate
+          "
+        ></ui-icon>
+      </ng-container>
+    </ui-toggle>
+  </ng-container>
+  <!-- Icon picker -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.tabs.selectIcon' | translate
+    }}</label>
+    <shared-icon-picker
+      formControlName="icon"
+      [placeholder]="
+        'components.widget.settings.iconPicker.placeholder' | translate
+      "
+      [nullable]="true"
+    ></shared-icon-picker>
   </div>
 </div>
 <!-- tab structure edition -->

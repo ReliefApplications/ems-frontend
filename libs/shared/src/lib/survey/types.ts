@@ -82,6 +82,8 @@ export interface QuestionResource
   staticValue: string;
   customFilter: string;
   displayAsGrid: boolean;
+  displayOnly?: boolean;
+  onSelect?: string;
   remove?: boolean;
   template?: string;
   draftData?: any;

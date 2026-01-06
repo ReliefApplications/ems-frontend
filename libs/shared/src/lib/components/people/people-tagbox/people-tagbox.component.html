@@ -1,0 +1,26 @@
+<kendo-multiselect
+  [formControl]="control"
+  [data]="data"
+  [placeholder]="placeholder"
+  (filterChange)="handleFilter($event)"
+  (valueChange)="onValueChange($event)"
+  [filterable]="true"
+  textField="displayLabel"
+  valueField="userid"
+  [valuePrimitive]="false"
+  [loading]="loading"
+>
+  <ng-template kendoMultiSelectNoDataTemplate>
+    <ng-container *ngIf="filterDisplay$ | async as searchText; else emptyState">
+      <ng-container *ngIf="loading; else noResultsState">
+        Searching...
+      </ng-container>
+
+      <ng-template #noResultsState>
+        No results found for <strong>"{{ searchText }}"</strong>.
+      </ng-template>
+    </ng-container>
+
+    <ng-template #emptyState> Type to search for people. </ng-template>
+  </ng-template>
+</kendo-multiselect>

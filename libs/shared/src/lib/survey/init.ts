@@ -13,6 +13,7 @@ import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as UsersComponent from './components/users';
+import * as PeopleComponent from './components/people';
 import * as CsApiDocsProperties from './global-properties/cs-api-docs';
 import * as OtherProperties from './global-properties/others';
 import * as CommentWidget from './widgets/comment-widget';
@@ -44,6 +45,8 @@ const CUSTOM_COMPONENTS = [
   'resources',
   'owner',
   'users',
+  'people-dropdown',
+  'people-tagbox',
   'geospatial',
   'editor',
 ];
@@ -129,6 +132,7 @@ export const initCustomSurvey = (
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
+    PeopleComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     EditorComponent.init(injector, ComponentCollection.Instance);
   }

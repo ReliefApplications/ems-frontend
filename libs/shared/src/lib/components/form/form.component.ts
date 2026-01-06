@@ -112,7 +112,7 @@ export class FormComponent
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService, this.record);
+    addCustomFunctions(this.authService);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
@@ -262,6 +262,14 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    // Set values from expressions setValueOnComplete
+    this.survey.getAllQuestions().forEach((question) => {
+      const expression = question.getPropertyValue('setValueOnComplete');
+      if (expression) {
+        const result = this.survey.runExpression(expression);
+        question.value = result;
+      }
+    });
     let mutation: any;
     this.surveyActive = false;
 
