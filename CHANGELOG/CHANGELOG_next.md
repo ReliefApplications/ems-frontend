@@ -1,3 +1,10 @@
+# [2.22.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.12...v2.22.0-rc.13) (2026-01-06)
+
+
+### Features
+
+* Can build custom action buttons in grids ([#2839](https://github.com/ReliefApplications/ems-frontend/issues/2839)) ([6758be9](https://github.com/ReliefApplications/ems-frontend/commit/6758be925818a083839b6ffa51295b720be85b74))
+
 # [2.22.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.11...v2.22.0-rc.12) (2025-12-30)
 
 
