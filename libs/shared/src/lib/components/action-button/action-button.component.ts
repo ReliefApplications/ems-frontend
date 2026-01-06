@@ -12,7 +12,7 @@ import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { EmailService } from '../email/email.service';
 import { Apollo } from 'apollo-angular';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
@@ -26,7 +26,6 @@ import { lastValueFrom, map, of, Subject, takeUntil, tap } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
-import { Dashboard } from '../../models/dashboard.model';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
@@ -52,14 +51,14 @@ export class ActionButtonComponent
 {
   /** Action button definition */
   @Input() actionButton!: ActionButton;
-  /** Dashboard */
-  @Input() dashboard?: Dashboard;
   /** Should refresh button, some of them ( subscribe / unsubscribe ) can depend on other buttons */
   @Input() refresh!: Subject<void>;
-  /** Reload dashboard event emitter */
-  @Output() reloadDashboard = new EventEmitter<void>();
-  /** Context id of the current dashboard */
-  public contextId!: string;
+  /** Record id */
+  @Input() recordId?: string;
+  /** Resource id */
+  @Input() resourceId?: string;
+  /** Reload parent event emitter */
+  @Output() reloadParent = new EventEmitter<void>();
   /** Email notification, for subscribe & unsubscribe actions */
   private emailNotification?: EmailNotification;
   /** Current environment */
@@ -67,10 +66,10 @@ export class ActionButtonComponent
 
   /** @returns Should hide button */
   get showButton(): boolean {
-    if (this.actionButton.editRecord && !this.contextId) {
+    if (this.actionButton.editRecord && !this.recordId) {
       return false;
     }
-    if (this.actionButton.cloneRecord && !this.contextId) {
+    if (this.actionButton.cloneRecord && !this.recordId) {
       return false;
     }
     if (this.actionButton.subscribeToNotification) {
@@ -98,7 +97,6 @@ export class ActionButtonComponent
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
    * @param emailService Email service
-   * @param activatedRoute Activated route
    * @param apollo Apollo
    * @param location Angular location
    * @param sharedEmailService Shared email service
@@ -114,7 +112,6 @@ export class ActionButtonComponent
     private dataTemplateService: DataTemplateService,
     private router: Router,
     private emailService: EmailService,
-    private activatedRoute: ActivatedRoute,
     private apollo: Apollo,
     private location: Location,
     private sharedEmailService: SharedEmailService,
@@ -126,11 +123,6 @@ export class ActionButtonComponent
   ) {
     super();
     this.environment = environment;
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
-      next: ({ id }) => {
-        this.contextId = id;
-      },
-    });
   }
 
   ngOnInit(): void {
@@ -218,7 +210,7 @@ export class ActionButtonComponent
       this.actionButton.sendNotification.distributionList
     ) {
       try {
-        const selectedIds = !isNil(this.contextId) ? [this.contextId] : [];
+        const selectedIds = !isNil(this.recordId) ? [this.recordId] : [];
         const templates = await this.getSelectedNotificationTemplates(
           this.actionButton.sendNotification.templates || []
         );
@@ -246,10 +238,8 @@ export class ActionButtonComponent
         );
         const snackBarSpinner = snackBarRef.instance.nestedComponent;
         let resource!: Resource;
-        if (this.dashboard?.page?.context?.resource) {
-          resource = (await this.getResourceById(
-            this.dashboard?.page?.context?.resource
-          )) as Resource;
+        if (this.resourceId) {
+          resource = (await this.getResourceById(this.resourceId)) as Resource;
         }
         const distributionList = await this.getSelectedDistributionListData(
           this.actionButton.sendNotification.distributionList
@@ -315,11 +305,11 @@ export class ActionButtonComponent
 
     // Prefill data for addRecord & cloneRecord
     const loadPrefillData$ = () => {
-      if (this.actionButton.cloneRecord && this.contextId) {
+      if (this.actionButton.cloneRecord && this.recordId) {
         return this.apollo
           .query<RecordQueryResponse>({
             query: GET_RECORD_BY_ID,
-            variables: { id: this.contextId, includeResource: false },
+            variables: { id: this.recordId, includeResource: false },
           })
           .pipe(
             takeUntil(this.destroy$),
@@ -350,13 +340,13 @@ export class ActionButtonComponent
         // Callback to be executed at the end of action
         const callback = () => {
           if (shouldReload) {
-            this.reloadDashboard.emit();
+            this.reloadParent.emit();
           }
         };
         const dialogRef = this.dialog.open(FormModalComponent, {
           disableClose: true,
           data: {
-            ...(this.actionButton.editRecord && { recordId: this.contextId }), // Modal will open current record
+            ...(this.actionButton.editRecord && { recordId: this.recordId }), // Modal will open current record
             ...(template && { template }),
             actionButtonCtx: true,
             prefillData,
@@ -374,7 +364,7 @@ export class ActionButtonComponent
                   this.actionButton.addRecord.fieldsForUpdate || [];
                 // Execute callback if possible
                 if (
-                  this.contextId &&
+                  this.recordId &&
                   Array.isArray(fieldsForUpdate) &&
                   fieldsForUpdate.length > 0
                 ) {
@@ -382,7 +372,7 @@ export class ActionButtonComponent
                     .query<RecordQueryResponse>({
                       query: GET_RECORD_BY_ID,
                       variables: {
-                        id: this.contextId,
+                        id: this.recordId,
                         includeResource: true,
                       },
                     })
@@ -420,7 +410,7 @@ export class ActionButtonComponent
                           .mutate<EditRecordMutationResponse>({
                             mutation: EDIT_RECORD,
                             variables: {
-                              id: this.contextId,
+                              id: this.recordId,
                               data: update,
                             },
                           })
@@ -517,24 +507,6 @@ export class ActionButtonComponent
       )
     );
     return distributionListResponse.emailDistributionLists.edges[0].node;
-  }
-
-  /**
-   * Get default resource meta data
-   *
-   * @param fields Selected resource fields for the given action button
-   * @returns default resource meta data
-   */
-  private async getResourceMetaData(fields: string[]) {
-    const { data: resourceMetaDataResponse } = await lastValueFrom(
-      // Fetch resource metadata for email sending
-      this.queryBuilder.getQueryMetaData(
-        this.dashboard?.page?.context?.resource as string
-      )
-    );
-    return resourceMetaDataResponse.resource.metadata?.filter((md) =>
-      fields.includes(md.name)
-    );
   }
 
   /**

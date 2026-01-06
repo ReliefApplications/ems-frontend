@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  Injector,
 } from '@angular/core';
 import {
   UntypedFormArray,
@@ -25,7 +26,6 @@ import {
   Resource,
   ResourceQueryResponse,
 } from '../../../models/resource.model';
-import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
@@ -45,6 +45,8 @@ import { SortingSettingsModule } from '../common/sorting-settings/sorting-settin
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.component';
+import { CustomRowActionsComponent } from './custom-row-actions/custom-row-actions.component';
+import { GridSettingsFormFactory } from './grid-settings.forms';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -69,6 +71,7 @@ import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.com
     SortingSettingsModule,
     ToggleModule,
     ContextualFiltersSettingsComponent,
+    CustomRowActionsComponent,
   ],
 })
 export class GridSettingsComponent
@@ -76,16 +79,22 @@ export class GridSettingsComponent
   implements
     OnInit,
     AfterViewInit,
-    WidgetSettings<typeof createGridWidgetFormGroup>
+    WidgetSettings<
+      typeof GridSettingsFormFactory.prototype.createGridWidgetFormGroup
+    >
 {
   /** Widget */
   @Input() widget: any;
   /** Event emitter for change */
   @Output() formChange: EventEmitter<
-    ReturnType<typeof createGridWidgetFormGroup>
+    ReturnType<
+      typeof GridSettingsFormFactory.prototype.createGridWidgetFormGroup
+    >
   > = new EventEmitter();
   /** Form group */
-  public widgetFormGroup!: ReturnType<typeof createGridWidgetFormGroup>;
+  public widgetFormGroup!: ReturnType<
+    typeof GridSettingsFormFactory.prototype.createGridWidgetFormGroup
+  >;
   /** Form array for filters */
   public filtersFormArray: any = null;
   /** List of channels */
@@ -116,6 +125,7 @@ export class GridSettingsComponent
    * @param fb Angular form builder
    * @param aggregationService Shared aggregation service
    * @param emailService Email Service
+   * @param injector Angular injector
    */
   constructor(
     private apollo: Apollo,
@@ -123,7 +133,8 @@ export class GridSettingsComponent
     private queryBuilder: QueryBuilderService,
     private fb: FormBuilder,
     private aggregationService: AggregationService,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private injector: Injector
   ) {
     super();
   }
@@ -414,7 +425,8 @@ export class GridSettingsComponent
    * Build the settings form, using the widget saved parameters
    */
   public buildSettingsForm() {
-    this.widgetFormGroup = createGridWidgetFormGroup(
+    const factory = new GridSettingsFormFactory(this.injector, this.destroy$);
+    this.widgetFormGroup = factory.createGridWidgetFormGroup(
       this.widget.id,
       this.widget.settings
     );

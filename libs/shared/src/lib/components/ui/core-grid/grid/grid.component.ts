@@ -36,7 +36,7 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { get, has, intersection, isEqual, isNil } from 'lodash';
+import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
@@ -54,6 +54,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
+import { ActionButton } from '../../../widgets/grid/action-button.type';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -177,6 +178,8 @@ export class GridComponent
   @Output() sortChange = new EventEmitter();
   /** Column change event emitter */
   @Output() columnChange = new EventEmitter();
+  /** Reload event emitter */
+  @Output() reload = new EventEmitter();
   /** KendoGridComponent view child */
   @ViewChild(KendoGridComponent)
   public grid?: KendoGridComponent;
@@ -230,6 +233,9 @@ export class GridComponent
   private columnChooserRef: PopupRef | null = null;
   /** Prevent next column reset */
   private preventColumnResize = false;
+  /** Custom row action button groups */
+  public customRowActionGroups: { label: string; actions: ActionButton[] }[] =
+    [];
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -403,6 +409,19 @@ export class GridComponent
       this.preventColumnResize
         ? (this.preventColumnResize = false)
         : this.setColumnsWidth();
+      // Load custom action buttons
+      const customRowActions: ActionButton[] = get(
+        this.widget,
+        'settings.customRowActions',
+        []
+      );
+      this.customRowActionGroups = map(
+        groupBy(customRowActions, 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+        })
+      );
     }
   }
 
