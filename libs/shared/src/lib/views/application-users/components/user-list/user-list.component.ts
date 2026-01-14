@@ -122,7 +122,7 @@ export class UserListComponent
 
     if (this.autoAssigned) {
       this.displayedColumns = this.displayedColumns.filter(
-        (x) => x !== 'select'
+        (x) => x !== 'select' && x !== 'actions'
       );
     }
     this.applicationService.application$
