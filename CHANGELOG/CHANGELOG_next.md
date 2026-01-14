@@ -1,3 +1,10 @@
+# [2.22.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.13...v2.22.0-rc.14) (2026-01-14)
+
+
+### Bug Fixes
+
+* Remove button to delete users when displaying auto assigned users ([#2840](https://github.com/ReliefApplications/ems-frontend/issues/2840)) ([365ea0e](https://github.com/ReliefApplications/ems-frontend/commit/365ea0e187f165a65eb11d0b3b3f4a80c80b13cf)), closes [AB#125619](https://github.com/AB/issues/125619)
+
 # [2.22.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.12...v2.22.0-rc.13) (2026-01-06)
 
 
