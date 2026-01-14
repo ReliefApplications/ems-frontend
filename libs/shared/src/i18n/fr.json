@@ -1006,6 +1006,13 @@
 				"noAttachment": "Aucune pièce jointe disponible.",
 				"subject": "Sujet:"
 			},
+			"referenceData": {
+				"individualEmail": {
+					"addPath": "Ajouter un chemin e-mail",
+					"helper": "Fournissez une ou plusieurs expressions JSONPath pour trouver les e-mails des destinataires dans la réponse des données de référence. Exemple : $.email",
+					"jsonPathHint": "Utilisez la syntaxe JSONPath ; les chemins sont évalués par ligne dans l'ensemble de données."
+				}
+			},
 			"restrictSubscription": {
 				"description": "Limite la possibilité pour les utilisateurs de s'abonner à cette notification par e-mail",
 				"title": "Restreindre l'abonnement des utilisateurs"

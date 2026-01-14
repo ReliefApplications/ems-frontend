@@ -194,6 +194,58 @@
           </ng-template>
         </ui-tab>
         <ui-tab
+          *ngIf="this.query.get('individualEmail').value"
+          title="Send Separate Email Fields"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.sendSeparate.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <div class="space-y-2">
+              <p class="text-sm text-gray-700">
+                {{ 'components.email.referenceData.individualEmail.helper' | translate }}
+              </p>
+              <div formArrayName="individualEmailFields" class="space-y-2">
+                <div
+                  class="flex gap-2 items-center"
+                  *ngFor="
+                    let control of getIndividualEmailFieldsArray().controls;
+                    let idx = index
+                  "
+                >
+                  <input
+                    class="form-input flex-1 rounded-md"
+                    type="text"
+                    [formControlName]="idx"
+                    placeholder="$.email"
+                  />
+                  <ui-button
+                    variant="danger"
+                    icon="close"
+                    size="small"
+                    uiTooltip="common.actions.remove"
+                    (click)="removeReferenceEmailField(idx)"
+                    [disabled]="getIndividualEmailFieldsArray().length === 1"
+                  ></ui-button>
+                </div>
+              </div>
+              <div class="flex gap-2 items-center">
+                <ui-button
+                  variant="primary"
+                  size="small"
+                  icon="add"
+                  (click)="addReferenceEmailField()"
+                >
+                  {{ 'components.email.referenceData.individualEmail.addPath' | translate }}
+                </ui-button>
+                <span class="text-xs text-gray-500">
+                  {{ 'components.email.referenceData.individualEmail.jsonPathHint' | translate }}
+                </span>
+              </div>
+            </div>
+          </ng-template>
+        </ui-tab>
+        <ui-tab
           title="Preview"
           [disabled]="!query.value.reference"
         >
@@ -440,34 +492,83 @@
               {{ 'components.queryBuilder.sendSeparate.title' | translate }}
             </ng-container>
             <ng-template uiTabContent>
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="invalidFieldsAlertTmpl"
-              ></ng-container>
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="individualEmailsInfoMessageTmpl"
-              ></ng-container>
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="noSelectedFieldsForIndividualFieldsTmpl"
-              ></ng-container>
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="ChildFieldAlertTmpl_individualEmail"
-              ></ng-container>
-              <div class="flex gap-4 mt-2" formGroupName="query">
-                <div class="mt-2 overflow-auto">
-                  <!-- FIELDS -->
-                  <shared-tab-fields
-                    *ngIf="availableFieldsIndividualEmail.length > 0"
-                    [form]="getIndividualEmailFieldsArray()"
-                    [fields]="availableFieldsIndividualEmail"
-                    [showLimit]="false"
-                    [showColumnWidth]="false"
-                  ></shared-tab-fields>
+              <ng-container *ngIf="isReferenceData; else resourceSeparateEmail">
+                <div class="space-y-2">
+                  <p class="text-sm text-gray-700">
+                    {{ 'components.email.referenceData.individualEmail.helper' | translate }}
+                  </p>
+                  <div
+                    formArrayName="individualEmailFields"
+                    class="space-y-2"
+                  >
+                    <div
+                      class="flex gap-2 items-center"
+                      *ngFor="
+                        let control of getIndividualEmailFieldsArray().controls;
+                        let idx = index
+                      "
+                    >
+                      <input
+                        class="form-input flex-1 rounded-md"
+                        type="text"
+                        [formControlName]="idx"
+                        placeholder="$.data.*.email"
+                      />
+                      <ui-button
+                        variant="danger"
+                        icon="close"
+                        size="small"
+                        uiTooltip="common.actions.remove"
+                        (click)="removeReferenceEmailField(idx)"
+                        [disabled]="getIndividualEmailFieldsArray().length === 1"
+                      ></ui-button>
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-center">
+                    <ui-button
+                      variant="primary"
+                      size="small"
+                      icon="add"
+                      (click)="addReferenceEmailField()"
+                    >
+                      {{ 'components.email.referenceData.individualEmail.addPath' | translate }}
+                    </ui-button>
+                    <span class="text-xs text-gray-500">
+                      {{ 'components.email.referenceData.individualEmail.jsonPathHint' | translate }}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </ng-container>
+              <ng-template #resourceSeparateEmail>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="invalidFieldsAlertTmpl"
+                ></ng-container>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="individualEmailsInfoMessageTmpl"
+                ></ng-container>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="noSelectedFieldsForIndividualFieldsTmpl"
+                ></ng-container>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="ChildFieldAlertTmpl_individualEmail"
+                ></ng-container>
+                <div class="flex gap-4 mt-2" formGroupName="query">
+                  <div class="mt-2 overflow-auto">
+                    <!-- FIELDS -->
+                    <shared-tab-fields
+                      *ngIf="availableFieldsIndividualEmail.length > 0"
+                      [form]="getIndividualEmailFieldsArray()"
+                      [fields]="availableFieldsIndividualEmail"
+                      [showLimit]="false"
+                      [showColumnWidth]="false"
+                    ></shared-tab-fields>
+                  </div>
+                </div>
+              </ng-template>
             </ng-template>
           </ui-tab>
         </div>

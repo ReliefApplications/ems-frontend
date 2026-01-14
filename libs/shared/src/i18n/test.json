@@ -955,6 +955,13 @@
 					"title": "******"
 				}
 			},
+			"referenceData": {
+				"individualEmail": {
+					"helper": "******",
+					"addPath": "******",
+					"jsonPathHint": "******"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "******",

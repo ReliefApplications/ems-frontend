@@ -8,7 +8,13 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
 import {
@@ -347,12 +353,24 @@ export class DatasetFilterComponent
     }
 
     this.setFieldsValidity();
+    if (this.isReferenceData) {
+      this.updateReferenceEmailValidation();
+    }
 
     // Check for individual email checkbox value
     this.query.controls.individualEmail.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        if (this.isReferenceData) return;
+        if (this.isReferenceData) {
+          if (
+            value === true &&
+            (this.query.get('individualEmailFields') as FormArray).length === 0
+          ) {
+            this.addReferenceEmailField();
+          }
+          this.updateReferenceEmailValidation();
+          return;
+        }
         if (
           value === true &&
           this.selectedFieldsIndividualEmail?.length === 0 &&
@@ -408,7 +426,8 @@ export class DatasetFilterComponent
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
-    const previewTabIndex = 3;
+    const previewTabIndex =
+      this.isReferenceData && this.query.get('individualEmail')?.value ? 4 : 3;
 
     if (this.isReferenceData) {
       this.showDatasetLimitWarning = false;
@@ -938,6 +957,13 @@ export class DatasetFilterComponent
    * @returns FormArray of fields
    */
   getIndividualEmailFieldsArray() {
+    if (this.isReferenceData) {
+      const formArray = this.query.get('individualEmailFields') as FormArray;
+      this.selectedFieldsIndividualEmail = formArray?.value || [];
+      this.updateReferenceEmailValidation();
+      return formArray;
+    }
+
     const formArray = this.query.get('individualEmailFields') as FormArray;
     formArray.controls.forEach((field: any) => {
       if (!field.value.name) {
@@ -981,6 +1007,50 @@ export class DatasetFilterComponent
     }
 
     return formArray;
+  }
+
+  /**
+   * Adds a reference data email path input.
+   */
+  addReferenceEmailField(): void {
+    const formArray = this.query.get('individualEmailFields') as FormArray;
+    formArray.push(new FormControl('', Validators.required));
+    this.updateReferenceEmailValidation();
+  }
+
+  /**
+   * Removes a reference data email path input.
+   *
+   * @param index Control index to remove
+   */
+  removeReferenceEmailField(index: number): void {
+    const formArray = this.query.get('individualEmailFields') as FormArray;
+    if (index >= 0 && index < formArray.length) {
+      formArray.removeAt(index);
+    }
+    this.updateReferenceEmailValidation();
+  }
+
+  /**
+   * Validates reference data separate email configuration.
+   */
+  updateReferenceEmailValidation(): void {
+    if (!this.isReferenceData) return;
+    const formArray = this.query.get('individualEmailFields') as FormArray;
+    const isSeparate = this.query.get('individualEmail').value === true;
+    const hasPath =
+      formArray?.controls?.some(
+        (ctrl: AbstractControl) =>
+          ctrl.value !== null && ctrl.value?.toString().trim().length > 0
+      ) || false;
+
+    if (isSeparate && !hasPath) {
+      this.emailService.disableSaveAndProceed.next(true);
+      this.emailService.disableSaveAsDraft.next(false);
+    } else if (isSeparate) {
+      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
+    }
   }
 
   /**

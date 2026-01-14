@@ -1006,6 +1006,13 @@
 				"noAttachment": "No attachments available.",
 				"subject": "Subject:"
 			},
+			"referenceData": {
+				"individualEmail": {
+					"addPath": "Add email path",
+					"helper": "Provide one or more JSONPath expressions to locate recipient emails in the reference data response. Example: $.email",
+					"jsonPathHint": "Use JSONPath syntax; paths are evaluated per row in the dataset."
+				}
+			},
 			"restrictSubscription": {
 				"description": "Restricts users being able to subscribe to this email notification",
 				"title": "Restrict user subscription"

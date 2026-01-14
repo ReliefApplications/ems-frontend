@@ -1002,10 +1002,17 @@ export class EmailService {
           datasets.push(dataset.name);
         }
       });
-      const fields: string[] = [];
-      datasetsValues[0].query.fields.forEach((field: any) => {
-        this.appendFields(field, field.name, fields);
-      });
+
+      let fields: string[] = [];
+      const previewEntries = this.getAllPreviewData();
+      const firstPreview = previewEntries?.[0];
+      if (firstPreview?.datasetFields?.length) {
+        fields = firstPreview.datasetFields;
+      } else if (datasetsValues[0]?.query?.fields?.length) {
+        datasetsValues[0].query.fields.forEach((field: any) => {
+          this.appendFields(field, field.name, fields);
+        });
+      }
       this.previewData = {
         datasets: datasets,
         fields: fields,
