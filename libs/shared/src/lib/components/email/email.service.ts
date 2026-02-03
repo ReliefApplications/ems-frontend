@@ -243,6 +243,8 @@ export class EmailService {
   public distributionListData: FormGroup | any = [];
   /** Show File Upload */
   public showFileUpload = false;
+  /** Send Separate Dataset Blocks */
+  public sendSeparateBlocks: string[] = [];
 
   /**
    * Generates new dataset group.
@@ -809,11 +811,23 @@ export class EmailService {
       subscriptionList: this.formBuilder.array([]),
       restrictSubscription: false,
       emailLayout: this.emailLayout,
-      schedule: [''],
+      schedule: this.createScheduleGroup(),
       attachments: this.formBuilder.group({
         files: [],
         sendAsAttachment: null,
       }),
+    });
+  }
+
+  /**
+   * Creates a new schedule form group.
+   *
+   * @returns A new schedule form group.
+   */
+  createScheduleGroup(): FormGroup {
+    return this.formBuilder.group({
+      scheduleEnabled: false,
+      cronValue: new FormControl(),
     });
   }
 
@@ -1028,6 +1042,7 @@ export class EmailService {
       datasets: [],
       fields: [],
     };
+    this.sendSeparateBlocks = [];
   }
 
   /**

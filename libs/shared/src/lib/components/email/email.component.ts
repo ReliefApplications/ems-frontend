@@ -691,6 +691,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       });
     }
 
+    const scheduleData = this.formBuilder.group({
+      scheduleEnabled: emailData.schedule?.scheduleEnabled ?? false,
+      cronValue: new FormControl(emailData.schedule?.cronValue ?? null),
+    });
+
     // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
@@ -702,7 +707,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       subscriptionList: subscriptionListArray,
       restrictSubscription: emailData.restrictSubscription,
       emailLayout: emailData.emailLayout,
-      schedule: emailData.schedule,
+      schedule: scheduleData,
       attachments: emailData.attachments,
     });
 
