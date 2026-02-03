@@ -256,6 +256,11 @@ export class EmailService {
       name: null,
       query: this.createQuerygroup(),
       resource: null,
+      reference: null,
+      dataType: 'Resource',
+      referenceDataVariableMapping: null,
+      referenceDataInputConfig: null,
+      referenceDataInputs: null,
       pageSize: 10,
       tableStyle: this.defaultTableStyle,
       blockType: 'table', // Either Table or Text
@@ -266,8 +271,6 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
-      dataType: null,
-      reference: null,
       navigateToPage: false,
       navigateSettings: this.formBuilder.group({
         title: get('', 'actions.navigateSettings.title', 'Details view'),
@@ -1002,21 +1005,28 @@ export class EmailService {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
       datasetsValues.forEach((dataset: any) => {
-        if (
-          (dataset.query.name && dataset.resource) ||
-          (dataset.query.name && dataset.reference)
-        ) {
+        const hasResource =
+          dataset.resource && dataset.query && dataset.query.name;
+        const hasReference =
+          dataset.reference &&
+          (dataset.referenceDataVariableMapping ||
+            dataset.referenceDataInputConfig ||
+            dataset.referenceDataInputs);
+        if (hasResource || hasReference) {
           datasets.push(dataset.name);
-          if (dataset.individualEmail) {
-            this.sendSeparateBlocks.push(dataset.name);
-          }
         }
       });
 
-      const fields: string[] = [];
-      datasetsValues[0].query.fields.forEach((field: any) => {
-        this.appendFields(field, field.name, fields);
-      });
+      let fields: string[] = [];
+      const previewEntries = this.getAllPreviewData();
+      const firstPreview = previewEntries?.[0];
+      if (firstPreview?.datasetFields?.length) {
+        fields = firstPreview.datasetFields;
+      } else if (datasetsValues[0]?.query?.fields?.length) {
+        datasetsValues[0].query.fields.forEach((field: any) => {
+          this.appendFields(field, field.name, fields);
+        });
+      }
       this.previewData = {
         datasets: datasets,
         fields: fields,

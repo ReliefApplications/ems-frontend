@@ -435,7 +435,11 @@ export class GraphQLSelectComponent
     // focus on search input, if filterable
     if (this.filterable) this.searchInput?.nativeElement.focus();
     const panel =
+      (this.elementRef.nativeElement.querySelector(
+        '#optionList'
+      ) as HTMLElement) ||
       this.shadowDomService.currentHost.getElementById('optionList');
+    if (!panel) return;
     if (this.scrollListener) {
       this.scrollListener();
     }

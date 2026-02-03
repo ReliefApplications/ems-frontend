@@ -84,6 +84,7 @@
 			"one": "******"
 		},
 		"comma": "******",
+		"configure": "******",
 		"copy": "******",
 		"copyright": {
 			"who": "******"
@@ -923,6 +924,7 @@
 				"dlPreview": "******",
 				"individualEmailsInfo": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noReferenceSelected": "******",
 				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
@@ -944,8 +946,24 @@
 					"label": "******",
 					"title": "******"
 				},
+				"dataSource": "******",
 				"navigateToPage": {
 					"title": "******"
+				},
+				"reference": {
+					"inputConfiguration": "******",
+					"inputConfigured": "******",
+					"inputs": "******",
+					"mapping": "******",
+					"noInputConfiguration": "******",
+					"title": "******"
+				}
+			},
+			"referenceData": {
+				"individualEmail": {
+					"helper": "******",
+					"addPath": "******",
+					"jsonPathHint": "******"
 				}
 			},
 			"distributionList": {
