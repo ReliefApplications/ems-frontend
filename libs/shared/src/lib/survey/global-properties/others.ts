@@ -8,6 +8,10 @@ import {
 } from 'survey-core';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import {
+  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_BUTTON_LABEL,
+} from '../../utils/survey-form-action-labels.util';
 import { Question } from '../types';
 
 /**
@@ -127,6 +131,24 @@ export const init = (environment: any): void => {
     visibleIndex: -1,
     category: 'logic',
     default: '',
+  });
+
+  // Add custom label expressions for the form action buttons
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_SAVE_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 100,
+    default: '',
+    isLocalizable: false,
+  });
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 101,
+    default: '',
+    isLocalizable: false,
   });
 };
 

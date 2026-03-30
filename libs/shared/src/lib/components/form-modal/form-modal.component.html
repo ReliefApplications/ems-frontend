@@ -71,9 +71,9 @@
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
-    <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
-      'components.form.draftRecords.save' | translate
-    }}</ui-button> -->
+    <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+      saveAsDraftButtonLabel || ('components.form.draftRecords.save' | translate)
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
@@ -81,7 +81,7 @@
       (click)="submit()"
       cdkFocusInitial
     >
-      {{ 'components.record.modal.update' | translate }}
+      {{ saveButtonLabel || ('components.record.modal.update' | translate) }}
     </ui-button>
   </ng-container>
 </ui-dialog>
