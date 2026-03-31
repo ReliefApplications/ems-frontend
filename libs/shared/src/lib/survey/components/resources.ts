@@ -10,6 +10,7 @@ import { isEqual, isNil } from 'lodash';
 import get from 'lodash/get';
 import {
   ComponentCollection,
+  ConditionRunner,
   ExpressionRunner,
   JsonObject,
   Serializer,
@@ -797,6 +798,38 @@ export const init = (
       temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
     if (question.displayOnly) {
+      // Evaluate the "clear if" expression to determine whether the grid
+      // should fetch data. Skip the query and show an empty grid if true.
+      const clearIfExpression = question.getPropertyValue('clearIf');
+      if (clearIfExpression) {
+        const survey = question.survey as SurveyModel;
+        const conditionRunner = new ConditionRunner(clearIfExpression);
+        const shouldClear = conditionRunner.run(
+          survey.getFilteredValues(),
+          survey.getFilteredProperties()
+        );
+        if (shouldClear) {
+          // Force an empty result
+          settings.query.filter = {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: [],
+              },
+            ],
+          };
+          Promise.allSettled(promises).then(() => {
+            if (!isEqual(instance.settings, settings)) {
+              instance.settings = settings;
+              instance.configureGrid();
+            }
+          });
+          return;
+        }
+      }
+
       const filters: any[] = [];
 
       if (question.filters) {
