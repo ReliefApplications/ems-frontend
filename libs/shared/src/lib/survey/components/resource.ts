@@ -63,10 +63,10 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
   survey.setVariable(`${question.name}.id`, record.id);
   survey.setVariable(`${question.name}.incrementalId`, record.incrementalId);
 
-  // set record display field as survey variable
+  // set record display value as survey variable
   const displayField = question.displayField;
   survey.setVariable(
-    `${question.name}.displayField`,
+    `${question.name}.displayValue`,
     displayField ? record?.data[displayField] : record.id
   );
 

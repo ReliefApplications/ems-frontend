@@ -172,8 +172,8 @@ export const render = (questionElement: Question, injector: Injector): void => {
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
 
-    // set display field as survey variable
-    const updateDisplayField = async () => {
+    // set display value as survey variable
+    const updateDisplayValue = async () => {
       if (question.referenceData && question.referenceDataDisplayField) {
         const survey = question.survey as SurveyModel;
         const choice = await referenceDataService.getChoice(
@@ -183,7 +183,7 @@ export const render = (questionElement: Question, injector: Injector): void => {
           question.isPrimitiveValue,
           graphQLVariables(question, 'referenceDataVariableMapping')
         );
-        survey.setVariable(`${question.name}.displayField`, choice?.text);
+        survey.setVariable(`${question.name}.displayValue`, choice?.text);
       }
     };
 
@@ -287,14 +287,14 @@ export const render = (questionElement: Question, injector: Injector): void => {
             )
             .then(() => {
               updateChoices();
-              updateDisplayField();
+              updateDisplayValue();
             });
         });
       question.referenceDataChoicesLoaded = true;
     }
 
-    // Set the display field when question value changes
-    question.valueChangedCallback = updateDisplayField;
+    // Set the display value variable when question value changes
+    question.valueChangedCallback = updateDisplayValue;
     // Prevent selected choices to be removed when sending the value
     question.clearIncorrectValuesCallback = () => {
       // console.log(question.visibleChoices);
