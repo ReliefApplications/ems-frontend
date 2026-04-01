@@ -59,7 +59,18 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
   const record = loadedRecords.get(recordID);
   if (!record) return;
 
-  const data = record?.data || {};
+  // set record id and incremental id as survey variables
+  survey.setVariable(`${question.name}.id`, record.id);
+  survey.setVariable(`${question.name}.incrementalId`, record.incrementalId);
+
+  // set record display field as survey variable
+  const displayField = question.displayField;
+  survey.setVariable(
+    `${question.name}.displayField`,
+    displayField ? record?.data[displayField] : record.id
+  );
+
+  const data = record.data || {};
   for (const field in data) {
     // create survey expression in the format {[questionName].[fieldName]} = [value]
     survey.setVariable(`${question.name}.${field}`, data[field]);

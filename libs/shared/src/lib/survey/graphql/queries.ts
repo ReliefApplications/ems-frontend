@@ -24,6 +24,7 @@ export const GET_RESOURCE_BY_ID = gql`
         edges {
           node {
             id
+            incrementalId
             data(display: $display)
           }
           cursor

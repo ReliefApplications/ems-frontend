@@ -107,6 +107,36 @@ export class ReferenceDataService {
   }
 
   /**
+   * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
+   * Return the choice corresponding to the referenceDataValue passed.
+   *
+   * @param referenceDataValue ReferenceData specific value to obtain.
+   * @param referenceDataID ReferenceData ID.
+   * @param displayField Field used for display in the question.
+   * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
+   * @param graphQLVariables optional graphql variables, built from form value
+   * @returns Promised choice.
+   */
+  async getChoice(
+    referenceDataValue: string,
+    referenceDataID: string,
+    displayField: string,
+    storePrimitiveValue = true,
+    graphQLVariables?: any
+  ) {
+    // Implementation for fetching a single choice
+    return await this.getChoices(
+      referenceDataID,
+      displayField,
+      storePrimitiveValue,
+      graphQLVariables
+    ).then((choices) => {
+      const choice = choices.find((c) => c.value === referenceDataValue);
+      return choice || null;
+    });
+  }
+
+  /**
    * Get the items and the value field of a reference data
    *
    * @param referenceData The reference data id or the reference data object
