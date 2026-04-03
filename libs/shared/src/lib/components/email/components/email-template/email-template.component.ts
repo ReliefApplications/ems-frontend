@@ -54,6 +54,8 @@ export class EmailTemplateComponent
   @Input() distributionList: FormGroup | any;
   /** Specifies if To, CC or BCC */
   @Input() type: string | any;
+  /** Specifies if it is from widget. */
+  @Input() dlContextSettings: any;
   /** Event Emitted for no email */
   @Output() noEmail = new EventEmitter();
   /** Event emitter for list change. */

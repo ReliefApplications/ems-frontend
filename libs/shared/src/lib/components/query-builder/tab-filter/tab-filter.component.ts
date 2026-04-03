@@ -27,6 +27,8 @@ export class TabFilterComponent implements OnInit {
   @Input() query: any;
   /** Is disabled */
   @Input() disabled = false;
+  /** Is from widget */
+  @Input() dlContextSettings: any;
 
   /** Date editor */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;

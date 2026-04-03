@@ -53,6 +53,7 @@
           [isEmailNotification]="isEmailNotification"
           [disabled]="disabled"
           [enableAttributeValueSource]="enableAttributeValueSource"
+          [dlContextSettings]="dlContextSettings"
         ></shared-filter-group>
       </ng-container>
       <ng-container *ngIf="!filter.value.logic">
@@ -65,6 +66,7 @@
           [canUseContext]="canUseContext"
           [disabled]="disabled"
           [enableAttributeValueSource]="enableAttributeValueSource"
+          [dlContextSettings]="dlContextSettings"
         ></shared-filter-row>
       </ng-container>
     </ng-container>

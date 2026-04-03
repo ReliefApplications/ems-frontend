@@ -34,6 +34,9 @@ export class SelectDistributionComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** Flag indicating whether the component is called from a widget */
+  @Input() dlContextSettings: any;
+
   /**
    * Composite email distribution.
    *

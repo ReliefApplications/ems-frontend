@@ -33,6 +33,8 @@ export class FilterGroupComponent implements OnChanges {
   @Input() disabled = false;
   /** Enables attribute filters to switch between field and literal values */
   @Input() enableAttributeValueSource = false;
+  /** Is from widget */
+  @Input() dlContextSettings: any;
 
   /**
    * Getter for the filters

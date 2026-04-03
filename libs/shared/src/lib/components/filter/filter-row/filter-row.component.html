@@ -184,6 +184,19 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
+    <ui-button
+      *ngIf="this.dlContextSettings?.enableContextEditor"
+      [isIcon]="true"
+      icon="change_circle_outline"
+      variant="primary"
+      (click)="toggleContextEditor()"
+      [uiTooltip]="
+        (field.editor === 'select'
+          ? 'components.queryBuilder.tooltip.filter.select.usePicker'
+          : 'components.queryBuilder.tooltip.filter.select.useExpression'
+        ) | translate
+      "
+    ></ui-button>
   </ng-template>
 
   <!-- ATTRIBUTE EDITOR -->
@@ -252,15 +265,44 @@
 
   <!-- CONTEXT EDITOR -->
   <ng-template #contextEditor>
-    <div uiFormFieldDirective [outline]="false" [defaultMargin]="false">
-      <label>{{ 'models.dashboard.context.title' | translate }}</label>
-      <input matInput formControlName="value" type="text" />
+    <!-- <div uiFormFieldDirective [outline]="false" [defaultMargin]="false"> -->
+      <!-- <label>{{ 'models.dashboard.context.title' | translate }}</label> -->
+      <!-- <input matInput formControlName="value" type="text" /> -->
       <!-- To be replaced by the new editor control, so we can have autocomplete -->
       <!-- <safe-editor-control
         formControlName="title"
         [editorConfig]="editorConfig"
       ></safe-editor-control> -->
+    <!-- </div> -->
+    <div
+      class="w-60"
+      uiFormFieldDirective
+      [outline]="false"
+      [defaultMargin]="false"
+    >
+      <label for="value">{{
+        'models.dashboard.context.title' | translate
+      }}</label>
+      <editor
+        #contextTinyMCE
+        [init]="contextTinyMCEConfig"
+        [outputFormat]="'text'"
+        formControlName="value"
+      ></editor>
     </div>
+    <ui-button
+      *ngIf="this.dlContextSettings?.enableContextEditor"
+      [isIcon]="true"
+      icon="change_circle_outline"
+      variant="primary"
+      (click)="toggleContextEditor()"
+      [uiTooltip]="
+        (field.editor === 'select'
+          ? 'components.queryBuilder.tooltip.filter.select.usePicker'
+          : 'components.queryBuilder.tooltip.filter.select.useExpression'
+        ) | translate
+      "
+    ></ui-button>
   </ng-template>
 </form>
 <ng-container *ngIf="loading">

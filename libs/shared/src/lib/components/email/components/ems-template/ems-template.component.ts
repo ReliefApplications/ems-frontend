@@ -47,6 +47,8 @@ export class EmsTemplateComponent
   public addEmailnotification = this.emailService.addEmailNotification;
   /** CURRENT STEP */
   @Input() currentStep = 0;
+  /** Context settings for distribution list filter */
+  @Input() dlContextSettings: any;
   /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
   /** DISABLE ACTION BUTTON */

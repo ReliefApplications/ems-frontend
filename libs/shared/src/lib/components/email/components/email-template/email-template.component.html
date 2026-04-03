@@ -402,6 +402,7 @@
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
                     [referenceFields]="[]"
+                    [dlContextSettings]="dlContextSettings"
                   >
                   </shared-tab-filter>
                 </div>
@@ -521,6 +522,7 @@
                     [form]="$any(distributionCommonQuery.get('filter'))"
                     [query]="distributionCommonQuery.getRawValue()"
                     [referenceFields]="commonServiceFields"
+                    [dlContextSettings]="dlContextSettings"
                   >
                   </shared-tab-filter>
                 </div>

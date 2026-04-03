@@ -22,4 +22,6 @@ export class FilterComponent {
   @Input() isEmailNotification = false;
   /** Enables attribute filters to switch between field and literal values */
   @Input() enableAttributeValueSource = false;
+  /** Is from widget */
+  @Input() dlContextSettings: any;
 }

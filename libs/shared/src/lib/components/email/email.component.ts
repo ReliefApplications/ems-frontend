@@ -1147,7 +1147,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   distributionListDialogHandler() {
     const dialogRef = this.dialog.open(DistributionModalComponent, {
-      data: { distributionListNames: this.emailService.distributionListNames },
+      data: {
+        distributionListNames: this.emailService.distributionListNames,
+        dlContextSettings: { enableContextEditor: true },
+      },
       disableClose: true,
     });
 
@@ -1165,7 +1168,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const editDistributionListDialogReference = this.dialog.open(
       DistributionModalComponent,
       {
-        data: { distributionListData, isEdit: true },
+        data: {
+          distributionListData,
+          isEdit: true,
+          dlContextSettings: { enableContextEditor: true },
+        },
         disableClose: true,
       }
     );

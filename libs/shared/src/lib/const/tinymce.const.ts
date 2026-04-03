@@ -429,3 +429,14 @@ export const EMAIL_LAYOUT_EDITOR_CONFIG: RawEditorSettings = {
   ],
   convert_urls: false,
 };
+
+/** Single Input Editor tinymce configuration. */
+export const SINGLE_INPUT_EDITOR_CONFIG: RawEditorSettings = {
+  inline: true,
+  menubar: false,
+  toolbar: false,
+  plugins: 'autolink',
+  width: '100%',
+  height: '100%',
+  branding: false,
+};
