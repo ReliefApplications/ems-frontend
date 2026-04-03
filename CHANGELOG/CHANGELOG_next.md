@@ -1,3 +1,10 @@
+# [2.22.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.14...v2.22.0-rc.15) (2026-04-03)
+
+
+### Features
+
+* Display only resources grid can now be emptied based on condition ([#2846](https://github.com/ReliefApplications/ems-frontend/issues/2846)) ([090bf3f](https://github.com/ReliefApplications/ems-frontend/commit/090bf3fced7e9c2782b150815534258caa96bf15))
+
 # [2.22.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.13...v2.22.0-rc.14) (2026-01-14)
 
 
