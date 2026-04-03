@@ -804,10 +804,7 @@ export const init = (
       if (clearIfExpression) {
         const survey = question.survey as SurveyModel;
         const conditionRunner = new ConditionRunner(clearIfExpression);
-        const shouldClear = conditionRunner.run(
-          survey.getFilteredValues(),
-          survey.getFilteredProperties()
-        );
+        const shouldClear = conditionRunner.run(survey.data);
         if (shouldClear) {
           // Force an empty result
           settings.query.filter = {
