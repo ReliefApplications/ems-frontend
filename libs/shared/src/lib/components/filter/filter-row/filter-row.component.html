@@ -207,7 +207,7 @@
       variant="primary"
       (click)="toggleContextEditor()"
       [uiTooltip]="
-        (field.editor === 'select'
+        (contextEditorIsActivated
           ? 'components.queryBuilder.tooltip.filter.select.usePicker'
           : 'components.queryBuilder.tooltip.filter.select.useExpression'
         ) | translate
@@ -311,30 +311,19 @@
 
   <!-- CONTEXT EDITOR -->
   <ng-template #contextEditor>
-    <!-- <div uiFormFieldDirective [outline]="false" [defaultMargin]="false"> -->
-      <!-- <label>{{ 'models.dashboard.context.title' | translate }}</label> -->
-      <!-- <input matInput formControlName="value" type="text" /> -->
-      <!-- To be replaced by the new editor control, so we can have autocomplete -->
-      <!-- <safe-editor-control
-        formControlName="title"
-        [editorConfig]="editorConfig"
-      ></safe-editor-control> -->
-    <!-- </div> -->
-    <div
-      class="w-60"
-      uiFormFieldDirective
-      [outline]="false"
-      [defaultMargin]="false"
-    >
-      <label for="value">{{
+    <div class="w-60">
+      <label class="block text-sm font-medium leading-6 text-gray-900" for="value">{{
         'models.dashboard.context.title' | translate
       }}</label>
+      <div class="relative flex py-1.5 px-2 w-full items-center shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600">
       <editor
         #contextTinyMCE
+          class="block w-full text-sm text-gray-900"
         [init]="contextTinyMCEConfig"
         [outputFormat]="'text'"
         formControlName="value"
       ></editor>
+    </div>
     </div>
     <ui-button
       *ngIf="this.dlContextSettings?.enableContextEditor"
@@ -343,7 +332,7 @@
       variant="primary"
       (click)="toggleContextEditor()"
       [uiTooltip]="
-        (field.editor === 'select'
+        (contextEditorIsActivated
           ? 'components.queryBuilder.tooltip.filter.select.usePicker'
           : 'components.queryBuilder.tooltip.filter.select.useExpression'
         ) | translate

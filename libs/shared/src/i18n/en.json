@@ -1474,6 +1474,10 @@
           "date": {
             "useExpression": "Use Expression editor",
             "usePicker": "Use Date picker"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {

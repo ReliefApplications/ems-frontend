@@ -1476,6 +1476,10 @@
           "date": {
             "useExpression": "Використовувати редактор виразів",
             "usePicker": "Використовувати вибір дати"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {

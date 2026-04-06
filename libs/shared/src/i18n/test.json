@@ -1474,6 +1474,10 @@
           "date": {
             "useExpression": "******",
             "usePicker": "******"
+          },
+          "select": {
+            "useExpression": "******",
+            "usePicker": "******"
           }
         },
         "pagination": {
