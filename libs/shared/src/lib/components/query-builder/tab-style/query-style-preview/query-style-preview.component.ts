@@ -21,6 +21,8 @@ export class QueryStylePreviewComponent implements OnInit {
       'font-weight': this.style.text?.bold && 'bold',
       'text-decoration': this.style.text?.underline && 'underline',
       'font-style': this.style.text?.italic && 'italic',
+      padding: this.style.isTag && '.4rem',
+      'border-radius': this.style.isTag && '8px',
     };
   }
 }

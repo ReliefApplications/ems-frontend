@@ -53,6 +53,8 @@ export class QueryStyleComponent implements OnInit {
   ngOnInit(): void {
     this.fieldNodes = this.setFieldNodes();
 
+    console.log(this.form);
+
     const fields = this.form.get('fields')?.value || [];
 
     if (fields.length > 0) {
