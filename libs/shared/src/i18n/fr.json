@@ -1367,6 +1367,8 @@
 					},
 					"criteria": "Critère",
 					"fields": "Champ",
+					"isBadge": "Afficher comme badge",
+					"isBadgeTooltip": "Lorsqu'elle est activée, le style sera appliqué comme un badge, les couleurs et les styles s'appliqueront au badge et non à la cellule.",
 					"name": "Nom de la règle",
 					"selectedColumns": "Seulement les colonnes sélectionnées.",
 					"text": {

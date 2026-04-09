@@ -185,7 +185,7 @@ export const createDisplayForm = (value: any) =>
 export const createStyleForm = (value: any) =>
   formBuilder.group({
     name: [value?.name || 'New rule', Validators.required],
-    isTag: [value?.isTag || false],
+    isBadge: [value?.isBadge || false],
     background: formBuilder.group({
       color: [value?.background?.color || ''],
     }),

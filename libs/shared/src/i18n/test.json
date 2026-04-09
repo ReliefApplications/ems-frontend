@@ -1359,6 +1359,8 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},

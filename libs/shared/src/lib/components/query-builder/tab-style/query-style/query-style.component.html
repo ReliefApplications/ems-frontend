@@ -78,10 +78,21 @@
       </ng-container>
 
       <div class="field-form">
-        <span class="field-name">{{
-            'components.queryBuilder.style.edit.isTag' | translate
-        }}</span>
-        <ui-checkbox formControlName="isTag"></ui-checkbox>
+        <div class="field-name flex gap-1">
+          {{ 'components.queryBuilder.style.edit.isBadge' | translate }}
+          <!-- Tooltip -->
+          <ui-icon
+            class="cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.queryBuilder.style.edit.isBadgeTooltip'
+                | translate
+            "
+          ></ui-icon>
+        </div>
+        <ui-checkbox formControlName="isBadge"></ui-checkbox>
       </div>
 
       <div class="field-form">
