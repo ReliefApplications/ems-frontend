@@ -87,6 +87,22 @@ const addCustomFunctions = (authService: AuthService): void => {
         },
       },
       {
+        name: 'isUpdate',
+        /**
+         * Check whether the current survey is updating an existing record.
+         *
+         * @param this Context
+         * @param this.survey Current survey instance
+         * @returns True when editing an existing record, false on create
+         */
+        function: function (this: { survey: SurveyModel }) {
+          const record = this.survey.getPropertyValue('record') as
+            | Record
+            | undefined;
+          return !!record?.id;
+        },
+      },
+      {
         name: 'weekday',
         /**
          * Get weekday from a date.
