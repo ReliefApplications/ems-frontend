@@ -24,6 +24,7 @@ import { GridColumnChooserModule } from '../grid-column-chooser/grid-column-choo
 import { GridRowActionsModule } from '../row-actions/row-actions.module';
 import { GridToolbarModule } from '../toolbar/toolbar.module';
 import { GridComponent } from './grid.component';
+import { ActionButtonComponent } from '../../../action-button/action-button.component';
 
 /** Module for the grid component */
 @NgModule({
@@ -61,6 +62,7 @@ import { GridComponent } from './grid.component';
     uiButtonModule,
     // === Pipes ==
     StripHtmlPipe,
+    ActionButtonComponent,
   ],
   exports: [GridComponent],
 })

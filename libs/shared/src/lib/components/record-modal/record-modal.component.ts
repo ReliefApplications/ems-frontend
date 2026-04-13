@@ -28,6 +28,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { CoreGridComponent } from '../ui/core-grid/core-grid.component';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -39,6 +40,7 @@ interface DialogData {
   template?: string;
   isTemporary?: boolean;
   temporaryRecordData?: any;
+  parentComponent?: CoreGridComponent;
 }
 
 /**
@@ -177,16 +179,11 @@ export class RecordModalComponent
    * Initializes the form
    */
   private initSurvey() {
-    this.data.isTemporary
-      ? (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata,
-          this.record
-        ))
-      : (this.survey = this.formBuilderService.createSurvey(
-          this.form?.structure || '',
-          this.form?.metadata
-        ));
+    this.survey = this.formBuilderService.createSurvey(
+      this.form?.structure || '',
+      this.form?.metadata,
+      this.record
+    );
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events
@@ -240,7 +237,7 @@ export class RecordModalComponent
         }
       );
     }
-    addCustomFunctions(this.authService, this.record);
+    addCustomFunctions(this.authService);
     this.loading = false;
   }
 
@@ -266,12 +263,12 @@ export class RecordModalComponent
   /**
    * Open a create form modal prefilled with this record's data
    */
-  public async onDuplicate(): Promise<void> {
+  public async onClone(): Promise<void> {
     if (!this.form?.id) return;
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
-    this.dialog.open(FormModalComponent, {
+    const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         template: this.form.id,
@@ -279,6 +276,15 @@ export class RecordModalComponent
         askForConfirm: false,
       },
       autoFocus: false,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        // Ask for reload
+        if (this.data.parentComponent) {
+          this.data.parentComponent.reloadData();
+        }
+      }
+      this.dialogRef.close();
     });
   }
 

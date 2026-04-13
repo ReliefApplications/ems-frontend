@@ -34,6 +34,23 @@ export type ActionButton = {
     template?: string;
     autoReload?: boolean;
   };
+  // Clone Record
+  cloneRecord?: {
+    template?: string;
+    autoReload?: boolean;
+    onSave?: {
+      navigateTo?: {
+        targetUrl?: {
+          href?: string;
+          openInNewTab?: boolean;
+        };
+        targetPage?: {
+          pageUrl?: string;
+          field?: string;
+        };
+      };
+    };
+  };
   // Add Record
   addRecord?: {
     resource?: string;

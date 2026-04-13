@@ -98,3 +98,28 @@
   max-height: calc(100vh - 48px);
   overflow: auto;
 }
+
+:host-context(#app-header) {
+  section {
+    @apply border-b-0;
+  }
+
+  .show-icons {
+    & > li {
+      @apply text-white hover:bg-white/10 hover:text-white;
+    }
+
+    & > li > a {
+      @apply text-white;
+    }
+  }
+
+  .show-icons > li.bg-gray-50 {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .show-icons > li.text-primary-600,
+  .show-icons > li.text-primary-600 a {
+    color: #fff !important;
+  }
+}

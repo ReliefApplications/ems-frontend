@@ -1,11 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Inject,
+} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { EmailService } from '../email/email.service';
 import { Apollo } from 'apollo-angular';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
@@ -15,11 +22,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { lastValueFrom, Subject, takeUntil } from 'rxjs';
+import { lastValueFrom, map, of, Subject, takeUntil, tap } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
-import { Dashboard } from '../../models/dashboard.model';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
@@ -45,20 +51,25 @@ export class ActionButtonComponent
 {
   /** Action button definition */
   @Input() actionButton!: ActionButton;
-  /** Dashboard */
-  @Input() dashboard?: Dashboard;
   /** Should refresh button, some of them ( subscribe / unsubscribe ) can depend on other buttons */
   @Input() refresh!: Subject<void>;
-  /** Reload dashboard event emitter */
-  @Output() reloadDashboard = new EventEmitter<void>();
-  /** Context id of the current dashboard */
-  public contextId!: string;
+  /** Record id */
+  @Input() recordId?: string;
+  /** Resource id */
+  @Input() resourceId?: string;
+  /** Reload parent event emitter */
+  @Output() reloadParent = new EventEmitter<void>();
   /** Email notification, for subscribe & unsubscribe actions */
   private emailNotification?: EmailNotification;
+  /** Current environment */
+  private environment: any;
 
   /** @returns Should hide button */
   get showButton(): boolean {
-    if (this.actionButton.editRecord && !this.contextId) {
+    if (this.actionButton.editRecord && !this.recordId) {
+      return false;
+    }
+    if (this.actionButton.cloneRecord && !this.recordId) {
       return false;
     }
     if (this.actionButton.subscribeToNotification) {
@@ -81,11 +92,11 @@ export class ActionButtonComponent
   /**
    * Dashboard action button component.
    *
+   * @param environment Current environment
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
    * @param emailService Email service
-   * @param activatedRoute Activated route
    * @param apollo Apollo
    * @param location Angular location
    * @param sharedEmailService Shared email service
@@ -96,11 +107,11 @@ export class ActionButtonComponent
    * @param contextService Shared context service
    */
   constructor(
+    @Inject('environment') environment: any,
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
     private emailService: EmailService,
-    private activatedRoute: ActivatedRoute,
     private apollo: Apollo,
     private location: Location,
     private sharedEmailService: SharedEmailService,
@@ -111,11 +122,7 @@ export class ActionButtonComponent
     private contextService: ContextService
   ) {
     super();
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
-      next: ({ id }) => {
-        this.contextId = id;
-      },
-    });
+    this.environment = environment;
   }
 
   ngOnInit(): void {
@@ -165,7 +172,11 @@ export class ActionButtonComponent
       return;
     }
     // Edit Record & Add Record
-    if (this.actionButton.editRecord || this.actionButton.addRecord) {
+    if (
+      this.actionButton.editRecord ||
+      this.actionButton.addRecord ||
+      this.actionButton.cloneRecord
+    ) {
       this.openRecordModal();
       return;
     }
@@ -199,7 +210,7 @@ export class ActionButtonComponent
       this.actionButton.sendNotification.distributionList
     ) {
       try {
-        const selectedIds = !isNil(this.contextId) ? [this.contextId] : [];
+        const selectedIds = !isNil(this.recordId) ? [this.recordId] : [];
         const templates = await this.getSelectedNotificationTemplates(
           this.actionButton.sendNotification.templates || []
         );
@@ -227,10 +238,8 @@ export class ActionButtonComponent
         );
         const snackBarSpinner = snackBarRef.instance.nestedComponent;
         let resource!: Resource;
-        if (this.dashboard?.page?.context?.resource) {
-          resource = (await this.getResourceById(
-            this.dashboard?.page?.context?.resource
-          )) as Resource;
+        if (this.resourceId) {
+          resource = (await this.getResourceById(this.resourceId)) as Resource;
         }
         const distributionList = await this.getSelectedDistributionListData(
           this.actionButton.sendNotification.distributionList
@@ -289,104 +298,179 @@ export class ActionButtonComponent
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
-    const template = this.actionButton.editRecord
-      ? this.actionButton.editRecord.template
-      : this.actionButton.addRecord?.template;
-    const prefillData = this.contextService.replaceContext(
-      this.actionButton.addRecord?.mapping || {}
-    );
-    const shouldReload =
-      this.actionButton.editRecord?.autoReload ||
-      this.actionButton.addRecord?.autoReload;
-    // Callback to be executed at the end of action
-    const callback = () => {
-      if (shouldReload) {
-        this.reloadDashboard.emit();
+    let template =
+      this.actionButton.editRecord?.template ??
+      this.actionButton.cloneRecord?.template ??
+      this.actionButton.addRecord?.template;
+
+    // Prefill data for addRecord & cloneRecord
+    const loadPrefillData$ = () => {
+      if (this.actionButton.cloneRecord && this.recordId) {
+        return this.apollo
+          .query<RecordQueryResponse>({
+            query: GET_RECORD_BY_ID,
+            variables: { id: this.recordId, includeResource: false },
+          })
+          .pipe(
+            takeUntil(this.destroy$),
+            tap(({ data }) => {
+              if (!template) {
+                template = data.record.form?.id;
+              }
+            }),
+            map(({ data }) => data.record.data)
+          );
       }
+
+      return of(
+        this.contextService.replaceContext(
+          this.actionButton.addRecord?.mapping || {}
+        )
+      );
     };
-    const dialogRef = this.dialog.open(FormModalComponent, {
-      disableClose: true,
-      data: {
-        ...(this.actionButton.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
-        ...(template && { template }),
-        actionButtonCtx: true,
-        prefillData,
-      },
-      autoFocus: false,
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && value.data?.id) {
-        // Add record action
-        if (this.actionButton.addRecord) {
-          const newRecordId = value.data.id;
-          const fieldsForUpdate =
-            this.actionButton.addRecord.fieldsForUpdate || [];
-          // Execute callback if possible
-          if (
-            this.contextId &&
-            Array.isArray(fieldsForUpdate) &&
-            fieldsForUpdate.length > 0
-          ) {
-            this.apollo
-              .query<RecordQueryResponse>({
-                query: GET_RECORD_BY_ID,
-                variables: {
-                  id: this.contextId,
-                },
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                const update = {};
-                for (const field of fieldsForUpdate as string[]) {
-                  const resourceField = data.record.resource?.fields.find(
-                    (f: any) => f.name === field
-                  );
-                  if (resourceField) {
-                    // Current field value in record
-                    const value = get(data.record.data, field);
-                    switch (resourceField.type) {
-                      case 'resource': {
-                        set(update, field, newRecordId);
-                        break;
-                      }
-                      case 'resources': {
-                        if (Array.isArray(value)) {
-                          set(update, field, [...value, newRecordId]);
-                        } else {
-                          set(update, field, [newRecordId]);
-                        }
-                        break;
-                      }
-                      // Else, skip
-                    }
-                  }
-                  // Else, skip
-                }
-                // If update not empty
-                if (!isEmpty(update)) {
+
+    loadPrefillData$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((prefillData) => {
+        const shouldReload =
+          this.actionButton.editRecord?.autoReload ??
+          this.actionButton.cloneRecord?.autoReload ??
+          this.actionButton.addRecord?.autoReload ??
+          false;
+        // Callback to be executed at the end of action
+        const callback = () => {
+          if (shouldReload) {
+            this.reloadParent.emit();
+          }
+        };
+        const dialogRef = this.dialog.open(FormModalComponent, {
+          disableClose: true,
+          data: {
+            ...(this.actionButton.editRecord && { recordId: this.recordId }), // Modal will open current record
+            ...(template && { template }),
+            actionButtonCtx: true,
+            prefillData,
+          },
+          autoFocus: false,
+        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value: any) => {
+            if (value && value.data?.id) {
+              // Add record action
+              if (this.actionButton.addRecord) {
+                const newRecordId = value.data.id;
+                const fieldsForUpdate =
+                  this.actionButton.addRecord.fieldsForUpdate || [];
+                // Execute callback if possible
+                if (
+                  this.recordId &&
+                  Array.isArray(fieldsForUpdate) &&
+                  fieldsForUpdate.length > 0
+                ) {
                   this.apollo
-                    .mutate<EditRecordMutationResponse>({
-                      mutation: EDIT_RECORD,
+                    .query<RecordQueryResponse>({
+                      query: GET_RECORD_BY_ID,
                       variables: {
-                        id: this.contextId,
-                        data: update,
+                        id: this.recordId,
+                        includeResource: true,
                       },
                     })
                     .pipe(takeUntil(this.destroy$))
-                    .subscribe({ next: () => callback() });
+                    .subscribe(({ data }) => {
+                      const update = {};
+                      for (const field of fieldsForUpdate as string[]) {
+                        const resourceField = data.record.resource?.fields.find(
+                          (f: any) => f.name === field
+                        );
+                        if (resourceField) {
+                          // Current field value in record
+                          const value = get(data.record.data, field);
+                          switch (resourceField.type) {
+                            case 'resource': {
+                              set(update, field, newRecordId);
+                              break;
+                            }
+                            case 'resources': {
+                              if (Array.isArray(value)) {
+                                set(update, field, [...value, newRecordId]);
+                              } else {
+                                set(update, field, [newRecordId]);
+                              }
+                              break;
+                            }
+                            // Else, skip
+                          }
+                        }
+                        // Else, skip
+                      }
+                      // If update not empty
+                      if (!isEmpty(update)) {
+                        this.apollo
+                          .mutate<EditRecordMutationResponse>({
+                            mutation: EDIT_RECORD,
+                            variables: {
+                              id: this.recordId,
+                              data: update,
+                            },
+                          })
+                          .pipe(takeUntil(this.destroy$))
+                          .subscribe({ next: () => callback() });
+                      } else {
+                        callback();
+                      }
+                    });
                 } else {
                   callback();
                 }
-              });
-          } else {
-            callback();
-          }
-        } else {
-          // Edit record action
-          callback();
-        }
-      }
-    });
+              } else {
+                // Edit or Clone record action
+                if (this.actionButton.cloneRecord) {
+                  // Clone action
+                  const navigateTo =
+                    this.actionButton.cloneRecord.onSave?.navigateTo;
+                  if (navigateTo?.targetPage && navigateTo.targetPage.pageUrl) {
+                    // Navigate to page in app builder
+                    let fullUrl = this.getPageUrl(
+                      navigateTo.targetPage.pageUrl as string
+                    );
+                    if (navigateTo.targetPage.field && value?.data) {
+                      // Add query parameter
+                      const fieldPath = navigateTo.targetPage.field;
+                      const paramValue = get(value.data, fieldPath);
+                      fullUrl = `${fullUrl}?${fieldPath}=${paramValue}`;
+                    }
+                    this.router.navigateByUrl(fullUrl);
+                  } else if (
+                    navigateTo?.targetUrl &&
+                    navigateTo.targetUrl.href
+                  ) {
+                    // Navigate to any other url
+                    const href = this.contextService.replaceContext(
+                      this.dataTemplateService.renderLink(
+                        navigateTo.targetUrl.href
+                      )
+                    );
+                    if (navigateTo.targetUrl.openInNewTab) {
+                      window.open(href, '_blank');
+                    } else {
+                      if (href?.startsWith('./')) {
+                        this.router.navigateByUrl(href.substring(1));
+                      } else {
+                        window.location.href = href;
+                      }
+                    }
+                  } else {
+                    callback();
+                  }
+                } else {
+                  // Edit Action
+                  callback();
+                }
+              }
+            }
+          });
+      });
   }
 
   /**
@@ -423,24 +507,6 @@ export class ActionButtonComponent
       )
     );
     return distributionListResponse.emailDistributionLists.edges[0].node;
-  }
-
-  /**
-   * Get default resource meta data
-   *
-   * @param fields Selected resource fields for the given action button
-   * @returns default resource meta data
-   */
-  private async getResourceMetaData(fields: string[]) {
-    const { data: resourceMetaDataResponse } = await lastValueFrom(
-      // Fetch resource metadata for email sending
-      this.queryBuilder.getQueryMetaData(
-        this.dashboard?.page?.context?.resource as string
-      )
-    );
-    return resourceMetaDataResponse.resource.metadata?.filter((md) =>
-      fields.includes(md.name)
-    );
   }
 
   /**
@@ -517,5 +583,17 @@ export class ActionButtonComponent
           this.emailNotification = data.emailNotification;
         },
       });
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
   }
 }

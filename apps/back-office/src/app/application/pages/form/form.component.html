@@ -46,16 +46,18 @@
     </div>
   </div>
   <!-- Form -->
-  <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
-  <!-- Form actions -->
-  <div
-    class="mt-6 flex justify-center gap-x-4"
-    *ngIf="completed && !form.uniqueRecord && !hideNewRecord"
-  >
+  <shared-form
+    [form]="form"
+    [record]="record"
+    (save)="onComplete($event)"
+  ></shared-form>
+  <!-- Form actions, only appear if not editing a record -->
+  <div class="mt-6 flex justify-center gap-x-4" *ngIf="completed && !record">
     <!-- Action buttons -->
     <shared-action-buttons [actionButtons]="actionButtons">
       <!-- New record -->
       <ui-button
+        *ngIf="!form.uniqueRecord && !hideNewRecord"
         [isBlock]="!actionButtons.length"
         class="max-w-xs"
         variant="primary"

@@ -76,6 +76,7 @@
 		},
 		"clear": "Clear",
 		"clone": "Clone",
+		"cloneRecord": "Clone record",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -90,6 +91,7 @@
 		"create": "Create",
 		"createdBy": "Created By",
 		"createdOn": "Created on",
+		"creation": "Creation",
 		"cronEditor": {
 			"advanced": "Advanced",
 			"atTime": "At",
@@ -181,7 +183,6 @@
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
-		"duplicateRecord": "Duplicate record",
 		"edit": "Edit",
 		"email": {
 			"customTemplate": "Custom template",
@@ -748,10 +749,15 @@
 				},
 				"settings": {
 					"actions": "Actions",
+					"navBar": {
+						"showIcon": "Display icon in nav bar",
+						"showName": "Display name in nav bar"
+					},
 					"selectIcon": "Select an icon",
-					"showName": "Display name",
+					"showName": "Display name as header on page",
 					"tooltip": {
-						"autoSave": "Changes are automatically saved"
+						"autoSave": "Changes are automatically saved",
+						"navBar": "To be visible in the navigation bar, either the icon or the name must be displayed."
 					}
 				},
 				"show": "Make page visible in nav bar for end-users"
@@ -794,7 +800,8 @@
 				"sideMenu": "Show menu on the side",
 				"tooltip": {
 					"hideMenu": "Only applies when menu is located on the side"
-				}
+				},
+				"topMenu": "Show menu in the header"
 			},
 			"users": {
 				"auto": "Automatically assigned",
@@ -1869,6 +1876,13 @@
 				},
 				"openEditor": "Open html",
 				"openSettings": "Open settings",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Column label"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",
@@ -1994,7 +2008,7 @@
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
-						"title": "Enabled actions",
+						"title": "Row Actions",
 						"update": "Update records",
 						"useRecordId": "Pass id as query parameter"
 					},
@@ -2031,13 +2045,13 @@
 								"previous": "Go to previous step"
 							}
 						},
-						"create": "Add a button",
+						"create": "Add Custom Grid Action",
 						"defaultName": "Action button",
 						"enable": "Enable",
 						"placeholder": {
 							"modifyValue": "Set as null"
 						},
-						"title": "Quick action buttons",
+						"title": "Grid Actions",
 						"tooltip": {
 							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a record from this form. The user will be able to choose which record using a the given field",
 							"mail": {
@@ -2061,7 +2075,6 @@
 							"update": "If authorized, user can update visible records"
 						},
 						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
 						"executionOrder": "Selected actions will be executed in the displayed order",
 						"prefillForm": "If no record is created at this point, the action will be canceled"
 					},
@@ -2371,8 +2384,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Grid actions",
-							"tooltip": "Enabled grid actions"
+							"title": "Row Actions",
+							"tooltip": "Row Actions (grid mode)"
 						},
 						"preview": {
 							"title": "Preview"
@@ -2410,7 +2423,15 @@
 				},
 				"tabs": {
 					"addNewTab": "Add a new tab",
-					"deleteTab": "Delete tab"
+					"deleteTab": "Delete tab",
+					"navBar": {
+						"showIcon": "Display icon in nav bar",
+						"showName": "Display name in nav bar"
+					},
+					"selectIcon": "Select an icon",
+					"tooltip": {
+						"navBar": "To be visible in the navigation bar, either the icon or the name must be displayed."
+					}
 				}
 			},
 			"styling": "Edit styling",
@@ -2699,6 +2720,15 @@
 						}
 					},
 					"autoReload": "Auto reload dashboard on save",
+					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "After clone, navigate to"
+						},
+						"text": "Clone record",
+						"tooltip": {
+							"template": "Select a resource template to clone the current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
 					"editRecord": {
 						"text": "Edit record",
 						"tooltip": {

@@ -76,6 +76,7 @@
 		},
 		"clear": "******",
 		"clone": "******",
+		"cloneRecord": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -90,6 +91,7 @@
 		"create": "******",
 		"createdBy": "******",
 		"createdOn": "******",
+		"creation": "******",
 		"cronEditor": {
 			"advanced": "******",
 			"atTime": "******",
@@ -181,7 +183,6 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
-		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",
@@ -748,10 +749,15 @@
 				},
 				"settings": {
 					"actions": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
 					"selectIcon": "******",
 					"showName": "******",
 					"tooltip": {
-						"autoSave": "******"
+						"autoSave": "******",
+						"navBar": "******"
 					}
 				},
 				"show": "******"
@@ -794,7 +800,8 @@
 				"sideMenu": "******",
 				"tooltip": {
 					"hideMenu": "******"
-				}
+				},
+				"topMenu": "******"
 			},
 			"users": {
 				"auto": "******",
@@ -2061,7 +2068,6 @@
 							"update": "******"
 						},
 						"attachToRecord": "******",
-						"buttons": "******",
 						"executionOrder": "******",
 						"prefillForm": "******"
 					},
@@ -2410,7 +2416,15 @@
 				},
 				"tabs": {
 					"addNewTab": "******",
-					"deleteTab": "******"
+					"deleteTab": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
+					"selectIcon": "******",
+					"tooltip": {
+						"navBar": "******"
+					}
 				}
 			},
 			"styling": "******",
@@ -2699,6 +2713,15 @@
 						}
 					},
 					"autoReload": "******",
+					"cloneRecord": {
+						"onSave": {
+							"navigateTo": "******"
+						},
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
 					"editRecord": {
 						"text": "******",
 						"tooltip": {

@@ -3,7 +3,7 @@
     <div class="relative">
       <div>
         <div class="w-full">
-          <div class="mb-4" *ngIf="!emailService.isQuickAction">
+          <div class="mb-4" *ngIf="!emailService.isGridAction">
             <h1>{{ 'common.distributionList.one' | translate }}</h1>
           </div>
           <div *ngIf="data.previewDLData?.to?.length > 0">

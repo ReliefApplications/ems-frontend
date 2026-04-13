@@ -94,6 +94,10 @@ export class LayoutComponent
    * Event emitted when the user clicks on the profile button
    */
   @Input() sideMenu = true;
+  /**
+   * Display navigation within header instead of in separate bar
+   */
+  @Input() topMenu = false;
 
   /**
    * Event emitted when the user clicks on the profile button
@@ -146,6 +150,8 @@ export class LayoutComponent
   // === BREADCRUMB ===
   /** Breadcrumbs */
   public breadcrumbs: Breadcrumb[] = [];
+  /** Context injected when rendering nav inside header */
+  public headerNavContext = { toggle: (): void => undefined };
 
   /** Timeout listeners */
   // private attachViewFilterTriggerListener!: NodeJS.Timeout;

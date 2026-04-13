@@ -67,6 +67,7 @@ export const init = (
         if (!value) {
           return;
         }
+        // todo: check
         if (!question.value && question.defaultValueExpression) {
           question.value = question.defaultValueExpression;
         }

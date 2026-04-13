@@ -14,13 +14,16 @@ import {
   ActionButton,
   ContextService,
   Record,
+  RecordQueryResponse,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
+  GET_RECORD_BY_ID,
 } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 /**
  * Application preview form page component.
@@ -34,8 +37,6 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** Form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
-
-  // === DATA ===
   /** Loading state */
   public loading = true;
   /** Current form id */
@@ -44,20 +45,20 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public form?: Form;
   /** Is form completed */
   public completed = false;
+  /** Ongoing query */
+  public querySubscription?: Subscription;
   /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
   /** Form button actions */
   public actionButtons: ActionButton[] = [];
-
-  // === ROUTER ===
   /** Current page */
   public page?: Page;
   /** Current step */
   public step?: Step;
-
-  // === ROUTE ===
   /** Is this form part of step */
   public isStep = false;
+  /** Current record, optional */
+  public record?: Record;
 
   /**
    * Application preview form page component.
@@ -84,55 +85,103 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
+      // If a query is already loading, cancel it
+      if (this.querySubscription) {
+        this.querySubscription.unsubscribe();
+      }
       if (this.isStep) {
-        this.apollo
+        this.querySubscription = this.apollo
           .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .subscribe(({ data }) => {
-            this.step = data.step;
-            this.actionButtons = data.step.buttons as ActionButton[];
-            this.apollo
-              .query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              })
-              .subscribe(({ data, loading }) => {
-                this.form = data.form;
-                this.loading = loading;
-              });
+          .pipe(
+            switchMap(({ data }) => {
+              this.step = data.step;
+              this.actionButtons = data.step.buttons as ActionButton[];
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.step?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
+              return this.getFormQuery(this.step.content ?? '');
+            }),
+            takeUntil(this.destroy$)
+          )
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
+            this.loading = loading;
           });
       } else {
-        this.apollo
+        this.querySubscription = this.apollo
           .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .subscribe(({ data }) => {
-            this.page = data.page;
-            this.actionButtons = data.page.buttons as ActionButton[];
-            this.apollo
-              .query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              })
-              .subscribe(({ data, loading }) => {
-                if (data) {
-                  this.form = data.form;
-                }
-                this.loading = loading;
-              });
+          .pipe(
+            switchMap(({ data }) => {
+              this.page = data.page;
+              this.actionButtons = data.page.buttons as ActionButton[];
+              const recordId = this.route.snapshot.queryParams.id;
+              if (recordId) {
+                return this.getRecordQuery(recordId).pipe(
+                  switchMap((recordResponse) => {
+                    this.record = recordResponse.data.record;
+                    // Then, proceed to fetch the form
+                    return this.getFormQuery(this.page?.content ?? '');
+                  })
+                );
+              }
+              this.record = undefined;
+              return this.getFormQuery(this.page.content ?? '');
+            }),
+            takeUntil(this.destroy$)
+          )
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
+            this.loading = loading;
           });
       }
+    });
+  }
+
+  /**
+   * Returns a form query stream for the given id
+   *
+   * @param {string} id form id to fetch
+   * @returns a query stream
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Returns query for the given record id
+   *
+   * @param id record id
+   * @returns record query for the given id
+   */
+  private getRecordQuery(id: string) {
+    return this.apollo.query<RecordQueryResponse>({
+      query: GET_RECORD_BY_ID,
+      variables: {
+        id,
+      },
     });
   }
 

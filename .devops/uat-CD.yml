@@ -12,11 +12,11 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '18.x'
+    versionSpec: '22.x'
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
+    npm ci
   displayName: 'npm install'
 
 - script: |
@@ -26,9 +26,12 @@ steps:
     KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
 
 - script: |
-    npx nx run front-office:build:azure-uat
-    npx nx run back-office:build:azure-uat
-  displayName: 'build the apps'
+    npx nx run front-office:build:azure-uat --skip-nx-cache
+  displayName: 'Build front-office'
+
+- script: |
+    npx nx run back-office:build:azure-uat --skip-nx-cache
+  displayName: 'Build back-office'
 
 - task: ArchiveFiles@2
   inputs:

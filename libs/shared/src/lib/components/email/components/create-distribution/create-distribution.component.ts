@@ -30,8 +30,8 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
   public applicationId = '';
   /** DL tile isDuplicate ? */
   public isDuplicateTitle = false;
-  /** DL dialog data from Quick Action  */
-  @Input() quickActionDistribution: any;
+  /** DL dialog data from Grid Action  */
+  @Input() gridActionDistribution: any;
 
   /**
    * Angular Component constructor

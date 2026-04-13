@@ -70,7 +70,7 @@ export class EditActionButtonsModalComponent
    * @param data.dashboard Current dashboard
    * @param data.form Current form
    * @param dialog dialog module for button edition / creation / deletion
-   * @param translateService used to translate modal text
+   * @param translate used to translate modal text
    * @param applicationService shared application service
    */
   constructor(
@@ -78,7 +78,7 @@ export class EditActionButtonsModalComponent
     @Inject(DIALOG_DATA)
     private data: { dashboard?: Dashboard; form?: Page | Step },
     public dialog: Dialog,
-    public translateService: TranslateService,
+    public translate: TranslateService,
     public applicationService: ApplicationService
   ) {
     super();
@@ -173,20 +173,14 @@ export class EditActionButtonsModalComponent
     const { ConfirmModalComponent } = await import('@oort-front/shared');
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
-        title: this.translateService.instant('common.deleteObject', {
-          name: this.translateService.instant(
-            'models.dashboard.actionButtons.one'
-          ),
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('models.dashboard.actionButtons.one'),
         }),
-        content: this.translateService.instant(
+        content: this.translate.instant(
           'models.dashboard.actionButtons.confirmDelete'
         ),
-        confirmText: this.translateService.instant(
-          'components.confirmModal.delete'
-        ),
-        cancelText: this.translateService.instant(
-          'components.confirmModal.cancel'
-        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        cancelText: this.translate.instant('components.confirmModal.cancel'),
         confirmVariant: 'danger',
       },
     });
@@ -201,6 +195,21 @@ export class EditActionButtonsModalComponent
         }
       }
     });
+  }
+
+  /**
+   * Duplicates action button
+   *
+   * @param actionButton action button
+   */
+  public async onDuplicateActionButton(actionButton: ActionButton) {
+    const newActionButton = structuredClone(actionButton);
+    newActionButton.text = `${newActionButton.text} (${this.translate.instant(
+      'common.copy'
+    )})`;
+    this.actionButtons.push(newActionButton);
+    this.searchTerm = '';
+    this.updateTable();
   }
 
   /**

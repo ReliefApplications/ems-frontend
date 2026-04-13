@@ -82,12 +82,14 @@ export const EDIT_PAGE = gql`
     $permissions: JSON
     $visible: Boolean
     $showName: Boolean
+    $navBar: NavBarSettingsInputType
   ) {
     editPage(
       id: $id
       name: $name
       icon: $icon
       showName: $showName
+      navBar: $navBar
       permissions: $permissions
       visible: $visible
     ) {
@@ -95,6 +97,10 @@ export const EDIT_PAGE = gql`
       name
       icon
       showName
+      navBar {
+        showName
+        showIcon
+      }
       visible
       permissions {
         canSee {
@@ -396,6 +402,7 @@ export const EDIT_APPLICATION = gql`
     $permissions: JSON
     $description: String
     $sideMenu: Boolean
+    $topMenu: Boolean
     $hideMenu: Boolean
     $shortcut: String
   ) {
@@ -407,12 +414,14 @@ export const EDIT_APPLICATION = gql`
       permissions: $permissions
       description: $description
       sideMenu: $sideMenu
+      topMenu: $topMenu
       hideMenu: $hideMenu
       shortcut: $shortcut
     ) {
       id
       description
       sideMenu
+      topMenu
       hideMenu
       shortcut
       name

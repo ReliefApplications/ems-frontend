@@ -23,6 +23,8 @@ export class NavbarComponent {
   @Input() canAddPage = false;
   /** Should be displayed vertically or horizontally.*/
   @Input() vertical = true;
+  /** Is top menu */
+  @Input() topMenu = false;
   /** Navigation groups */
   @Input() navGroups: any[] = [];
   /** Navigation group selected */
