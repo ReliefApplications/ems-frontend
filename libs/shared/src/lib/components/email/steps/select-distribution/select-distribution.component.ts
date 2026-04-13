@@ -212,22 +212,22 @@ export class SelectDistributionComponent
    */
   isAllSeparate(): boolean {
     if (this.emailService.datasetsForm?.get('datasets')?.getRawValue()) {
-      let separateEmailCount = 0;
+      let separateWithFieldsCount = 0;
       let datasetsCount = 0;
       for (const dataset of this.emailService.datasetsForm.get('datasets')
         ?.value ?? []) {
-        if (
-          (dataset.resource || dataset.reference) &&
-          dataset.individualEmail
-        ) {
+        if (dataset.resource || dataset.reference) {
           datasetsCount += 1;
-          separateEmailCount += 1;
-        } else if (dataset.resource || dataset.reference) {
-          datasetsCount += 1;
+          if (
+            dataset.individualEmail &&
+            dataset.individualEmailFields?.length > 0
+          ) {
+            separateWithFieldsCount += 1;
+          }
         }
       }
 
-      if (separateEmailCount === datasetsCount && datasetsCount > 0) {
+      if (separateWithFieldsCount === datasetsCount && datasetsCount > 0) {
         this.emailService.distributionListData.get('name')?.patchValue('');
         this.emailService.clearDistributionList(
           this.emailService.distributionListData.get('to') as FormGroup

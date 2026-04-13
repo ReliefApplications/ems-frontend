@@ -41,7 +41,7 @@
     ></ng-container>
   </ng-container>
 
-  <!-- TOGGLE CONTEXT EDITOR -->
+  <!-- TOGGLE CONTEXT EDITOR (dashboard context variables) -->
   <ui-button
     *ngIf="field && canUseContext"
     [isIcon]="true"
@@ -52,6 +52,22 @@
       (contextEditorIsActivated
         ? 'models.dashboard.context.tooltip.useDefaultEditor'
         : 'models.dashboard.context.tooltip.useContextEditor'
+      ) | translate
+    "
+  ></ui-button>
+
+  <!-- TOGGLE DATASET FIELD EDITOR (email notification context) -->
+  <ui-button
+    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && dlContextSettings?.datasetBlocks?.length > 0"
+    [isIcon]="true"
+    [disabled]="disabled"
+    icon="change_circle_outline"
+    variant="primary"
+    (click)="toggleContextEditor()"
+    [uiTooltip]="
+      (contextEditorIsActivated
+        ? 'components.queryBuilder.tooltip.filter.select.usePicker'
+        : 'components.queryBuilder.tooltip.filter.select.useExpression'
       ) | translate
     "
   ></ui-button>
@@ -262,6 +278,36 @@
       </ui-select-menu>
     </div>
   </ng-template> -->
+
+  <!-- DATASET TOKEN EDITOR -->
+  <ng-template #datasetTokenEditor>
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'common.value.one' | translate
+      }}</label>
+      <ui-select-menu
+        formControlName="value"
+        [placeholder]="
+          'common.notifications.email.fieldselect.placeholder' | translate
+        "
+      >
+        <ui-select-option
+          *ngFor="let opt of datasetTokenOptions"
+          [value]="opt.value"
+        >
+          {{ opt.label | titlecase }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <ui-button
+      *ngIf="contextEditorIsActivated"
+      [isIcon]="true"
+      icon="change_circle_outline"
+      variant="primary"
+      (click)="toggleContextEditor()"
+      [uiTooltip]="'components.queryBuilder.tooltip.filter.select.usePicker' | translate"
+    ></ui-button>
+  </ng-template>
 
   <!-- CONTEXT EDITOR -->
   <ng-template #contextEditor>

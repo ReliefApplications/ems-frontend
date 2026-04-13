@@ -163,6 +163,8 @@ export class EmailService {
   public dataList!: { [key: string]: any }[];
   /** Dataset fields */
   public datasetFields!: string[];
+  /** All available fields from the primary dataset resource (persisted across steps) */
+  public allAvailableDatasetFields: any[] = [];
   /** Email distribution list of names */
   public distributionListNames: string[] = [];
   /** Email notification list of names */

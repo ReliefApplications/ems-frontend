@@ -1143,13 +1143,64 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Returns dlContextSettings for distribution list editors.
+   * Computes fields directly from datasetsForm (available from the Dataset step onward)
+   * so it works on the Distribution List step before the Layout step populates previewData.
+   * Uses SSE dataset blocks when available, plain fields otherwise.
+   */
+  get dlDatasetContextSettings(): any {
+    const datasetsValues =
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? [];
+    if (datasetsValues.length === 0) {
+      return { enableContextEditor: true };
+    }
+
+    // Gather SSE block names from datasets with individualEmail enabled
+    const sseBlocks: string[] = [];
+    datasetsValues.forEach((dataset: any) => {
+      if (
+        (dataset.query?.name && dataset.resource) ||
+        (dataset.query?.name && dataset.reference)
+      ) {
+        if (dataset.individualEmail) {
+          sseBlocks.push(dataset.name);
+        }
+      }
+    });
+
+    // Compute flat field list from all available resource fields (not just selected ones)
+    const fields: string[] = [];
+    const allAvailable = this.emailService.allAvailableDatasetFields;
+    if (allAvailable.length > 0) {
+      allAvailable.forEach((field: any) => {
+        this.emailService.appendFields(field, field.name, fields);
+      });
+    } else {
+      // Fallback: use selected query fields if allAvailableDatasetFields not yet populated
+      (datasetsValues[0].query?.fields ?? []).forEach((field: any) => {
+        this.emailService.appendFields(field, field.name, fields);
+      });
+    }
+
+    if (sseBlocks.length > 0 && fields.length > 0) {
+      return {
+        datasetBlocks: sseBlocks.map((name) => ({ name, fields })),
+      };
+    }
+    if (fields.length > 0) {
+      return { previewFields: fields };
+    }
+    return { enableContextEditor: true };
+  }
+
+  /**
    * to handle the dialog of distribution list creation
    */
   distributionListDialogHandler() {
     const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: {
         distributionListNames: this.emailService.distributionListNames,
-        dlContextSettings: { enableContextEditor: true },
+        dlContextSettings: this.dlDatasetContextSettings,
       },
       disableClose: true,
     });
@@ -1171,7 +1222,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         data: {
           distributionListData,
           isEdit: true,
-          dlContextSettings: { enableContextEditor: true },
+          dlContextSettings: this.dlDatasetContextSettings,
         },
         disableClose: true,
       }

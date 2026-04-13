@@ -181,6 +181,7 @@ export class DatasetFilterComponent
           this.getResourceData(true);
         } else if (value === null) {
           this.availableFields = [];
+          this.emailService.allAvailableDatasetFields = [];
           this.selectedFields = [];
           if (this.resource?.fields) {
             this.resource.fields = [];
@@ -242,6 +243,7 @@ export class DatasetFilterComponent
       this.selectedFields = selectedFields;
       this.filterFields = filterFields;
       this.availableFields = availableFields;
+      this.emailService.allAvailableDatasetFields = availableFields ?? [];
       this.availableFieldsIndividualEmail = availableFieldsIndividualEmail;
       this.selectedResourceId = selectedResourceId;
     }
@@ -252,13 +254,8 @@ export class DatasetFilterComponent
     this.query.controls.individualEmail.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        if (
-          value === true &&
-          this.selectedFieldsIndividualEmail?.length === 0 &&
-          this.resource
-        ) {
+        if (value === true && this.resource) {
           this.onTabSelect(4, false);
-          this.emailService.disableSaveAndProceed.next(true);
         } else if (this.resource) {
           this.onTabSelect(0, false);
         }
@@ -309,10 +306,7 @@ export class DatasetFilterComponent
     const newIndex = event;
     const previewTabIndex = 3;
 
-    const isSeparateEmailValid =
-      (this.query.get('individualEmail').value === true &&
-        this.selectedFieldsIndividualEmail.length > 0) ||
-      this.query.get('individualEmail').value === false;
+    const isSeparateEmailValid = true;
     const isValid =
       this.query.get('query').get('fields')?.value.length > 0 &&
       !this.showDatasetLimitWarning &&
@@ -383,6 +377,7 @@ export class DatasetFilterComponent
           }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
+          this.emailService.allAvailableDatasetFields = newData;
           this.availableFieldsIndividualEmail = cloneDeep(newData);
           this.filterFields = cloneDeep(newData);
           this.loading = false;
@@ -718,8 +713,6 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
-    } else if (this.query.get('individualEmail').value === true) {
-      this.emailService.disableSaveAndProceed.next(true);
     }
 
     return formArray;

@@ -92,6 +92,9 @@ export class FilterRowComponent
   /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
+  /** Reference to dataset token editor template */
+  @ViewChild('datasetTokenEditor', { static: false })
+  datasetTokenEditor!: TemplateRef<any>;
   /** Configuration object for the Tinymce editor. */
   public contextTinyMCEConfig: any = SINGLE_INPUT_EDITOR_CONFIG;
   /** Reference to context editor template */
@@ -150,6 +153,27 @@ export class FilterRowComponent
     }
 
     return false;
+  }
+
+  /** @returns dataset token options built from dlContextSettings.datasetBlocks or previewFields */
+  get datasetTokenOptions(): { value: string; label: string }[] {
+    const blocks: { name: string; fields: string[] }[] =
+      this.dlContextSettings?.datasetBlocks ?? [];
+    if (blocks.length > 0) {
+      return blocks.flatMap((block) =>
+        block.fields.map((field) => ({
+          value: `{{${block.name}.${field}}}`,
+          label: `${block.name} - ${this.emailService.replaceUnderscores(
+            field
+          )}`,
+        }))
+      );
+    }
+    const previewFields: string[] = this.dlContextSettings?.previewFields ?? [];
+    return previewFields.map((field) => ({
+      value: `{{${field}}}`,
+      label: this.emailService.replaceUnderscores(field),
+    }));
   }
 
   /**
@@ -323,11 +347,18 @@ export class FilterRowComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (
+    const fieldsChanged =
       initialField &&
       this.fields.length > 0 &&
-      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
-    ) {
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue);
+    const contextSettingsChanged =
+      initialField &&
+      this.field &&
+      !isEqual(
+        changes.dlContextSettings?.previousValue,
+        changes.dlContextSettings?.currentValue
+      );
+    if (fieldsChanged || contextSettingsChanged) {
       this.setField(initialField);
     }
 
@@ -537,8 +568,18 @@ export class FilterRowComponent
   /** Toggles context editor */
   public toggleContextEditor() {
     this.form.get('value')?.setValue(null);
-    if (this.editor === this.contextEditor) {
+    if (
+      this.editor === this.contextEditor ||
+      this.editor === this.datasetTokenEditor
+    ) {
+      this.contextEditorIsActivated = false;
       this.setEditor(this.field);
+    } else if (
+      this.dlContextSettings?.previewFields?.length > 0 ||
+      this.dlContextSettings?.datasetBlocks?.length > 0
+    ) {
+      this.editor = this.datasetTokenEditor;
+      this.contextEditorIsActivated = true;
     } else {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
