@@ -20,6 +20,28 @@ import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
 
+/** Operators that keep attribute comparisons tied to another record field. */
+const ATTRIBUTE_FIELD_OPERATORS = ['eq', 'neq', 'in', 'notin'];
+
+/** Attribute operators that let the user choose field or text input. */
+const ATTRIBUTE_SWITCHABLE_OPERATORS = ['eq', 'neq'];
+
+/** Operators that compare an attribute against a literal value. */
+const ATTRIBUTE_LITERAL_OPERATORS = [
+  'eq',
+  'neq',
+  'in',
+  'notin',
+  'contains',
+  'doesnotcontain',
+  'startswith',
+  'endswith',
+  'isnull',
+  'isnotnull',
+  'isempty',
+  'isnotempty',
+];
+
 /**
  * Composite filter row.
  */
@@ -42,6 +64,8 @@ export class FilterRowComponent
   @Input() canUseContext = false;
   /** Email Notification Check */
   @Input() isEmailNotification = false;
+  /** Enables attribute filters to switch editor mode based on operator. */
+  @Input() enableAttributeValueSource = false;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -51,6 +75,9 @@ export class FilterRowComponent
   booleanEditor!: TemplateRef<any>;
   /** Select field editor template */
   @ViewChild('selectEditor', { static: false }) selectEditor!: TemplateRef<any>;
+  /** Attribute editor template */
+  @ViewChild('attributeEditor', { static: false })
+  attributeEditor!: TemplateRef<any>;
   /** Numeric field editor template */
   @ViewChild('numericEditor', { static: false })
   numericEditor!: TemplateRef<any>;
@@ -86,6 +113,35 @@ export class FilterRowComponent
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
     return this.form.get('value') as UntypedFormControl;
+  }
+
+  /** @returns the attribute value source form control if available. */
+  get valueSourceControl(): UntypedFormControl | null {
+    return (this.form.get('valueSource') as UntypedFormControl) || null;
+  }
+
+  /** @returns whether the attribute value source dropdown should be shown. */
+  get attributeShowsValueSourceSwitch(): boolean {
+    return (
+      !!this.enableAttributeValueSource &&
+      this.field?.editor === 'attribute' &&
+      ATTRIBUTE_SWITCHABLE_OPERATORS.includes(this.form.get('operator')?.value)
+    );
+  }
+
+  /** @returns whether attribute filters should use the field dropdown. */
+  get attributeUsesFieldEditor(): boolean {
+    const operator = this.form.get('operator')?.value;
+
+    if (['in', 'notin'].includes(operator)) {
+      return true;
+    }
+
+    if (ATTRIBUTE_SWITCHABLE_OPERATORS.includes(operator)) {
+      return this.valueSourceControl?.value !== 'literal';
+    }
+
+    return false;
   }
 
   /**
@@ -126,6 +182,13 @@ export class FilterRowComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.setHideEditor(value);
+        if (
+          this.field?.editor === 'attribute' &&
+          this.enableAttributeValueSource
+        ) {
+          this.form.get('value')?.setValue(null);
+          this.setEditor(this.field);
+        }
         // Checks for in the last operator
         if (value === 'inthelast') {
           // Replaces the date editor with in the last
@@ -154,6 +217,14 @@ export class FilterRowComponent
                 }
               }
             });
+        }
+      });
+    this.valueSourceControl?.valueChanges
+      ?.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.attributeShowsValueSourceSwitch) {
+          this.form.get('value')?.setValue(null);
+          this.setEditor(this.field);
         }
       });
     if (this.disabled) {
@@ -244,33 +315,59 @@ export class FilterRowComponent
     }
     if (field) {
       this.field = field;
-      const type = {
-        ...FIELD_TYPES.find(
-          (x) =>
-            x.editor === this.field.editor &&
-            !!this.field.multiSelect === !!x.multiSelect
-        ),
-        ...this.field.filter,
-      };
-      this.operators = FILTER_OPERATORS.filter((x) =>
-        type?.operators?.includes(x.value)
-      );
-      if (init) {
-        /** If type undefined, use as default 'eq' operator and not undefined. */
-        this.form
-          .get('operator')
-          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value, {
-            emitEvent: false,
-          });
-      } else {
-        this.form
-          .get('operator')
-          ?.setValue(this.form.value.operator, { emitEvent: false });
-      }
-      this.setHideEditor(this.form.get('operator')?.value);
+      this.updateFieldOperators(this.field, init);
       // set operator template
       this.setEditor(this.field);
     }
+  }
+
+  /**
+   * Gets the operator configuration for the selected field.
+   *
+   * @param field selected field
+   * @returns field operator configuration
+   */
+  private getFieldConfig(field: any) {
+    if (field.editor === 'attribute' && this.enableAttributeValueSource) {
+      const fieldOperators = field.fieldOperators || ATTRIBUTE_FIELD_OPERATORS;
+      const literalOperators =
+        field.literalOperators || ATTRIBUTE_LITERAL_OPERATORS;
+
+      return {
+        defaultOperator: field.fieldDefaultOperator || 'eq',
+        operators: Array.from(
+          new Set([...fieldOperators, ...literalOperators])
+        ),
+      };
+    }
+
+    return {
+      ...FIELD_TYPES.find(
+        (x) =>
+          x.editor === field.editor && !!field.multiSelect === !!x.multiSelect
+      ),
+      ...field.filter,
+    };
+  }
+
+  /**
+   * Updates the operator list for the selected field.
+   *
+   * @param field selected field
+   * @param init is new field or not
+   */
+  private updateFieldOperators(field: any, init?: true): void {
+    const type = this.getFieldConfig(field);
+    const nextOperator =
+      init || !type?.operators?.includes(this.form.get('operator')?.value)
+        ? type?.defaultOperator ?? FILTER_OPERATORS[0].value
+        : this.form.get('operator')?.value;
+
+    this.operators = FILTER_OPERATORS.filter((x) =>
+      type?.operators?.includes(x.value)
+    );
+    this.form.get('operator')?.setValue(nextOperator, { emitEvent: false });
+    this.setHideEditor(nextOperator);
   }
 
   /**
@@ -314,6 +411,16 @@ export class FilterRowComponent
       this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
+        case 'attribute': {
+          if (this.enableAttributeValueSource) {
+            this.editor = this.attributeUsesFieldEditor
+              ? this.selectEditor
+              : this.attributeEditor;
+            break;
+          }
+          this.editor = this.selectEditor;
+          break;
+        }
         case 'text': {
           this.editor = this.textEditor;
           break;
@@ -322,7 +429,6 @@ export class FilterRowComponent
           this.editor = this.booleanEditor;
           break;
         }
-        case 'attribute':
         case 'select': {
           this.editor = this.selectEditor;
           break;
@@ -344,7 +450,7 @@ export class FilterRowComponent
           this.editor = this.textEditor;
         }
       }
-      if (this.disabled) {
+      if (this.disabled || this.hideEditor) {
         this.form.get('value')?.disable();
       } else {
         this.form.get('value')?.enable();

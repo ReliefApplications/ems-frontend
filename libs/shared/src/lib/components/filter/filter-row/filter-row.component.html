@@ -19,6 +19,22 @@
     </ui-select-menu>
   </div>
   <ng-container *ngIf="field && editor && !hideEditor">
+    <div
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      class="w-32"
+      *ngIf="attributeShowsValueSourceSwitch"
+    >
+      <label>{{ 'common.type.one' | translate }}</label>
+      <ui-select-menu formControlName="valueSource">
+        <ui-select-option value="field">
+          {{ 'common.field.one' | translate }}
+        </ui-select-option>
+        <ui-select-option value="literal">
+          {{ 'common.value.one' | translate }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
     <ng-container
       [ngTemplateOutlet]="editor"
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
@@ -167,6 +183,14 @@
           {{ option.text }}
         </ui-select-option>
       </ui-select-menu>
+    </div>
+  </ng-template>
+
+  <!-- ATTRIBUTE EDITOR -->
+  <ng-template #attributeEditor>
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="string" />
     </div>
   </ng-template>
 
