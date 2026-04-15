@@ -304,6 +304,7 @@ export class CoreGridComponent
   public actions: GridActions = {
     add: false,
     update: false,
+    disableUpdateConfirmation: false,
     delete: false,
     history: false,
     convert: false,
@@ -1186,6 +1187,7 @@ export class CoreGridComponent
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         template: this.settings.template || null,
+        askForConfirm: !this.settings.actions?.disableUpdateConfirmation,
       },
       autoFocus: false,
     });

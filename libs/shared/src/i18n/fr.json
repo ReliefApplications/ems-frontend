@@ -1879,6 +1879,13 @@
 				},
 				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Column label"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",
@@ -1984,6 +1991,7 @@
 						"add": "Ajouter de nouveaux enregistrements",
 						"convert": "Convertir des enregistrements",
 						"delete": "Supprimer les enregistrements",
+						"disableUpdateConfirmation": "Désactiver la confirmation de modification",
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
@@ -2063,6 +2071,7 @@
 							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
+							"disableUpdateConfirmation": "Si activé, les utilisateurs autorisés ne verront pas de modal de confirmation lors de la mise à jour des enregistrements, et les changements seront appliqués directement à la grille. À utiliser avec prudence.",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",

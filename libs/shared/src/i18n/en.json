@@ -1988,6 +1988,7 @@
 						"add": "Add new records",
 						"convert": "Convert records",
 						"delete": "Delete records",
+						"disableUpdateConfirmation": "Disable update confirmation modal",
 						"export": "Export records",
 						"goTo": {
 							"column": {
@@ -2067,6 +2068,7 @@
 							"add": "If authorized, user can add new records using selected template",
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"delete": "If authorized, user can delete visible records",
+							"disableUpdateConfirmation": "If enabled, authorized users will not see a confirmation modal when updating records, and changes will be directly applied to the grid. Use with caution.",
 							"export": "User can export selected columns of visible records",
 							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",

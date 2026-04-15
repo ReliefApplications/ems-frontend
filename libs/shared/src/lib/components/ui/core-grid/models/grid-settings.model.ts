@@ -25,6 +25,7 @@ export interface GridSettings {
 /** Related grid actions */
 export interface GridActions {
   update: boolean;
+  disableUpdateConfirmation?: boolean;
   delete: boolean;
   history: boolean;
   convert: boolean;

@@ -1876,6 +1876,13 @@
 				},
 				"openEditor": "******",
 				"openSettings": "******",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "******"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "******",
 					"displayMap": "******",
@@ -1981,6 +1988,7 @@
 						"add": "******",
 						"convert": "******",
 						"delete": "******",
+						"disableUpdateConfirmation": "******",
 						"export": "******",
 						"goTo": {
 							"column": {
@@ -2060,6 +2068,7 @@
 							"add": "******",
 							"convert": "******",
 							"delete": "******",
+							"disableUpdateConfirmation": "******",
 							"export": "******",
 							"goTo": "******",
 							"inline": "******",

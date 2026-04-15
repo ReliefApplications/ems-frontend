@@ -49,6 +49,13 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.update',
     },
     {
+      name: 'disableUpdateConfirmation',
+      text: 'components.widget.settings.grid.actions.disableUpdateConfirmation',
+      tooltip:
+        'components.widget.settings.grid.hint.actions.disableUpdateConfirmation',
+      subFieldOf: 'update',
+    },
+    {
       name: 'inlineEdition',
       text: 'components.widget.settings.grid.actions.inline',
       tooltip: 'components.widget.settings.grid.hint.actions.inline',

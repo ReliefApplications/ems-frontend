@@ -252,6 +252,9 @@ export class GridSettingsFormFactory {
       history: [get(configuration, 'actions.history', true)],
       convert: [get(configuration, 'actions.convert', true)],
       update: [get(configuration, 'actions.update', true)],
+      disableUpdateConfirmation: [
+        get(configuration, 'actions.disableUpdateConfirmation', false),
+      ],
       inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],

@@ -10,6 +10,11 @@
         <ui-toggle
           *ngFor="let action of actions"
           [formControlName]="action.name"
+          [disabled]="
+            action.subFieldOf &&
+            !formGroup.get('actions')?.get(action.subFieldOf)?.value
+          "
+          [class.pl-6]="action.subFieldOf"
         >
           <ng-container ngProjectAs="label">
             {{ action.text | translate

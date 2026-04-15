@@ -111,6 +111,7 @@ export class GridComponent
   @Input() actions: GridActions = {
     add: false,
     update: false,
+    disableUpdateConfirmation: false,
     delete: false,
     history: false,
     convert: false,
