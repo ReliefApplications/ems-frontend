@@ -7,41 +7,41 @@
     <!-- Predefined actions -->
     <div class="flex flex-col gap-2 pb-0.5">
       <div class="flex flex-col gap-2 mb-2">
-        <ui-toggle
-          *ngFor="let action of actions"
-          [formControlName]="action.name"
-          [disabled]="
-            action.subFieldOf &&
-            !formGroup.get('actions')?.get(action.subFieldOf)?.value
-          "
-          [class.pl-6]="action.subFieldOf"
-        >
-          <ng-container ngProjectAs="label">
-            {{ action.text | translate
-            }}<ui-icon
-              *ngIf="action.tooltip"
-              class="ml-1 cursor-help self-center"
-              variant="grey"
-              icon="info_outline"
-              [size]="18"
-              [uiTooltip]="action.tooltip | translate"
-              uiTooltipPosition="right"
-            ></ui-icon>
-            <!-- Icon with warning if any -->
-            <ui-icon
-              *ngIf="
-                formGroup.get('actions')?.get(action.name)?.invalid &&
-                action.toolTipWarning
-              "
-              class="ml-1 cursor-help self-center"
-              variant="danger"
-              icon="warning"
-              [size]="18"
-              [uiTooltip]="action.toolTipWarning | translate"
-              uiTooltipPosition="right"
-            ></ui-icon>
-          </ng-container>
-        </ui-toggle>
+        <ng-container *ngFor="let action of actions">
+          <ui-toggle
+            [formControlName]="action.name"
+            *ngIf="
+              !action.subFieldOf || formGroup.get('actions')?.get(action.subFieldOf)?.value
+            "
+            [class.pl-6]="action.subFieldOf"
+          >
+            <ng-container ngProjectAs="label">
+              {{ action.text | translate
+              }}<ui-icon
+                *ngIf="action.tooltip"
+                class="ml-1 cursor-help self-center"
+                variant="grey"
+                icon="info_outline"
+                [size]="18"
+                [uiTooltip]="action.tooltip | translate"
+                uiTooltipPosition="right"
+              ></ui-icon>
+              <!-- Icon with warning if any -->
+              <ui-icon
+                *ngIf="
+                  formGroup.get('actions')?.get(action.name)?.invalid &&
+                  action.toolTipWarning
+                "
+                class="ml-1 cursor-help self-center"
+                variant="danger"
+                icon="warning"
+                [size]="18"
+                [uiTooltip]="action.toolTipWarning | translate"
+                uiTooltipPosition="right"
+              ></ui-icon>
+            </ng-container>
+          </ui-toggle>
+        </ng-container>
       </div>
       <!-- Redirect to specific page action details -->
       <div
