@@ -113,6 +113,8 @@ export class FilterRowComponent
   public operators: any[] = [];
   /** Is context editor used */
   public contextEditorIsActivated = false;
+  /** Saved expression value when temporarily switching to value picker */
+  private savedContextValue: string | null = null;
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'minutes', label: 'Minutes' },
@@ -489,6 +491,22 @@ export class FilterRowComponent
     } else if (this.isDynamicPlaceholderValue(value)) {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
+    } else if (
+      typeof value === 'string' &&
+      value.startsWith('{{') &&
+      value.endsWith('}}')
+    ) {
+      // Value was saved from an expression editor — restore the correct editor.
+      // Use datasetTokenEditor if token options are configured (datasetBlocks or
+      // previewFields exist), even if the exact field list hasn't loaded yet.
+      // Fall back to contextEditor only when no token config is present at all.
+      const hasTokenConfig =
+        (this.dlContextSettings?.datasetBlocks?.length ?? 0) > 0 ||
+        (this.dlContextSettings?.previewFields?.length ?? 0) > 0;
+      this.editor = hasTokenConfig
+        ? this.datasetTokenEditor
+        : this.contextEditor;
+      this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
         case 'attribute': {
@@ -567,22 +585,31 @@ export class FilterRowComponent
 
   /** Toggles context editor */
   public toggleContextEditor() {
-    this.form.get('value')?.setValue(null);
     if (
       this.editor === this.contextEditor ||
       this.editor === this.datasetTokenEditor
     ) {
+      // Leaving expression editor — save the current value and clear it for the picker
+      this.savedContextValue = this.form.get('value')?.value ?? null;
+      this.form.get('value')?.setValue(null);
       this.contextEditorIsActivated = false;
       this.setEditor(this.field);
-    } else if (
-      this.dlContextSettings?.previewFields?.length > 0 ||
-      this.dlContextSettings?.datasetBlocks?.length > 0
-    ) {
-      this.editor = this.datasetTokenEditor;
-      this.contextEditorIsActivated = true;
     } else {
-      this.editor = this.contextEditor;
+      // Returning to expression editor — clear any picker value and restore the saved one
+      this.form.get('value')?.setValue(null);
+      if (
+        this.dlContextSettings?.previewFields?.length > 0 ||
+        this.dlContextSettings?.datasetBlocks?.length > 0
+      ) {
+        this.editor = this.datasetTokenEditor;
+      } else {
+        this.editor = this.contextEditor;
+      }
       this.contextEditorIsActivated = true;
+      if (this.savedContextValue !== null) {
+        this.form.get('value')?.setValue(this.savedContextValue);
+        this.savedContextValue = null;
+      }
     }
   }
 

@@ -1436,7 +1436,28 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param name The name of the DL.
    */
-  editDLByName(name: string) {
+  async editDLByName(name: string) {
+    // Always refresh allAvailableDatasetFields from the resource before opening
+    // the DL editor. This ensures the expression-picker dropdown shows ALL
+    // resource fields, not just the selected query fields or stale data from a
+    // previous operation.
+    const datasetsValues =
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? [];
+    const resourceId = datasetsValues[0]?.resource;
+    if (resourceId) {
+      try {
+        const result = await firstValueFrom(
+          this.emailService.fetchResourceData(resourceId)
+        );
+        const queryName = (result.data as any)?.resource?.queryName;
+        if (queryName) {
+          this.emailService.allAvailableDatasetFields =
+            this.queryBuilder.getFields(queryName);
+        }
+      } catch {
+        // Proceed anyway — dropdown will fall back to query.fields
+      }
+    }
     this.getDistributionDetails(name);
     this.createDL();
   }
@@ -1480,7 +1501,16 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param name The name of the DL.
    */
   getDistributionDetails(name: string) {
-    this.emailService.setDatasetForm();
+    // Reset only emailDistributionList — do NOT call setDatasetForm() here as it
+    // wipes the entire datasetsForm (including SSE dataset config), which breaks
+    // dlDatasetContextSettings for the DL edit wizard.
+    this.emailService.datasetsForm.setControl(
+      'emailDistributionList',
+      this.emailService.initialiseDistributionList()
+    );
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
     this.emailService.selectedDistributionListName = '';
     this.emailService.isGridAction = false;
     this.emailService.distributionListSeparate = [];

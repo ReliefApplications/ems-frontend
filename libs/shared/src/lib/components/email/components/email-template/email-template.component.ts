@@ -991,6 +991,9 @@ export class EmailTemplateComponent
     const commonServiceData: any = this.emailService.setCommonServicePayload(
       cloneDeep(this.distributionCommonQuery?.getRawValue()?.filter)
     );
+    commonServiceData.datasets = cloneDeep(
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? []
+    );
     this.loading = true;
     //Reset previous data
     this.previewCsEmails = [];

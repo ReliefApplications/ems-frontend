@@ -326,7 +326,7 @@
     </div>
     </div>
     <ui-button
-      *ngIf="this.dlContextSettings?.enableContextEditor"
+      *ngIf="!canUseContext && (contextEditorIsActivated || this.dlContextSettings?.enableContextEditor)"
       [isIcon]="true"
       icon="change_circle_outline"
       variant="primary"
