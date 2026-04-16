@@ -300,7 +300,7 @@ export class FilterRowComponent
    * @param name field name
    * @param init is new field or not
    */
-  private setField(name: string, init?: true) {
+  private setField(name: string, init = false) {
     // get field, and operators
     const nameFragments =
       name.startsWith('{{attributes.') && name.endsWith('}}')
@@ -356,7 +356,7 @@ export class FilterRowComponent
    * @param field selected field
    * @param init is new field or not
    */
-  private updateFieldOperators(field: any, init?: true): void {
+  private updateFieldOperators(field: any, init = false): void {
     const type = this.getFieldConfig(field);
     const nextOperator =
       init || !type?.operators?.includes(this.form.get('operator')?.value)
