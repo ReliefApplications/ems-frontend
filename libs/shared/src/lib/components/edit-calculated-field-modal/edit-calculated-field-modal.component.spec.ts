@@ -17,6 +17,12 @@ import { getDataKeys } from './utils/keys';
 describe('EditCalculatedFieldModalComponent', () => {
   let component: EditCalculatedFieldModalComponent;
   let fixture: ComponentFixture<EditCalculatedFieldModalComponent>;
+  const dialogRefMock = {
+    addPanelClass: jest.fn(),
+    close: jest.fn(),
+    removePanelClass: jest.fn(),
+    updateSize: jest.fn(),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -24,7 +30,7 @@ describe('EditCalculatedFieldModalComponent', () => {
         UntypedFormBuilder,
         TranslateService,
         { provide: 'environment', useValue: {} },
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: dialogRefMock },
         {
           provide: DIALOG_DATA,
           useValue: {
@@ -47,6 +53,7 @@ describe('EditCalculatedFieldModalComponent', () => {
   });
 
   beforeEach(() => {
+    jest.clearAllMocks();
     fixture = TestBed.createComponent(EditCalculatedFieldModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
