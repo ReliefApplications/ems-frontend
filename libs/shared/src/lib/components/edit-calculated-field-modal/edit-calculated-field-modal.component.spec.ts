@@ -23,11 +23,13 @@ describe('EditCalculatedFieldModalComponent', () => {
       providers: [
         UntypedFormBuilder,
         TranslateService,
+        { provide: 'environment', useValue: {} },
         { provide: DialogRef, useValue: {} },
         {
           provide: DIALOG_DATA,
           useValue: {
-            access: { canSee: null, canUpdate: null, canDelete: null },
+            calculatedField: null,
+            resourceFields: [],
           },
         },
       ],
