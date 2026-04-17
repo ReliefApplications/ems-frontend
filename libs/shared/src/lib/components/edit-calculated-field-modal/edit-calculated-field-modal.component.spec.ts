@@ -31,8 +31,8 @@ describe('EditCalculatedFieldModalComponent', () => {
           },
         },
       ],
-      declarations: [EditCalculatedFieldModalComponent],
       imports: [
+        EditCalculatedFieldModalComponent,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
