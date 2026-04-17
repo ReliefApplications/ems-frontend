@@ -137,4 +137,7 @@ export const getInfoKeys = (): string[] =>
  * @returns list of data keys
  */
 export const getDataKeys = (fields: any): string[] =>
-  fields.map((field: any) => DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX);
+  fields.flatMap((field: any) => [
+    DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
+    DATA_PREFIX + field.name + ':text' + PLACEHOLDER_SUFFIX,
+  ]);

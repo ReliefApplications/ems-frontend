@@ -172,6 +172,72 @@ export const render = (questionElement: Question, injector: Injector): void => {
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
 
+    const getChoiceValue = (value: any) => {
+      if (question.isPrimitiveValue) {
+        return value;
+      }
+
+      const valueField = question._referenceData?.valueField;
+      if (!valueField) {
+        return get(value, 'value', value);
+      }
+
+      return get(
+        value,
+        `value.${valueField}`,
+        get(value, valueField, get(value, 'value', value))
+      );
+    };
+
+    const updateDisplayValue = async () => {
+      const survey = question.survey as SurveyModel;
+      const displayValueVariable = `${question.name}.displayValue`;
+
+      if (!question.referenceData || !question.referenceDataDisplayField) {
+        survey.setVariable(displayValueVariable, null);
+        return;
+      }
+
+      if (question.getType() === 'tagbox' && isArray(question.value)) {
+        const choices = await referenceDataService.getChoices(
+          question.referenceData,
+          question.referenceDataDisplayField,
+          question.isPrimitiveValue,
+          graphQLVariables(question, 'referenceDataVariableMapping')
+        );
+
+        const displayValues = question.value.map((value: any) => {
+          const choiceValue = getChoiceValue(value);
+          return (
+            choices.find((choice) =>
+              isEqual(getChoiceValue(choice.value), choiceValue)
+            )?.text ?? choiceValue
+          );
+        });
+
+        survey.setVariable(displayValueVariable, displayValues);
+        return;
+      }
+
+      if (isNil(question.value)) {
+        survey.setVariable(displayValueVariable, null);
+        return;
+      }
+
+      const choice = await referenceDataService.getChoice(
+        question.value,
+        question.referenceData,
+        question.referenceDataDisplayField,
+        question.isPrimitiveValue,
+        graphQLVariables(question, 'referenceDataVariableMapping')
+      );
+
+      survey.setVariable(
+        displayValueVariable,
+        choice?.text ?? getChoiceValue(question.value) ?? null
+      );
+    };
+
     const updateChoices = async () => {
       if (question.referenceData && question.referenceDataDisplayField) {
         const choices = await referenceDataService.getChoices(
@@ -212,6 +278,11 @@ export const render = (questionElement: Question, injector: Injector): void => {
       } else {
         question.choices = [];
       }
+    };
+
+    const refreshChoicesAndDisplayValue = async () => {
+      await updateChoices();
+      await updateDisplayValue();
     };
 
     const updateSelectedChoices = () => {
@@ -270,10 +341,11 @@ export const render = (questionElement: Question, injector: Injector): void => {
               referenceData,
               graphQLVariables(question, 'referenceDataVariableMapping')
             )
-            .then(() => updateChoices());
+            .then(() => refreshChoicesAndDisplayValue());
         });
       question.referenceDataChoicesLoaded = true;
     }
+    question.valueChangedCallback = updateDisplayValue;
     // Prevent selected choices to be removed when sending the value
     question.clearIncorrectValuesCallback = () => {
       // console.log(question.visibleChoices);
@@ -295,11 +367,11 @@ export const render = (questionElement: Question, injector: Injector): void => {
     );
     question.registerFunctionOnPropertyValueChanged(
       'isPrimitiveValue',
-      updateChoices
+      refreshChoicesAndDisplayValue
     );
     question.registerFunctionOnPropertyValueChanged(
       'referenceDataDisplayField',
-      updateChoices
+      refreshChoicesAndDisplayValue
     );
     // Init linked reference data questions update inside the survey if those question types exists
     const containsLinkedReferenceDataQuestions = (
@@ -335,6 +407,7 @@ export const render = (questionElement: Question, injector: Injector): void => {
           question._instance.loading = false;
           question._instance.disabled = question.readOnly;
           updateSelectedChoices();
+          await updateDisplayValue();
         }
       }
     };

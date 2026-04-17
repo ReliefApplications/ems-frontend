@@ -30,8 +30,12 @@ export default {
   testMatch: [
     '<rootDir>/src/lib/services/context/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
+    '<rootDir>/src/lib/services/reference-data/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
+    '<rootDir>/src/lib/components/edit-calculated-field-modal/*.spec.ts',
+    '<rootDir>/src/lib/survey/components/resource.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
+    '<rootDir>/src/lib/survey/global-properties/reference-data.spec.ts',
   ],
 };

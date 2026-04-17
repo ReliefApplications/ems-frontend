@@ -12,6 +12,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { getDataKeys } from './utils/keys';
 
 describe('EditCalculatedFieldModalComponent', () => {
   let component: EditCalculatedFieldModalComponent;
@@ -51,5 +52,12 @@ describe('EditCalculatedFieldModalComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should suggest raw and text data keys', () => {
+    expect(getDataKeys([{ name: 'country' }])).toEqual([
+      '{{data.country}}',
+      '{{data.country:text}}',
+    ]);
   });
 });

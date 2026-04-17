@@ -11,7 +11,6 @@ import get from 'lodash/get';
 import {
   ComponentCollection,
   JsonMetadata,
-  Question,
   Serializer,
   SurveyModel,
   SvgRegistry,
@@ -44,7 +43,10 @@ const loadedRecords: Map<string, Record> = new Map();
  * @param question resource question
  * @param recordID id of record to add context of
  */
-const addRecordToSurveyContext = (question: Question, recordID: string) => {
+const addRecordToSurveyContext = (
+  question: QuestionResource,
+  recordID: string
+) => {
   const survey = question.survey as SurveyModel;
   if (!recordID) {
     // get survey variables
@@ -58,6 +60,13 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
   // get record from cache
   const record = loadedRecords.get(recordID);
   if (!record) return;
+
+  survey.setVariable(`${question.name}.id`, record.id);
+  survey.setVariable(`${question.name}.incrementalId`, record.incrementalId);
+  survey.setVariable(
+    `${question.name}.displayValue`,
+    question.displayField ? get(record.data, question.displayField) : record.id
+  );
 
   const data = record?.data || {};
   for (const field in data) {
@@ -569,7 +578,10 @@ export const init = (
 
         // Listen to value changes
         survey.onValueChanged.add((_, options) => {
-          addRecordToSurveyContext(options.question, options.value);
+          addRecordToSurveyContext(
+            options.question as QuestionResource,
+            options.value
+          );
         });
       }
       actionsButtons.appendChild(searchBtn);

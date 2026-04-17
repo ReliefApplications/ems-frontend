@@ -19,7 +19,7 @@ import transformGraphQLVariables from '../../utils/reference-data/transform-grap
 import { HttpHeaders } from '@angular/common/http';
 import { Aggregation } from '../../models/aggregation.model';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { cloneDeep, get, set } from 'lodash';
+import { cloneDeep, get, isEqual, set } from 'lodash';
 import { procPipelineStep } from '../../utils/reference-data/filter.util';
 import { DataTransformer } from '../../utils/reference-data/data-transformer.util';
 import { isEmpty } from 'lodash';
@@ -86,7 +86,7 @@ export class ReferenceDataService {
     displayField: string,
     storePrimitiveValue = true,
     graphQLVariables?: any
-  ): Promise<{ value: string | number; text: string }[]> {
+  ): Promise<{ value: string | number | any; text: string }[]> {
     const sortByDisplayField = (a: any, b: any) =>
       a[displayField] > b[displayField] ? 1 : -1;
 
@@ -104,6 +104,53 @@ export class ReferenceDataService {
       value: storePrimitiveValue ? item[valueField] : item,
       text: item[displayField],
     }));
+  }
+
+  /**
+   * Return the choice corresponding to the referenceDataValue passed.
+   *
+   * @param referenceDataValue ReferenceData specific value to obtain
+   * @param referenceDataID ReferenceData ID
+   * @param displayField Field used for display in the question
+   * @param storePrimitiveValue Whether to store the whole item or only the primitive value
+   * @param graphQLVariables optional graphql variables, built from form value
+   * @returns Promised choice
+   */
+  public async getChoice(
+    referenceDataValue: any,
+    referenceDataID: string,
+    displayField: string,
+    storePrimitiveValue = true,
+    graphQLVariables?: any
+  ): Promise<{ value: string | number | any; text: string } | null> {
+    const { referenceData } = await this.cacheItems(
+      referenceDataID,
+      graphQLVariables && graphQLVariables
+    );
+    const valueField = referenceData?.valueField || '';
+    const choices = await this.getChoices(
+      referenceDataID,
+      displayField,
+      storePrimitiveValue,
+      graphQLVariables
+    );
+
+    return (
+      choices.find((choice) => {
+        if (storePrimitiveValue) {
+          return isEqual(choice.value, referenceDataValue);
+        }
+
+        return isEqual(
+          get(choice.value, valueField),
+          get(
+            referenceDataValue,
+            `value.${valueField}`,
+            get(referenceDataValue, valueField)
+          )
+        );
+      }) || null
+    );
   }
 
   /**
