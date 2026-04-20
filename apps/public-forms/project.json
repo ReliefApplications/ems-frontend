@@ -1,0 +1,333 @@
+{
+  "name": "public-forms",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/public-forms/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/public-forms",
+        "index": "apps/public-forms/src/index.html",
+        "main": "apps/public-forms/src/main.ts",
+        "polyfills": ["apps/public-forms/src/polyfills.ts"],
+        "tsConfig": "apps/public-forms/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/shared/src/i18n/",
+            "output": "/assets/i18n/"
+          },
+          {
+            "glob": "**/*",
+            "input": "assets/",
+            "output": "/assets/"
+          },
+          "apps/public-forms/src/favicon.ico",
+          "apps/public-forms/src/staticwebapp.config.json",
+          {
+            "glob": "**/*",
+            "input": "node_modules/tinymce",
+            "output": "/assets/tinymce/"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/shared/src/i18n/tinymce/",
+            "output": "/assets/tinymce/langs"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/"
+          }
+        ],
+        "styles": [
+          "apps/public-forms/src/styles.scss",
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
+          "node_modules/leaflet/dist/leaflet.css",
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+          "node_modules/leaflet-measure/dist/leaflet-measure.css",
+          "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
+        ],
+        "scripts": [
+          "node_modules/tinymce/tinymce.min.js",
+          "node_modules/tinymce/themes/silver/theme.min.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "minimatch",
+          "hammerjs",
+          "subscriptions-transport-ws",
+          "zen-observable",
+          "lodash",
+          "cronstrue",
+          "cron-parser",
+          "cron-validator",
+          "localforage",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
+          "fast-sha256",
+          "leaflet",
+          "esri-leaflet-geocoder",
+          "esri-leaflet-vector",
+          "leaflet.markercluster",
+          "color",
+          "esri-leaflet-heatmap",
+          "esri-leaflet-renderers",
+          "jsonpath",
+          "to-json-schema",
+          "email-validator"
+        ]
+      },
+      "configurations": {
+        "azure-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.azure.prod.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "20mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "20kb"
+            }
+          ],
+          "baseHref": "/apps/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "azure-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "20mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "20kb"
+            }
+          ],
+          "baseHref": "/apps/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "azure-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.azure.dev.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "20mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "20kb"
+            }
+          ],
+          "baseHref": "/apps/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.local.prod.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.local.uat.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/public-forms/src/environments/environment.ts",
+              "with": "apps/public-forms/src/environments/environment.local.dev.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        }
+      },
+      "defaultConfiguration": "azure-dev"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "local-prod": {
+          "browserTarget": "public-forms:build:local-prod"
+        },
+        "local-uat": {
+          "browserTarget": "public-forms:build:local-uat"
+        },
+        "local-dev": {
+          "browserTarget": "public-forms:build:local-dev"
+        },
+        "development": {
+          "browserTarget": "public-forms:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "public-forms:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/public-forms/**/*.ts",
+          "apps/public-forms/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/public-forms/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/public-forms/.storybook",
+        "browserTarget": "public-forms:build",
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "apps/public-forms"],
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/styles/src/lib/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/public-forms",
+        "configDir": "apps/public-forms/.storybook",
+        "browserTarget": "public-forms:build",
+        "compodoc": false,
+        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/styles/src/lib/themes/default",
+            "libs/styles/src/lib/kendo"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
