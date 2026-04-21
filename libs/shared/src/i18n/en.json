@@ -2820,7 +2820,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
-					"fields": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+					"fields": "You can use dashboard filter values with {{filter.<name>}} and current user values with {{user.username}}, {{user.firstName}}, {{user.lastName}}, or WHO attributes such as {{user.country}}.",
 					"position": "Only applicable when default variant is active"
 				},
 				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
