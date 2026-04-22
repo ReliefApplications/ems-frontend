@@ -53,8 +53,8 @@ export class TabStyleComponent implements OnInit {
   public onAdd(): void {
     // Sets new style default values
     const styleForm = createStyleForm({
-      isTag: true,
-      fields: [this.fields[0].name],
+      isBadge: true,
+      wholeRow: false,
     });
     this.form.push(styleForm);
   }

@@ -195,6 +195,7 @@ export const createStyleForm = (value: any) =>
       underline: [value?.text?.underline || false],
       italic: [value?.text?.italic || false],
     }),
+    wholeRow: [value?.wholeRow ?? !(value?.fields && value.fields.length > 0)],
     fields: [value?.fields || []],
     filter: createFilterGroup(value?.filter || {}),
   });

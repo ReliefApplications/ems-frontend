@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import {
   Field,
   QueryBuilderService,
@@ -24,9 +24,6 @@ export class QueryStyleComponent implements OnInit {
 
   /** The form group used to manage the form controls. */
   @Input() form!: UntypedFormGroup;
-
-  /** The form control used to manage the whole row toggle. */
-  public wholeRow!: UntypedFormControl;
 
   /** The list of filter fields available for the query. */
   public filterFields: Field[] = [];
@@ -53,15 +50,11 @@ export class QueryStyleComponent implements OnInit {
   ngOnInit(): void {
     this.fieldNodes = this.setFieldNodes();
 
-    console.log(this.form);
+    const selectedFields = this.form.get('fields')?.value || [];
 
-    const fields = this.form.get('fields')?.value || [];
-
-    if (fields.length > 0) {
-      this.wholeRow = new UntypedFormControl(false);
+    if (selectedFields.length > 0) {
       /** Update checked keys from nodes & selected fields */
       const flatNodes = this.flatNodes();
-      const selectedFields = this.form.get('fields')?.value || [];
       const checkedKeys = [];
       for (const field of selectedFields) {
         const node = flatNodes.find((node) => node.path === field);
@@ -70,12 +63,12 @@ export class QueryStyleComponent implements OnInit {
         }
       }
       this.checkedKeys = checkedKeys;
-    } else {
-      this.wholeRow = new UntypedFormControl(true);
     }
-    this.wholeRow.valueChanges.subscribe((value) => {
+
+    this.form.get('wholeRow')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('fields')?.setValue([]);
+        this.checkedKeys = [];
       }
     });
 
