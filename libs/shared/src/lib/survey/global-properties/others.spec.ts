@@ -1,8 +1,5 @@
 import { JsonObjectProperty, Serializer } from 'survey-core';
-import {
-  SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
-  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
-} from '../../utils/survey-form-action-labels.util';
+import { SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL } from '../../utils/survey-form-action-labels.util';
 import { init } from './others';
 
 type SurveyPropertyOwner = {
@@ -26,7 +23,6 @@ const createSurveyPropertyOwner = (
 
 describe('survey global navigation properties', () => {
   let modalSaveButtonProperty: JsonObjectProperty;
-  let modalSaveAsDraftButtonProperty: JsonObjectProperty;
   let modalLabelOverridesToggleProperty: JsonObjectProperty;
 
   beforeAll(() => {
@@ -34,10 +30,6 @@ describe('survey global navigation properties', () => {
     modalSaveButtonProperty = Serializer.getProperty(
       'survey',
       SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL
-    );
-    modalSaveAsDraftButtonProperty = Serializer.getProperty(
-      'survey',
-      SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL
     );
     modalLabelOverridesToggleProperty = Serializer.getProperty(
       'survey',
@@ -52,16 +44,12 @@ describe('survey global navigation properties', () => {
 
     expect(modalSaveButtonProperty).toBeTruthy();
     expect(modalSaveButtonProperty.category).toBe('navigation');
-
-    expect(modalSaveAsDraftButtonProperty).toBeTruthy();
-    expect(modalSaveAsDraftButtonProperty.category).toBe('navigation');
   });
 
   it('hides modal override properties by default', () => {
     const survey = createSurveyPropertyOwner();
 
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(false);
-    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(false);
   });
 
   it('shows modal override properties when the advanced toggle is enabled', () => {
@@ -74,17 +62,14 @@ describe('survey global navigation properties', () => {
     );
 
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(true);
-    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(true);
   });
 
   it('keeps modal override properties visible when override values already exist', () => {
     const survey = createSurveyPropertyOwner({
       [SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL]: 'Update record',
-      [SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Update draft',
     });
 
     expect(modalLabelOverridesToggleProperty.onGetValue(survey)).toBe(true);
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(true);
-    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(true);
   });
 });

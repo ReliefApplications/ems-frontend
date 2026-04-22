@@ -79,8 +79,6 @@ export class FormComponent
   public disableSaveAsDraft = false;
   /** Evaluated label for the save button (from form expression or default translation) */
   public saveButtonLabel = '';
-  /** Evaluated label for the save as draft button */
-  public saveAsDraftButtonLabel = '';
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -219,7 +217,6 @@ export class FormComponent
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
     this.saveButtonLabel = labels.saveButtonLabel;
-    this.saveAsDraftButtonLabel = labels.saveAsDraftButtonLabel;
   }
 
   /**

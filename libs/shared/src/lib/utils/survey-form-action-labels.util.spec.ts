@@ -3,8 +3,6 @@ import {
   evaluateSurveyActionButtonLabel,
   getSurveyFormActionButtonLabels,
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
-  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
-  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from './survey-form-action-labels.util';
 
@@ -111,7 +109,6 @@ describe('survey form action labels utility', () => {
       const survey = createSurveyMock(
         {
           [SURVEY_PROP_SAVE_BUTTON_LABEL]: saveExpression,
-          [SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Save as draft',
         },
         runExpression
       );
@@ -119,8 +116,6 @@ describe('survey form action labels utility', () => {
       expect(getSurveyFormActionButtonLabels(survey)).toEqual({
         saveButtonLabel: 'Save draft',
         modalSaveButtonLabel: 'Save draft',
-        saveAsDraftButtonLabel: 'Save as draft',
-        modalSaveAsDraftButtonLabel: 'Save as draft',
       });
     });
 
@@ -128,20 +123,15 @@ describe('survey form action labels utility', () => {
       const saveExpression = "iif({status} = 'draft', 'Save draft', 'Save')";
       const modalExpression =
         "iif({status} = 'draft', 'Update draft', 'Update record')";
-      const draftExpression =
-        "iif({status} = 'draft', 'Update saved draft', 'Save as draft')";
       const runExpression = jest.fn((expression: string) => {
         if (expression === saveExpression) return 'Save';
         if (expression === modalExpression) return 'Update record';
-        if (expression === draftExpression) return 'Update saved draft';
         return expression;
       });
       const survey = createSurveyMock(
         {
           [SURVEY_PROP_SAVE_BUTTON_LABEL]: saveExpression,
           [SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL]: modalExpression,
-          [SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Save as draft',
-          [SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL]: draftExpression,
         },
         runExpression
       );
@@ -149,8 +139,6 @@ describe('survey form action labels utility', () => {
       expect(getSurveyFormActionButtonLabels(survey)).toEqual({
         saveButtonLabel: 'Save',
         modalSaveButtonLabel: 'Update record',
-        saveAsDraftButtonLabel: 'Save as draft',
-        modalSaveAsDraftButtonLabel: 'Update saved draft',
       });
     });
   });

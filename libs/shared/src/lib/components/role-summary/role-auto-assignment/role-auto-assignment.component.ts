@@ -126,7 +126,7 @@ export class RoleAutoAssignmentComponent
         if (data.groups) {
           this.groups = data.groups;
           this.fields.push({
-            text: 'User Groups', // todo: translation
+            text: 'User Position', // todo: translation
             name: '{{groups}}',
             editor: 'select',
             multiSelect: true,

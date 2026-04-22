@@ -120,9 +120,7 @@ export class FormModalComponent
   /** Is multi edition of records enabled ( for grid actions ) */
   protected isMultiEdition = false;
   /** Evaluated label for the modal save button */
-  public modalSaveButtonLabel = '';
-  /** Evaluated label for the modal save as draft button */
-  public modalSaveAsDraftButtonLabel = '';
+  public saveButtonLabel = '';
   /** Temporary storage of files */
   protected temporaryFilesStorage: any = {};
   /** Stored cloned data */
@@ -367,8 +365,7 @@ export class FormModalComponent
    */
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
-    this.modalSaveButtonLabel = labels.modalSaveButtonLabel;
-    this.modalSaveAsDraftButtonLabel = labels.modalSaveAsDraftButtonLabel;
+    this.saveButtonLabel = labels.modalSaveButtonLabel;
   }
 
   /**
