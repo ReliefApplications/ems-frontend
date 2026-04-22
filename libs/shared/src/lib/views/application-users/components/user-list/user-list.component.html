@@ -1,5 +1,6 @@
 <!-- Actions when selected items -->
 <ng-container *ngIf="!loading.getValue(); else loadingTmpl">
+  <!-- Delete multiple users -->
   <div
     *ngIf="selection.selected.length > 0"
     class="flex gap-2 items-center mb-2 justify-end"
@@ -43,6 +44,7 @@
               </ui-checkbox>
             </td>
           </ng-container>
+          <!-- Username -->
           <ng-container cdkColumnDef="username">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
@@ -51,7 +53,7 @@
             </th>
             <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
           </ng-container>
-
+          <!-- Name -->
           <ng-container cdkColumnDef="name">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
@@ -66,7 +68,7 @@
               {{ element.name }}
             </td>
           </ng-container>
-
+          <!-- Roles -->
           <ng-container cdkColumnDef="roles">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
@@ -77,7 +79,7 @@
               <span *ngFor="let role of element.roles"> {{ role.title }}</span>
             </td>
           </ng-container>
-
+          <!-- Attributes -->
           <ng-container cdkColumnDef="attributes">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
@@ -90,7 +92,7 @@
               </span>
             </td>
           </ng-container>
-
+          <!-- OID -->
           <ng-container cdkColumnDef="oid">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
@@ -99,8 +101,12 @@
             </th>
             <td uiCell *cdkCellDef="let element">{{ element.oid }}</td>
           </ng-container>
-
-          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <!-- Actions -->
+          <ng-container
+            *ngIf="!autoAssigned"
+            cdkColumnDef="actions"
+            [stickyEnd]="true"
+          >
             <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
             <td uiCell *cdkCellDef="let element">
               <ui-button
