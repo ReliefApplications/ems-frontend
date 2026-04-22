@@ -1,3 +1,10 @@
+# [2.22.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.16...v2.22.0-rc.17) (2026-04-22)
+
+
+### Features
+
+* Enable dynamic label for form save buttons ([#2845](https://github.com/ReliefApplications/ems-frontend/issues/2845)) ([62b0f9f](https://github.com/ReliefApplications/ems-frontend/commit/62b0f9fb96a64ca4bf4f1678b25558619fb5f038)), closes [AB#128603](https://github.com/AB/issues/128603)
+
 # [2.22.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.15...v2.22.0-rc.16) (2026-04-22)
 
 
