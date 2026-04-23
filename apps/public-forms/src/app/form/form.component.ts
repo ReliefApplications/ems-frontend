@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormQueryResponse,
 } from '@oort-front/shared';
@@ -20,6 +20,7 @@ export class FormComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private apollo: Apollo
   ) {}
 
@@ -29,8 +30,12 @@ export class FormComponent implements OnInit {
       this.getFormQuery(this.formId ?? '').subscribe({
         next: (result) => {
           this.form = result.data.form;
-          console.log('Form data:', this.form);
+          this.form.canCreateRecords = true; // For testing purposes, to enable form submission
+          this.form.metadata = this.form.metadata || [];
         },
+        error: (error) => {
+          this.router.navigate(['/']);
+        }
       });
     }
   }

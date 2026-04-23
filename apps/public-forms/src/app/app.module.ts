@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { GraphQLModule } from './graphql.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { FormService } from '@oort-front/shared';
+import { AuthService, DatePipe, FormService, LayoutModule } from '@oort-front/shared';
 
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
@@ -19,10 +19,17 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { OAuthModule, OAuthService } from 'angular-oauth2-oidc/public_api';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { IconsService } from '@progress/kendo-angular-icons';
+import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay';
+import { AppAbility, PublicAuthService } from './public-auth-service/public-auth.service';
+import { PureAbility } from '@casl/ability';
 
 /**
  * Initialize application.
@@ -34,9 +41,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
  * @returns oAuth configuration
  */
 const initializeApp =
-  (oauth: OAuthService, formService: FormService): any =>
+  (formService: FormService): any =>
   () => {
-    oauth.configure(environment.authConfig);
     formService.initialize();
     // Add fa icon font to check in the application
     library.add(fas, fab);
@@ -70,7 +76,12 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
-    OAuthModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    DialogCdkModule,
+    DateInputsModule,
+    LayoutModule,
   ],
   providers: [
     {
@@ -81,7 +92,20 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
-      deps: [OAuthService,FormService],
+      deps: [FormService],
+    },
+    PopupService,
+    IconsService,
+    DatePipe,
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+    { provide: AuthService, useClass: PublicAuthService },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
     },
   ],
   bootstrap: [AppComponent],

@@ -17,7 +17,7 @@ const routes: Routes = [
   declarations: [FormComponent],
   imports: [
     CommonModule,
-    // SharedFormModule,
+    SharedFormModule,
     RouterModule.forChild(routes)
   ],
   bootstrap: [FormComponent],
