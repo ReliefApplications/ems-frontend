@@ -1164,13 +1164,15 @@
     <kendo-grid-column
       *ngFor="let group of customRowActionGroups"
       [columnMenu]="false"
-      [width]="108"
+      [width]="getCustomActionColumnWidth(group)"
       [resizable]="true"
       [title]="group.label"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <div class="flex flex-row gap-2">
-          <ng-container *ngFor="let customRowAction of group.actions">
+          <ng-container
+            *ngFor="let customRowAction of getRowActions(dataItem, group)"
+          >
             <shared-action-button
               [actionButton]="$any(customRowAction)"
               [recordId]="dataItem.id"

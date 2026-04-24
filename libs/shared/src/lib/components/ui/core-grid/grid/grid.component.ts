@@ -456,6 +456,67 @@ export class GridComponent
   }
 
   /**
+   * Get the custom row actions to display in a given group column for a given row.
+   * Filters the full set of actions in the group using the per-row actions
+   * populated by the backend on `dataItem.actions` (grouped by columnLabel).
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @returns The action buttons to render for this row / group.
+   */
+  public getRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
+    const rowGroups: { label: string; actions: ActionButton[] }[] =
+      dataItem?.actions ?? [];
+    // If the backend did not populate per-row actions, fall back to all actions.
+    if (!rowGroups.length) {
+      return group.actions;
+    }
+    const rowGroup = rowGroups.find((g) => g.label === group.label);
+    if (!rowGroup) {
+      return [];
+    }
+    // Intersect by text + columnLabel to preserve widget config order.
+    const visibleKeys = new Set(
+      rowGroup.actions.map((a) => `${a.columnLabel}::${a.text}`)
+    );
+    return group.actions.filter((a) =>
+      visibleKeys.has(`${a.columnLabel}::${a.text}`)
+    );
+  }
+
+  /**
+   * Compute the width of a custom row action column based on the number of
+   * buttons in the group and the length of the group label.
+   *
+   * @param group The action group column definition.
+   * @returns The column width in pixels.
+   */
+  public getCustomActionColumnWidth(group: {
+    label: string;
+    actions: ActionButton[];
+  }): number {
+    /** Approx width of a single action button (padding + short text) */
+    const buttonWidth = 80;
+    /** Gap between buttons */
+    const gap = 8;
+    /** Left / right cell padding */
+    const cellPadding = 16;
+    /** Approx pixel width per character for the column title */
+    const charWidth = 8;
+    /** Additional space reserved for the kendo column header icons */
+    const headerExtras = 32;
+
+    const count = Math.max(group.actions?.length ?? 1, 1);
+    const contentWidth = count * buttonWidth + (count - 1) * gap + cellPadding;
+    const titleWidth =
+      (group.label?.length ?? 0) * charWidth + headerExtras + cellPadding;
+    return Math.max(contentWidth, titleWidth, 108);
+  }
+
+  /**
    * Handles filter change event.
    *
    * @param filter Filter event.

@@ -106,7 +106,6 @@ export class GridDataFormatterService {
   public formatGridRowData(rowData: any, fields: GridField[]) {
     this.initHelperFields();
     this.iterateFields(rowData, fields);
-    console.log(rowData._meta);
     this.actionsObj.actions =
       map(
         groupBy(get(rowData, '_meta.actions', []), 'columnLabel'),
@@ -124,7 +123,6 @@ export class GridDataFormatterService {
     Object.assign(rowData, this.urlObj);
     Object.assign(rowData, this.valueObj);
     Object.assign(rowData, this.showFullScreenButtonObj);
-    console.log(rowData);
   }
 
   /**
