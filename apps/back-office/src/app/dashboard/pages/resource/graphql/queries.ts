@@ -24,6 +24,14 @@ export const GET_RESOURCE_BY_ID = gql`
         canDelete
         canCreateRecords
       }
+      relatedForms {
+        id
+        fields
+        resource {
+          id
+          fields
+        }
+      }
       permissions {
         canSee {
           id

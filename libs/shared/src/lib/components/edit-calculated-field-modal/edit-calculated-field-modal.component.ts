@@ -3,7 +3,12 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { EditorService } from '../../services/editor/editor.service';
-import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
+import {
+  getCalcKeys,
+  getDataKeys,
+  getInfoKeys,
+  getRelatedDataKeys,
+} from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
@@ -15,13 +20,20 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { RawEditorSettings } from 'tinymce';
+import { Resource } from '../../models/resource.model';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
 interface DialogData {
-  /** TODO: Add type to fields */
-  calculatedField?: any;
-  resourceFields: any[];
+  calculatedField?: {
+    name?: string;
+    expression?: string;
+  };
+  resource?: Resource;
+  resourceFields: Array<{
+    name: string;
+    isCalculated?: boolean;
+  }>;
 }
 
 /**
@@ -90,6 +102,10 @@ export class EditCalculatedFieldModalComponent implements OnInit {
       ...getCalcKeys(),
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
+      ...getRelatedDataKeys(
+        this.data.resource?.relatedForms || [],
+        this.data.resource?.id || ''
+      ),
     ];
     this.editorService.addCalcAndKeysAutoCompleter(
       this.editor,

@@ -7,6 +7,26 @@ const INFO_PREFIX = '{{info.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
+type ResourceField = {
+  name: string;
+  isCalculated?: boolean;
+  resource?: {
+    fields?: ResourceField[];
+  };
+};
+
+type RelatedForm = {
+  fields?: Array<{
+    name: string;
+    resource?: string;
+    relatedName?: string;
+  }>;
+  resource?: {
+    id?: string;
+    fields?: ResourceField[];
+  };
+};
+
 /** Definition of all supported functions for calculation of Calculated fields */
 const calcFunctions: Record<string, { signature: string }> = {
   // MULTIPLE ARGUMENTS
@@ -136,8 +156,39 @@ export const getInfoKeys = (): string[] =>
  * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (fields: any): string[] =>
-  fields.flatMap((field: any) => [
+export const getDataKeys = (fields: ResourceField[]): string[] =>
+  fields.flatMap((field) => [
     DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
-    DATA_PREFIX + field.name + ':text' + PLACEHOLDER_SUFFIX,
+    `${DATA_PREFIX}${field.name}:text${PLACEHOLDER_SUFFIX}`,
   ]);
+
+/**
+ * Returns related-resource selector keys for data autocompletion.
+ *
+ * @param relatedForms Forms that point back to the current resource
+ * @param currentResourceId Current resource id
+ * @returns list of related data keys
+ */
+export const getRelatedDataKeys = (
+  relatedForms: RelatedForm[] = [],
+  currentResourceId: string
+): string[] => {
+  const relatedKeys = new Set<string>();
+
+  relatedForms.forEach((form) => {
+    form.fields?.forEach((field) => {
+      if (field.relatedName && field.resource === currentResourceId) {
+        const childFields = (form.resource?.fields || []).filter(
+          (childField) => !childField.isCalculated
+        );
+        childFields.forEach((childField) => {
+          relatedKeys.add(
+            `${DATA_PREFIX}${field.relatedName}(first: 1, sortField: "${childField.name}", sortOrder: "desc").${childField.name}${PLACEHOLDER_SUFFIX}`
+          );
+        });
+      }
+    });
+  });
+
+  return Array.from(relatedKeys).sort();
+};

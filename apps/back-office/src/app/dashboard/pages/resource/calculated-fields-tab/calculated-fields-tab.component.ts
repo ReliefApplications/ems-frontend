@@ -77,6 +77,7 @@ export class CalculatedFieldsTabComponent
       disableClose: true,
       data: {
         calculatedField: null,
+        resource: this.resource,
         resourceFields: this.resource.fields.filter(
           (f: any) => !f.isCalculated
         ),
@@ -100,6 +101,7 @@ export class CalculatedFieldsTabComponent
       disableClose: true,
       data: {
         calculatedField: field,
+        resource: this.resource,
         resourceFields: this.resource.fields.filter(
           (f: any) => !f.isCalculated
         ),
