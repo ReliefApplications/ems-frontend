@@ -34,7 +34,11 @@
   </ui-select-option>
   <!-- Empty state hint -->
   <div
-    *ngIf="options.length === 0 && !loading && searchControl.value.length < minSearchLength"
+    *ngIf="
+      options.length === 0 &&
+      !loading &&
+      searchControl.value.length < minSearchLength
+    "
     class="p-3 text-gray-500 text-sm text-center"
   >
     Type at least {{ minSearchLength }} characters to search
