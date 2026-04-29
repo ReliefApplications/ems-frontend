@@ -1,3 +1,10 @@
+# [2.22.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.17...v2.22.0-rc.18) (2026-04-29)
+
+
+### Bug Fixes
+
+* **query-builder:** resolve top-level query name when loading filter fields for nested sub-grid resource fields ([#2858](https://github.com/ReliefApplications/ems-frontend/issues/2858)) ([17c1e00](https://github.com/ReliefApplications/ems-frontend/commit/17c1e00dac1af8c56c0eb7671a2e43285bb7823e)), closes [AB#128560](https://github.com/AB/issues/128560)
+
 # [2.22.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.16...v2.22.0-rc.17) (2026-04-22)
 
 
