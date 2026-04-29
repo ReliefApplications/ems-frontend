@@ -115,7 +115,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Shared authentication service.
+   * Public forms authentication service.
    *
    * @param environment Environment file where front and back office urls are specified
    * @param router Angular Router service
@@ -132,8 +132,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Check if user has permission.
-   * If user profile is empty, tries to get it.
+   * Always returns true, as public forms do not require authentication.
    *
    * @param permission permission.s required
    * @param global is the permission global or not
@@ -144,7 +143,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Check if user is admin. If user profile is empty, tries to get it.
+   * Returns false, as public forms do not have admin users.
    *
    * @returns A boolean value.
    */
@@ -153,7 +152,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Initiate the login sequence
+   * Empty login sequence, as public forms do not require authentication.
    *
    * @returns A promise that resolves to void.
    */
@@ -162,7 +161,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Cleans user profile, and logout.
+   * Empty logout sequence, as public forms do not require authentication.
    */
   logout(): void {}
 
@@ -177,7 +176,7 @@ export class PublicAuthService {
   }
 
   /**
-   * Gets the profile from the database, using GraphQL.
+   * Returns a mock profile.
    *
    * @returns Apollo query of profile
    */
@@ -208,12 +207,12 @@ export class PublicAuthService {
   }
 
   /**
-   * Get the authentication token from local storage if it exists
+   * Returns an empty token, as public forms do not require authentication.
    *
    * @returns token as stored in local storage
    */
   public getAuthToken(): string | null {
-    return 'Fake token';
+    return '';
   }
 
   /**

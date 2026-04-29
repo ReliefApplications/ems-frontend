@@ -3146,6 +3146,9 @@
 				"add": "******",
 				"customize": "******"
 			}
+		},
+		"publicForms": {
+			"noForm": "******"
 		}
 	}
 }

@@ -3095,6 +3095,9 @@
 			},
 			"title": "Your profile"
 		},
+		"publicForms": {
+			"noForm": "This form does not exist or is not active. Please check the link or contact the form owner."
+		},
 		"pullJobs": {
 			"create": "Create a pull job"
 		},

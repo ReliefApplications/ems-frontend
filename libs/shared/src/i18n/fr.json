@@ -3091,6 +3091,9 @@
 			},
 			"title": "Votre profil"
 		},
+		"publicForms": {
+			"noForm": "Ce formulaire n'existe pas ou n'est pas actif. Veuillez vérifier le lien ou contacter le propriétaire du formulaire."
+		},
 		"pullJobs": {
 			"create": "Créer une tâche planifiée"
 		},

@@ -110,4 +110,14 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  /**
+   * Main module of Back-Office project.
+   *
+   * @param translate Angular translate service
+   */
+  constructor(private translate: TranslateService) {
+    this.translate.addLangs(environment.availableLanguages);
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
+  }
+}
