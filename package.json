@@ -6,10 +6,14 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
+    "format": "npx prettier --write \"**/*.{scss,html}\"",
     "test": "npx nx run-many --target=test --projects=ui,shared --configuration=ci",
     "postinstall": "./setup-hooks.sh"
   },
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "dependencies": {
     "@angular/animations": "15.2.9",
     "@angular/cdk": "~15.1.1",
