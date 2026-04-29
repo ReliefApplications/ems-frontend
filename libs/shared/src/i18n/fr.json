@@ -1326,6 +1326,7 @@
 				"apply": "Appliquer le filtre",
 				"applyField": "Définir les champs",
 				"field": "Champ",
+				"loading": "Chargement des filtres. Cela peut prendre un moment, veuillez patienter.",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
