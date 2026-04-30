@@ -26,7 +26,5 @@ export const environment: Environment = {
   backOfficeUri: 'http://localhost:4200/',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
-  theme,
-  admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
-  csDocUrl: 'https://hems-dev.who.int/csdocui',
+  theme
 };
