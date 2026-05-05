@@ -74,11 +74,19 @@ export const searchFilters = (
 
     // date
     if (['date', 'datetime', 'datetime-local'].includes(field?.type)) {
-      filters.push({
-        field: field.name,
-        operator: 'eq',
-        value: search,
-      });
+      // Only emit a date rule if the search string is a parseable date —
+      // otherwise getDateForMongo() yields invalid dates that serialize to
+      // null and turn `$gte/$lte: null` into "match every record where this
+      // field is missing", which would expand the global-search $or to
+      // basically every document.
+      const parsed = Date.parse(search);
+      if (!isNaN(parsed)) {
+        filters.push({
+          field: field.name,
+          operator: 'eq',
+          value: search,
+        });
+      }
     }
   });
 

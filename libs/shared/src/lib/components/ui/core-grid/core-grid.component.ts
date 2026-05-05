@@ -242,7 +242,10 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      // `id` is the Mongo ObjectId — not a useful regex search target.
+      // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+      // so it must remain searchable.
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [

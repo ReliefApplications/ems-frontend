@@ -153,7 +153,10 @@ export class SummaryCardComponent
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
-    const skippedFields = ['id', 'incrementalId'];
+    // `id` is the Mongo ObjectId — not a useful regex search target.
+    // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+    // so it must remain searchable.
+    const skippedFields = ['id'];
     if (this.searchControl.value) {
       filter = {
         logic: 'and',
