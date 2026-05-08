@@ -1,3 +1,10 @@
+# [2.22.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.18...v2.22.0-rc.19) (2026-05-08)
+
+
+### Features
+
+* Enhance user placeholder support in filters and context service ([#2856](https://github.com/ReliefApplications/ems-frontend/issues/2856)) ([dd8730f](https://github.com/ReliefApplications/ems-frontend/commit/dd8730fdea27c4ee70ca7dc08d2b883c5d11866b)), closes [AB#129192](https://github.com/AB/issues/129192)
+
 # [2.22.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.17...v2.22.0-rc.18) (2026-04-29)
 
 
