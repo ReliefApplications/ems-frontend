@@ -537,8 +537,24 @@ export class QueryBuilderService {
    * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
-    if (query && query?.name) {
-      const querySource$ = this.getQuerySource(query);
+    if (query) {
+      let resolvedQuery = query;
+      if (query.type) {
+        const topLevelName = this.availableQueries
+          .getValue()
+          .find(
+            (x) =>
+              x.resourceType?.name === query.type ||
+              x.refDataType?.name === query.type
+          )?.name;
+        if (topLevelName) {
+          resolvedQuery = { ...query, name: topLevelName };
+        }
+      }
+      if (!resolvedQuery.name) {
+        return [];
+      }
+      const querySource$ = this.getQuerySource(resolvedQuery);
       const sourceQuery = querySource$ && firstValueFrom(querySource$);
       if (sourceQuery) {
         const { data } = await sourceQuery;

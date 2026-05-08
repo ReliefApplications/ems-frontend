@@ -8,7 +8,48 @@ import {
 } from 'survey-core';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import {
+  SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_BUTTON_LABEL,
+} from '../../utils/survey-form-action-labels.util';
 import { Question } from '../types';
+
+type SurveyPropertyOwner = {
+  getPropertyValue: (propertyName: string) => unknown;
+  [key: string]: unknown;
+};
+
+/** Property-grid toggle used to reveal modal-specific label overrides. */
+const ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY =
+  'showAdvancedNavigationLabelOverrides';
+/** In-memory state key for the advanced navigation toggle. */
+const ADVANCED_NAVIGATION_LABEL_OVERRIDES_STATE =
+  '__showAdvancedNavigationLabelOverrides';
+
+/**
+ * Whether any modal-specific action label override is already configured.
+ *
+ * @param obj Survey property owner
+ * @returns True when at least one modal override has a value
+ */
+const hasModalActionButtonLabelOverrides = (
+  obj?: SurveyPropertyOwner
+): boolean =>
+  Boolean(obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL));
+
+/**
+ * Whether modal-specific navigation overrides should be visible in the property grid.
+ *
+ * @param obj Survey property owner
+ * @returns True when the advanced toggle is opened or override values already exist
+ */
+const shouldShowAdvancedNavigationLabelOverrides = (
+  obj?: SurveyPropertyOwner
+): boolean =>
+  Boolean(
+    obj?.[ADVANCED_NAVIGATION_LABEL_OVERRIDES_STATE] ||
+      hasModalActionButtonLabelOverrides(obj)
+  );
 
 /**
  * Add support for custom properties to the survey
@@ -127,6 +168,42 @@ export const init = (environment: any): void => {
     visibleIndex: -1,
     category: 'logic',
     default: '',
+  });
+
+  // Add custom label expressions for the form action buttons
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_SAVE_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 100,
+    default: '',
+    isLocalizable: false,
+  });
+  serializer.addProperty('survey', {
+    name: `${ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY}:boolean`,
+    type: 'boolean',
+    category: 'navigation',
+    visibleIndex: 102,
+    displayName: 'Modal Label Overrides',
+    default: false,
+    isSerializable: false,
+    onGetValue: (obj: SurveyPropertyOwner) =>
+      shouldShowAdvancedNavigationLabelOverrides(obj),
+    onSetValue: (obj: SurveyPropertyOwner, value: boolean) => {
+      obj[ADVANCED_NAVIGATION_LABEL_OVERRIDES_STATE] = value;
+    },
+  });
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 103,
+    displayName: 'Modal save label override',
+    description:
+      'Only used when the form is opened in a modal. Falls back to the regular save label if empty.',
+    default: '',
+    isLocalizable: false,
+    visibleIf: shouldShowAdvancedNavigationLabelOverrides,
   });
 };
 

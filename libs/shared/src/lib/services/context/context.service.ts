@@ -35,6 +35,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Model, SurveyModel } from 'survey-core';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { ApplicationService } from '../application/application.service';
+import { AuthService } from '../auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
@@ -66,6 +67,10 @@ export class ContextService {
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
   public filterValueRegex = /(?<={{filter\.)(.*?)(?=}})/gim;
+  /** Regex used to resolve current user placeholders in object */
+  public userRegex = /["']?{{user\.(.*?)}}["']?/;
+  /** Regex to detect the value of {{user.}} in object */
+  public userValueRegex = /(?<={{user\.)(.*?)(?=}})/gim;
   /** Context regex */
   public contextRegex = /{{context\.(.*?)}}/;
   /** Available filter positions */
@@ -144,6 +149,7 @@ export class ContextService {
    * @param translate Angular translate service
    * @param formBuilderService Form builder service
    * @param applicationService Shared application service
+   * @param authService Shared authentication service
    * @param router Angular router
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    */
@@ -154,6 +160,7 @@ export class ContextService {
     private translate: TranslateService,
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
+    private authService: AuthService,
     private router: Router,
     public shadowDomService: ShadowDomService
   ) {
@@ -284,6 +291,45 @@ export class ContextService {
   }
 
   /**
+   * Returns the value matching a user placeholder.
+   *
+   * Supports direct user fields such as `{{user.username}}` and
+   * WHO attribute shortcuts such as `{{user.country}}`.
+   *
+   * @param field placeholder path without the `{{user.}}` wrapper
+   * @returns placeholder value when available
+   */
+  private getUserPlaceholderValue(field: string): any {
+    const user = this.authService.userValue;
+    if (!user) {
+      return undefined;
+    }
+    if (field.startsWith('attributes.')) {
+      return get(user, field);
+    }
+    return get(user, field, get(user.attributes, field));
+  }
+
+  /**
+   * Replace serialized placeholders in a JSON string.
+   *
+   * @param value serialized JSON value
+   * @param regex placeholder regex
+   * @param resolver returns the replacement value for a placeholder
+   * @returns serialized JSON with replaced placeholders
+   */
+  private replaceSerializedPlaceholders(
+    value: string,
+    regex: RegExp,
+    resolver: (field: string) => any
+  ): string {
+    return value.replace(new RegExp(regex, 'g'), (match, field) => {
+      const replacement = resolver(field);
+      return isNil(replacement) ? match : JSON.stringify(replacement);
+    });
+  }
+
+  /**
    * Replace {{filter}} placeholders in object, with filter values
    *
    * @param object object with placeholders
@@ -294,21 +340,18 @@ export class ContextService {
     object: any,
     filter = this.filterValue(this.filter.getValue())
   ): any {
-    if (isEmpty(filter)) {
-      return this.parseJSONValues(object);
-    }
     // Transform all string fields into object ones when possible
     const objectAsJSON = this.parseJSONValues(object);
     const toString = JSON.stringify(objectAsJSON);
-    const replaced = toString.replace(
-      new RegExp(this.filterRegex, 'g'),
-      (match) => {
-        const field = match
-          .replace(/["']?\{\{filter\./, '')
-          .replace(/\}\}["']?/, '');
-        const fieldValue = get(filter, field);
-        return isNil(fieldValue) ? match : JSON.stringify(fieldValue);
-      }
+    const withFilterValues = this.replaceSerializedPlaceholders(
+      toString,
+      this.filterRegex,
+      (field) => get(filter, field)
+    );
+    const replaced = this.replaceSerializedPlaceholders(
+      withFilterValues,
+      this.userRegex,
+      (field) => this.getUserPlaceholderValue(field)
     );
     const parsed = JSON.parse(replaced);
     return parsed;
@@ -357,6 +400,7 @@ export class ContextService {
     const filterValue = this.filterValue(this.filter.getValue());
     const filterRegex = this.filterValueRegex;
     const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
+    const userRegex = this.userValueRegex;
 
     // Helper to replace a property value if it matches filter/context pattern
     const replaceProp = (obj: any, prop: string) => {
@@ -368,6 +412,11 @@ export class ContextService {
           const contextName = obj[prop]?.match(contextRegex)?.[0];
           if (contextName) {
             obj[prop] = get(this.context, contextName);
+          } else {
+            const userName = obj[prop]?.match(userRegex)?.[0];
+            if (userName) {
+              obj[prop] = this.getUserPlaceholderValue(userName);
+            }
           }
         }
       }
