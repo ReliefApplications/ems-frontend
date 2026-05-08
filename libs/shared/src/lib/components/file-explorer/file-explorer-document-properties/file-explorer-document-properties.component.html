@@ -5,13 +5,16 @@
   class="flex flex-col gap-3 p-2 h-full overflow-auto"
   *ngIf="!loading && document"
 >
-  <shared-file-explorer-document-toolbar [document]="document"></shared-file-explorer-document-toolbar>
+  <shared-file-explorer-document-toolbar
+    [document]="document"
+  ></shared-file-explorer-document-toolbar>
   <!-- Filename -->
   <ng-container
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.filename.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.filename.label' | translate,
         value: document.filename
       }
     "
@@ -22,7 +25,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.confidentiality.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.confidentiality.label'
+          | translate,
         value: document.informationconfidentialityname
       }
     "
@@ -32,7 +37,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.version.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.version.label' | translate,
         value: document.version
       }
     "
@@ -42,7 +48,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.createdBy.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.createdBy.label' | translate,
         value: document.createdbyuser
       }
     "
@@ -52,7 +59,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.createdOn.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.createdOn.label' | translate,
         value: document.createddate | date : 'yyyy-MM-dd HH:mm'
       }
     "
@@ -62,7 +70,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.lastUpdatedBy.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.lastUpdatedBy.label'
+          | translate,
         value: document.modifiedbyuser
       }
     "
@@ -72,7 +82,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.lastUpdatedOn.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.lastUpdatedOn.label'
+          | translate,
         value: document.modifieddate | date : 'yyyy-MM-dd HH:mm'
       }
     "
@@ -92,7 +104,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.occurrence.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.occurrence.label' | translate,
         value: document.occurrence
       }
     "
@@ -102,7 +115,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.occurrenceType.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.occurrenceType.label'
+          | translate,
         value: document.occurrencetype
       }
     "
@@ -112,7 +127,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.documentType.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.documentType.label'
+          | translate,
         value: document.documenttypename
       }
     "
@@ -122,7 +139,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.imsFunction.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.imsFunction.label' | translate,
         value: document.imsfunctionname
       }
     "
@@ -132,7 +150,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.imsRole.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.imsRole.label' | translate,
         value: document.documentrolename
       }
     "
@@ -142,7 +161,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.documentCategory.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.documentCategory.label'
+          | translate,
         value: document.documentcategoryname
       }
     "
@@ -162,7 +183,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.country.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.country.label' | translate,
         value: document.country
       }
     "
@@ -182,7 +204,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.syndrome.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.syndrome.label' | translate,
         value: document.syndrome
       }
     "
@@ -192,7 +215,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.aetiology.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.aetiology.label' | translate,
         value: document.aetiology
       }
     "
@@ -202,7 +226,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.diseaseCondition.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.diseaseCondition.label'
+          | translate,
         value: document.diseasecondition
       }
     "
@@ -212,7 +238,8 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.language.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.language.label' | translate,
         value: document.languagename
       }
     "
@@ -222,7 +249,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.informationSource.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.informationSource.label'
+          | translate,
         value: document.sourceofinformationname
       }
     "
@@ -232,7 +261,9 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'components.widget.fileExplorer.fields.ihrCommunication.label' | translate,
+        label:
+          'components.widget.fileExplorer.fields.ihrCommunication.label'
+          | translate,
         value: document.ihrcommunicationname
       }
     "

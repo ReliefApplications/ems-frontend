@@ -1323,6 +1323,7 @@
 				"apply": "Apply filter",
 				"applyField": "Set Fields",
 				"field": "Field",
+				"loading": "Loading filters. This may take a moment, please wait.",
 				"logic": "Filter logic",
 				"new": "Add new filter",
 				"newGroup": "Add new filter group",
@@ -1364,6 +1365,8 @@
 					},
 					"criteria": "Rule criteria",
 					"fields": "Fields",
+					"isBadge": "Display as badge",
+					"isBadgeTooltip": "When enabled, the style will be applied as a badge, colors and styles will apply to the badge and not the cell.",
 					"name": "Rule name",
 					"selectedColumns": "Only selected columns",
 					"text": {
