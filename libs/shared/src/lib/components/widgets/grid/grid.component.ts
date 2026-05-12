@@ -48,12 +48,14 @@ import { AggregationGridComponent } from '../../aggregation/aggregation-grid/agg
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { clone } from 'lodash';
+import { ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 /** Component for the grid widget */
 @Component({
   selector: 'shared-grid-widget',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 /** Grid widget using KendoUI. */
 export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
@@ -147,6 +149,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param applicationService The shared application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
+   * @param changeDetector Change detector ref, to trigger change detection when needed
    */
   constructor(
     private apollo: Apollo,
@@ -159,7 +162,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     private confirmService: ConfirmService,
     private applicationService: ApplicationService,
     private translate: TranslateService,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -194,6 +198,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               false
             );
           }
+          this.changeDetector.markForCheck();
         });
 
       if (layouts.length > 0) {
@@ -219,6 +224,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               ...this.layout,
               ...{ template: get(this.settings, 'template', null) },
             };
+            this.changeDetector.markForCheck();
           });
         return;
       }
@@ -244,6 +250,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             }
             this.aggregation = this.aggregations[0] || null;
             buildSortFields = true;
+            this.changeDetector.markForCheck();
           });
         return;
       }
@@ -254,9 +261,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
     if (buildSortFields) {
       // Build list of available sort fields
-      this.widget.settings.sortFields?.forEach((sortField: any) => {
-        this.sortFields.push(sortField);
+      this.widget.settings.sortFields?.forEach(() => {
+        this.sortFields = [...(this.widget.settings.sortFields ?? [])];
+        this.changeDetector.markForCheck();
       });
+      this.changeDetector.markForCheck();
     }
   }
 
@@ -511,6 +520,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                       this.status = {
                         error: false,
                       };
+                      this.changeDetector.markForCheck();
                     }
                   }
                 }
@@ -702,6 +712,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -718,6 +729,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    */
   onAggregationChange(aggregation: Aggregation): void {
     this.aggregation = aggregation;
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -738,6 +750,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           'components.widget.grid.errors.queryBuildFailed'
         ),
       };
+      this.changeDetector.markForCheck();
       return;
     } else {
       return {

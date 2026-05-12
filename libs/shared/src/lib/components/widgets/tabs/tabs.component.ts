@@ -1,6 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -25,6 +27,7 @@ import { cloneDeep } from 'lodash';
   selector: 'shared-tabs',
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsComponent
   extends BaseWidgetComponent
@@ -60,10 +63,12 @@ export class TabsComponent
    *
    * @param widgetComponent parent widget component ( optional )
    * @param dialog Dialog service
+   * @param changeDetector Change detector ref, to trigger change detection when needed
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -81,6 +86,7 @@ export class TabsComponent
   ngAfterViewInit(): void {
     /** Take part of the tab group element to display it in the header template */
     this.portal = new DomPortal(this.tabGroup?.tabList);
+    this.changeDetector.markForCheck();
   }
 
   /**

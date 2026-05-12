@@ -1,4 +1,9 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  ViewChild,
+} from '@angular/core';
 import { MapComponent } from '../../ui/map';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
@@ -7,6 +12,7 @@ import { BaseWidgetComponent } from '../base-widget/base-widget.component';
   selector: 'shared-map-widget',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapWidgetComponent extends BaseWidgetComponent {
   /** Map settings */

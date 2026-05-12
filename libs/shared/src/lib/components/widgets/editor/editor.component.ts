@@ -1,5 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -49,6 +51,7 @@ import { authType } from '../../../models/api-configuration.model';
   selector: 'shared-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** Widget settings */
@@ -149,6 +152,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param changeDetector Change detector ref, to trigger change detection when needed
    */
   constructor(
     private apollo: Apollo,
@@ -167,7 +171,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -346,6 +351,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             }
           );
           this.loading = false;
+          this.changeDetector.markForCheck();
           callback();
         });
     } else if (this.settings.element && this.settings.referenceData) {
@@ -392,6 +398,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             }
           );
           this.loading = false;
+          this.changeDetector.markForCheck();
           callback();
         });
     } else {
@@ -407,6 +414,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             }
           );
           this.loading = false;
+          this.changeDetector.markForCheck();
           callback();
         });
     }

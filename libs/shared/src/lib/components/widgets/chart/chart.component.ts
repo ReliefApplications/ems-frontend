@@ -8,6 +8,7 @@ import {
   OnInit,
   OnDestroy,
   ElementRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -66,6 +67,7 @@ const joinFilters = (
   selector: 'shared-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartComponent
   extends BaseWidgetComponent

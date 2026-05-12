@@ -1,5 +1,7 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -68,6 +70,7 @@ const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
   selector: 'shared-summary-card',
   templateUrl: './summary-card.component.html',
   styleUrls: ['./summary-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SummaryCardComponent
   extends BaseWidgetComponent
@@ -290,6 +293,7 @@ export class SummaryCardComponent
    * @param renderer Angular renderer service
    * @param dashboardService Shared dashboard service
    * @param widgetService Shared widget service
+   * @param changeDetector Change detector ref, to trigger change detection when needed
    */
   constructor(
     private apollo: Apollo,
@@ -305,7 +309,8 @@ export class SummaryCardComponent
     private referenceDataService: ReferenceDataService,
     private renderer: Renderer2,
     private dashboardService: DashboardService,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -370,6 +375,7 @@ export class SummaryCardComponent
         this.colsNumber = this.setColsNumber(
           this.elementRef.nativeElement.parentElement.clientWidth
         );
+        this.changeDetector.markForCheck();
       });
       this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
     }
@@ -413,6 +419,7 @@ export class SummaryCardComponent
       this.sortControl.setValue(null);
       this.onSort(null);
       this.displayMode = value;
+      this.changeDetector.markForCheck();
       if (value === 'cards') {
         if (this.scrollEventBindTimeout) {
           clearTimeout(this.scrollEventListener);
@@ -525,8 +532,10 @@ export class SummaryCardComponent
       });
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
+      this.changeDetector.markForCheck();
     } else if (this.useLayout) {
       this.loading = true;
+      this.changeDetector.markForCheck();
       from(
         this.dataQuery?.refetch({
           skip: 0,
@@ -543,7 +552,10 @@ export class SummaryCardComponent
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-        .subscribe(this.updateRecordCards.bind(this));
+        .subscribe(() => {
+          this.updateRecordCards.bind(this);
+          this.changeDetector.markForCheck();
+        });
     } else if (this.useReferenceData) {
       if (this.refData?.pageInfo?.strategy) {
         this.refresh();
@@ -565,6 +577,7 @@ export class SummaryCardComponent
         );
         this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
         this.pageInfo.length = this.sortedCachedCards.length;
+        this.changeDetector.markForCheck();
       }
     }
   }
@@ -640,6 +653,7 @@ export class SummaryCardComponent
     this.scrolling = false;
     this.triggerRefreshCardList = false;
     this.loading = loading;
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -775,6 +789,7 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -900,12 +915,16 @@ export class SummaryCardComponent
             });
             this.dataQuery.valueChanges
               .pipe(takeUntil(this.destroy$))
-              .subscribe(this.updateRecordCards.bind(this));
+              .subscribe(() => {
+                this.updateRecordCards.bind(this);
+                this.changeDetector.markForCheck();
+              });
           }
           // Build meta query to add information to fields
           this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
           if (this.metaQuery) {
             this.loading = true;
+            this.changeDetector.markForCheck();
             const { data } = await this.metaQuery
               .pipe(takeUntil(this.destroy$))
               .toPromise();
@@ -943,6 +962,7 @@ export class SummaryCardComponent
               ...c,
               metadata: this.fields,
             }));
+            this.changeDetector.markForCheck();
           }
         }
       });
@@ -1006,6 +1026,7 @@ export class SummaryCardComponent
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
     this.loading = true;
+    this.changeDetector.markForCheck();
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource as string,
       card.aggregation as string,
@@ -1045,7 +1066,10 @@ export class SummaryCardComponent
           if (!this.refData?.pageInfo?.strategy) {
             const start = this.cards.length;
             const end = start + this.pageInfo.pageSize;
-            this.cards.push(...this.sortedCachedCards.slice(start, end));
+            this.cards = [
+              ...this.cards,
+              ...this.sortedCachedCards.slice(start, end),
+            ];
             this.scrolling = false;
           } else {
             this.onPage({
@@ -1065,7 +1089,10 @@ export class SummaryCardComponent
             })
           )
             .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-            .subscribe(() => this.updateRecordCards.bind(this));
+            .subscribe(() => {
+              this.updateRecordCards.bind(this);
+              this.changeDetector.markForCheck();
+            });
         }
       }
     }
@@ -1083,6 +1110,7 @@ export class SummaryCardComponent
 
     if (this.dataQuery) {
       this.loading = true;
+      this.changeDetector.markForCheck();
       const layoutQuery = this.layout?.query;
       from(
         this.dataQuery.refetch({
@@ -1105,6 +1133,7 @@ export class SummaryCardComponent
     } else if (this.useReferenceData && this.refData) {
       // Only set loading state if using pagination, not infinite scroll
       this.loading = !this.scrolling;
+      this.changeDetector.markForCheck();
       const variables = this.queryPaginationVariables(event.pageIndex);
 
       from(
@@ -1117,6 +1146,7 @@ export class SummaryCardComponent
         .subscribe(({ items, pageInfo }) => {
           this.updateReferenceDataCards(items, pageInfo);
           this.loading = false;
+          this.changeDetector.markForCheck();
         });
     }
   }
@@ -1155,6 +1185,8 @@ export class SummaryCardComponent
       pageIndex: 0,
       totalItems: 0,
     });
+
+    this.changeDetector.markForCheck();
   }
 
   /**
@@ -1219,12 +1251,16 @@ export class SummaryCardComponent
           })
         )
           .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-          .subscribe(() => (this.loading = false));
+          .subscribe(() => {
+            this.loading = false;
+            this.changeDetector.markForCheck();
+          });
       } else if (this.useReferenceData) {
         if (this.refData?.pageInfo?.strategy) {
           this.refresh();
         } else {
           this.loading = true;
+          this.changeDetector.markForCheck();
           this.pageInfo.pageIndex = 0;
           this.pageInfo.skip = 0;
           if (e) {
@@ -1256,6 +1292,7 @@ export class SummaryCardComponent
             );
           }
           this.loading = false;
+          this.changeDetector.markForCheck();
         }
       }
     }
