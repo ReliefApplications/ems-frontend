@@ -25,6 +25,7 @@ interface QueryVariables {
   sortOrder?: string;
   display?: boolean;
   styles?: any;
+  actions?: any;
   at?: Date;
 }
 
@@ -380,7 +381,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $at: Date) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date) {
       ${name}(
       first: $first
       skip: $skip
@@ -389,6 +390,7 @@ export class QueryBuilderService {
       filter: $filter
       display: $display
       styles: $styles
+      actions: $actions
       at: $at
       ) {
         edges {
