@@ -462,6 +462,8 @@ export class GridComponent
    *
    * @param dataItem The current row data item.
    * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
    * @returns The action buttons to render for this row / group.
    */
   public getRowActions(
@@ -470,9 +472,9 @@ export class GridComponent
   ): ActionButton[] {
     const rowGroups: { label: string; actions: ActionButton[] }[] =
       dataItem?.actions ?? [];
-    // If the backend did not populate per-row actions, fall back to all actions.
     if (!rowGroups.length) {
-      return group.actions;
+      // return group.actions;
+      return [];
     }
     const rowGroup = rowGroups.find((g) => g.label === group.label);
     if (!rowGroup) {
@@ -492,6 +494,8 @@ export class GridComponent
    * buttons in the group and the length of the group label.
    *
    * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Actions configured for the group.
    * @returns The column width in pixels.
    */
   public getCustomActionColumnWidth(group: {
