@@ -36,5 +36,6 @@ export default {
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
+    '<rootDir>/src/lib/survey/triggers/*.spec.ts',
   ],
 };

@@ -41,6 +41,7 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
+import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -351,6 +352,9 @@ export class FormModalComponent
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
+
+      // Fire once now that the existing record's data is in the survey
+      fireOnRecordEditionTriggers(this.survey);
     }
 
     // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
