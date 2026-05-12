@@ -20,6 +20,7 @@ import {
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
+import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
@@ -183,9 +184,11 @@ export class FormComponent
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     } else if (this.record && this.record.data) {
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     }
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
@@ -400,6 +403,7 @@ export class FormComponent
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     } else {
       this.survey.clear();
     }

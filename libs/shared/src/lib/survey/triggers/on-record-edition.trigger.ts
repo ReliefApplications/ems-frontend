@@ -72,14 +72,20 @@ export const registerOnRecordEditionTrigger = (): void => {
     'surveytrigger'
   );
 
-  // Label shown in the trigger-type dropdown of the Survey Creator
+  // Label shown in the trigger-type dropdown of the Survey Creator.
+  // `getLocale(locale)` falls back to the English default object when the
+  // locale isn't registered, so writing the French translation unconditionally
+  // would overwrite the English one. Only assign into FR if it resolves to a
+  // distinct object (i.e. the FR creator locale was actually loaded).
   const editorEn = editorLocalization.getLocale('en');
   editorEn.triggers = editorEn.triggers || {};
   editorEn.triggers[ON_RECORD_EDITION_TRIGGER_TYPE] = 'On record edition';
   const editorFr = editorLocalization.getLocale('fr');
-  editorFr.triggers = editorFr.triggers || {};
-  editorFr.triggers[ON_RECORD_EDITION_TRIGGER_TYPE] =
-    "À l'édition d'un enregistrement";
+  if (editorFr !== editorEn) {
+    editorFr.triggers = editorFr.triggers || {};
+    editorFr.triggers[ON_RECORD_EDITION_TRIGGER_TYPE] =
+      "À l'édition d'un enregistrement";
+  }
 };
 
 /**
