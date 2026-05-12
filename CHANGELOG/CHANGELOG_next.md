@@ -1,3 +1,10 @@
+# [2.22.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.20...v2.22.0-rc.21) (2026-05-12)
+
+
+### Features
+
+* Enable to reset form values on update ([#2851](https://github.com/ReliefApplications/ems-frontend/issues/2851)) ([cab94f2](https://github.com/ReliefApplications/ems-frontend/commit/cab94f299c0a2f0432e508fa2ddd92223ddb71b8)), closes [AB#128935](https://github.com/AB/issues/128935)
+
 # [2.22.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.19...v2.22.0-rc.20) (2026-05-12)
 
 
