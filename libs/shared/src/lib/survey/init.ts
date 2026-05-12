@@ -38,6 +38,7 @@ import * as PopupWidthProperty from './global-properties/popup-width';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
+import { registerOnRecordEditionTrigger } from './triggers/on-record-edition.trigger';
 
 /** Name of the custom components we add to the survey */
 const CUSTOM_COMPONENTS = [
@@ -151,6 +152,8 @@ export const initCustomSurvey = (
 
   // set localization
   initLocalization();
+  // register custom triggers
+  registerOnRecordEditionTrigger();
   // load internal functions
   addCustomFunctions(authService);
 };
