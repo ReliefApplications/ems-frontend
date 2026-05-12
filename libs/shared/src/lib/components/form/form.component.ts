@@ -28,6 +28,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
+import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 
 /**
  * This component is used to display forms
@@ -76,6 +77,8 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Evaluated label for the save button (from form expression or default translation) */
+  public saveButtonLabel = '';
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -128,12 +131,14 @@ export class FormComponent
     );
 
     this.survey.showCompletedPage = false;
+    this.updateButtonLabels();
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      this.updateButtonLabels();
     });
     this.survey.onComplete.add(() => {
       this.onComplete();
@@ -182,6 +187,8 @@ export class FormComponent
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
     }
+    // survey.data does not fire onValueChanged; refresh expression-based button labels
+    this.updateButtonLabels();
 
     // if (this.survey.getUsedLocales().length > 1) {
     //   this.survey.getUsedLocales().forEach((lang) => {
@@ -204,6 +211,15 @@ export class FormComponent
   }
 
   /**
+   * Evaluates all action button label expressions from the survey settings.
+   * Falls back to an empty string (template will use the default translation key).
+   */
+  private updateButtonLabels(): void {
+    const labels = getSurveyFormActionButtonLabels(this.survey);
+    this.saveButtonLabel = labels.saveButtonLabel;
+  }
+
+  /**
    * Reset the survey to empty
    */
   public reset(): void {
@@ -216,6 +232,7 @@ export class FormComponent
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
+    this.updateButtonLabels();
     this.save.emit({ completed: false });
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
@@ -386,6 +403,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
+    this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );

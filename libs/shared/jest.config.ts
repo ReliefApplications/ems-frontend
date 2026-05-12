@@ -32,6 +32,8 @@ export default {
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
+    '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
+    '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
   ],

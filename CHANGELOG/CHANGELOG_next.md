@@ -1,3 +1,31 @@
+# [2.22.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.18...v2.22.0-rc.19) (2026-05-08)
+
+
+### Features
+
+* Enhance user placeholder support in filters and context service ([#2856](https://github.com/ReliefApplications/ems-frontend/issues/2856)) ([dd8730f](https://github.com/ReliefApplications/ems-frontend/commit/dd8730fdea27c4ee70ca7dc08d2b883c5d11866b)), closes [AB#129192](https://github.com/AB/issues/129192)
+
+# [2.22.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.17...v2.22.0-rc.18) (2026-04-29)
+
+
+### Bug Fixes
+
+* **query-builder:** resolve top-level query name when loading filter fields for nested sub-grid resource fields ([#2858](https://github.com/ReliefApplications/ems-frontend/issues/2858)) ([17c1e00](https://github.com/ReliefApplications/ems-frontend/commit/17c1e00dac1af8c56c0eb7671a2e43285bb7823e)), closes [AB#128560](https://github.com/AB/issues/128560)
+
+# [2.22.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.16...v2.22.0-rc.17) (2026-04-22)
+
+
+### Features
+
+* Enable dynamic label for form save buttons ([#2845](https://github.com/ReliefApplications/ems-frontend/issues/2845)) ([62b0f9f](https://github.com/ReliefApplications/ems-frontend/commit/62b0f9fb96a64ca4bf4f1678b25558619fb5f038)), closes [AB#128603](https://github.com/AB/issues/128603)
+
+# [2.22.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.15...v2.22.0-rc.16) (2026-04-22)
+
+
+### Features
+
+* Allow style rules in grids to use badge display ([24fed47](https://github.com/ReliefApplications/ems-frontend/commit/24fed474a90109e338839ee8146c22bc79ece168)), closes [AB#128960](https://github.com/AB/issues/128960)
+
 # [2.22.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.14...v2.22.0-rc.15) (2026-04-03)
 
 

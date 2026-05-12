@@ -59,7 +59,7 @@
         'components.form.draftRecords.save' | translate
       }}</ui-button> -->
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
-        'common.save' | translate
+        saveButtonLabel || ('common.save' | translate)
       }}</ui-button>
     </div>
   </ui-fixed-wrapper>
