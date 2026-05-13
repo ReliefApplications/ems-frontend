@@ -51,6 +51,7 @@ describe('addCustomFunctions', () => {
       'createdBy',
       'id',
       'incrementalId',
+      'displayValue',
       'weekday',
       'addDays',
       'listRowsWithColValue',
@@ -150,6 +151,25 @@ describe('addCustomFunctions', () => {
     it('returns an empty string when no record is set', () => {
       const survey = createSurveyMock({});
       expect(runFn('incrementalId', [], survey)).toBe('');
+    });
+  });
+
+  describe('displayValue', () => {
+    it('returns the displayValue of the requested question', () => {
+      const question = { displayValue: 'France' };
+      const survey = createSurveyMock({ questions: { country: question } });
+      expect(runFn('displayValue', ['country'], survey)).toBe('France');
+    });
+
+    it('returns the joined displayValue for multi-select questions', () => {
+      const question = { displayValue: 'France, Spain' };
+      const survey = createSurveyMock({ questions: { countries: question } });
+      expect(runFn('displayValue', ['countries'], survey)).toBe('France, Spain');
+    });
+
+    it('returns an empty string when the question is not found', () => {
+      const survey = createSurveyMock({});
+      expect(runFn('displayValue', ['missing'], survey)).toBe('');
     });
   });
 

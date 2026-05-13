@@ -184,12 +184,25 @@ export const render = (questionElement: Question, injector: Injector): void => {
           '_graphQLVariables',
           graphQLVariables(question, 'referenceDataVariableMapping')
         );
-        // this is to avoid that the choices appear on the 'choices' tab
-        // and also to avoid the choices being sent to the server
+        // Keep `choices` empty so the items do NOT show up in the editor's
+        // "Choices" tab and do NOT get serialized into the survey JSON.
         question.choices = [];
 
         const choiceItems = choices.map((choice) => new ItemValue(choice));
-        question.setPropertyValue('visibleChoices', choiceItems);
+        choiceItems.forEach((item) => {
+          (item as any).locOwner = question;
+        });
+        // Inject items via the internal `choicesFromUrl` slot — the same one
+        // used by SurveyJS's built-in `choicesByUrl`. It is not a serialized
+        // property, but it feeds `visibleChoices` and `displayValue` through
+        // the normal select-base pipeline, so expressions like
+        // `displayValue('q')` resolve to the choice text rather than the raw
+        // value. This also survives the internal visibleChoices recompute
+        // triggered by setting `question.value` below, which previously wiped
+        // a direct `visibleChoices` override.
+        (question as any).choicesFromUrl = choiceItems;
+        (question as any).filterItems();
+        (question as any).onVisibleChoicesChanged();
         // manually set the selected option (not done by default)
         // only affects dropdown questions (only one option selected) with reference data and non primitive values
         if (!question.isPrimitiveValue && question.getType() === 'dropdown') {

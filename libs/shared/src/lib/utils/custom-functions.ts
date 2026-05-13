@@ -104,6 +104,25 @@ const addCustomFunctions = (authService: AuthService): void => {
         },
       },
       {
+        name: 'displayValue',
+        /**
+         * Get the display value of a question (the choice text rather than
+         * the underlying value). Useful in expressions where {questionName}
+         * resolves to the raw value only.
+         * Example:
+         * - expression: displayValue('country') = 'France'
+         *
+         * @param this Context
+         * @param this.survey Current survey instance
+         * @param params Question name
+         * @returns Display value of the question, or '' if not found
+         */
+        function: function (this: { survey: SurveyModel }, params: any[]) {
+          const question = this.survey.getQuestionByName(params[0]);
+          return question ? question.displayValue : '';
+        },
+      },
+      {
         name: 'weekday',
         /**
          * Get weekday from a date.
