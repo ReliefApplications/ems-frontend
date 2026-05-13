@@ -1,3 +1,10 @@
+# [2.22.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.24...v2.22.0-rc.25) (2026-05-13)
+
+
+### Features
+
+* add display value & join to calculated fields ([#2864](https://github.com/ReliefApplications/ems-frontend/issues/2864)) ([bdcef10](https://github.com/ReliefApplications/ems-frontend/commit/bdcef1037e7f095f428db5072e10bde718d4f28b)), closes [Ab#129193](https://github.com/Ab/issues/129193)
+
 # [2.22.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.23...v2.22.0-rc.24) (2026-05-13)
 
 
