@@ -87,6 +87,23 @@ const addCustomFunctions = (authService: AuthService): void => {
         },
       },
       {
+        name: 'incrementalId',
+        /**
+         * Get the incremental ID of the record.
+         *
+         * @param this Context
+         * @param this.survey Current survey instance
+         * @returns Incremental ID of the record
+         */
+        function: function (this: { survey: SurveyModel }) {
+          const record = this.survey.getPropertyValue('record') as
+            | Record
+            | undefined;
+          console.log(record);
+          return record?.incrementalId ?? '';
+        },
+      },
+      {
         name: 'weekday',
         /**
          * Get weekday from a date.
