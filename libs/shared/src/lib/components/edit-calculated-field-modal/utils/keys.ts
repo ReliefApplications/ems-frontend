@@ -218,6 +218,14 @@ export const CALC_FUNCTIONS_META: CalcFunctionMeta[] = [
     description: 'True when `array` contains `element`.',
     category: 'array',
   },
+  {
+    name: 'join',
+    signature: 'join( array ; separator )',
+    description:
+      'Joins the elements of `array` into a string, separated by `separator`.',
+    example: "{{calc.join({choices} ; ', ')}}",
+    category: 'array',
+  },
 
   // Conversion
   {
@@ -244,7 +252,7 @@ export const CALC_FUNCTIONS_META: CalcFunctionMeta[] = [
     name: 'displayValue',
     signature: "displayValue( 'name' )",
     description:
-      'Returns the display value (choice text) of the field with the given name on the current record.',
+      'Returns the display value (choice text) of the field with the given name on the current record. For multi-select fields (arrays), returns an array of display values.',
     example: "{{calc.displayValue('country')}} = 'France'",
     category: 'misc',
   },
