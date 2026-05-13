@@ -31,5 +31,8 @@ export const environment: Environment = {
   theme,
   tinymceBaseUrl: '',
   i18nUrl: '',
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
   csDocUrl: 'https://hems-dev.who.int/csdocui',
 };

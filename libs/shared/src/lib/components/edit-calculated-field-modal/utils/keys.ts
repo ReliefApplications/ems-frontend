@@ -4,8 +4,12 @@ const DATA_PREFIX = '{{data.';
 const CALC_PREFIX = '{{calc.';
 /** Prefix for info keys */
 const INFO_PREFIX = '{{info.';
+/** Prefix for user contextual keys */
+const USER_PREFIX = '{{user.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
+
+type UserAttribute = string | { value: string; text?: string };
 
 /** Definition of all supported functions for calculation of Calculated fields */
 const calcFunctions: Record<string, { signature: string }> = {
@@ -138,3 +142,15 @@ export const getInfoKeys = (): string[] =>
  */
 export const getDataKeys = (fields: any): string[] =>
   fields.map((field: any) => DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX);
+
+/**
+ * Returns an array with the keys for user contextual field autocompletion.
+ *
+ * @param attributes Array of configured user attributes.
+ * @returns list of user keys
+ */
+export const getUserKeys = (attributes: UserAttribute[] = []): string[] =>
+  attributes.map((attribute) => {
+    const value = typeof attribute === 'string' ? attribute : attribute.value;
+    return USER_PREFIX + value + PLACEHOLDER_SUFFIX;
+  });
