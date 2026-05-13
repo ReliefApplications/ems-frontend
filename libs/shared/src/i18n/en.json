@@ -3079,6 +3079,16 @@
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},
+			"functionReference": {
+				"builtin": "SurveyJS built-in functions",
+				"builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
+				"custom": "Custom functions",
+				"docs": "Open SurveyJS docs",
+				"noResults": "No functions match your search.",
+				"open": "Function reference",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Function reference"
+			},
 			"move": {
 				"down": "Move down",
 				"up": "Move up"

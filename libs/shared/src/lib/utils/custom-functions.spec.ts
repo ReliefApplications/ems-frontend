@@ -164,7 +164,9 @@ describe('addCustomFunctions', () => {
     it('returns the joined displayValue for multi-select questions', () => {
       const question = { displayValue: 'France, Spain' };
       const survey = createSurveyMock({ questions: { countries: question } });
-      expect(runFn('displayValue', ['countries'], survey)).toBe('France, Spain');
+      expect(runFn('displayValue', ['countries'], survey)).toBe(
+        'France, Spain'
+      );
     });
 
     it('returns an empty string when the question is not found', () => {

@@ -3075,6 +3075,16 @@
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
 			},
+			"functionReference": {
+				"builtin": "Fonctions natives SurveyJS",
+				"builtinHint": "Fonctions d'expression standard de SurveyJS. Consultez la documentation officielle pour leur utilisation.",
+				"custom": "Fonctions personnalisées",
+				"docs": "Ouvrir la doc SurveyJS",
+				"noResults": "Aucune fonction ne correspond à votre recherche.",
+				"open": "Référence des fonctions",
+				"searchPlaceholder": "Filtrer par nom ou description...",
+				"title": "Référence des fonctions"
+			},
 			"move": {
 				"down": "Descendre la question",
 				"up": "Monter la question"

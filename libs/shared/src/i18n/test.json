@@ -3072,6 +3072,16 @@
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
+			"functionReference": {
+				"builtin": "******",
+				"builtinHint": "******",
+				"custom": "******",
+				"docs": "******",
+				"noResults": "******",
+				"open": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
+			},
 			"move": {
 				"down": "******",
 				"up": "******"
