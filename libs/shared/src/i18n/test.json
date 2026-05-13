@@ -1323,6 +1323,7 @@
 				"apply": "******",
 				"applyField": "******",
 				"field": "******",
+				"loading": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
@@ -1359,6 +1360,8 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},

@@ -185,6 +185,7 @@ export const createDisplayForm = (value: any) =>
 export const createStyleForm = (value: any) =>
   formBuilder.group({
     name: [value?.name || 'New rule', Validators.required],
+    isBadge: [value?.isBadge || false],
     background: formBuilder.group({
       color: [value?.background?.color || ''],
     }),
@@ -194,6 +195,7 @@ export const createStyleForm = (value: any) =>
       underline: [value?.text?.underline || false],
       italic: [value?.text?.italic || false],
     }),
+    wholeRow: [value?.wholeRow ?? !(value?.fields && value.fields.length > 0)],
     fields: [value?.fields || []],
     filter: createFilterGroup(value?.filter || {}),
   });

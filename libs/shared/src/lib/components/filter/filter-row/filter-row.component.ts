@@ -305,11 +305,7 @@ export class FilterRowComponent
       this.form?.get('operator')?.value !== 'inthelast'
     ) {
       this.editor = field.filter.template;
-    } else if (
-      typeof value === 'string' &&
-      value.startsWith('{{context.') &&
-      !this.contextEditorIsActivated
-    ) {
+    } else if (this.isDynamicPlaceholderValue(value)) {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
     } else {
@@ -350,6 +346,21 @@ export class FilterRowComponent
         this.form.get('value')?.enable();
       }
     }
+  }
+
+  /**
+   * Detects placeholder-based values that should stay in the dynamic editor.
+   *
+   * @param value current filter value
+   * @returns whether the value uses a supported dynamic placeholder
+   */
+  private isDynamicPlaceholderValue(value: unknown): value is string {
+    return (
+      typeof value === 'string' &&
+      ['{{context.', '{{filter.', '{{user.'].some((prefix) =>
+        value.startsWith(prefix)
+      )
+    );
   }
 
   /** Toggles filter editor */

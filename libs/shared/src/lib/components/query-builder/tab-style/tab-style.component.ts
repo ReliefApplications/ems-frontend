@@ -51,7 +51,11 @@ export class TabStyleComponent implements OnInit {
    * Creates a new form group and add it to the array of styles.
    */
   public onAdd(): void {
-    const styleForm = createStyleForm(null);
+    // Sets new style default values
+    const styleForm = createStyleForm({
+      isBadge: true,
+      wholeRow: false,
+    });
     this.form.push(styleForm);
   }
 
