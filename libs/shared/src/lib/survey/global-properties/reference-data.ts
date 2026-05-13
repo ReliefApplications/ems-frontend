@@ -171,6 +171,14 @@ export const render = (questionElement: Question, injector: Injector): void => {
 
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
+    // In SurveyCreator design mode the choices are not displayed in the
+    // design surface; running the fetch + visibleChoices cascade there only
+    // adds work (heavier path because of `isAddDefaultItems`, plus property
+    // grid listeners) and was the source of UI freezes in the form builder.
+    const isDesignMode = (question.survey as SurveyModel)?.isDesignMode;
+    if (isDesignMode) {
+      return;
+    }
 
     const updateChoices = async () => {
       if (question.referenceData && question.referenceDataDisplayField) {
@@ -184,9 +192,6 @@ export const render = (questionElement: Question, injector: Injector): void => {
           '_graphQLVariables',
           graphQLVariables(question, 'referenceDataVariableMapping')
         );
-        // Keep `choices` empty so the items do NOT show up in the editor's
-        // "Choices" tab and do NOT get serialized into the survey JSON.
-        question.choices = [];
 
         const choiceItems = choices.map((choice) => new ItemValue(choice));
         choiceItems.forEach((item) => {
@@ -201,8 +206,19 @@ export const render = (questionElement: Question, injector: Injector): void => {
         // triggered by setting `question.value` below, which previously wiped
         // a direct `visibleChoices` override.
         (question as any).choicesFromUrl = choiceItems;
-        (question as any).filterItems();
-        (question as any).onVisibleChoicesChanged();
+        // Setting `choices` to [] keeps the items out of the editor's
+        // "Choices" tab / serialized JSON, AND triggers SurveyJS's built-in
+        // `choices` propertyChanged handler which runs `filterItems()` +
+        // `onVisibleChoicesChanged()` for us — a single cascade. We only
+        // force the cascade ourselves when `choices` is already empty (the
+        // assignment then no-ops and would otherwise leave visibleChoices
+        // stale on a refetch).
+        const wasChoicesEmpty =
+          !question.choices || question.choices.length === 0;
+        question.choices = [];
+        if (wasChoicesEmpty) {
+          (question as any).onVisibleChoicesChanged();
+        }
         // manually set the selected option (not done by default)
         // only affects dropdown questions (only one option selected) with reference data and non primitive values
         if (!question.isPrimitiveValue && question.getType() === 'dropdown') {
