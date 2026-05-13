@@ -1,3 +1,10 @@
+# [2.22.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.23...v2.22.0-rc.24) (2026-05-13)
+
+
+### Features
+
+* Add displayValue expression in surveyjs ([#2863](https://github.com/ReliefApplications/ems-frontend/issues/2863)) ([40055f2](https://github.com/ReliefApplications/ems-frontend/commit/40055f23f6395657a139388b3a56934d4470e98b)), closes [AB#128605](https://github.com/AB/issues/128605)
+
 # [2.22.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.22...v2.22.0-rc.23) (2026-05-13)
 
 
