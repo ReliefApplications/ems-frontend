@@ -1,3 +1,10 @@
+# [2.22.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.22...v2.22.0-rc.23) (2026-05-13)
+
+
+### Features
+
+* incremental id now usable in forms ([#2862](https://github.com/ReliefApplications/ems-frontend/issues/2862)) ([1874626](https://github.com/ReliefApplications/ems-frontend/commit/18746268aa4d6d7b1c495c15d4ed1ad052d4ce83)), closes [AB#128605](https://github.com/AB/issues/128605)
+
 # [2.22.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.21...v2.22.0-rc.22) (2026-05-13)
 
 
