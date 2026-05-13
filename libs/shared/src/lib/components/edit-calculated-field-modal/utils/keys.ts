@@ -240,6 +240,14 @@ export const CALC_FUNCTIONS_META: CalcFunctionMeta[] = [
     description: 'True when `value` is not null or undefined.',
     category: 'misc',
   },
+  {
+    name: 'displayValue',
+    signature: "displayValue( 'name' )",
+    description:
+      'Returns the display value (choice text) of the field with the given name on the current record.',
+    example: "{{calc.displayValue('country')}} = 'France'",
+    category: 'misc',
+  },
 ];
 
 /**
