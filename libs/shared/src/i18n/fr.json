@@ -848,6 +848,15 @@
 			"expression": "Expression",
 			"hint": {
 				"name": "Entrez un nom composé uniquement delettres, dechiffres et de tirets bas. Ce nom ne doit pas dupliquer le nom d'un autre champ de la resource éditée."
+			},
+			"reference": {
+				"noResults": "Aucun résultat ne correspond à votre recherche.",
+				"open": "Ouvrir la référence des champs dérivés",
+				"operations": "Opérations",
+				"placeholders": "Espaces réservés",
+				"placeholdersHint": "Utilisez ces espaces réservés dans une expression pour référencer les données d'un enregistrement, l'utilisateur courant ou le résultat d'un autre calcul.",
+				"searchPlaceholder": "Filtrer par nom ou description...",
+				"title": "Référence des champs dérivés"
 			}
 		},
 		"channel": {

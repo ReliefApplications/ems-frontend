@@ -848,6 +848,15 @@
 			"expression": "Expression",
 			"hint": {
 				"name": "Enter an unique name only composed of letters, digits and underscores. This name should not override any field name of current resource."
+			},
+			"reference": {
+				"noResults": "No entries match your search.",
+				"open": "Open the calculated field reference",
+				"operations": "Operations",
+				"placeholders": "Placeholders",
+				"placeholdersHint": "Use these placeholders inside an expression to reference record data, the current user or the result of another calculation.",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Calculated field reference"
 			}
 		},
 		"channel": {

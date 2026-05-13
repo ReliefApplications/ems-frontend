@@ -848,6 +848,15 @@
 			"expression": "******",
 			"hint": {
 				"name": "******"
+			},
+			"reference": {
+				"noResults": "******",
+				"open": "******",
+				"operations": "******",
+				"placeholders": "******",
+				"placeholdersHint": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
 			}
 		},
 		"channel": {
