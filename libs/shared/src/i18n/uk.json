@@ -1434,6 +1434,7 @@
         "title": "Попередній перегляд"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Поля для відправки окремих email"
       },
       "sort": {

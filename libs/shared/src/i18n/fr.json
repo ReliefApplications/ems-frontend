@@ -1435,6 +1435,7 @@
         "title": "Aperçu"
       },
       "sendSeparate": {
+        "csFilter": "Filtre utilisateurs du Common Service",
         "title": "Envoyer des champs de courrier électronique séparés"
       },
       "sort": {

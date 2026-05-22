@@ -1432,6 +1432,7 @@
         "title": "Preview"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Send Separate Email Fields"
       },
       "sort": {
