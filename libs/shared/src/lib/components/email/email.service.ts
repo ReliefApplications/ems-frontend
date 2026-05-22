@@ -41,6 +41,7 @@ import {
   EDIT_CUSTOM_TEMPLATE,
   EDIT_DISTRIBUTION_LIST,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  GET_CS_USER_FIELDS,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
   GET_EMAIL_NOTIFICATION_BY_ID,
@@ -234,6 +235,8 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** Combined computed fields for the CS filter UI (static + dynamic user-table fields). */
+  public computedCommonServiceFields: any[] = [];
   /** display types */
   public displayTypes: any[] = [
     { id: 'table', name: 'Table' },
@@ -522,6 +525,54 @@ export class EmailService {
       } else {
         resolve({ valid: true, badData: [] });
       }
+    });
+  }
+
+  /**
+   * Fetches scalar user-table fields from the Common Service GraphQL endpoint.
+   * Idempotent — skips the call if fields are already loaded.
+   */
+  async getUserTableFields(): Promise<void> {
+    if (this.userTableFields.length > 0) return;
+    const apolloClient = this.apollo.use('csClient');
+    await firstValueFrom(apolloClient.query<any>({ query: GET_CS_USER_FIELDS }))
+      .then(({ data }) => {
+        this.userTableFields = data.__type.fields
+          .filter((f: any) => f.type.kind === 'SCALAR')
+          .map((f: any) => f.name);
+      })
+      .catch((error) => {
+        console.error('Error fetching CS user table fields:', error);
+      });
+  }
+
+  /**
+   * Builds `computedCommonServiceFields` by combining the static CS reference fields with
+   * the dynamic user-table fields fetched from the CS endpoint.
+   * Idempotent — skips if already built.
+   */
+  async buildCommonServiceFields(): Promise<void> {
+    if (this.computedCommonServiceFields.length > 0) return;
+    await this.getUserTableFields();
+    this.commonServiceFields.forEach((ele: any) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele.key,
+        kind: 'SCALAR',
+        type: 'checkbox',
+        editor: 'select',
+        isCommonService: true,
+      });
+    });
+    this.userTableFields.forEach((ele: string) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele,
+        kind: 'SCALAR',
+        type: 'text',
+        editor: 'text',
+        isCommonService: true,
+      });
     });
   }
 

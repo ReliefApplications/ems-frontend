@@ -392,7 +392,7 @@
               *ngIf="
                 resource?.fields?.length ||
                 availableFields.length > 0 ||
-                commonServiceFields.length > 0
+                emailService.computedCommonServiceFields.length > 0
               "
             >
               <div class="flex gap-4 mt-2">
@@ -514,14 +514,14 @@
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
-            <ng-container *ngIf="commonServiceFields.length > 0">
+            <ng-container *ngIf="emailService.computedCommonServiceFields.length > 0">
               <div class="flex gap-4 mt-2">
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
                     [form]="$any(distributionCommonQuery.get('filter'))"
                     [query]="distributionCommonQuery.getRawValue()"
-                    [referenceFields]="commonServiceFields"
+                    [referenceFields]="emailService.computedCommonServiceFields"
                     [dlContextSettings]="dlContextSettings"
                   >
                   </shared-tab-filter>

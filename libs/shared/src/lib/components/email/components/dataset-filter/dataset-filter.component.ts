@@ -140,14 +140,7 @@ export class DatasetFilterComponent
    * @returns the Common Services reference fields.
    */
   get csFilterReferenceFields(): any[] {
-    return this.emailService.commonServiceFields.map((ele: any) => ({
-      graphQLFieldName: ele,
-      name: ele.key,
-      kind: 'SCALAR',
-      type: 'checkbox',
-      editor: 'select',
-      isCommonService: true,
-    }));
+    return this.emailService.computedCommonServiceFields;
   }
 
   /** dlContextSettings for the per-row CS filter, enabling {{DatasetName.field}} token picker. */
@@ -189,6 +182,7 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
+    this.emailService.buildCommonServiceFields();
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
     if (this.query.controls.resource.value && !this.resource) {

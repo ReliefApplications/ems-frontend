@@ -27,8 +27,6 @@ import { QueryBuilderService } from './../../../../services/query-builder/query-
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GET_CS_USER_FIELDS } from '../../graphql/queries';
-import { Apollo } from 'apollo-angular';
 
 /** Recipients type */
 enum RecipientsType {
@@ -117,8 +115,6 @@ export class EmailTemplateComponent
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
   public resourceFields: any = [];
-  /** Actual referenceFields common service data  */
-  public commonServiceFields: any = [];
   /** Expand for "To" list items. */
   public isExpandedPreview = false;
   /** Expand for "To" list items. */
@@ -151,7 +147,6 @@ export class EmailTemplateComponent
    * @param formBuilder Angular form builder
    * @param restService rest service
    * @param sanitizer html sanitizer
-   * @param apollo Apollo
    */
   constructor(
     private fb: FormBuilder,
@@ -161,8 +156,7 @@ export class EmailTemplateComponent
     public queryBuilder: QueryBuilderService,
     public formBuilder: FormBuilder,
     private restService: RestService,
-    private sanitizer: DomSanitizer,
-    private apollo: Apollo
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -176,7 +170,7 @@ export class EmailTemplateComponent
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
-    this.setCommonServiceFields();
+    this.emailService.buildCommonServiceFields();
     this.distributionListValid =
       (this.emailService.isToValid &&
         (this.type === 'bcc' || this.type === 'cc')) ||
@@ -268,25 +262,6 @@ export class EmailTemplateComponent
     } else {
       this.updateSegmentOptions(RecipientsType.manual);
     }
-  }
-
-  /**
-   * Get the user table fields from common service
-   */
-  public async getUserTableFields() {
-    const apolloClient = this.apollo.use('csClient');
-    // Fetch the user table fields from the getFilterData
-    await firstValueFrom(apolloClient.query<any>({ query: GET_CS_USER_FIELDS }))
-      .then(({ data }) => {
-        const fields = data.__type.fields
-          .filter((f: any) => f.type.kind === 'SCALAR')
-          .map((f: any) => f.name);
-        this.emailService.userTableFields = fields;
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.error('Error, fail to fetch user table fields: ', error);
-      });
   }
 
   /**
@@ -1046,37 +1021,6 @@ export class EmailTemplateComponent
       this.isPreviewEmail = false;
       this.loading = false;
     }
-  }
-
-  /**
-   * Set the common service fields.
-   */
-  async setCommonServiceFields() {
-    if (this.emailService?.userTableFields?.length === 0) {
-      await this.getUserTableFields();
-    }
-
-    this.emailService.commonServiceFields?.forEach((ele: any) => {
-      this.commonServiceFields.push({
-        graphQLFieldName: ele,
-        name: ele.key,
-        kind: 'SCALAR',
-        type: 'checkbox',
-        editor: 'select',
-        isCommonService: true,
-      });
-    });
-
-    this.emailService.userTableFields?.forEach((ele: any) => {
-      this.commonServiceFields.push({
-        graphQLFieldName: ele,
-        name: ele,
-        kind: 'SCALAR',
-        type: 'text',
-        editor: 'text',
-        isCommonService: true,
-      });
-    });
   }
 
   /**
