@@ -1,3 +1,10 @@
+# [2.22.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.26...v2.22.0-rc.27) (2026-05-22)
+
+
+### Bug Fixes
+
+* incorrect sticky position for custom actions ([0839e03](https://github.com/ReliefApplications/ems-frontend/commit/0839e03d793369154f0d9992f02f67281b2ae357))
+
 # [2.22.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.25...v2.22.0-rc.26) (2026-05-22)
 
 
