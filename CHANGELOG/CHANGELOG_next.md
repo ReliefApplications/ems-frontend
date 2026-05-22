@@ -1,3 +1,10 @@
+# [2.22.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.25...v2.22.0-rc.26) (2026-05-22)
+
+
+### Bug Fixes
+
+* make grid custom action rows sticky ([6ee94f5](https://github.com/ReliefApplications/ems-frontend/commit/6ee94f51c1da48253d79a9dabcc1349235481239))
+
 # [2.22.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.24...v2.22.0-rc.25) (2026-05-13)
 
 
