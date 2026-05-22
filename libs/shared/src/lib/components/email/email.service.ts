@@ -297,6 +297,10 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
+      csFilter: this.formBuilder.group({
+        logic: 'and',
+        filters: new FormArray([]),
+      }),
       dataType: null,
       reference: null,
       navigateToPage: false,

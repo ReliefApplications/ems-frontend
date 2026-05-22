@@ -331,6 +331,26 @@
           </ng-template>
         </ui-tab>
 
+        <!-- CS Users Filter Tab -->
+        <ui-tab
+          title="CS Users Filter"
+          *ngIf="this.query.get('individualEmail').value"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.sendSeparate.csFilter' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container *ngIf="csFilterReferenceFields.length > 0">
+              <shared-tab-filter
+                [form]="$any(query.get('csFilter'))"
+                [query]="query.get('csFilter').getRawValue()"
+                [referenceFields]="csFilterReferenceFields"
+                [dlContextSettings]="csFilterContextSettings"
+              ></shared-tab-filter>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
         <!-- Style Tab -->
         <!-- <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >

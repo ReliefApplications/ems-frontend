@@ -421,6 +421,12 @@ export class EmsTemplateComponent
             sendAsAttachment: tempQuery.sendAsAttachment ?? false,
           });
         }
+        dataset.csFilter =
+          dataset.csFilter?.filters?.length > 0
+            ? this.emailService.setCommonServicePayload(
+                cloneDeep(dataset.csFilter)
+              )
+            : null;
       })
     );
     const isAllSendSeparate = emailData.datasets?.every(

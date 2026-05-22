@@ -135,6 +135,35 @@ export class DatasetFilterComponent
   public showFieldsWarning_SSE = false;
 
   /**
+   * Reference fields for the per-row CS filter builder. Combined static + dynamic fields from service.
+   *
+   * @returns the Common Services reference fields.
+   */
+  get csFilterReferenceFields(): any[] {
+    return this.emailService.commonServiceFields.map((ele: any) => ({
+      graphQLFieldName: ele,
+      name: ele.key,
+      kind: 'SCALAR',
+      type: 'checkbox',
+      editor: 'select',
+      isCommonService: true,
+    }));
+  }
+
+  /** dlContextSettings for the per-row CS filter, enabling {{DatasetName.field}} token picker. */
+  get csFilterContextSettings(): any {
+    const datasetName = this.query.get('name')?.value;
+    const fields: string[] = [];
+    (this.availableFields ?? []).forEach((field: any) => {
+      this.emailService.appendFields(field, field.name, fields);
+    });
+    if (datasetName && fields.length > 0) {
+      return { datasetBlocks: [{ name: datasetName, fields }] };
+    }
+    return { enableContextEditor: true };
+  }
+
+  /**
    * To use helper functions, Apollo serve
    *
    * @param emailService helper functions

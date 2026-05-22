@@ -225,6 +225,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
             textStyle
             individualEmail
             individualEmailFields
+            csFilter
             sendAsAttachment
             pageSize
             navigateToPage
@@ -266,6 +267,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
         textStyle
         individualEmail
         individualEmailFields
+        csFilter
         sendAsAttachment
         pageSize
         navigateToPage
@@ -321,6 +323,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
         textStyle
         individualEmail
         individualEmailFields
+        csFilter
         sendAsAttachment
         pageSize
         navigateToPage
