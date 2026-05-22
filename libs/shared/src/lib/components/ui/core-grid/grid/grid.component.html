@@ -1164,7 +1164,7 @@
     <kendo-grid-column
       *ngFor="let group of customRowActionGroups"
       [columnMenu]="false"
-      [width]="getCustomActionColumnWidth(group)"
+      [width]="group.width"
       [resizable]="true"
       [title]="group.label"
       [sticky]="true"
