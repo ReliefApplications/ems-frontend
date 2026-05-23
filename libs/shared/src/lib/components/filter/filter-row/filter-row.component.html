@@ -58,7 +58,7 @@
 
   <!-- TOGGLE DATASET FIELD EDITOR (email notification context) -->
   <ui-button
-    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && dlContextSettings?.datasetBlocks?.length > 0"
+    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && dlContextSettings?.datasetBlocks?.length > 0 && !dlContextSettings?.hideExpressionEditor"
     [isIcon]="true"
     [disabled]="disabled"
     icon="change_circle_outline"
@@ -201,7 +201,7 @@
       </ui-select-menu>
     </div>
     <ui-button
-      *ngIf="this.dlContextSettings?.enableContextEditor"
+      *ngIf="this.dlContextSettings?.enableContextEditor && !dlContextSettings?.hideExpressionEditor"
       [isIcon]="true"
       icon="change_circle_outline"
       variant="primary"

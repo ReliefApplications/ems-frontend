@@ -1200,13 +1200,22 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Returns dlContextSettings for distribution list editors.
+   * Identical to dlDatasetContextSettings but with hideExpressionEditor: true
+   * so the dataset-field token toggle is suppressed in the DL filter UI.
+   */
+  get dlDistributionContextSettings(): any {
+    return { ...this.dlDatasetContextSettings, hideExpressionEditor: true };
+  }
+
+  /**
    * to handle the dialog of distribution list creation
    */
   distributionListDialogHandler() {
     const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: {
         distributionListNames: this.emailService.distributionListNames,
-        dlContextSettings: this.dlDatasetContextSettings,
+        dlContextSettings: this.dlDistributionContextSettings,
       },
       disableClose: true,
     });
@@ -1228,7 +1237,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         data: {
           distributionListData,
           isEdit: true,
-          dlContextSettings: this.dlDatasetContextSettings,
+          dlContextSettings: this.dlDistributionContextSettings,
         },
         disableClose: true,
       }
