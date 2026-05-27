@@ -27,6 +27,9 @@ export const environment: Environment = {
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   theme,
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
   admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
   csDocUrl: 'https://hems-dev.who.int/csdocui',
 };

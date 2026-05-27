@@ -475,6 +475,7 @@ export class CoreGridComponent
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
             styles: this.style,
+            actions: this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
@@ -809,6 +810,7 @@ export class CoreGridComponent
                   data[field]?.edges.map((x: any) => ({
                     ...x.node,
                     _meta: {
+                      actions: x.meta.actions,
                       style: x.meta.style,
                       raw: x.meta.raw,
                     },

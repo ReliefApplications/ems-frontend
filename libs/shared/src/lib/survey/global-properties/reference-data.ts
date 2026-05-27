@@ -171,6 +171,14 @@ export const render = (questionElement: Question, injector: Injector): void => {
 
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
+    // In SurveyCreator design mode the choices are not displayed in the
+    // design surface; running the fetch + visibleChoices cascade there only
+    // adds work (heavier path because of `isAddDefaultItems`, plus property
+    // grid listeners) and was the source of UI freezes in the form builder.
+    const isDesignMode = (question.survey as SurveyModel)?.isDesignMode;
+    if (isDesignMode) {
+      return;
+    }
 
     const updateChoices = async () => {
       if (question.referenceData && question.referenceDataDisplayField) {
@@ -184,12 +192,33 @@ export const render = (questionElement: Question, injector: Injector): void => {
           '_graphQLVariables',
           graphQLVariables(question, 'referenceDataVariableMapping')
         );
-        // this is to avoid that the choices appear on the 'choices' tab
-        // and also to avoid the choices being sent to the server
-        question.choices = [];
 
         const choiceItems = choices.map((choice) => new ItemValue(choice));
-        question.setPropertyValue('visibleChoices', choiceItems);
+        choiceItems.forEach((item) => {
+          (item as any).locOwner = question;
+        });
+        // Inject items via the internal `choicesFromUrl` slot — the same one
+        // used by SurveyJS's built-in `choicesByUrl`. It is not a serialized
+        // property, but it feeds `visibleChoices` and `displayValue` through
+        // the normal select-base pipeline, so expressions like
+        // `displayValue('q')` resolve to the choice text rather than the raw
+        // value. This also survives the internal visibleChoices recompute
+        // triggered by setting `question.value` below, which previously wiped
+        // a direct `visibleChoices` override.
+        (question as any).choicesFromUrl = choiceItems;
+        // Setting `choices` to [] keeps the items out of the editor's
+        // "Choices" tab / serialized JSON, AND triggers SurveyJS's built-in
+        // `choices` propertyChanged handler which runs `filterItems()` +
+        // `onVisibleChoicesChanged()` for us — a single cascade. We only
+        // force the cascade ourselves when `choices` is already empty (the
+        // assignment then no-ops and would otherwise leave visibleChoices
+        // stale on a refetch).
+        const wasChoicesEmpty =
+          !question.choices || question.choices.length === 0;
+        question.choices = [];
+        if (wasChoicesEmpty) {
+          (question as any).onVisibleChoicesChanged();
+        }
         // manually set the selected option (not done by default)
         // only affects dropdown questions (only one option selected) with reference data and non primitive values
         if (!question.isPrimitiveValue && question.getType() === 'dropdown') {

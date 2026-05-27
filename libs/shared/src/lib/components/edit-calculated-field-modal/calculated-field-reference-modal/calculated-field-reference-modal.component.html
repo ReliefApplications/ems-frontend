@@ -1,0 +1,94 @@
+<ui-dialog size="medium">
+  <!-- Header: modal title -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.calculatedFields.reference.title' | translate }}
+    </h3>
+  </ng-container>
+  <!-- Content: search input + operations and placeholder listings -->
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-col gap-4">
+      <!-- Search input: filters both operations and placeholders -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.search' | translate }}</label>
+        <input
+          type="text"
+          [(ngModel)]="query"
+          [placeholder]="
+            'components.calculatedFields.reference.searchPlaceholder'
+              | translate
+          "
+        />
+      </div>
+
+      <!-- Operations: grouped calc functions with signature + description -->
+      <section>
+        <h4 class="font-semibold mb-2">
+          {{ 'components.calculatedFields.reference.operations' | translate }}
+        </h4>
+        <!-- Empty state when the query matches no calc functions -->
+        <p *ngIf="calcGroups.length === 0" class="text-sm text-gray-500 italic">
+          {{ 'components.calculatedFields.reference.noResults' | translate }}
+        </p>
+        <!-- One block per category (math, logic, ...) -->
+        <div *ngFor="let group of calcGroups" class="mb-4">
+          <h5 class="text-xs uppercase tracking-wide text-gray-500 mb-1">
+            {{ group.label }}
+          </h5>
+          <ul class="flex flex-col gap-2">
+            <!-- Function card: signature, then description -->
+            <li
+              *ngFor="let fn of group.functions"
+              class="border border-gray-200 rounded p-2"
+            >
+              <code class="text-sm font-mono text-gray-800">{{
+                fn.signature
+              }}</code>
+              <p class="text-sm text-gray-700 mt-1">{{ fn.description }}</p>
+              <p
+                *ngIf="fn.example"
+                class="text-xs text-gray-500 mt-1 font-mono"
+              >
+                {{ fn.example }}
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Placeholders: data / user / calc / info syntax -->
+      <section>
+        <h4 class="font-semibold mb-1">
+          {{ 'components.calculatedFields.reference.placeholders' | translate }}
+        </h4>
+        <p class="text-xs text-gray-500 mb-2">
+          {{
+            'components.calculatedFields.reference.placeholdersHint' | translate
+          }}
+        </p>
+        <!-- Empty state when the query matches no placeholders -->
+        <p
+          *ngIf="placeholders.length === 0"
+          class="text-sm text-gray-500 italic"
+        >
+          {{ 'components.calculatedFields.reference.noResults' | translate }}
+        </p>
+        <ul *ngIf="placeholders.length > 0" class="flex flex-col gap-2">
+          <li
+            *ngFor="let p of placeholders"
+            class="border border-gray-200 rounded p-2"
+          >
+            <code class="text-sm font-mono text-gray-800">{{ p.syntax }}</code>
+            <p class="text-sm text-gray-700 mt-1">{{ p.description }}</p>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </ng-container>
+  <!-- Footer: dismiss-only -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

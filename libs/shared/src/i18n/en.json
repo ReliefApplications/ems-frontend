@@ -848,6 +848,15 @@
 			"expression": "Expression",
 			"hint": {
 				"name": "Enter an unique name only composed of letters, digits and underscores. This name should not override any field name of current resource."
+			},
+			"reference": {
+				"noResults": "No entries match your search.",
+				"open": "Open the calculated field reference",
+				"operations": "Operations",
+				"placeholders": "Placeholders",
+				"placeholdersHint": "Use these placeholders inside an expression to reference record data, the current user or the result of another calculation.",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Calculated field reference"
 			}
 		},
 		"channel": {
@@ -2823,7 +2832,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
-					"fields": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+					"fields": "You can use dashboard filter values with {{filter.<name>}} and current user values with {{user.username}}, {{user.firstName}}, {{user.lastName}}, or WHO attributes such as {{user.country}}.",
 					"position": "Only applicable when default variant is active"
 				},
 				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
@@ -3078,6 +3087,16 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"functionReference": {
+				"builtin": "SurveyJS built-in functions",
+				"builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
+				"custom": "Custom functions",
+				"docs": "Open SurveyJS docs",
+				"noResults": "No functions match your search.",
+				"open": "Function reference",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Function reference"
 			},
 			"move": {
 				"down": "Move down",
