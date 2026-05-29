@@ -1,3 +1,25 @@
+# [2.23.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0...v2.23.0-rc.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* incorrect sticky position for custom actions ([0839e03](https://github.com/ReliefApplications/ems-frontend/commit/0839e03d793369154f0d9992f02f67281b2ae357))
+* make grid custom action rows sticky ([6ee94f5](https://github.com/ReliefApplications/ems-frontend/commit/6ee94f51c1da48253d79a9dabcc1349235481239))
+* **query-builder:** resolve top-level query name when loading filter fields for nested sub-grid resource fields ([#2858](https://github.com/ReliefApplications/ems-frontend/issues/2858)) ([17c1e00](https://github.com/ReliefApplications/ems-frontend/commit/17c1e00dac1af8c56c0eb7671a2e43285bb7823e)), closes [AB#128560](https://github.com/AB/issues/128560)
+
+
+### Features
+
+* add display value & join to calculated fields ([#2864](https://github.com/ReliefApplications/ems-frontend/issues/2864)) ([bdcef10](https://github.com/ReliefApplications/ems-frontend/commit/bdcef1037e7f095f428db5072e10bde718d4f28b)), closes [Ab#129193](https://github.com/Ab/issues/129193)
+* Add displayValue expression in surveyjs ([#2863](https://github.com/ReliefApplications/ems-frontend/issues/2863)) ([40055f2](https://github.com/ReliefApplications/ems-frontend/commit/40055f23f6395657a139388b3a56934d4470e98b)), closes [AB#128605](https://github.com/AB/issues/128605)
+* Add filters to grid actions ([#2838](https://github.com/ReliefApplications/ems-frontend/issues/2838)) ([b122377](https://github.com/ReliefApplications/ems-frontend/commit/b122377e3a9c13bcac0f6d5021b03b7ce5ab90f7)), closes [AB#121666](https://github.com/AB/issues/121666)
+* Allow style rules in grids to use badge display ([24fed47](https://github.com/ReliefApplications/ems-frontend/commit/24fed474a90109e338839ee8146c22bc79ece168)), closes [AB#128960](https://github.com/AB/issues/128960)
+* Allow use of user attributes in calculated fields ([#2850](https://github.com/ReliefApplications/ems-frontend/issues/2850)) ([d0108ca](https://github.com/ReliefApplications/ems-frontend/commit/d0108ca5d064730c85012fc1c597ccf3ab968208)), closes [AB#128968](https://github.com/AB/issues/128968)
+* Enable dynamic label for form save buttons ([#2845](https://github.com/ReliefApplications/ems-frontend/issues/2845)) ([62b0f9f](https://github.com/ReliefApplications/ems-frontend/commit/62b0f9fb96a64ca4bf4f1678b25558619fb5f038)), closes [AB#128603](https://github.com/AB/issues/128603)
+* Enable to reset form values on update ([#2851](https://github.com/ReliefApplications/ems-frontend/issues/2851)) ([cab94f2](https://github.com/ReliefApplications/ems-frontend/commit/cab94f299c0a2f0432e508fa2ddd92223ddb71b8)), closes [AB#128935](https://github.com/AB/issues/128935)
+* Enhance user placeholder support in filters and context service ([#2856](https://github.com/ReliefApplications/ems-frontend/issues/2856)) ([dd8730f](https://github.com/ReliefApplications/ems-frontend/commit/dd8730fdea27c4ee70ca7dc08d2b883c5d11866b)), closes [AB#129192](https://github.com/AB/issues/129192)
+* incremental id now usable in forms ([#2862](https://github.com/ReliefApplications/ems-frontend/issues/2862)) ([1874626](https://github.com/ReliefApplications/ems-frontend/commit/18746268aa4d6d7b1c495c15d4ed1ad052d4ce83)), closes [AB#128605](https://github.com/AB/issues/128605)
+
 # [2.22.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-rc.26...v2.22.0-rc.27) (2026-05-22)
 
 
