@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { get, isNil } from 'lodash';
+import { get, groupBy, isNil, map } from 'lodash';
 import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
@@ -49,6 +49,12 @@ export class GridDataFormatterService {
     value: {},
   };
   /**
+   * Grid row actions
+   */
+  private actionsObj: { actions: any[] } = {
+    actions: [],
+  };
+  /**
    * Grid full screen button flags helper object
    */
   private showFullScreenButtonObj = {
@@ -83,6 +89,9 @@ export class GridDataFormatterService {
     this.valueObj = {
       value: {},
     };
+    this.actionsObj = {
+      actions: [],
+    };
     this.showFullScreenButtonObj = {
       showFullScreenButton: {},
     };
@@ -97,9 +106,18 @@ export class GridDataFormatterService {
   public formatGridRowData(rowData: any, fields: GridField[]) {
     this.initHelperFields();
     this.iterateFields(rowData, fields);
+    this.actionsObj.actions =
+      map(
+        groupBy(get(rowData, '_meta.actions', []), 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+        })
+      ) || [];
     // General properties
     Object.assign(rowData, this.styleObj);
     Object.assign(rowData, this.textObj);
+    Object.assign(rowData, this.actionsObj);
     // Specific types for each field and meta
     Object.assign(rowData, this.iconObj);
     Object.assign(rowData, this.urlObj);

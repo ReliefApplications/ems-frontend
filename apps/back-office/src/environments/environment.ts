@@ -46,6 +46,9 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
   admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems-dev.who.int/csapi/api',
   csDocUrl: 'https://hems-dev.who.int/csdocui',
