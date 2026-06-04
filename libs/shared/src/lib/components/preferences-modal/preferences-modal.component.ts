@@ -97,7 +97,11 @@ export class PreferencesModalComponent implements OnInit {
       ?.valueChanges.subscribe((lang: any) => {
         this.translate.use(lang);
         const dateFormatCtrl = this.preferencesForm.get('dateFormat');
-        if (dateFormatCtrl && (dateFormatCtrl.value === previousLang || !localStorage.getItem('date-lang'))) {
+        if (
+          dateFormatCtrl &&
+          (dateFormatCtrl.value === previousLang ||
+            !localStorage.getItem('date-lang'))
+        ) {
           dateFormatCtrl.setValue(lang, { emitEvent: false });
         }
         previousLang = lang;
