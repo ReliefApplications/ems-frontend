@@ -236,7 +236,10 @@ export class LayoutComponent
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
-    this.getLanguage();
+    const language = this.getLanguage();
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -380,9 +383,14 @@ export class LayoutComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
-      if (form && form.touched) {
+      if (form && (form.touched || form.dirty)) {
         this.setLanguage(form.value.language);
-        this.dateTranslate.use(form.value.dateFormat);
+        if (form.value.language === form.value.dateFormat) {
+          localStorage.removeItem('date-lang');
+          this.dateTranslate.use(form.value.language, false);
+        } else {
+          this.dateTranslate.use(form.value.dateFormat, true);
+        }
       } else if (!form) {
         this.setLanguage(this.getLanguage());
       }
@@ -424,6 +432,9 @@ export class LayoutComponent
   setLanguage(language: string) {
     this.translate.use(language);
     localStorage.setItem('lang', language);
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
   }
 
   /**

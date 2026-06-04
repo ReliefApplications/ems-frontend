@@ -37,6 +37,7 @@ import {
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+import localeUk from '@angular/common/locales/uk';
 
 /** CASL */
 import { PureAbility } from '@casl/ability';
@@ -44,6 +45,7 @@ import { PureAbility } from '@casl/ability';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+registerLocaleData(localeUk);
 
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';

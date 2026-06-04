@@ -1173,6 +1173,8 @@
 		},
 		"header": {
 			"goToApp": "Ouvrir l'application",
+			"goToBackOffice": "Naviguer vers le back office",
+			"goToFrontOffice": "Naviguer vers le front office",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -1891,6 +1893,13 @@
 				},
 				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Étiquette de la colonne"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",

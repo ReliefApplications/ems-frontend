@@ -91,10 +91,16 @@ export class PreferencesModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.preferencesForm = this.createPreferencesForm();
+    let previousLang = this.currLang;
     this.preferencesForm
       .get('language')
       ?.valueChanges.subscribe((lang: any) => {
         this.translate.use(lang);
+        const dateFormatCtrl = this.preferencesForm.get('dateFormat');
+        if (dateFormatCtrl && (dateFormatCtrl.value === previousLang || !localStorage.getItem('date-lang'))) {
+          dateFormatCtrl.setValue(lang, { emitEvent: false });
+        }
+        previousLang = lang;
       });
   }
 
