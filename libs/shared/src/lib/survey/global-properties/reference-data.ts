@@ -308,28 +308,31 @@ export const render = (questionElement: Question, injector: Injector): void => {
       // console.log(question.visibleChoices);
       // console.log(question.value);
     };
-    // look on changes
-    question.registerFunctionOnPropertyValueChanged(
-      'referenceData',
-      (value: string) => {
-        question.referenceDataDisplayField = undefined;
-        if (!value) {
+    // look on changes — guard prevents duplicate registrations when question re-renders
+    if (!(question as any)._referenceDataPropertyHandlersRegistered) {
+      (question as any)._referenceDataPropertyHandlersRegistered = true;
+      question.registerFunctionOnPropertyValueChanged(
+        'referenceData',
+        (value: string) => {
           question.referenceDataDisplayField = undefined;
-          question.referenceDataFilterFilterFromQuestion = undefined;
-          question.referenceDataFilterForeignField = undefined;
-          question.referenceDataFilterFilterCondition = undefined;
-          question.referenceDataFilterLocalField = undefined;
+          if (!value) {
+            question.referenceDataDisplayField = undefined;
+            question.referenceDataFilterFilterFromQuestion = undefined;
+            question.referenceDataFilterForeignField = undefined;
+            question.referenceDataFilterFilterCondition = undefined;
+            question.referenceDataFilterLocalField = undefined;
+          }
         }
-      }
-    );
-    question.registerFunctionOnPropertyValueChanged(
-      'isPrimitiveValue',
-      updateChoices
-    );
-    question.registerFunctionOnPropertyValueChanged(
-      'referenceDataDisplayField',
-      updateChoices
-    );
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'isPrimitiveValue',
+        updateChoices
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'referenceDataDisplayField',
+        updateChoices
+      );
+    }
     // Init linked reference data questions update inside the survey if those question types exists
     const containsLinkedReferenceDataQuestions = (
       question.survey as SurveyModel
@@ -368,6 +371,20 @@ export const render = (questionElement: Question, injector: Injector): void => {
       }
     };
     if (containsLinkedReferenceDataQuestions) {
+      // Remove stale handler from a previous render of this question to prevent accumulation
+      if ((question as any)._referenceDataLinkedHandler) {
+        (question.survey as SurveyModel).onValueChanged.remove(
+          (question as any)._referenceDataLinkedHandler
+        );
+        (
+          question.survey as SurveyModel
+        ).unregisterFunctionOnPropertyValueChanged(
+          'refreshData',
+          (question as any)._referenceDataLinkedHandler
+        );
+      }
+      (question as any)._referenceDataLinkedHandler =
+        updateReferenceDataChoicesFunc;
       (question.survey as SurveyModel).onValueChanged.add(
         updateReferenceDataChoicesFunc
       );

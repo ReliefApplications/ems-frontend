@@ -147,7 +147,10 @@ export const render = (questionElement: Question, injector: Injector): void => {
 
   // Create a new subject in the question
   // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
-  if (!questionElement.refresh$) {
+  if (questionElement.refresh$) {
+    // Cancel any previous in-flight request before re-registering on re-render
+    questionElement.refresh$.next();
+  } else {
     questionElement.refresh$ = new Subject();
   }
   if (isSelectQuestion(questionElement)) {
@@ -271,7 +274,13 @@ export const render = (questionElement: Question, injector: Injector): void => {
       .getAllQuestions()
       .find((qu) => qu['gqlVariableMapping']);
     if (containsLinkedReferenceDataQuestions) {
-      (questionElement.survey as SurveyModel).onValueChanged.add(async () => {
+      // Remove stale handler from a previous render of this question to prevent accumulation
+      if ((questionElement as any)._gqlLinkedChoicesHandler) {
+        (questionElement.survey as SurveyModel).onValueChanged.remove(
+          (questionElement as any)._gqlLinkedChoicesHandler
+        );
+      }
+      const linkedChoicesHandler = async () => {
         // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
         //
         // 1. The available choices(visibleChoices property). This has to be updated if the reference data question that it's dependant on has a new value set
@@ -296,10 +305,20 @@ export const render = (questionElement: Question, injector: Injector): void => {
           );
           updateChoices();
         }
-      });
+      };
+      (questionElement as any)._gqlLinkedChoicesHandler = linkedChoicesHandler;
+      (questionElement.survey as SurveyModel).onValueChanged.add(
+        linkedChoicesHandler
+      );
     }
 
-    (questionElement.survey as SurveyModel).onValueChanged.add(() => {
+    // Remove stale handler from a previous render of this question to prevent accumulation
+    if ((questionElement as any)._gqlValueUpdateHandler) {
+      (questionElement.survey as SurveyModel).onValueChanged.remove(
+        (questionElement as any)._gqlValueUpdateHandler
+      );
+    }
+    const valueUpdateHandler = () => {
       if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
         const choices = questionElement.getPropertyValue('visibleChoices');
         // Avoid to update if choices not defined yet, otherwise, it removes the value
@@ -310,6 +329,10 @@ export const render = (questionElement: Question, injector: Injector): void => {
           );
         }
       }
-    });
+    };
+    (questionElement as any)._gqlValueUpdateHandler = valueUpdateHandler;
+    (questionElement.survey as SurveyModel).onValueChanged.add(
+      valueUpdateHandler
+    );
   }
 };

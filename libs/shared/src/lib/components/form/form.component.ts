@@ -343,45 +343,47 @@ export class FormComponent
         },
       });
     }
-    mutation.subscribe(({ errors, data }: any) => {
-      if (errors) {
-        this.save.emit({ completed: false });
-        this.survey.clear(false, true);
-        this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      } else {
-        if (this.lastDraftRecord) {
-          const callback = () => {
-            this.lastDraftRecord = undefined;
-          };
-          this.formHelpersService.deleteRecordDraft(
-            this.lastDraftRecord,
-            callback
-          );
-        }
-        // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, false);
-          if (data.addRecord) {
-            this.record = data.addRecord;
-            this.modifiedAt = this.record?.modifiedAt || null;
-          } else {
-            this.modifiedAt = data.editRecord.modifiedAt;
-          }
+    mutation
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ errors, data }: any) => {
+        if (errors) {
+          this.save.emit({ completed: false });
+          this.survey.clear(false, true);
           this.surveyActive = true;
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
         } else {
-          this.survey.showCompletedPage = true;
+          if (this.lastDraftRecord) {
+            const callback = () => {
+              this.lastDraftRecord = undefined;
+            };
+            this.formHelpersService.deleteRecordDraft(
+              this.lastDraftRecord,
+              callback
+            );
+          }
+          // localStorage.removeItem(this.storageId);
+          if (data.editRecord || data.addRecord.form.uniqueRecord) {
+            this.survey.clear(false, false);
+            if (data.addRecord) {
+              this.record = data.addRecord;
+              this.modifiedAt = this.record?.modifiedAt || null;
+            } else {
+              this.modifiedAt = data.editRecord.modifiedAt;
+            }
+            this.surveyActive = true;
+          } else {
+            this.survey.showCompletedPage = true;
+          }
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.display.submissionMessage')
+          );
+          this.save.emit({
+            completed: true,
+            hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+            record: data.addRecord || data.editRecord,
+          });
         }
-        this.snackBar.openSnackBar(
-          this.translate.instant('components.form.display.submissionMessage')
-        );
-        this.save.emit({
-          completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
-          record: data.addRecord || data.editRecord,
-        });
-      }
-    });
+      });
   }
 
   /**
@@ -458,6 +460,7 @@ export class FormComponent
               version: version.id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: ({ errors }) => {
               if (errors) {
@@ -488,6 +491,13 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    // Cancel any in-flight choices requests before disposal
+    this.survey?.getAllQuestions()?.forEach((q: any) => {
+      if (q.refresh$) {
+        q.refresh$.next();
+        q.refresh$.complete();
+      }
+    });
     this.survey?.dispose();
   }
 }
