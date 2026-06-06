@@ -1,21 +1,21 @@
 {
 	"common": {
-		"access": "Access",
-		"accessDenied": "Access denied",
+		"access": "Доступ",
+		"accessDenied": "Доступ заборонено",
 		"account": "Обліковий запис",
 		"actions": "Дії",
 		"activity": {
-			"few": "Activities",
-			"none": "Ні activity",
-			"one": "Activity"
+			"few": "Активності",
+			"none": "Немає активностей",
+			"one": "Активність"
 		},
 		"add": "Додати",
-		"adminField": "Admin field",
+		"adminField": "Поле адміністратора",
 		"aggregation": {
-			"add": "Додати aggregation",
-			"few": "Aggregations",
-			"none": "Ні aggregation",
-			"one": "Aggregation"
+			"add": "Додати агрегацію",
+			"few": "Агрегації",
+			"none": "Немає агрегацій",
+			"one": "Агрегація"
 		},
 		"apiConfiguration": {
 			"few": "Налаштування API",
@@ -24,441 +24,441 @@
 		},
 		"application": {
 			"few": "Додатки",
-			"none": "Ні Додаток",
+			"none": "Немає додатків",
 			"one": "Додаток"
 		},
 		"archive": {
 			"delete": "Видалити",
-			"few": "Archive",
+			"few": "Архів",
 			"modal": {
 				"delete": {
 					"action": "Видалити",
-					"confirmationMessage": "Do you want to Видалити archived Сторінка: {{name}}?",
+					"confirmationMessage": "Ви бажаєте видалити архівну сторінку: {{name}}?",
 					"title": "Видалити?"
 				},
 				"restore": {
-					"action": "Restore",
-					"confirmationMessage": "Do you want to restore the archived Сторінка: {{name}}?",
-					"title": "Restore?"
+					"action": "Відновити",
+					"confirmationMessage": "Ви бажаєте відновити архівну сторінку: {{name}}?",
+					"title": "Відновити?"
 				}
 			},
-			"none": "Ні archived items",
-			"restore": "Restore"
+			"none": "Немає архівних елементів",
+			"restore": "Відновити"
 		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Очистити Пошук"
 			}
 		},
-		"asc": "Ascending",
+		"asc": "За зростанням",
 		"attribute": {
-			"few": "Attributes",
-			"none": "Ні attribute",
-			"one": "Attribute"
+			"few": "Атрибути",
+			"none": "Немає атрибутів",
+			"one": "Атрибут"
 		},
-		"auto": "Auto",
+		"auto": "Авто",
 		"back": "Назад",
-		"bookmarks": "Bookmarks",
+		"bookmarks": "Закладки",
 		"calculatedField": {
-			"few": "Calculated Fields",
-			"none": "Ні Calculated field",
-			"one": "Calculated Field"
+			"few": "Обчислювані поля",
+			"none": "Немає обчислюваних полів",
+			"one": "Обчислюване поле"
 		},
 		"cancel": "Скасувати",
 		"channel": {
-			"few": "Channels",
-			"none": "Ні channel",
-			"one": "Channel"
+			"few": "Канали",
+			"none": "Немає каналів",
+			"one": "Канал"
 		},
 		"child": {
-			"edit": "Редагувати child",
-			"one": "Child"
+			"edit": "Редагувати дочірній елемент",
+			"one": "Дочірній елемент"
 		},
 		"clear": "Очистити",
 		"clone": "Клонувати",
 		"cloneRecord": "Клонувати Запис",
 		"close": "Закрити",
 		"column": {
-			"few": "Columns",
-			"none": "Ні column",
-			"one": "Column"
+			"few": "Стовпці",
+			"none": "Немає стовпців",
+			"one": "Стовпець"
 		},
-		"comma": "comma",
-		"copy": "Copy",
+		"comma": "кома",
+		"copy": "Копіювати",
 		"copyright": {
 			"who": "Copyright © Всесвітня організація охорони здоров'я 2024."
 		},
 		"create": "Створити",
 		"createdBy": "Створено ким",
 		"createdOn": "Створено",
-		"creation": "Creation",
+		"creation": "Створення",
 		"cronEditor": {
 			"advanced": "Додатково",
-			"atTime": "At",
-			"daily": "Daily",
-			"day": "Day",
-			"days": "Day(s)",
+			"atTime": "О",
+			"daily": "Щодня",
+			"day": "День",
+			"days": "День(ді)",
 			"every": {
-				"feminine": "Every",
-				"masculine": "Every"
+				"feminine": "Кожна",
+				"masculine": "Кожен"
 			},
-			"firstWeekDay": "First week day",
-			"hourly": "Hourly",
-			"hours": "Hour(s)",
-			"lastDay": "Last day",
-			"lastWeekDay": "Last week day",
-			"minutely": "Minutely",
-			"minutes": "Minute(s)",
-			"month": "Month",
-			"monthly": "Monthly",
+			"firstWeekDay": "Перший робочий день тижня",
+			"hourly": "Щогодини",
+			"hours": "Година(и)",
+			"lastDay": "Останній день",
+			"lastWeekDay": "Останній робочий день",
+			"minutely": "Щохвилини",
+			"minutes": "Хвилина(и)",
+			"month": "Місяць",
+			"monthly": "Щомісяця",
 			"months": {
-				"april": "April",
-				"august": "August",
-				"december": "December",
-				"february": "February",
-				"january": "January",
-				"july": "July",
-				"june": "June",
-				"march": "March",
-				"may": "May",
-				"november": "November",
-				"october": "October",
-				"september": "September"
+				"april": "Квітень",
+				"august": "Серпень",
+				"december": "Грудень",
+				"february": "Лютий",
+				"january": "Січень",
+				"july": "Липень",
+				"june": "Червень",
+				"march": "Березень",
+				"may": "Травень",
+				"november": "Листопад",
+				"october": "Жовтень",
+				"september": "Вересень"
 			},
-			"of": "of",
-			"ofEvery": "of every",
+			"of": "з",
+			"ofEvery": "кожного",
 			"onThe": {
-				"feminine": "On the",
-				"masculine": "On the"
+				"feminine": "У",
+				"masculine": "У"
 			},
-			"seconds": "Second(s)",
-			"week": "Week",
-			"weekDay": "Week Day (MON-FRI)",
+			"seconds": "Секунда(и)",
+			"week": "Тиждень",
+			"weekDay": "Робочий день (ПН-ПТ)",
 			"weekDays": {
-				"friday": "Friday",
-				"monday": "Monday",
-				"saturday": "Saturday",
-				"sunday": "Sunday",
-				"thursday": "Thursday",
-				"tuesday": "Tuesday",
-				"wednesday": "Wednesday"
+				"friday": "П'ятниця",
+				"monday": "Понеділок",
+				"saturday": "Субота",
+				"sunday": "Неділя",
+				"thursday": "Четвер",
+				"tuesday": "Вівторок",
+				"wednesday": "Середа"
 			},
 			"weekNumber": {
-				"fifth": "Fifth",
-				"first": "First",
-				"fourth": "Fourth",
-				"last": "Last",
-				"second": "Second",
-				"third": "Third"
+				"fifth": "П'ятий",
+				"first": "Перший",
+				"fourth": "Четвертий",
+				"last": "Останній",
+				"second": "Другий",
+				"third": "Третій"
 			},
-			"weekly": "Weekly",
-			"yearly": "Yearly"
+			"weekly": "Щотижня",
+			"yearly": "Щорічно"
 		},
 		"customNotification": {
-			"few": "Custom Сповіщення",
-			"none": "Ні Custom Сповіщення",
-			"one": "Custom Сповіщення"
+			"few": "Власні сповіщення",
+			"none": "Немає власних сповіщень",
+			"one": "Власне сповіщення"
 		},
 		"customTemplate": {
-			"few": "Custom Шаблони",
-			"none": "Ні custom Шаблон",
-			"one": "Custom Шаблон"
+			"few": "Власні шаблони",
+			"none": "Немає власних шаблонів",
+			"one": "Власний шаблон"
 		},
 		"dashboard": {
-			"few": "Dashboards",
-			"none": "Ні Панель керування",
+			"few": "Панелі керування",
+			"none": "Немає панелей керування",
 			"one": "Панель керування"
 		},
 		"delete": "Видалити",
 		"deleteObject": "Видалити {{name}}",
-		"deleted": "Deleted",
-		"desc": "Descending",
-		"dismiss": "Dismiss",
-		"display": "Display",
+		"deleted": "Видалено",
+		"desc": "За спаданням",
+		"dismiss": "Відхилити",
+		"display": "Відображення",
 		"distributionList": {
-			"few": "Distribution lists",
-			"none": "Ні distribution list",
-			"one": "Distribution list"
+			"few": "Списки розсилки",
+			"none": "Немає списків розсилки",
+			"one": "Список розсилки"
 		},
 		"downloadObject": "Завантажити {{name}}",
-		"downloadTemplate": "Get Шаблон",
-		"duplicate": "Duplicate",
+		"downloadTemplate": "Отримати шаблон",
+		"duplicate": "Дублювати",
 		"edit": "Редагувати",
 		"email": {
-			"customTemplate": "Custom Шаблон",
+			"customTemplate": "Власний шаблон",
 			"error": {
-				"duplicateName": "Назва already exists!"
+				"duplicateName": "Назва вже існує!"
 			},
-			"few": "Emails",
-			"none": "Ні email",
+			"few": "Електронні листи",
+			"none": "Немає електронних листів",
 			"notification": {
-				"few": "Email Сповіщення",
-				"none": "Ні Email Сповіщення",
-				"one": "Email Сповіщення"
+				"few": "Сповіщення електронною поштою",
+				"none": "Немає сповіщень електронною поштою",
+				"one": "Сповіщення електронною поштою"
 			},
-			"one": "Email"
+			"one": "Електронний лист"
 		},
 		"errors": {
 			"few": "Помилки",
-			"invalidJson": "Please provide a valid JSON",
-			"objectDuplicated": "{{type}} {{value}} already exists."
+			"invalidJson": "Будь ласка, надайте дійсний JSON",
+			"objectDuplicated": "{{type}} {{value}} вже існує."
 		},
-		"exitFullscreen": "Exit Fullscreen",
+		"exitFullscreen": "Вийти з повноекранного режиму",
 		"export": "Експорт",
 		"exportObject": "Експорт {{name}}",
 		"exportType": {
-			"image": "Експорт to image",
-			"pdf": "Експорт to PDF"
+			"image": "Експорт у зображення",
+			"pdf": "Експорт у PDF"
 		},
 		"false": "Хибність",
 		"field": {
-			"few": "Fields",
-			"none": "Ні field",
-			"one": "Field"
+			"few": "Поля",
+			"none": "Немає полів",
+			"one": "Поле"
 		},
 		"filter": {
 			"apply": "Застосувати",
 			"clear": "Очистити Фільтр",
-			"empty": "Ні result",
+			"empty": "Немає результатів",
 			"few": "Фільтри",
-			"hide": "Hide Фільтр",
-			"none": "Ні Фільтр",
+			"hide": "Приховати фільтр",
+			"none": "Немає фільтрів",
 			"one": "Фільтр",
-			"show": "Show Фільтр"
+			"show": "Показати фільтр"
 		},
 		"form": {
 			"few": "Форми",
 			"none": "Немає форм",
 			"one": "Форма"
 		},
-		"general": "General",
+		"general": "Загальне",
 		"group": {
-			"few": "Groups",
-			"none": "Ні groups",
-			"one": "Group"
+			"few": "Групи",
+			"none": "Немає груп",
+			"one": "Група"
 		},
-		"hide": "Hide",
+		"hide": "Приховати",
 		"history": "Історія",
 		"id": "Id",
 		"input": {
-			"dateRange": "Дата range",
-			"none": "-- None --",
+			"dateRange": "Діапазон дат",
+			"none": "-- Немає --",
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
 		"layers": {
-			"few": "Layers",
-			"none": "Ні layer"
+			"few": "Шари",
+			"none": "Немає шарів"
 		},
 		"layout": {
-			"few": "Layouts",
-			"none": "Ні layout",
-			"one": "Layout"
+			"few": "Макети",
+			"none": "Немає макетів",
+			"one": "Макет"
 		},
-		"legacy": "Legacy",
+		"legacy": "Застарілий",
 		"loading": "Завантаження",
-		"modifiedOn": "Modified On",
+		"modifiedOn": "Змінено",
 		"name": "Ім'я",
 		"next": "Далі",
-		"noData": "Ні data available",
-		"noOptions": "Ні available choices",
+		"noData": "Немає доступних даних",
+		"noOptions": "Немає доступних варіантів",
 		"notifications": {
-			"accessDenied": "You don't have permission to see the {{type}}.",
-			"accessNotProvided": "Ні access provided to this {{type}}. {{error}}",
-			"alreadyExists": "The {{type}} {{value}} already exists on this Додаток.",
-			"copiedToClipboard": "Панель керування link copied!",
-			"dataNotRecovered": "Failure on data recovery",
-			"dataRecovered": "The data has been recovered",
+			"accessDenied": "У вас немає дозволу на перегляд {{type}}.",
+			"accessNotProvided": "Немає доступу до цього {{type}}. {{error}}",
+			"alreadyExists": "The {{type}} {{value}} вже існує в цьому додатку.",
+			"copiedToClipboard": "Посилання на панель керування скопійовано!",
+			"dataNotRecovered": "Помилка при відновленні даних",
+			"dataRecovered": "Дані відновлено",
 			"email": {
 				"attachment": {
-					"countValidation": "File count exceeds the limit of {{maxFileCount}}",
-					"removeFile": "{{fileName}} removed successfully",
-					"sendFile": "Send as file",
-					"sendUrl": "Send as link",
-					"sizeValidation": "File exceeds the size limit of 7 MB",
-					"title": "Attachments",
-					"uploadFail": "Failed to Завантажити файл file {{file.name}}",
-					"uploadFile": "Завантажити файл file",
-					"uploadFileNote": "Please note: You can Завантажити файл a maximum of 5 files, with each file not exceeding 7MB in size."
+					"countValidation": "Кількість файлів перевищує ліміт {{maxFileCount}}",
+					"removeFile": "{{fileName}} успішно видалено",
+					"sendFile": "Надіслати як файл",
+					"sendUrl": "Надіслати як посилання",
+					"sizeValidation": "Розмір файлу перевищує ліміт 7 МБ",
+					"title": "Вкладення",
+					"uploadFail": "Не вдалося завантажити файл {{file.name}}",
+					"uploadFile": "Завантажити файл",
+					"uploadFileNote": "Зверніть увагу: ви можете завантажити максимум 5 файлів, розмір кожного з яких не повинен перевищувати 7 МБ."
 				},
 				"banner": {
-					"image": "Banner image",
-					"removeTooltip": "Видалити banner image"
+					"image": "Зображення банера",
+					"removeTooltip": "Видалити зображення банера"
 				},
 				"body": {
-					"title": "Body*"
+					"title": "Текст листа*"
 				},
-				"close": "Are you sure you want to Закрити this Сповіщення? Any changes made will not be saved.",
+				"close": "Ви впевнені, що хочете закрити це сповіщення? Усі внесені зміни будуть втрачені.",
 				"dropdown": {
-					"emailInput": "Email input",
+					"emailInput": "Введення email",
 					"inTheLast": {
-						"placeholder": "Select timestamp from Фільтри...",
-						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
+						"placeholder": "Виберіть мітку часу з фільтрів...",
+						"tooltip": "Використовуйте це налаштування, лише якщо ви відфільтрували дані за допомогою оператора 'за останні'. Наприклад, за останні 2 дні або 24 години"
 					},
-					"selectBlock": "Select a block",
-					"timestamp": "Select a Дата / timestamp"
+					"selectBlock": "Виберіть блок",
+					"timestamp": "Виберіть дату / мітку часу"
 				},
-				"error": "Something went wrong during the email sending",
+				"error": "Щось пішло не так під час надсилання електронної пошти",
 				"errors": {
-					"customTitleExist": "Custom Шаблон Назва already exist.",
-					"noBody": "Body is required to proceed!",
-					"noCustomTitle": "Custom Шаблон Назва is required to proceed!",
-					"noDistributionList": "Something went wrong during the email sending: Ні distribution list found",
-					"noFields": "DocumentType & InformationConfidentiality is required to proceed!",
-					"noSubject": "Subject is required to proceed!",
-					"noTemplate": "Something went wrong during the email sending: Ні Шаблон found",
-					"preview": "Попередній перегляд of email failed"
+					"customTitleExist": "Назва власного шаблону вже існує.",
+					"noBody": "Текст листа обов'язковий для продовження!",
+					"noCustomTitle": "Назва власного шаблону обов'язкова для продовження!",
+					"noDistributionList": "Щось пішло не так під час надсилання листа: не знайдено списку розсилки",
+					"noFields": "DocumentType & InformationConfidentiality обов'язкові для продовження!",
+					"noSubject": "Тема обов'язкова для продовження!",
+					"noTemplate": "Щось пішло не так під час надсилання листа: шаблон не знайдено",
+					"preview": "Не вдалося завантажити попередній перегляд листа"
 				},
-				"existing": "Or use existing",
+				"existing": "Або використовувати існуючий",
 				"field": {
-					"filtered": "Select filtered field",
-					"noBlocks": "Ні blocks configured",
-					"selectBlock": "Block select",
-					"selectPlaceholder": "Select block field",
-					"selectTitle": "Field select"
+					"filtered": "Виберіть відфільтроване поле",
+					"noBlocks": "Немає налаштованих блоків",
+					"selectBlock": "Вибір блоку",
+					"selectPlaceholder": "Виберіть поле блоку",
+					"selectTitle": "Вибір поля"
 				},
 				"fieldselect": {
-					"placeholder": "Field Select",
-					"tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will За замовчуванням to the first Запис in the results"
+					"placeholder": "Вибір поля",
+					"tooltip": "Вибирайте варіант поля, лише якщо воно містить унікальне значення; інакше система за замовчуванням вибере перший запис у результатах"
 				},
 				"footer": {
-					"logo": "Footer logo",
-					"removeTooltip": "Видалити footer logo",
-					"style": "Footer style"
+					"logo": "Логотип підвалу",
+					"removeTooltip": "Видалити логотип підвалу",
+					"style": "Стиль підвалу"
 				},
 				"header": {
-					"logo": "Header logo",
-					"removeTooltip": "Видалити header logo",
-					"style": "Header style"
+					"logo": "Логотип заголовка",
+					"removeTooltip": "Видалити логотип заголовка",
+					"style": "Стиль заголовка"
 				},
 				"preview": {
-					"processing": "Creating email Попередній перегляд..."
+					"processing": "Створення попереднього перегляду листа..."
 				},
-				"processing": "Sending email...",
-				"ready": "Email ready",
+				"processing": "Надсилання електронного листа...",
+				"ready": "Лист готовий",
 				"recipients": {
-					"combination": "Use Combination",
-					"commonServices": "Select from Спільне Services",
-					"manual": "Додати Manually",
-					"resource": "Select With Фільтр"
+					"combination": "Використовувати комбінацію",
+					"commonServices": "Вибрати зі Спільних Сервісів",
+					"manual": "Додати вручну",
+					"resource": "Вибрати з фільтром"
 				},
-				"sent": "Email sent",
+				"sent": "Електронний лист надіслано",
 				"style": {
-					"background": "Background color",
-					"text": "Text color"
+					"background": "Колір фону",
+					"text": "Колір тексту"
 				},
 				"subject": {
-					"customLayoutTitle": "Custom Шаблон Назва*",
-					"textTitle": "Subject text*",
-					"title": "Subject*"
+					"customLayoutTitle": "Назва власного шаблону*",
+					"textTitle": "Текст теми*",
+					"title": "Тема*"
 				},
-				"timestamp": "Дата / Timestamp"
+				"timestamp": "Дата / Мітка часу"
 			},
-			"emailSent": "Email sent successfully.",
+			"emailSent": "Електронний лист успішно надіслано.",
 			"export": {
 				"download": "Завантажити",
-				"format": "Format:",
-				"image": "{{image}} Ready",
-				"includeHeaderFooter": "Include Header and Footer",
-				"landscape": "Landscape",
-				"loading": "Завантаження {{type}} Експорт",
-				"options": "Експорт options",
-				"orientation": "Orientation:",
-				"paperSize": "Paper Size:",
-				"pdf": "PDF Ready",
-				"portrait": "Portrait"
+				"format": "Формат:",
+				"image": "{{image}} Готово",
+				"includeHeaderFooter": "Включити заголовок і підвал",
+				"landscape": "Альбомна",
+				"loading": "Завантаження експорту {{type}}",
+				"options": "Параметри експорту",
+				"orientation": "Орієнтація:",
+				"paperSize": "Розмір паперу:",
+				"pdf": "PDF Готово",
+				"portrait": "Книжкова"
 			},
-			"fetchingGroups": "Fetching groups from service...",
+			"fetchingGroups": "Отримання груп із сервісу...",
 			"file": {
 				"download": {
-					"error": "Something went wrong during the Завантажити",
-					"ongoing": "Your file Експорт is ongoing. You will receive an email once ready.",
-					"processing": "Downloading file...",
-					"ready": "Your file is ready"
+					"error": "Щось пішло не так під час завантаження",
+					"ongoing": "Триває експорт файлу. Ви отримаєте електронний лист, коли все буде готово.",
+					"processing": "Завантаження файлу...",
+					"ready": "Ваш файл готовий"
 				},
 				"upload": {
-					"error": "Something went wrong during the Завантажити файл",
-					"maxFileSize": "Maximum file size is {{size}} MB.",
-					"processing": "Uploading file...",
-					"ready": "File uploaded"
+					"error": "Щось пішло не так під час завантаження файлу",
+					"maxFileSize": "Максимальний розмір файлу становить {{size}} МБ.",
+					"processing": "Завантаження файлу...",
+					"ready": "Файл завантажено"
 				}
 			},
-			"formatInvalid": "Please Завантажити файл a valid .{{format}} file.",
+			"formatInvalid": "Будь ласка, завантажте дійсний файл .{{format}}.",
 			"groups": {
-				"error": "Something went wrong trying to get groups from service",
-				"processing": "Fetching groups from service...",
-				"ready": "Groups fetched"
+				"error": "Щось пішло не так при спробі отримати групи із сервісу",
+				"processing": "Отримання груп із сервісу...",
+				"ready": "Групи отримано"
 			},
 			"history": {
-				"error": "Something went wrong during the Історія generation. {{error}}"
+				"error": "Щось пішло не так під час створення історії. {{error}}"
 			},
-			"loadedFromCache": "{{type}} loaded from cache.",
-			"noOpened": "Ні opened {{value}}.",
-			"objectCreated": "{{value}} {{type}} was successfully created.",
-			"objectDeleted": "{{value}} was successfully deleted.",
-			"objectDuplicated": "{{type}} {{value}} was successfully duplicated.",
-			"objectInvited": "{{name}} invited.",
-			"objectLocked": "{{name}} edition is locked by another Користувач.",
-			"objectNotCreated": "The {{type}} was not created. {{error}}",
-			"objectNotDeleted": "{{value}} deletion failed. {{error}}",
-			"objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
-			"objectNotFound": "{{name}} not found.",
-			"objectNotInvited": "{{name}} invitation failed.",
-			"objectNotReordered": "{{type}} not reordered. {{error}}",
-			"objectNotRestored": "{{value}} not restored. {{error}}",
-			"objectNotSaved": "{{type}} not saved. {{error}}",
-			"objectNotUpdated": "{{type}} not edited. {{error}}",
-			"objectReordered": "{{type}} reordered.",
-			"objectRestored": "{{value}} restored.",
-			"objectUpdated": "{{value}} {{type}} was successfully edited.",
-			"platformAccessNotGranted": "You don't have a valid access to this platform.",
-			"readAll": "Mark all as read",
-			"statusUpdated": "Статус updated to {{value}}.",
-			"unlocked": "{{name}} edition has been unlocked by another Користувач."
+			"loadedFromCache": "{{type}} завантажено з кешу.",
+			"noOpened": "Немає відкритих {{value}}.",
+			"objectCreated": "{{value}} {{type}} було успішно створено.",
+			"objectDeleted": "{{value}} було успішно видалено.",
+			"objectDuplicated": "{{type}} {{value}} було успішно дубльовано.",
+			"objectInvited": "{{name}} запрошено.",
+			"objectLocked": "{{name}} заблоковано іншим користувачем.",
+			"objectNotCreated": "{{type}} не створено. {{error}}",
+			"objectNotDeleted": "Не вдалося видалити {{value}}. {{error}}",
+			"objectNotDuplicated": "{{type}} не дубльовано. {{error}}",
+			"objectNotFound": "{{name}} не знайдено.",
+			"objectNotInvited": "Не вдалося запросити {{name}}.",
+			"objectNotReordered": "Не вдалося змінити порядок {{type}}. {{error}}",
+			"objectNotRestored": "Не вдалося відновити {{value}}. {{error}}",
+			"objectNotSaved": "{{type}} не збережено. {{error}}",
+			"objectNotUpdated": "{{type}} не змінено. {{error}}",
+			"objectReordered": "Порядок {{type}} змінено.",
+			"objectRestored": "{{value}} відновлено.",
+			"objectUpdated": "{{value}} {{type}} було успішно змінено.",
+			"platformAccessNotGranted": "У вас немає дійсного доступу до цієї платформи.",
+			"readAll": "Позначити всі як прочитані",
+			"statusUpdated": "Статус оновлено на {{value}}.",
+			"unlocked": "Редагувати {{name}} було розблоковано іншим користувачем."
 		},
-		"openFullScreen": "Open in Full Screen",
-		"options": "Options",
-		"or": "Or",
+		"openFullScreen": "Відкрити на весь екран",
+		"options": "Параметри",
+		"or": "Або",
 		"page": {
 			"few": "Сторінки",
-			"none": "Ні Сторінка",
+			"none": "Немає сторінок",
 			"one": "Сторінка"
 		},
 		"pagination": {
-			"empty": "Ні result",
-			"itemsPerPage": "Items per Сторінка",
-			"loadMore": "Load more",
-			"of": "of"
+			"empty": "Немає результатів",
+			"itemsPerPage": "Елементів на сторінці",
+			"loadMore": "Завантажити ще",
+			"of": "з"
 		},
 		"placeholder": {
-			"address": "Enter an address or place e.g. 1 York St",
-			"email": "Enter email",
-			"name": "Enter a Ім'я",
+			"address": "Введіть адресу або місце, наприклад, вул. Йорк, 1",
+			"email": "Введіть email",
+			"name": "Введіть Ім'я",
 			"search": "Пошук...",
-			"title": "Enter a Назва"
+			"title": "Введіть Назва"
 		},
 		"platform": {
-			"backOffice": "Назад-Office"
+			"backOffice": "Бек-офіс"
 		},
 		"position": {
-			"bottomleft": "Bottom left",
-			"bottomright": "Bottom right",
-			"topleft": "Top left",
-			"topright": "Top right"
+			"bottomleft": "Внизу ліворуч",
+			"bottomright": "Внизу праворуч",
+			"topleft": "Вгорі ліворуч",
+			"topright": "Вгорі праворуч"
 		},
 		"positionAttribute": {
-			"few": "Position attributes",
-			"none": "Ні position attribute",
-			"one": "Position attribute"
+			"few": "Атрибути позиції",
+			"none": "Немає атрибутів позиції",
+			"one": "Атрибут позиції"
 		},
 		"positionCategory": {
-			"few": "Position categories",
-			"none": "Ні position category",
-			"one": "Position category"
+			"few": "Категорії позицій",
+			"none": "Немає категорій позицій",
+			"one": "Категорія позиції"
 		},
 		"preview": "Попередній перегляд",
 		"previous": "Назад",
-		"publish": "Publish",
+		"publish": "Опублікувати",
 		"pullJob": {
 			"few": "Завдання імпорту",
 			"none": "Немає завдань імпорту",
@@ -466,7 +466,7 @@
 		},
 		"record": {
 			"few": "Записи",
-			"none": "Ні Запис",
+			"none": "Немає записів",
 			"one": "Запис"
 		},
 		"referenceData": {
@@ -477,396 +477,396 @@
 		"remove": "Видалити",
 		"resource": {
 			"few": "Ресурси",
-			"none": "Ні Ресурс",
+			"none": "Немає ресурсів",
 			"one": "Ресурс"
 		},
 		"role": {
 			"few": "Ролі",
-			"none": "Ні Роль",
+			"none": "Немає ролей",
 			"one": "Роль"
 		},
 		"row": {
-			"few": "Rows",
-			"none": "Ні row",
-			"one": "Row"
+			"few": "Рядки",
+			"none": "Немає рядків",
+			"one": "Рядок"
 		},
 		"save": "Зберегти",
 		"saveChanges": "Зберегти зміни",
 		"search": "Пошук",
 		"searchObject": "Пошук {{name}}",
-		"select": "Select",
-		"selectStatus": "Select a Статус",
-		"semicolon": "semicolon",
-		"send": "Send",
-		"sendEmail": "Send email",
-		"separator": "Separator",
+		"select": "Вибрати",
+		"selectStatus": "Вибрати Статус",
+		"semicolon": "крапка з комою",
+		"send": "Надіслати",
+		"sendEmail": "Надіслати email",
+		"separator": "Розділювач",
 		"settings": "Параметри",
-		"sortBy": "Sort by",
+		"sortBy": "Сортувати за",
 		"status": "Статус",
 		"status_active": "Активний",
 		"status_archived": "Архівовано",
 		"status_pending": "Очікує",
 		"step": {
 			"few": "Кроки",
-			"none": "Ні Крок",
+			"none": "Немає кроків",
 			"one": "Крок"
 		},
 		"subscription": {
-			"few": "Subscriptions",
-			"none": "Ні subscription",
-			"one": "Subscription"
+			"few": "Підписки",
+			"none": "Немає підписок",
+			"one": "Підписка"
 		},
-		"tabs": "Tabs",
+		"tabs": "Вкладки",
 		"template": {
-			"few": "Сповіщення Шаблони",
-			"none": "Ні Шаблон",
-			"one": "Сповіщення Шаблон"
+			"few": "Шаблони сповіщень",
+			"none": "Немає шаблонів",
+			"one": "Шаблон сповіщення"
 		},
 		"title": "Назва",
 		"toolTip": {
-			"newBlock": "Додати New Block"
+			"newBlock": "Додати новий блок"
 		},
 		"tooltip": {
-			"dragDrop": "Drag and drop to reorder",
+			"dragDrop": "Перетягніть для зміни порядку",
 			"editor": {
-				"insert": "Type '{' to inject expressions and variables"
+				"insert": "Введіть '{' для вставки виразів та змінних"
 			}
 		},
 		"true": "Істина",
 		"type": {
-			"few": "Types",
-			"none": "Ні type",
-			"one": "Type"
+			"few": "Типи",
+			"none": "Немає типів",
+			"one": "Тип"
 		},
-		"undefined": "Undefined",
+		"undefined": "Не визначено",
 		"update": "Оновити",
 		"updateObject": "Оновити {{name}}",
-		"uploadObject": "Завантажити файл {{name}}",
+		"uploadObject": "Завантажити {{name}}",
 		"user": {
 			"few": "Користувачі",
-			"none": "Ні Користувач",
+			"none": "Немає користувачів",
 			"one": "Користувач"
 		},
 		"value": {
-			"few": "Values",
-			"none": "Ні value",
-			"one": "Value"
+			"few": "Значення",
+			"none": "Немає значень",
+			"one": "Значення"
 		},
 		"view": "Переглянути",
-		"viewFullscreen": "Переглянути Fullscreen",
+		"viewFullscreen": "Переглянути на весь екран",
 		"viewObject": "Переглянути {{name}}",
 		"workflow": {
 			"few": "Робочі процеси",
-			"none": "Ні Робочий процес",
+			"none": "Немає робочих процесів",
 			"one": "Робочий процес"
 		}
 	},
 	"components": {
 		"access": {
-			"canDelete": "Can Видалити",
-			"canSee": "Can see",
-			"canUpdate": "Can Оновити",
-			"description": "Оновити {{name}} permissions",
-			"title": "Access"
+			"canDelete": "Може видаляти",
+			"canSee": "Може бачити",
+			"canUpdate": "Може оновлювати",
+			"description": "Оновити дозволи {{name}}",
+			"title": "Доступ"
 		},
 		"aggregation": {
 			"add": {
 				"choice": {
-					"create": "Створити a new aggregation",
-					"load": "Load existing aggregation"
+					"create": "Створити нову агрегацію",
+					"load": "Завантажити існуючу агрегацію"
 				},
-				"select": "Select an aggregation",
-				"title": "Додати new aggregation"
+				"select": "Виберіть агрегацію",
+				"title": "Додати нову агрегацію"
 			},
 			"edit": {
-				"title": "Aggregation configuration"
+				"title": "Конфігурація агрегації"
 			}
 		},
 		"aggregationBuilder": {
-			"accumulators": "Accumulators",
-			"addField": "Додати field",
-			"addRule": "Додати rule",
-			"addStage": "Додати stage",
+			"accumulators": "Акумулятори",
+			"addField": "Додати поле",
+			"addRule": "Додати правило",
+			"addStage": "Додати етап",
 			"dataset": {
-				"select": "Select the data source"
+				"select": "Виберіть джерело даних"
 			},
-			"fieldName": "Field Ім'я",
-			"groupBy": "Group by",
-			"groupingRules": "Grouping rules",
-			"keepNull": "Preserve null values",
+			"fieldName": "Назва поля",
+			"groupBy": "Групувати за",
+			"groupingRules": "Правила групування",
+			"keepNull": "Зберігати значення null",
 			"mapping": {
-				"category": "Category",
-				"field": "Value",
-				"series": "Series"
+				"category": "Категорія",
+				"field": "Значення",
+				"series": "Серії"
 			},
-			"operator": "Operator",
+			"operator": "Оператор",
 			"operators": {
 				"add": "Додати",
-				"avg": "Average",
-				"count": "Count",
-				"day": "Day",
-				"first": "First",
-				"last": "Last",
-				"max": "Maximum",
-				"min": "Minimum",
-				"month": "Month",
-				"multiply": "Multiply",
-				"sum": "Sum",
-				"week": "Week",
-				"year": "Year"
+				"avg": "Середнє",
+				"count": "Кількість",
+				"day": "День",
+				"first": "Перший",
+				"last": "Останній",
+				"max": "Максимум",
+				"min": "Мінімум",
+				"month": "Місяць",
+				"multiply": "Помножити",
+				"sum": "Сума",
+				"week": "Тиждень",
+				"year": "Рік"
 			},
-			"sourceFields": "Choose the fields to include in the aggregation",
+			"sourceFields": "Виберіть поля для включення в агрегацію",
 			"stages": {
-				"addFields": "Додати fields",
-				"custom": "Custom",
+				"addFields": "Додати поля",
+				"custom": "Власний",
 				"filter": "Фільтр",
-				"group": "Group & Accumulator",
-				"sort": "Sort",
-				"unwind": "Unwind"
+				"group": "Групування та Акумулятор",
+				"sort": "Сортування",
+				"unwind": "Розгортання"
 			},
 			"tooltip": {
-				"addFields": "Adds new fields to documents.",
-				"custom": "Defines a custom aggregation function or expression in JavaScript.",
-				"filter": "Returns an array with only those elements that match the condition.",
-				"group": "Group Записи based on field values and construct personalized accumulators",
-				"groupingRules": "Grouping rules are optional.",
-				"selectedFields": "Only unused fields can be removed.",
-				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
-				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
+				"addFields": "Додає нові поля до документів.",
+				"custom": "Визначає власну функцію або вираз агрегації на JavaScript.",
+				"filter": "Повертає масив лише з тими елементами, які відповідають умові.",
+				"group": "Групуйте записи на основі значень полів та створюйте персоналізовані акумулятори",
+				"groupingRules": "Правила групування є необов'язковими.",
+				"selectedFields": "Можна видалити лише невикористані поля.",
+				"sort": "Сортує всі вхідні документи та повертає їх у конвеєр у відсортованому порядку.\nВстановлення послідовних етапів сортування призведе до одночасного сортування всіх полів.",
+				"unwind": "Деконструює поле масиву з вхідних документів, щоб вивести документ для кожного елемента."
 			},
-			"unavailableFields": "These fields are unavailable because their types are not supported"
+			"unavailableFields": "Ці поля недоступні, оскільки їхні типи не підтримуються"
 		},
 		"apiConfiguration": {
 			"create": {
 				"errors": {
-					"name": "Invalid Ім'я: please only use letters, digits and underscores."
+					"name": "Недійсне Ім'я: будь ласка, використовуйте лише літери, цифри та підкреслення."
 				}
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the API Configuration {{name}}?",
-				"title": "Видалити API configuration"
+				"confirmationMessage": "Ви підтверджуєте видалення конфігурації API {{name}}?",
+				"title": "Вилучити конфігурацію API"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of API configurations"
+				"ariaLabel": "Виберіть сторінку конфігурацій API"
 			}
 		},
 		"application": {
 			"activities": {
 				"columns": {
-					"createdAt": "Timestamp",
-					"hits": "Hits",
+					"createdAt": "Мітка часу",
+					"hits": "Перегляди",
 					"page": "Сторінка",
 					"user": "Користувач"
 				},
 				"downloadXlsx": "Завантажити XLSX",
-				"empty": "Ні activities available",
-				"few": "Activities",
-				"metadata": "Metadata",
-				"one": "Activity",
+				"empty": "Немає доступних активностей",
+				"few": "Активності",
+				"metadata": "Метадані",
+				"one": "Активність",
 				"tabs": {
-					"groupByPage": "Group by Сторінка",
-					"groupByUser": "Group by Користувач",
-					"recentHits": "Recent hits"
+					"groupByPage": "Групувати за сторінкою",
+					"groupByUser": "Групувати за користувачем",
+					"recentHits": "Останні перегляди"
 				},
 				"title": "Сторінка",
 				"url": "URL",
-				"userId": "Користувач ID"
+				"userId": "ID Користувача"
 			},
 			"archive": {
-				"autoDeletedAt": "Automatically removed on",
+				"autoDeletedAt": "Автоматично видалено",
 				"name": "Ім'я"
 			},
-			"customStyling": "Custom Styling",
+			"customStyling": "Власні стилі",
 			"dashboard": {
-				"editFilter": "Редагувати Фільтр",
-				"empty": "Ні content available. Wait for your administrator to build some.",
-				"enterEditMode": "Enter Редагувати mode",
-				"enterPreviewMode": "Enter Попередній перегляд mode",
+				"editFilter": "Редагувати фільтр",
+				"empty": "Немає доступного вмісту. Зачекайте, поки ваш адміністратор створить його.",
+				"enterEditMode": "Увійти в режим редагування",
+				"enterPreviewMode": "Увійти в режим попереднього перегляду",
 				"filter": {
-					"empty": "Ні Фільтри have been defined by the administrators",
+					"empty": "Адміністраторами не було визначено жодного фільтра",
 					"filterPosition": {
-						"bottom": "Show Фільтр on the bottom",
-						"left": "Show Фільтр on the left",
-						"right": "Show Фільтр on the right",
-						"top": "Show Фільтр on the top",
-						"unset": "Position unset, please select one"
+						"bottom": "Показувати фільтр внизу",
+						"left": "Показувати фільтр ліворуч",
+						"right": "Показувати фільтр праворуч",
+						"top": "Показувати фільтр вгорі",
+						"unset": "Позиція не встановлена, будь ласка, виберіть одну"
 					},
-					"info": "Панель керування Фільтри can be used between Сторінки to Фільтр their content.",
-					"title": "Панель керування Фільтри configuration"
+					"info": "Фільтри панелі керування можна використовувати між сторінками для фільтрації їхнього вмісту.",
+					"title": "Конфігурація фільтрів панелі керування"
 				},
-				"filterSettings": "Фільтр Параметри",
+				"filterSettings": "Параметри фільтра",
 				"settings": {
-					"defaultPosition": "За замовчуванням position for the Фільтр",
-					"fixedRowHeight": "Row height",
-					"gridOptions": "Grid options",
+					"defaultPosition": "Позиція фільтра за замовчуванням",
+					"fixedRowHeight": "Висота рядка",
+					"gridOptions": "Параметри сітки",
 					"gridType": {
-						"fit": "Fit",
-						"placeholder": "Select a grid type",
-						"title": "Grid type",
-						"verticalFixed": "Vertical fixed"
+						"fit": "Вписати",
+						"placeholder": "Виберіть тип сітки",
+						"title": "Тип сітки",
+						"verticalFixed": "Вертикально фіксована"
 					},
 					"help": {
-						"minCols": "Reducing the number of columns may not have a direct impact if the Панель керування contains widgets wider than the specified limit."
+						"minCols": "Зменшення кількості стовпців може не мати прямого впливу, якщо панель керування містить віджети, ширші за вказаний ліміт."
 					},
-					"margin": "Margin between widgets",
-					"minCols": "Number of columns",
-					"minimumHeight": "Minimum height",
+					"margin": "Поля між віджетами",
+					"minCols": "Кількість стовпців",
+					"minimumHeight": "Мінімальна висота",
 					"tooltip": {
-						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
-						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
-						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
-						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe Панель керування won't automatically fit to the screen if its height is below this number.",
-						"reset": "Reset to За замовчуванням"
+						"fixedRowHeight": "Розмір рядків у пікселях.\nМає бути більшим або рівним 50.",
+						"margin": "Проміжок у пікселях між віджетами.\nМає бути позитивним цілим числом.",
+						"minCols": "Кількість стовпців.\nМає бути цілим числом від 4 до 24.",
+						"minimumHeight": "Мінімальна висота сітки в пікселях.\nМає бути більшою або рівною 0.\nПанель керування не буде автоматично масштабуватися під екран, якщо її висота нижча за це число.",
+						"reset": "Скинути до замовчування"
 					},
 					"tooltips": {
-						"clear": "Reset to За замовчуванням",
-						"fixedRowHeight": "Minimum: 50. By За замовчуванням: 200. Ні maximum.",
-						"margin": "Minimum: 0. By За замовчуванням: 10. Ні maximum.",
-						"minCols": "Minimum: 4. By За замовчуванням: 8. Maximum: 24."
+						"clear": "Скинути до замовчування",
+						"fixedRowHeight": "Мінімум: 50. За замовчуванням: 200. Без максимуму.",
+						"margin": "Мінімум: 0. За замовчуванням: 10. Без максимуму.",
+						"minCols": "Мінімум: 4. За замовчуванням: 8. Максимум: 24."
 					}
 				}
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Додаток {{name}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення додатка {{name}}?"
 			},
 			"duplicate": {
 				"name": {
-					"description": "Please enter a Опис for the Додаток"
+					"description": "Будь ласка, введіть опис для додатка"
 				}
 			},
 			"pages": {
 				"delete": {
-					"confirmationMessage": "Do you Підтвердити the deletion of the Сторінка {{name}}?"
+					"confirmationMessage": "Ви підтверджуєте видалення сторінки {{name}}?"
 				},
-				"hide": "Hide Сторінка in nav bar for end-Користувачі",
+				"hide": "Приховати сторінку в навігаційній панелі для кінцевих користувачів",
 				"notReordered": {
-					"plural": "The Сторінки were not reordered. {{error}}",
-					"singular": "The Сторінка was not reordered. {{error}}"
+					"plural": "Сторінки не було перевпорядковано. {{error}}",
+					"singular": "Сторінку не було перевпорядковано. {{error}}"
 				},
 				"reordered": {
-					"plural": "The Сторінки were successfully reordered.",
-					"singular": "The Сторінка was successfully reordered."
+					"plural": "Сторінки успішно перевпорядковано.",
+					"singular": "Сторінку успішно перевпорядковано."
 				},
 				"settings": {
 					"actions": "Дії",
 					"navBar": {
-						"showIcon": "Display icon in nav bar",
-						"showName": "Display Ім'я in nav bar"
+						"showIcon": "Відображати іконку в панелі навігації",
+						"showName": "Відображати Ім'я в панелі навігації"
 					},
-					"selectIcon": "Select an icon",
-					"showName": "Display Ім'я as header on Сторінка",
+					"selectIcon": "Виберіть іконку",
+					"showName": "Відображати Ім'я як заголовок на сторінці",
 					"tooltip": {
-						"autoSave": "Changes are automatically saved",
-						"navBar": "To be visible in the navigation bar, either the icon or the Ім'я must be displayed."
+						"autoSave": "Зміни зберігаються автоматично",
+						"navBar": "Щоб бути видимим у навігаційній панелі, має відображатися іконка або Ім'я."
 					}
 				},
-				"show": "Make Сторінка visible in nav bar for end-Користувачі"
+				"show": "Зробити сторінку видимою в навігаційній панелі для кінцевих користувачів"
 			},
 			"positionAttribute": {
 				"delete": {
-					"confirmationMessage": "Do you Підтвердити the deletion of the position attribute {{name}}?",
-					"title": "Видалити position attribute"
+					"confirmationMessage": "Ви підтверджуєте видалення атрибута позиції {{name}}?",
+					"title": "Видалити атрибут позиції"
 				}
 			},
 			"publish": {
-				"confirmationMessage": "Do you Підтвердити the publication of {{name}} Додаток?",
-				"title": "Publish Додаток"
+				"confirmationMessage": "Ви підтверджуєте публікацію додатка {{name}}?",
+				"title": "Опублікувати додаток"
 			},
 			"subscription": {
 				"modal": {
 					"hint": {
-						"listenTo": "Message broker routing key"
+						"listenTo": "Ключ маршрутизації брокера повідомлень"
 					},
-					"listenTo": "Listen to",
+					"listenTo": "Слухати",
 					"placeholder": {
-						"listenTo": "Select a routing key"
+						"listenTo": "Виберіть ключ маршрутизації"
 					},
 					"routingKey": {
 						"clear": {
-							"ariaLabel": "Очистити routing key"
+							"ariaLabel": "Очистити ключ маршрутизації"
 						}
 					}
 				}
 			},
 			"unlock": {
-				"confirmationMessage": "Do you want to unlock edition of {{name}}?",
-				"title": "Unlock edition"
+				"confirmationMessage": "Ви бажаєте розблокувати редагування {{name}}?",
+				"title": "Розблокувати редагування"
 			},
 			"update": {
-				"hideMenu": "Hide menu by За замовчуванням",
+				"hideMenu": "Приховати меню за замовчуванням",
 				"placeholder": {
-					"description": "Please enter a Опис for the Додаток"
+					"description": "Будь ласка, введіть опис для додатка"
 				},
-				"sideMenu": "Show menu on the side",
+				"sideMenu": "Показувати меню збоку",
 				"tooltip": {
-					"hideMenu": "Only applies when menu is located on the side"
+					"hideMenu": "Застосовується лише тоді, коли меню розташоване збоку"
 				},
-				"topMenu": "Show menu in the header"
+				"topMenu": "Показувати меню в заголовку"
 			},
 			"users": {
-				"auto": "Automatically assigned",
-				"empty": "Ні Користувач detected",
-				"manual": "Manually assigned"
+				"auto": "Призначено автоматично",
+				"empty": "Не виявлено жодного користувача",
+				"manual": "Призначено вручну"
 			}
 		},
 		"applications": {
 			"dropdown": {
-				"select": "From Додатки"
+				"select": "З додатків"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of Додатки"
+				"ariaLabel": "Виберіть сторінку додатків"
 			}
 		},
 		"automation": {
 			"actions": {
-				"add.layer": "Додати layer",
-				"add.tab": "Додати tab",
-				"display.collapse": "Collapse the display",
-				"display.expand": "Expand the display",
-				"map.click": "On map click",
-				"map.get.country": "Get country from map",
-				"open.tab": "Open tab",
-				"remove.layer": "Видалити layer",
-				"remove.tab": "Видалити tab",
-				"set.context": "Set context"
+				"add.layer": "Додати шар",
+				"add.tab": "Додати вкладку",
+				"display.collapse": "Згорнути дисплей",
+				"display.expand": "Розгорнути дисплей",
+				"map.click": "При кліку на карту",
+				"map.get.country": "Отримати країну з карти",
+				"open.tab": "Відкрити вкладку",
+				"remove.layer": "Видалити шар",
+				"remove.tab": "Видалити вкладку",
+				"set.context": "Встановити контекст"
 			},
-			"addRule": "Додати a new automation rule",
+			"addRule": "Додати нове правило автоматизації",
 			"component": {
-				"add": "Додати a new component",
-				"select": "Select a component"
+				"add": "Додати новий компонент",
+				"select": "Виберіть компонент"
 			},
-			"configuration": "Automation configuration",
-			"ruleName": "Ім'я of the automation rule",
-			"rules": "Automation rules"
+			"configuration": "Конфігурація автоматизації",
+			"ruleName": "Назва правила автоматизації",
+			"rules": "Правила автоматизації"
 		},
 		"calculatedFields": {
-			"add": "Створити a new Calculated field",
+			"add": "Створити нове обчислюване поле",
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Calculated field {{name}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення обчислюваного поля {{name}}?"
 			},
-			"edit": "Редагувати Calculated field",
-			"expression": "Expression",
+			"edit": "Редагувати обчислюване поле",
+			"expression": "Вираз",
 			"hint": {
-				"name": "Enter an unique Ім'я only composed of letters, digits and underscores. This Ім'я should not override any field Ім'я of current Ресурс."
+				"name": "Введіть унікальне Ім'я, яке складається лише з літер, цифр та підкреслень. Це Ім'я не повинно збігатися з назвою будь-кого поля поточного ресурсу."
 			},
 			"reference": {
-				"noResults": "Ні entries match your Пошук.",
-				"open": "Open the calculated field reference",
-				"operations": "Operations",
-				"placeholders": "Placeholders",
-				"placeholdersHint": "Use these placeholders inside an expression to reference Запис data, the current Користувач or the result of another calculation.",
-				"searchPlaceholder": "Фільтр by Ім'я or Опис...",
-				"title": "Calculated field reference"
+				"noResults": "Жоден запис не відповідає вашому пошуку.",
+				"open": "Відкрити довідник обчислюваних полів",
+				"operations": "Операції",
+				"placeholders": "Шаблони підстановки",
+				"placeholdersHint": "Використовуйте ці шаблони підстановки у виразі для посилання на дані запису, поточного користувача або результат іншого обчислення.",
+				"searchPlaceholder": "Фільтр за Ім'ям або описом...",
+				"title": "Довідник обчислюваних полів"
 			}
 		},
 		"channel": {
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the channel {{name}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення каналу {{name}}?"
 			},
 			"dropdown": {
-				"select": "Notify on"
+				"select": "Сповістити про"
 			},
-			"selectChannel": "Select a channel"
+			"selectChannel": "Виберіть канал"
 		},
 		"confirmModal": {
 			"cancel": "Скасувати",
@@ -876,51 +876,51 @@
 		},
 		"customNotifications": {
 			"edit": {
-				"dataset": "Dataset",
-				"email": "Email Сповіщення",
-				"new": "New custom Сповіщення",
+				"dataset": "Набір даних",
+				"email": "Сповіщення електронною поштою",
+				"new": "Нове власне сповіщення",
 				"recipients": {
-					"distributionList": "Use a distribution list",
-					"email": "Input a single email address",
-					"title": "Recipients",
-					"userField": "Group by dataset Користувач field"
+					"distributionList": "Використовувати список розсилки",
+					"email": "Ввести одну адресу email",
+					"title": "Отримувачі",
+					"userField": "Групувати за полем користувача набору даних"
 				},
-				"update": "Редагувати custom Сповіщення"
+				"update": "Редагувати власне сповіщення"
 			},
 			"errors": {
-				"duplicate": "Email already exists in distribution list",
-				"email": "Please input a valid email address",
-				"schedule": "Enter a valid cron expression"
+				"duplicate": "Email вже існує в списку розсилки",
+				"email": "Будь ласка, введіть дійсну адресу email",
+				"schedule": "Введіть дійсний вираз cron"
 			},
 			"hint": {
-				"schedule": "Enter schedule for Сповіщення sending"
+				"schedule": "Введіть розклад для відправки сповіщень"
 			}
 		},
 		"distributionLists": {
 			"delete": {
-				"confirmationMessage": "Are you sure you want to Видалити the distribution list '{{name}}'?"
+				"confirmationMessage": "Ви впевнені, що хочете видалити список розсилки '{{name}}'?"
 			},
 			"edit": {
-				"name": "Distribution list Ім'я",
-				"new": "New Distribution list",
-				"update": "Редагувати distribution list"
+				"name": "Назва списку розсилки",
+				"new": "Новий список розсилки",
+				"update": "Редагувати список розсилки"
 			},
 			"errors": {
 				"emails": {
-					"pattern": "Please only provide valid emails",
-					"required": "Please provide one or more emails"
+					"pattern": "Будь ласка, надавайте лише дійсні адреси email",
+					"required": "Будь ласка, надайте одну або кілька адрес email"
 				},
 				"name": {
-					"required": "Please provide a Ім'я"
+					"required": "Будь ласка, вкажіть Ім'я"
 				}
 			},
 			"tooltip": {
-				"deleted": "Connected Distribution list has been deleted"
+				"deleted": "Пов'язаний список розсилки було видалено"
 			},
 			"warning": {
-				"delete": "Please be aware that deleting this Distribution list will impact all areas where it is currently in use. Do you want to proceed with the deletion?",
-				"message": "Any modifications made to a distribution list will be reflected in all areas where it is currently in use.",
-				"noData": "Ні Emails found"
+				"delete": "Зверніть увагу, що видалення цього списку розсилки вплине на всі сфери, де він наразі використовується. Ви хочете продовжити видалення?",
+				"message": "Будь-які зміни, внесені до списку розсилки, будуть відображені у всіх областях, де він наразі використовується.",
+				"noData": "Не знайдено жодної адреси Email"
 			}
 		},
 		"email": {
@@ -928,247 +928,247 @@
 				"header": "Дії"
 			},
 			"alert": {
-				"dlPreview": "All emails listed below will be used to Створити the distribution list.",
-				"individualEmailsInfo": "Select the email fields you would like to use to send Запис specific emails to",
-				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
-				"noResource": "Select a Ресурс using the dropdown to display Distribution list Фільтр wizard",
-				"noResourceFields": "Selected Ресурс doesn't contain any fields",
-				"noSelectedFields": "Please select at least 1 field to Зберегти this dataset",
-				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or Попередній перегляд.",
-				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause Помилки.",
+				"dlPreview": "Усі перелічені нижче адреси email будуть використані для створення списку розсилки.",
+				"individualEmailsInfo": "Виберіть поля email, які ви хочете використовувати для відправки листів для конкретних записів",
+				"invalidFields": "Наступні поля недоступні для вибору: <strong>{{fields}}</strong>, оскільки вони мають тип <strong>{{types}}</strong> і не можуть бути належним чином відображені в таблиці для цієї форми.",
+				"noResource": "Виберіть Ресурс із розкривного списку, щоб відобразити майстер фільтру списку розсилки",
+				"noResourceFields": "Вибраний Ресурс не містить жодних полів",
+				"noSelectedFields": "Будь ласка, виберіть принаймні 1 поле для збереження цього набору даних",
+				"selectChildFields": "Ви вибрали поле об'єкта/списку. Виберіть принаймні одне дочірнє поле для подальшого продовження та/або попереднього перегляду.",
+				"selectedNonEmailFields": "Вибране поле не налаштоване як поле email. Подальші дії можуть призвести до помилок.",
 				"subscribeExists": "Помилка! {{message}}",
-				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
+				"subscribeFailed": "Ой!... Щось пішло не так під час підписки. {{errorMessage}}",
 				"subscribeSuccess": "Успіх! {{message}}",
-				"tooManyRecords": "At this moment, we are limited to fetch only 50 Записи. Based on the provided Фільтр conditions there are <strong>{{totalRecords}}</strong> matching Записи. Please Додати some additional Фільтри to bring the Запис count less than or equals to 50.",
-				"unsubscribeFailed": "Oops!... Something went wrong whilst unsubscribing. {{errorMessage}}",
+				"tooManyRecords": "На даний момент ми обмежені отриманням лише 50 записів. На основі наданих умов фільтрації є <strong>{{totalRecords}}</strong> відповідних записів. Будь ласка, додайте деякі додаткові фільтри, щоб зменшити кількість записів до 50 або менше.",
+				"unsubscribeFailed": "Ой!... Щось пішло не так під час скасування підписки. {{errorMessage}}",
 				"unsubscribeSuccess": "Успіх! {{message}}"
 			},
-			"back": "Назад to list",
+			"back": "Назад до списку",
 			"dataset": {
 				"block": {
-					"label": "Block Назва",
-					"title": "Block"
+					"label": "Назва блоку",
+					"title": "Блок"
 				},
 				"navigateToPage": {
-					"title": "Navigate to Сторінка"
+					"title": "Перейти на сторінку"
 				}
 			},
 			"distributionList": {
 				"alert": {
-					"allSeparate": "Distribution list will be composed of all Користувач emails obtained from send separate email, if you'd like to send to a list of Користувачі please Створити a normal block in Крок 2.",
-					"and": "and",
-					"noEmail": "Selected Dataset does not contain valid email addresses",
-					"partOne": "To proceed, please enter",
-					"partThree": "at least one recipient email address",
-					"partTwo": "a distribution list Ім'я"
+					"allSeparate": "Список розсилки буде складатися з усіх адрес користувачів, отриманих з відправки окремих email; якщо ви хочете надіслати список користувачам, будь ласка, створить звичайний блок на Кроці 2.",
+					"and": "та",
+					"noEmail": "Вибраний набір даних не містить дійсних адрес email",
+					"partOne": "Для продовження введіть, будь ласка,",
+					"partThree": "принаймні одну адресу email отримувача",
+					"partTwo": "назву списку розсилки"
 				},
-				"bcc": "BCC",
-				"cc": "CC",
-				"create": "Створити distribution list",
-				"createNew": "Or Створити New",
-				"duplicate": "Назва already exists",
-				"emailInput": "Manual email input",
+				"bcc": "Прихована копія",
+				"cc": "Копія",
+				"create": "Створити список розсилки",
+				"createNew": "Або створити новий",
+				"duplicate": "Назва вже існує",
+				"emailInput": "Ручне введення email",
 				"errors": {
-					"duplicateName": "This Ім'я already exists! Please enter a unique Ім'я."
+					"duplicateName": "Це Ім'я вже існує! Будь ласка, вкажіть унікальне Ім'я."
 				},
 				"import": {
-					"download": "Завантажити Шаблон",
-					"import": "Імпорт Distribution List",
-					"loading": "Importing file...",
+					"download": "Завантажити шаблон",
+					"import": "Імпорт списку розсилки",
+					"loading": "Імпортування файлу...",
 					"name": "Імпорт",
-					"success": "Імпорт Successful"
+					"success": "Імпорт успішний"
 				},
-				"list": "Distribution List",
-				"name": "Distribution List Ім'я",
-				"to": "To"
+				"list": "Список розсилки",
+				"name": "Назва списку розсилки",
+				"to": "Кому"
 			},
 			"error": {
-				"invalidDataset": "Following datasets are not valid: {{badDatasets}}",
-				"invalidToValue": "List for To Recipients Invalid please fix!"
+				"invalidDataset": "Наступні набори даних недійсні: {{badDatasets}}",
+				"invalidToValue": "Список отримувачів 'Кому' недійсний, будь ласка, виправте!"
 			},
 			"image": {
-				"rectangleValidation": "Please Завантажити файл an image with a more rectangular aspect ratio, similar to 960x80.",
-				"squareValidation": "Please Завантажити файл an image with a more square aspect ratio, or similar to 200x200."
+				"rectangleValidation": "Будь ласка, завантажте зображення з більш прямокутним співвідношенням сторін, подібним до 960x80.",
+				"squareValidation": "Будь ласка, завантажте зображення з більш квадратним співвідношенням сторін, або приблизно 200x200."
 			},
-			"name": "Email",
+			"name": "Електронна пошта",
 			"notification": {
-				"create": "Створити Сповіщення",
-				"list": "Сповіщення List",
-				"type": "Alert Type",
-				"validTitle": "Please enter a Назва"
+				"create": "Створити сповіщення",
+				"list": "Список сповіщень",
+				"type": "Тип сповіщення",
+				"validTitle": "Будь ласка, введіть Назву"
 			},
 			"preview": {
-				"attachment": "Attachments:",
-				"less": "Show Less",
-				"more": "Show {{length}} remaining emails...",
-				"noAttachment": "Ні attachments available.",
-				"subject": "Subject:"
+				"attachment": "Вкладення:",
+				"less": "Показувати менше",
+				"more": "Показати {{length}} решту листів...",
+				"noAttachment": "Немає вкладень.",
+				"subject": "Тема:"
 			},
 			"restrictSubscription": {
-				"description": "Restricts Користувачі being able to subscribe to this email Сповіщення",
-				"title": "Restrict Користувач subscription"
+				"description": "Обмежує можливість користувачів підписуватися на це сповіщення електронною поштою",
+				"title": "Обмежити підписку користувачів"
 			},
-			"saveAsDraft": "Зберегти as draft",
+			"saveAsDraft": "Зберегти як чернетку",
 			"subscribe": {
 				"error": {
-					"restricted": "Subscription Restricted"
+					"restricted": "Підписку обмежено"
 				},
 				"restricted": {
-					"title": "Subscription restricted for this email Сповіщення"
+					"title": "Підписку обмежено для цього сповіщення електронною поштою"
 				},
-				"title": "Subscribe"
+				"title": "Підписатися"
 			},
 			"tooltip": {
-				"reverseDate": "YYYY/MM/DD"
+				"reverseDate": "РРРР/ММ/ДД"
 			},
 			"unsubscribe": {
-				"title": "Unsubscribe"
+				"title": "Скасувати підписку"
 			}
 		},
 		"emailBuilder": {
-			"body": "Body",
+			"body": "Текст листа",
 			"default": "За замовчуванням",
-			"distribution": "Distribution list",
-			"fields": "Select fields to write in body",
-			"subject": "Subject",
-			"withoutRecords": "Without Записи"
+			"distribution": "Список розсилки",
+			"fields": "Виберіть поля для додавання до тексту",
+			"subject": "Тема",
+			"withoutRecords": "Без записів"
 		},
 		"emailPreview": {
 			"errors": {
-				"missingSubject": "The subject of the email cannot be empty."
+				"missingSubject": "Тема електронного листа не може бути порожньою."
 			},
-			"from": "From",
-			"subject": "Subject",
-			"title": "Email Попередній перегляд",
-			"to": "To"
+			"from": "Від",
+			"subject": "Тема",
+			"title": "Попередній перегляд електронного листа",
+			"to": "Кому"
 		},
 		"form": {
 			"aggregation": {
 				"delete": {
-					"confirmationMessage": "Do you Підтвердити the deletion of the aggregation {{name}}?"
+					"confirmationMessage": "Ви підтверджуєте видалення агрегації {{name}}?"
 				}
 			},
 			"create": {
 				"choice": {
-					"inherit": "Створити from Шаблон",
-					"resource": "Створити a core form",
-					"template": "Start from existing Шаблон"
+					"inherit": "Створити з шаблону",
+					"resource": "Створити основну форму",
+					"template": "Почати з існуючого шаблону"
 				},
 				"template": {
-					"from": "From Шаблон",
-					"placeholder": "Pick an existing Шаблон",
-					"selectResource": "Select a Ресурс",
-					"title": "From Ресурс"
+					"from": "З шаблону",
+					"placeholder": "Виберіть існуючий шаблон",
+					"selectResource": "Виберіть Ресурс",
+					"title": "З Ресурсу"
 				},
 				"tooltip": {
-					"inherit": "Creates a child form using a Шаблон from the Ресурс linked to the core form",
-					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also Створити a new Ресурс.",
-					"template": "If Ні Шаблон is selected, core structure will be loaded"
+					"inherit": "Створює дочірню форму, використовуючи шаблон із Ресурсу, пов'язаного з основною формою",
+					"resource": "Створює основну форму, яка дозволяє створювати дочірні форми, пов'язані з цією основною формою. Це також створить новий Ресурс.",
+					"template": "Якщо шаблон не вибрано, буде завантажена основна структура"
 				}
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the form {{name}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення форми {{name}}?"
 			},
 			"deleteRow": {
-				"confirmationMessage": "Do you Підтвердити the deletion of {{quantity}} {{rowText}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення {{quantity}} {{rowText}}?"
 			},
 			"display": {
-				"submissionMessage": "The form has successfully been submitted."
+				"submissionMessage": "Форма була успішно відправлена."
 			},
 			"draftRecords": {
-				"buttonLoad": "Load draft Запис",
+				"buttonLoad": "Завантажити чернетку запису",
 				"confirmModal": {
-					"confirmDelete": "Do you really want to Видалити this draft Запис?",
-					"confirmLoad": "Do you really want to load this draft Запис?",
-					"delete": "Видалити this draft",
-					"load": "Load this draft"
+					"confirmDelete": "Ви дійсно хочете видалити цю чернетку запису?",
+					"confirmLoad": "Ви дійсно хочете завантажити цю чернетку запису?",
+					"delete": "Видалити цю чернетку",
+					"load": "Завантажити цю чернетку"
 				},
-				"creationDate": "Creation Дата",
-				"delete": "Видалити this draft",
-				"load": "Load this draft",
-				"noDrafts": "Ні draft available.",
-				"preview": "Попередній перегляд this draft",
-				"previewTitle": "Draft Запис",
-				"save": "Зберегти as draft",
-				"select": "Select draft Запис",
-				"successEdit": "Successfully edited draft",
-				"successSave": "Successfully saved as draft"
+				"creationDate": "Дата створення",
+				"delete": "Видалити цю чернетку",
+				"load": "Завантажити цю чернетку",
+				"noDrafts": "Немає доступних чернеток.",
+				"preview": "Попередній перегляд цієї чернетки",
+				"previewTitle": "Чернетка запису",
+				"save": "Зберегти як чернетку",
+				"select": "Вибрати чернетку запису",
+				"successEdit": "Чернетку успішно змінено",
+				"successSave": "Успішно збережено як чернетку"
 			},
 			"layout": {
 				"delete": {
-					"confirmationMessage": "Do you Підтвердити the deletion of the layout {{name}}?"
+					"confirmationMessage": "Ви підтверджуєте видалення макета {{name}}?"
 				},
 				"errors": {
-					"invalid": "The form is not valid"
+					"invalid": "Форма недійсна"
 				},
 				"update": {
 					"preview": {
-						"description": "Reorder, sort, Фільтр and hide columns to Редагувати За замовчуванням display of the layout"
+						"description": "Перевпорядковуйте, сортуйте, фільтруйте та приховуйте стовпці для зміни стандартного відображення макета"
 					}
 				}
 			},
 			"summary": {
 				"cache": {
-					"clear": "Очистити cache",
-					"load": "Load from cache {{date}}"
+					"clear": "Очистити кеш",
+					"load": "Завантажити з кешу {{date}}"
 				},
-				"createdBy": "Created by {{user}} at {{date}}",
-				"modifiedBy": "Last modified by {{user}} on {{date}}"
+				"createdBy": "Створено користувачем {{user}} о {{date}}",
+				"modifiedBy": "Востаннє змінено користувачем {{user}} {{date}}"
 			},
 			"update": {
-				"confirmMessage": "Do you Підтвердити the {{action}} of the current Запис?",
-				"exit": "Exit without saving changes",
-				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
+				"confirmMessage": "Ви підтверджуєте {{action}} поточного запису?",
+				"exit": "Вийти без збереження змін",
+				"exitMessage": "У формі є незбережені зміни. Ви впевнені, що хочете вийти?"
 			},
 			"updateRow": {
-				"confirmationMessage": "Do you Підтвердити the Оновити of {{quantity}} {{rowText}}?"
+				"confirmationMessage": "Ви підтверджуєте оновлення {{quantity}} {{rowText}}?"
 			}
 		},
 		"formBuilder": {
 			"errors": {
-				"duplicatedRelatedName": "Duplicated related Ім'я for question {{question}} on Сторінка {{page}}. Please provide a unique related Ім'я (snake case format) to Зберегти the form.",
-				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
-				"maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
-				"missingGridField": "Missing an available field grid for question {{question}} on Сторінка {{page}}. Please select a least one in Custom Question Properties to Зберегти the form.",
-				"missingRelatedName": "Missing related Ім'я for question {{question}} on Сторінка {{page}}. Please provide a valid data value Ім'я (snake case format) to Зберегти the form.",
-				"missingTemplate": "Missing related Ресурс Шаблон for question {{question}} on Сторінка {{page}}. Please select a Шаблон to Зберегти the form."
+				"duplicatedRelatedName": "Дубльоване пов'язане Ім'я для запитання {{question}} на сторінці {{page}}. Будь ласка, вкажіть унікальне пов'язане Ім'я (у форматі snake_case) для збереження форми.",
+				"incorrectJSON": "JSON недійсний у редакторі JSON, зміни не збережено",
+				"maximumAllowedFiles": "Максимально дозволена кількість файлів: {{number}}",
+				"missingGridField": "Відсутня доступна сітка полів для запитання {{question}} на сторінці {{page}}. Будь ласка, виберіть принаймні одне в налаштуваннях користувацького запитання для збереження форми.",
+				"missingRelatedName": "Відсутнє пов'язане Ім'я для запитання {{question}} на сторінці {{page}}. Будь ласка, вкажіть дійсне Ім'я значення даних (у форматі snake_case) для збереження форми.",
+				"missingTemplate": "Відсутній пов'язаний шаблон ресурсу для запитання {{question}} на сторінці {{page}}. Будь ласка, виберіть шаблон для збереження форми."
 			},
 			"propertyGrid": {
 				"file": {
 					"acceptedFiles": {
-						"clear": "Очистити(All file types accepted)"
+						"clear": "Очистити (приймаються всі типи файлів)"
 					}
 				},
 				"resource": {
-					"availableGridFields": "Available grid fields",
-					"resourceSelectText": "First you have to select a Ресурс before setting any Фільтри"
+					"availableGridFields": "Доступні поля сітки",
+					"resourceSelectText": "Спочатку потрібно вибрати Ресурс перед налаштуванням будь-яких фільтрів"
 				}
 			},
-			"saveSurvey": "Saving the form"
+			"saveSurvey": "Збереження форми"
 		},
 		"formMapProperties": {
 			"geofields": {
 				"editDialog": {
-					"editGeofield": "Редагувати Geo fields",
-					"label": "Label",
-					"value": "Value"
+					"editGeofield": "Редагувати геополя",
+					"label": "Мітка",
+					"value": "Значення"
 				}
 			}
 		},
 		"forms": {
-			"isCore": "Is core",
+			"isCore": "Є основним",
 			"paginator": {
-				"ariaLabel": "Select Сторінка of forms"
+				"ariaLabel": "Виберіть сторінку форм"
 			},
-			"parent": "Parent form"
+			"parent": "Батьківська форма"
 		},
 		"group": {
 			"add": {
-				"title": "Додати new group"
+				"title": "Додати нову групу"
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the group {{name}}?",
-				"title": "Видалити group"
+				"confirmationMessage": "Ви підтверджуєте видалення групи {{name}}?",
+				"title": "Видалити групу"
 			}
 		},
 		"header": {
@@ -1178,94 +1178,94 @@
 			"goToPlatform": "Перейти до",
 			"logout": "Вихід",
 			"sidenav": {
-				"collapse": "Collapse sidebar",
-				"show": "Show sidebar"
+				"collapse": "Згорнути бічну панель",
+				"show": "Показати бічну панель"
 			}
 		},
 		"history": {
 			"changes": {
-				"add": "Додати value",
-				"from": "from",
-				"modify": "Change value",
-				"remove": "Видалити value",
-				"to": "to",
-				"withValue": "with value"
+				"add": "Додати значення",
+				"from": "з",
+				"modify": "Змінити значення",
+				"remove": "Видалити значення",
+				"to": "на",
+				"withValue": "зі значенням"
 			},
 			"columns": {
-				"action": "Action type",
+				"action": "Тип дії",
 				"date": "Дата",
-				"modifiedValue": "New value",
-				"originalValue": "Old value",
+				"modifiedValue": "Нове значення",
+				"originalValue": "Старе значення",
 				"person": "Користувач",
 				"time": "Час",
-				"variable": "Field"
+				"variable": "Поле"
 			},
-			"download": "Завантажити Історія",
-			"empty": "Ні activity detected",
+			"download": "Завантажити історію",
+			"empty": "Не виявлено жодної активності",
 			"field": {
-				"all": "All fields",
-				"select": "Select fields"
+				"all": "Усі поля",
+				"select": "Вибрати поля"
 			},
-			"preview": "Попередній перегляд and revert",
+			"preview": "Попередній перегляд та повернення",
 			"range": {
-				"clear": "Очистити range"
+				"clear": "Очистити діапазон"
 			},
-			"useTableMode": "Use table mode"
+			"useTableMode": "Використовувати режим таблиці"
 		},
 		"icon": {
 			"modal": {
-				"select": "Select an icon",
-				"use": "Use icon"
+				"select": "Виберіть іконку",
+				"use": "Використовувати іконку"
 			}
 		},
 		"logout": {
-			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to Вихід?",
-			"title": "Exit without saving changes"
+			"confirmationMessage": "У вашій формі є незбережені зміни. Ви впевнені, що хочете вийти?",
+			"title": "Вийти без збереження змін"
 		},
 		"map": {
 			"controls": {
 				"download": {
 					"layers": {
-						"all": "All layers",
-						"selected": "Selected Layers",
-						"visible": "Visible layers"
+						"all": "Усі шари",
+						"selected": "Вибрані шари",
+						"visible": "Видимі шари"
 					},
-					"output": "Select an output format",
-					"selectLayers": "Select layers",
+					"output": "Виберіть вихідний формат",
+					"selectLayers": "Виберіть шари",
 					"view": {
-						"all": "Map",
-						"current": "Current Переглянути"
+						"all": "Карта",
+						"current": "Поточний перегляд"
 					}
 				},
 				"fullScreen": {
-					"exitFullscreen": "Exit Fullscreen",
-					"viewFullscreen": "Переглянути Fullscreen"
+					"exitFullscreen": "Вийти з повноекранного режиму",
+					"viewFullscreen": "Переглянути на весь екран"
 				}
 			}
 		},
 		"mapping": {
-			"field": "Користувач field",
-			"path": "Path",
-			"text": "Text",
-			"title": "Mapping",
-			"value": "Value"
+			"field": "Поле користувача",
+			"path": "Шлях",
+			"text": "Текст",
+			"title": "Мапування",
+			"value": "Значення"
 		},
 		"notifications": {
 			"email": {
 				"dropdown": {
-					"emailInput": "Email input"
+					"emailInput": "Введення email"
 				}
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of Сповіщення"
+				"ariaLabel": "Виберіть сторінку сповіщень"
 			},
-			"readAll": "Mark all as read",
+			"readAll": "Позначити всі як прочитані",
 			"title": "Сповіщення"
 		},
 		"paginator": {
-			"items": "items",
-			"itemsPerPage": "items per Сторінка",
-			"of": "of",
+			"items": "елементів",
+			"itemsPerPage": "елементів на сторінці",
+			"of": "з",
 			"page": "Сторінка"
 		},
 		"preferences": {
@@ -1275,990 +1275,990 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the pull job {{name}}?",
-				"title": "Видалити pull job"
+				"confirmationMessage": "Ви підтверджуєте видалення завдання імпорту {{name}}?",
+				"title": "Видалити завдання імпорту"
 			},
 			"modal": {
-				"addMappingField": "Додати a mapping field",
+				"addMappingField": "Додати поле мапування",
 				"errors": {
-					"schedule": "Enter a valid cron expression"
+					"schedule": "Введіть дійсний вираз cron"
 				},
 				"hint": {
-					"path": "Enter the path to extract data from response",
-					"schedule": "Enter the schedule Час for this Pull job",
-					"url": "Enter the URL after the host to reach specific data"
+					"path": "Введіть шлях для вилучення даних із відповіді",
+					"schedule": "Введіть розклад для цього завдання імпорту",
+					"url": "Введіть URL після хоста для доступу до конкретних даних"
 				},
-				"identifier": "Unique identifiers",
-				"mapping": "Mapping",
+				"identifier": "Унікальні ідентифікатори",
+				"mapping": "Мапування",
 				"placeholder": {
-					"path": "Enter path...",
-					"schedule": "Enter schedule Час...",
-					"url": "Enter URL..."
+					"path": "Введіть шлях...",
+					"schedule": "Введіть розклад...",
+					"url": "Введіть URL..."
 				},
-				"switch": "Switch mode"
+				"switch": "Перемкнути режим"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of pull jobs"
+				"ariaLabel": "Виберіть сторінку завдань імпорту"
 			}
 		},
 		"queryBuilder": {
-			"apply": "Застосувати Фільтр",
+			"apply": "Застосувати фільтр",
 			"dataset": {
-				"dataType": "Data Type",
-				"referenceData": "Reference data",
-				"select": "Select a dataset",
+				"dataType": "Тип даних",
+				"referenceData": "Довідкові дані",
+				"select": "Виберіть набір даних",
 				"title": "Ресурс"
 			},
 			"displayField": {
-				"separator": "Value separator",
-				"text": "Grid display field"
+				"separator": "Розділювач значень",
+				"text": "Поле відображення сітки"
 			},
 			"errors": {
 				"field": {
-					"invalid": "Invalid field. Please click to Видалити."
+					"invalid": "Недійсне поле. Будь ласка, натисніть для видалення."
 				}
 			},
 			"fields": {
-				"available": "Available fields",
-				"column": "Column width (px)",
+				"available": "Доступні поля",
+				"column": "Ширина стовпця (px)",
 				"format": {
-					"info": "Left empty to ignore formatting",
-					"title": "Display format"
+					"info": "Залиште порожнім, щоб ігнорувати форматування",
+					"title": "Формат відображення"
 				},
-				"search": "Пошук fields...",
-				"selected": "Selected fields",
-				"title": "Fields"
+				"search": "Пошук полів...",
+				"selected": "Вибрані поля",
+				"title": "Поля"
 			},
 			"filter": {
-				"and": "And",
-				"apply": "Застосувати Фільтр",
-				"applyField": "Set Fields",
-				"field": "Field",
-				"loading": "Завантаження Фільтри. This may take a moment, please wait.",
-				"logic": "Фільтр logic",
-				"new": "Додати new Фільтр",
-				"newGroup": "Додати new Фільтр group",
-				"operator": "Operator",
-				"or": "Or",
+				"and": "Та",
+				"apply": "Застосувати фільтр",
+				"applyField": "Встановити поля",
+				"field": "Поле",
+				"loading": "Завантаження фільтрів. Це може зайняти деякий час, будь ласка, зачекайте.",
+				"logic": "Логіка фільтра",
+				"new": "Додати новий фільтр",
+				"newGroup": "Додати нову групу фільтрів",
+				"operator": "Оператор",
+				"or": "Або",
 				"title": "Фільтр",
-				"value": "Value"
+				"value": "Значення"
 			},
 			"hint": {
-				"fields": "Select data points below and drag them to 'selected fields' on the right",
-				"sortingDisabled": "Sorting fields is disabled when Пошук is Активний",
-				"style": "Styling rules make Записи with important information stand out. When a Запис matches more than one rule, the first rule is used."
+				"fields": "Виберіть елементи даних нижче та перетягніть їх у 'вибрані поля' праворуч",
+				"sortingDisabled": "Сортування полів вимкнено, коли пошук активний",
+				"style": "Правила оформлення виділяють записи з важливою інформацією. Якщо запис відповідає кільком правилам, застосовується перше правило."
 			},
 			"pagination": {
-				"first": "Limit",
-				"title": "Pagination"
+				"first": "Ліміт",
+				"title": "Пагінація"
 			},
 			"preview": {
 				"title": "Попередній перегляд"
 			},
 			"sendSeparate": {
-				"title": "Send Separate Email Fields"
+				"title": "Поля для відправки окремих email"
 			},
 			"sort": {
-				"ascending": "Ascending",
-				"descending": "Descending",
-				"field": "Sort field",
-				"limit": "limit",
-				"limitTitle": "Sort & Limit",
-				"order": "Sort order",
-				"title": "Sort"
+				"ascending": "За зростанням",
+				"descending": "За спаданням",
+				"field": "Поле сортування",
+				"limit": "ліміт",
+				"limitTitle": "Сортування та Ліміт",
+				"order": "Порядок сортування",
+				"title": "Сортування"
 			},
 			"style": {
-				"and": "And",
+				"and": "Та",
 				"edit": {
-					"appliesTo": "Застосувати style to",
+					"appliesTo": "Застосувати стиль до",
 					"background": {
-						"color": "Background color"
+						"color": "Колір фону"
 					},
-					"criteria": "Rule criteria",
-					"fields": "Fields",
-					"isBadge": "Display as badge",
-					"isBadgeTooltip": "When enabled, the style will be applied as a badge, colors and styles will Застосувати to the badge and not the cell.",
-					"name": "Rule Ім'я",
-					"selectedColumns": "Only selected columns",
+					"criteria": "Критерії правила",
+					"fields": "Поля",
+					"isBadge": "Відображати як бейдж",
+					"isBadgeTooltip": "Якщо увімкнено, стиль буде застосовано як бейдж, кольори та стилі застосовуватимуться до бейджа, а не до комірки.",
+					"name": "Назва правила",
+					"selectedColumns": "Лише вибрані стовпці",
 					"text": {
-						"color": "Text color",
-						"style": "Text style"
+						"color": "Колір тексту",
+						"style": "Стиль тексту"
 					},
-					"wholeRow": "Whole row"
+					"wholeRow": "Весь рядок"
 				},
-				"logic": "Style Фільтр",
-				"new": "Додати styling rule",
-				"operator": "Operator",
-				"or": "Or",
-				"title": "Style"
+				"logic": "Фільтр стилю",
+				"new": "Додати правило оформлення",
+				"operator": "Оператор",
+				"or": "Або",
+				"title": "Стиль"
 			},
 			"tooltip": {
-				"displayField": "Once a text field is selected, grids will display the values of this field, rather than showing the count of items",
+				"displayField": "Після вибору текстового поля в сітках відображатимуться значення цього поля, а не кількість елементів",
 				"filter": {
 					"date": {
-						"useExpression": "Use Expression editor",
-						"usePicker": "Use Дата picker"
+						"useExpression": "Використовувати редактор виразів",
+						"usePicker": "Використовувати вибір дати"
 					}
 				},
 				"pagination": {
-					"first": "If provided, limit the number of queried items"
+					"first": "Якщо вказано, обмежує кількість запитуваних елементів"
 				}
 			}
 		},
 		"record": {
 			"attach": {
-				"confirm": "Attach",
-				"selectTarget": "Select {{name}} target"
+				"confirm": "Прикріпити",
+				"selectTarget": "Виберіть ціль {{name}}"
 			},
 			"convert": {
 				"choice": {
-					"copy": "Copy source Запис",
-					"overwrite": "Overwrite source Запис"
+					"copy": "Копіювати вихідний запис",
+					"overwrite": "Перезаписати вихідний запис"
 				},
 				"result": {
-					"force": "Following fields will be ignored:",
-					"smooth": "Conversion OK"
+					"force": "Наступні поля будуть ігноруватися:",
+					"smooth": "Конвертація пройшла успішно"
 				},
-				"select": "Convert to"
+				"select": "Конвертувати в"
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Запис {{name}}?",
-				"permanently": "Видалити permanently"
+				"confirmationMessage": "Ви підтверджуєте видалення запису {{name}}?",
+				"permanently": "Видалити назавжди"
 			},
 			"dropdown": {
-				"select": "Select Запис"
+				"select": "Вибрати запис"
 			},
 			"history": {
-				"revert": "Revert to past Запис",
+				"revert": "Повернутися до попереднього запису",
 				"version": {
-					"current": "Current version",
-					"old": "Past version"
+					"current": "Поточна версія",
+					"old": "Попередня версія"
 				}
 			},
 			"modal": {
-				"update": "Зберегти and Закрити"
+				"update": "Зберегти та закрити"
 			},
 			"recovery": {
-				"confirmationMessage": "Do you Підтвердити recovery the data from {{date}} to the current register?",
-				"title": "Recovery data"
+				"confirmationMessage": "Ви підтверджуєте відновлення даних від {{date}} до поточного реєстру?",
+				"title": "Відновлення даних"
 			}
 		},
 		"records": {
 			"active": "Активні записи",
 			"archived": "Архівні записи",
-			"editAs": "Редагувати as",
+			"editAs": "Редагувати як",
 			"paginator": {
-				"ariaLabel": "Select Сторінка of Записи"
+				"ariaLabel": "Виберіть сторінку записів"
 			},
 			"showActive": "Показати активні записи",
 			"showArchived": "Показати архівні записи",
 			"upload": {
-				"hint": "File should contain one Запис per row. Header row contains the names of data fields."
+				"hint": "Файл повинен містити один запис на рядок. Рядок заголовка містить назви полів даних."
 			}
 		},
 		"referenceData": {
 			"create": {
-				"title": "New Reference Data"
+				"title": "Нові довідкові дані"
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of Reference Data {{name}}?",
-				"title": "Видалити Reference Data"
+				"confirmationMessage": "Ви підтверджуєте видалення довідкових даних {{name}}?",
+				"title": "Видалити довідкові дані"
 			},
 			"dropdown": {
-				"select": "From Reference data"
+				"select": "З довідкових даних"
 			},
 			"fields": {
-				"add": "Додати field",
-				"ariaLabel": "Input available fields of reference data",
-				"new": "New field"
+				"add": "Додати поле",
+				"ariaLabel": "Введіть доступні поля довідкових даних",
+				"new": "Нове поле"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of reference data"
+				"ariaLabel": "Виберіть сторінку довідкових даних"
 			}
 		},
 		"resource": {
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Ресурс {{name}}?"
+				"confirmationMessage": "Ви підтверджуєте видалення ресурсу {{name}}?"
 			},
 			"dropdown": {
-				"select": "From Ресурс"
+				"select": "З Ресурсу"
 			},
 			"empty": {
-				"aggregations": "Ні aggregation detected",
-				"calculatedFields": "Ні calculated fields detected",
-				"layouts": "Ні layout detected",
-				"records": "Ні Запис detected"
+				"aggregations": "Не виявлено жодної агрегації",
+				"calculatedFields": "Не виявлено жодного обчислюваного поля",
+				"layouts": "Не виявлено жодного макета",
+				"records": "Не виявлено жодного запису"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of Ресурси"
+				"ariaLabel": "Виберіть сторінку ресурсів"
 			}
 		},
 		"role": {
 			"add": {
-				"title": "Додати new Роль"
+				"title": "Додати нову роль"
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Роль {{name}}?",
-				"title": "Видалити Роль"
+				"confirmationMessage": "Ви підтверджуєте видалення ролі {{name}}?",
+				"title": "Видалити роль"
 			},
 			"impersonate": {
-				"title": "Choose Роль to simulate"
+				"title": "Виберіть роль для симуляції"
 			},
 			"summary": {
-				"addFilter": "Додати Фільтр",
+				"addFilter": "Додати фільтр",
 				"autoAssignment": {
 					"rule": {
-						"add": "Створити assignment rule",
-						"delete": "Видалити rule",
-						"edit": "Редагувати assignment rule",
-						"none": "Ні assignment rule",
-						"title": "Rule"
+						"add": "Створити правило призначення",
+						"delete": "Видалити правило",
+						"edit": "Редагувати правило призначення",
+						"none": "Немає правила призначення",
+						"title": "Правило"
 					},
-					"title": "Automatic assignment"
+					"title": "Автоматичне призначення"
 				},
 				"details": {
 					"access": {
-						"channels": "Channels access",
-						"fullAccess": "Full access to {{accessible}} / {{total}}",
-						"limitedAccess": "Limited access to {{accessible}} / {{total}}",
-						"noAccess": "Ні access to {{accessible}} / {{total}}",
-						"pages": "Сторінки access",
-						"resources": "Ресурси access",
-						"title": "Access summary"
+						"channels": "Доступ до каналів",
+						"fullAccess": "Повний доступ до {{accessible}} / {{total}}",
+						"limitedAccess": "Обмежений доступ до {{accessible}} / {{total}}",
+						"noAccess": "Немає доступу до {{accessible}} / {{total}}",
+						"pages": "Доступ до сторінок",
+						"resources": "Доступ до ресурсів",
+						"title": "Зведення доступу"
 					}
 				},
-				"editFilters": "Редагувати Фільтри",
-				"features": "Features",
-				"newFilter": "New Фільтр",
-				"noFeatures": "Ні feature detected",
-				"noFilters": "Ні access Фільтри detected",
-				"noForms": "Ні forms detected",
-				"noSteps": "Ні Кроки detected",
-				"removeFilter": "Видалити Фільтр",
-				"title": "Summary",
+				"editFilters": "Редагувати фільтри",
+				"features": "Функції",
+				"newFilter": "Новий фільтр",
+				"noFeatures": "Не виявлено жодної функції",
+				"noFilters": "Не виявлено жодного фільтра доступу",
+				"noForms": "Не виявлено жодної форми",
+				"noSteps": "Не виявлено жодного кроку",
+				"removeFilter": "Видалити фільтр",
+				"title": "Зведення",
 				"users": {
-					"auto": "Automatically assigned",
-					"empty": "Ні Користувач detected",
-					"manual": "Manually assigned"
+					"auto": "Призначено автоматично",
+					"empty": "Не виявлено користувачів",
+					"manual": "Призначено вручну"
 				}
 			},
 			"tooltip": {
-				"allowFieldAccessibility": "Allow this Роль to see the field {{field}}",
-				"allowFieldUpdate": "Allow this Роль to Оновити the field {{field}}",
-				"disallowFieldAccessibility": "Disallow this Роль to see the field {{field}}",
-				"disallowFieldUpdate": "Disallow this Роль to Оновити the field {{field}}",
-				"grantAddRecordsPermission": "Grant permission to Додати new Записи",
-				"grantDeleteRecordsPermission": "Grant permission to Видалити Записи",
-				"grantDownloadRecordsPermission": "Grant permission to Завантажити Записи",
-				"grantFilterDeleteRecordsPermission": "Grant permission to Видалити Записи that satisfies Фільтр",
-				"grantFilterReadRecordsPermission": "Grant permission to see Записи that satisfies Фільтр",
-				"grantFilterUpdateRecordsPermission": "Grant permission to Оновити Записи that satisfies Фільтр",
-				"grantReadRecordsPermission": "Grant permission to see Записи",
-				"grantUpdateRecordsPermission": "Grant permission to Оновити Записи",
-				"hideFeature": "Hide {{page}} from this Роль",
-				"limitedDeleteRecordsPermission": "Provide limited permission to Видалити Записи, based on Фільтри",
-				"limitedReadRecordsPermission": "Provide limited permission to see Записи, based on Фільтри",
-				"limitedUpdateRecordsPermission": "Provide limited permission to Оновити Записи, based on Фільтри",
-				"notGrantAddRecordsPermission": "Does not grant permission to Додати new Записи",
-				"notGrantDeleteRecordsPermission": "Does not grant permission to Видалити Записи",
-				"notGrantDownloadRecordsPermission": "Does not grant permission to Завантажити Записи",
-				"notGrantFilterDeleteRecordsPermission": "Does not grant permission to Видалити Записи that satisfies Фільтр",
-				"notGrantFilterReadRecordsPermission": "Does not grant permission to see Записи that satisfies Фільтр",
-				"notGrantFilterUpdateRecordsPermission": "Does not grant permission to Оновити Записи that satisfies Фільтр",
-				"notGrantReadRecordsPermission": "Does not grant permission to see Записи",
-				"notGrantUpdateRecordsPermission": "Does not grant permission to Оновити Записи",
-				"showFeature": "Show {{page}} to this Роль"
+				"allowFieldAccessibility": "Дозволити цій ролі бачити поле {{field}}",
+				"allowFieldUpdate": "Дозволити цій ролі оновлювати поле {{field}}",
+				"disallowFieldAccessibility": "Заборонити цій ролі бачити поле {{field}}",
+				"disallowFieldUpdate": "Заборонити цій ролі оновлювати поле {{field}}",
+				"grantAddRecordsPermission": "Надати дозвіл на додавання нових записів",
+				"grantDeleteRecordsPermission": "Надати дозвіл на видалення записів",
+				"grantDownloadRecordsPermission": "Надати дозвіл на завантаження записів",
+				"grantFilterDeleteRecordsPermission": "Надати дозвіл на видалення записів, які відповідають фільтру",
+				"grantFilterReadRecordsPermission": "Надати дозвіл на перегляд записів, які відповідають фільтру",
+				"grantFilterUpdateRecordsPermission": "Надати дозвіл на оновлення записів, які відповідають фільтру",
+				"grantReadRecordsPermission": "Надати дозвіл на перегляд записів",
+				"grantUpdateRecordsPermission": "Надати дозвіл на оновлення записів",
+				"hideFeature": "Приховати {{page}} від цієї ролі",
+				"limitedDeleteRecordsPermission": "Надати обмежений дозвіл на видалення записів на основі фільтрів",
+				"limitedReadRecordsPermission": "Надати обмежений дозвіл на перегляд записів на основі фільтрів",
+				"limitedUpdateRecordsPermission": "Надати обмежений дозвіл на оновлення записів на основі фільтрів",
+				"notGrantAddRecordsPermission": "Не надає дозволу на додавання нових записів",
+				"notGrantDeleteRecordsPermission": "Не надає дозволу на видалення записів",
+				"notGrantDownloadRecordsPermission": "Не надає дозволу на завантаження записів",
+				"notGrantFilterDeleteRecordsPermission": "Не надає дозволу на видалення записів, які відповідають фільтру",
+				"notGrantFilterReadRecordsPermission": "Не надає дозволу на перегляд записів, які відповідають фільтру",
+				"notGrantFilterUpdateRecordsPermission": "Не надає дозволу на оновлення записів, які відповідають фільтру",
+				"notGrantReadRecordsPermission": "Не надає дозволу на перегляд записів",
+				"notGrantUpdateRecordsPermission": "Не надає дозволу на оновлення записів",
+				"showFeature": "Показувати {{page}} для цієї ролі"
 			},
 			"update": {
-				"permissions": "Permissions",
-				"title": "Оновити Роль permissions and channels"
+				"permissions": "Дозволи",
+				"title": "Оновити дозволи ролі та канали"
 			}
 		},
 		"select": {
 			"distribution": {
-				"SelectFromList": "Select from list",
-				"alertMe": "Alert me",
+				"SelectFromList": "Вибрати зі списку",
+				"alertMe": "Повідомити мене",
 				"apply": "Застосувати",
-				"bcc": "BCC",
-				"cc": "CC",
-				"createFilterLogic": "Створити Фільтр logic",
-				"email": "Email",
-				"emailError": "Type emails here and hit ENTER to Додати them to the distribution list",
-				"label": "Distribution List Ім'я*",
-				"noPreviewData": "Selected dataset does not contain any Попередній перегляд data",
+				"bcc": "Прихована копія",
+				"cc": "Копія",
+				"createFilterLogic": "Створити логіку фільтра",
+				"email": "Електронна пошта",
+				"emailError": "Введіть адреси email тут і натисніть ENTER, щоб додати їх до списку розсилки",
+				"label": "Назва списку розсилки*",
+				"noPreviewData": "Вибраний набір даних не містить даних для попереднього перегляду",
 				"sendseparate": {
-					"list": "Send separate email recipients"
+					"list": "Одержувачі окремих email"
 				},
-				"separateEmail": "Send separate email",
-				"subscriptionList": "Subscription list",
-				"to": "To"
+				"separateEmail": "Надіслати окремий email",
+				"subscriptionList": "Список підписок",
+				"to": "Кому"
 			}
 		},
 		"share": {
 			"modal": {
-				"copy": "Copy to clipboard",
-				"title": "Share Панель керування url"
+				"copy": "Копіювати в буфер обміну",
+				"title": "Поділитися URL панелі керування"
 			}
 		},
 		"templates": {
-			"available": "Available email Шаблони",
+			"available": "Доступні шаблони email",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to Видалити the Шаблон '{{name}}'?",
-				"titleMessage": "Видалити the Шаблон"
+				"confirmationMessage": "Ви впевнені, що хочете видалити шаблон '{{name}}'?",
+				"titleMessage": "Видалити шаблон"
 			},
 			"edit": {
-				"body": "Body",
-				"name": "Шаблон Ім'я",
-				"new": "New Сповіщення Шаблон",
-				"subject": "Subject",
-				"update": "Редагувати Сповіщення Шаблон"
+				"body": "Текст",
+				"name": "Назва шаблону",
+				"new": "Новий шаблон сповіщення",
+				"subject": "Тема",
+				"update": "Редагувати шаблон сповіщення"
 			},
 			"errors": {
-				"empty": "Please select one or more Шаблони"
+				"empty": "Будь ласка, виберіть один або кілька шаблонів"
 			},
 			"select": {
-				"email": "Select an email Шаблон"
+				"email": "Виберіть шаблон email"
 			},
 			"type": {
 				"email": "Email",
-				"title": "Шаблон type"
+				"title": "Тип шаблону"
 			}
 		},
 		"user": {
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the Користувач {{name}}?",
-				"title": "Видалити Користувач"
+				"confirmationMessage": "Ви підтверджуєте видалення користувача {{name}}?",
+				"title": "Видалити користувача"
 			},
 			"invite": {
-				"confirm": "Invite",
+				"confirm": "Запросити",
 				"role": {
-					"additionalAttributes": "Set additional attributes",
-					"description": "Select the Роль to assign"
+					"additionalAttributes": "Налаштувати додаткові атрибути",
+					"description": "Виберіть роль для призначення"
 				}
 			},
 			"summary": {
-				"country": "Country",
-				"firstName": "First Ім'я",
-				"lastName": "Last Ім'я",
-				"locationType": "Location type",
-				"region": "Region",
+				"country": "Країна",
+				"firstName": "Ім'я",
+				"lastName": "Прізвище",
+				"locationType": "Тип локації",
+				"region": "Регіон",
 				"roles": {
-					"application": "Додаток Ролі",
-					"backoffice": "Назад-Office Ролі",
-					"selectedApplication": "Selected Додаток",
-					"selectedGroups": "Selected groups",
-					"selectedRoles": "Selected Ролі"
+					"application": "Ролі додатка",
+					"backoffice": "Ролі бек-офісу",
+					"selectedApplication": "Вибраний додаток",
+					"selectedGroups": "Вибрані групи",
+					"selectedRoles": "Вибрані ролі"
 				},
-				"title": "Summary"
+				"title": "Загальна інформація"
 			},
 			"update": {
-				"title": "Оновити Користувач"
+				"title": "Оновити користувача"
 			}
 		},
 		"users": {
 			"invite": {
-				"add": "Додати new Користувач",
-				"confirm": "Invite Користувачі",
-				"description": "Select existing Користувачі, invite new Користувачі or Імпорт from Excel file"
+				"add": "Додати нового користувача",
+				"confirm": "Запросити користувачів",
+				"description": "Виберіть існуючих користувачів, запросіть нових користувачів або імпортуйте з файлу Excel"
 			},
 			"onDelete": {
-				"plural": "Користувачі were correctly deleted.",
-				"singular": "Користувач was correctly deleted."
+				"plural": "Користувачів успішно видалено.",
+				"singular": "Користувача успішно видалено."
 			},
 			"onInvite": {
-				"plural": "Користувачі were invited.",
-				"singular": "Користувач was invited."
+				"plural": "Користувачів запрошено.",
+				"singular": "Користувача запрошено."
 			},
 			"onNotDelete": {
-				"plural": "Користувачі were not deleted. {{error}}",
-				"singular": "Користувач was deleted. {{error}}"
+				"plural": "Користувачів не було видалено. {{error}}",
+				"singular": "Користувача не було видалено. {{error}}"
 			},
 			"onNotInvite": {
-				"plural": "Користувачі were not invited. {{error}}",
-				"singular": "Користувач was not invited. {{error}}"
+				"plural": "Користувачів не було запрошено. {{error}}",
+				"singular": "Користувача не було запрошено. {{error}}"
 			},
 			"paginator": {
-				"ariaLabel": "Select Сторінка of Користувачі"
+				"ariaLabel": "Виберіть сторінку користувачів"
 			}
 		},
 		"widget": {
 			"chart": {
 				"errors": {
 					"aggregation": {
-						"invalid": "Invalid aggregation"
+						"invalid": "Неправильне агрегування"
 					}
 				},
 				"filters": {
-					"select": "Select a Фільтр..."
+					"select": "Виберіть фільтр..."
 				},
-				"other": "Other"
+				"other": "Інше"
 			},
-			"expand": "Expand",
+			"expand": "Розгорнути",
 			"fileExplorer": {
 				"accessRequestForm": {
-					"alert": "<p>Customize the email that Користувачі can send if they don’t have permission to Завантажити файл new Записи using the Шаблон.</p><p>This email will be opened in the Користувач’s За замовчуванням email client.</p><p class=\"font-semibold\">Available Placeholders:</p><ul><li>{{data.user}} — replaced with the Користувач's Ім'я.</li><li>{{data.form}} — replaced with the Ім'я of the form.</li></ul><p> Use these placeholders in the subject and body to personalize the message.</p><p>If left blank, a За замовчуванням message will be used.</p>",
+					"alert": "<p>Налаштуйте email, який користувачі можуть надсилати, якщо вони не мають дозволу завантажувати нові записи за допомогою шаблону.</p><p>Цей email буде відкрито в поштовому клієнті користувача за замовчуванням.</p><p class=\"font-semibold\">Доступні плейсхолдери:</p><ul><li>{{data.user}} — замінюється на ім'я користувача.</li><li>{{data.form}} — замінюється на назву форми.</li></ul><p>Використовуйте ці плейсхолдери в темі та тексті листа для персоналізації повідомлення.</p><p>Якщо залишити порожнім, буде використано повідомлення за замовчуванням.</p>",
 					"fields": {
 						"body": {
-							"label": "Body"
+							"label": "Текст листа"
 						},
 						"recipients": {
 							"errors": {
-								"duplicated": "Email addresses must be unique.",
-								"invalid": "Please input a valid email address"
+								"duplicated": "Адреси email мають бути унікальними.",
+								"invalid": "Будь ласка, введіть дійсну адресу email"
 							},
-							"label": "Recipients",
-							"placeholder": "Type email and press enter...",
-							"tooltip": "За замовчуванням to ems2@who.int"
+							"label": "Отримувачі",
+							"placeholder": "Введіть email та натисніть enter...",
+							"tooltip": "За замовчуванням: ems2@who.int"
 						},
 						"subject": {
-							"label": "Subject"
+							"label": "Тема"
 						}
 					},
-					"title": "Request Access Email Шаблон"
+					"title": "Шаблон email-запиту на доступ"
 				},
 				"actions": {
-					"copyLink": "Copy file link",
-					"download": "Завантажити file",
-					"requestAccess": "Request access",
-					"requestPermission": "Request elevated permissions",
+					"copyLink": "Скопіювати посилання на файл",
+					"download": "Завантажити файл",
+					"requestAccess": "Запросити доступ",
+					"requestPermission": "Запитати підвищені дозволи",
 					"upload": "Завантажити файл",
-					"viewAsGrid": "Переглянути as grid",
-					"viewAsList": "Переглянути as list"
+					"viewAsGrid": "Переглянути як сітку",
+					"viewAsList": "Переглянути як список"
 				},
 				"empty": {
-					"files": "Ні files found",
-					"folders": "Ні folders found"
+					"files": "Файлів не знайдено",
+					"folders": "Папок не знайдено"
 				},
 				"fields": {
 					"aetiology": {
-						"label": "Aetiology"
+						"label": "Етіологія"
 					},
 					"confidentiality": {
-						"label": "Confidentiality"
+						"label": "Конфіденційність"
 					},
 					"country": {
-						"label": "Country"
+						"label": "Країна"
 					},
 					"createdBy": {
-						"label": "Створено ким"
-					},
-					"createdOn": {
 						"label": "Створено"
 					},
+					"createdOn": {
+						"label": "Дата створення"
+					},
 					"diseaseCondition": {
-						"label": "Disease Condition"
+						"label": "Стан захворювання"
 					},
 					"documentCategory": {
-						"label": "Document Category"
+						"label": "Категорія документа"
 					},
 					"documentType": {
-						"label": "Document Type"
+						"label": "Тип документа"
 					},
 					"filename": {
-						"label": "Filename"
+						"label": "Ім'я файлу"
 					},
 					"hazard": {
-						"label": "Hazard"
+						"label": "Небезпека"
 					},
 					"ihrCommunication": {
-						"label": "IHR communication"
+						"label": "Комунікація ММСП"
 					},
 					"imsFunction": {
-						"label": "IMS Function"
+						"label": "Функція IMS"
 					},
 					"imsRole": {
-						"label": "IMS Роль"
+						"label": "Роль IMS"
 					},
 					"informationSource": {
-						"label": "IHR Source of information - type"
+						"label": "Джерело інформації ММСП - тип"
 					},
 					"language": {
 						"label": "Мова"
 					},
 					"lastUpdatedBy": {
-						"label": "Last Updated By"
+						"label": "Останнє оновлення користувачем"
 					},
 					"lastUpdatedOn": {
-						"label": "Last Updated On"
+						"label": "Дата останнього оновлення"
 					},
 					"name": {
 						"label": "Ім'я"
 					},
 					"occurrence": {
-						"label": "Occurrence"
+						"label": "Випадок"
 					},
 					"occurrenceType": {
-						"label": "Occurrence Type"
+						"label": "Тип випадку"
 					},
 					"region": {
-						"label": "Region"
+						"label": "Регіон"
 					},
 					"size": {
-						"label": "File Size"
+						"label": "Розмір файлу"
 					},
 					"syndrome": {
-						"label": "Syndrome"
+						"label": "Синдром"
 					},
 					"version": {
-						"label": "File Version"
+						"label": "Версія файлу"
 					}
 				},
 				"filter": {
-					"alert": "Define system-level Фільтри that restrict the document set for all Користувачі. These administrative Фільтри cannot be seen or modified by end Користувачі and will be applied in addition to any folder navigation or context filtering.",
-					"title": "Static Фільтри"
+					"alert": "Визначте фільтри системного рівня, які обмежують набір документів для всіх користувачів. Ці адміністративні фільтри не можуть бути переглянуті або змінені кінцевими користувачами та застосовуватимуться на додаток до будь-якої навігації папками або фільтрації контексту.",
+					"title": "Статичні фільтри"
 				},
 				"folderHierarchy": {
-					"alert": "Choose which tags to use as folders and arrange them in your preferred order. The first tag becomes the top-level folder, with subsequent tags creating subfolders. Documents are automatically organized based on their tag values.",
-					"title": "Folder Hierarchy"
+					"alert": "Виберіть, які теги використовувати як папки, та розташуйте їх у бажаному порядку. Перший тег стає папкою верхнього рівня, а наступні теги створюють підпапки. Документи автоматично впорядковуються на основі значень їх тегів.",
+					"title": "Ієрархія папок"
 				},
-				"folders": "Folders",
+				"folders": "Папки",
 				"formBinding": {
-					"title": "Form binding"
+					"title": "Прив'язка форми"
 				},
 				"notifications": {
 					"copyLink": {
-						"success": "File link copied to clipboard"
+						"success": "Посилання на файл скопійовано в буфер обміну"
 					}
 				}
 			},
 			"grid": {
 				"actions": {
-					"detail": "Open detail",
-					"goTo": "Go to Сторінка",
-					"history": "Show Історія"
+					"detail": "Відкрити деталі",
+					"goTo": "Перейти на сторінку",
+					"history": "Показати історію"
 				},
-				"empty": "Ні Запис found for this dataset",
+				"empty": "Записів для цього набору даних не знайдено",
 				"errors": {
-					"autoSaveFailed": "Action stopped due to some invalid Записи. Please review them before taking any other action.",
+					"autoSaveFailed": "Дію зупинено через деякі недійсні записи. Будь ласка, перевірте їх, перш ніж виконувати будь-які інші дії.",
 					"invalid": {
-						"backoffice": "Invalid grid configuration",
-						"frontoffice": "Invalid grid configuration, please contact your admin",
-						"widgets": "Invalid grid configuration, please contact your admin"
+						"backoffice": "Недійсна конфігурація сітки",
+						"frontoffice": "Недійсна конфігурація сітки, будь ласка, зверніться до адміністратора",
+						"widgets": "Недійсна конфігурація сітки, будь ласка, зверніться до адміністратора"
 					},
-					"metaQueryBuildFailed": "Помилка building metadata",
-					"metaQueryFetchFailed": "Помилка fetching metadata: {{error}}",
-					"missingDataset": "Select a dataset in Параметри",
-					"queryBuildFailed": "Помилка building query",
-					"queryFetchFailed": "Помилка fetching data: {{error}}",
-					"validationFailed": "The following Записи could not be saved due to validation rules:\n{{errors}}\nPlease Редагувати the Запис using the 'Оновити' button for more details."
+					"metaQueryBuildFailed": "Помилка побудови метаданих",
+					"metaQueryFetchFailed": "Помилка отримання метаданих: {{error}}",
+					"missingDataset": "Виберіть набір даних у параметрах",
+					"queryBuildFailed": "Помилка побудови запиту",
+					"queryFetchFailed": "Помилка отримання даних: {{error}}",
+					"validationFailed": "Наступні записи не вдалося зберегти через правила валідації:\n{{errors}}\nБудь ласка, відредагуйте запис за допомогою кнопки 'Оновити' для отримання детальнішої інформації."
 				},
 				"export": {
 					"columns": {
 						"choice": {
-							"all": "All available columns",
-							"visible": "Only visible columns"
+							"all": "Усі доступні колонки",
+							"visible": "Тільки видимі колонки"
 						},
-						"title": "Select columns to Експорт"
+						"title": "Виберіть колонки для експорту"
 					},
 					"dataset": {
 						"choice": {
-							"all": "All Записи in Переглянути",
-							"selected": "Only selected Записи"
+							"all": "Усі записи в поданні",
+							"selected": "Тільки вибрані записи"
 						},
-						"title": "Select Записи to Експорт"
+						"title": "Виберіть записи для експорту"
 					},
 					"email": {
-						"title": "Send me the file by email",
-						"tooltip": "If checked, instead of waiting for the Експорт to be fully built before downloading it, you will receive an email with the Експорт attached once it's ready."
+						"title": "Надіслати мені файл електронною поштою",
+						"tooltip": "Якщо позначено, замість того, щоб чекати повного створення експорту перед завантаженням, ви отримаєте лист із вкладеним експортом, коли він буде готовий."
 					},
 					"format": {
-						"title": "Select Експорт format"
+						"title": "Виберіть формат експорту"
 					}
 				},
-				"files": "{{number}} files",
+				"files": "{{number}} файлів",
 				"filter": {
-					"toggle": "Toggle visibility of Фільтр"
+					"toggle": "Перемкнути видимість фільтра"
 				},
 				"item": {
-					"few": "{{count}} items",
-					"none": "Ні item",
-					"one": "{{count}} item"
+					"few": "{{count}} елементи",
+					"none": "Немає елементів",
+					"one": "{{count}} елемент"
 				},
 				"layout": {
 					"button": {
-						"title": "This will erase current layout with За замовчуванням layout"
+						"title": "Це замінить поточний макет макетом за замовчуванням"
 					},
-					"reset": "Reset За замовчуванням Layout"
+					"reset": "Скинути макет за замовчуванням"
 				},
 				"loading": {
-					"records": "Завантаження Записи...",
-					"settings": "Завантаження Параметри..."
+					"records": "Завантаження записів...",
+					"settings": "Завантаження параметрів..."
 				},
 				"map": {
-					"mapDetailsTitle": "Query Map Переглянути",
-					"mapDetailsTooltip": "Centered by За замовчуванням on selected Запис"
+					"mapDetailsTitle": "Перегляд карти запиту",
+					"mapDetailsTooltip": "За замовчуванням центровано на вибраному записі"
 				},
-				"openEditor": "Open html",
-				"openSettings": "Open Параметри",
+				"openEditor": "Відкрити HTML",
+				"openSettings": "Відкрити параметри",
 				"rowAction": {
 					"fields": {
 						"columnLabel": {
-							"text": "Column label"
+							"text": "Мітка стовпця"
 						}
 					}
 				},
 				"tooltip": {
-					"displayEditor": "Display html in modal",
-					"displayMap": "Display map",
-					"openPage": "Navigate to Сторінка",
-					"saved": "Changes saved",
-					"unsaved": "Click on Зберегти button to Завантажити файл changes",
-					"uploadFailed": "Запис not saved. Click to see more details"
+					"displayEditor": "Показати HTML у модальному вікні",
+					"displayMap": "Показати карту",
+					"openPage": "Перехід на сторінку",
+					"saved": "Зміни збережено",
+					"unsaved": "Натисніть кнопку 'Зберегти', щоб надіслати зміни",
+					"uploadFailed": "Запис не збережено. Натисніть для детальнішої інформації"
 				},
 				"validation": {
-					"help": "Please Редагувати the Запис using the 'Оновити' button for more details.",
-					"questionTitle": "Помилки on field {{question}}:",
-					"subtitle": "These Помилки where found while saving changes:",
-					"title": "Validation failed for Запис {{record}}"
+					"help": "Будь ласка, відредагуйте запис за допомогою кнопки 'Оновити' для отримання детальнішої інформації.",
+					"questionTitle": "Помилки в полі {{question}}:",
+					"subtitle": "Ці помилки було знайдено під час збереження змін:",
+					"title": "Помилка валідації для запису {{record}}"
 				}
 			},
 			"settings": {
 				"chart": {
-					"auto": "auto",
-					"axes": "Axes",
-					"categories": "Categories",
-					"color": "Color",
+					"auto": "авто",
+					"axes": "Осі",
+					"categories": "Категорії",
+					"color": "Колір",
 					"filters": {
-						"add": "Додати Фільтр",
-						"delete": "Видалити Фільтр",
-						"empty": "Ні Фільтри configured",
-						"title": "Predefined Фільтри"
+						"add": "Додати фільтр",
+						"delete": "Видалити фільтр",
+						"empty": "Немає налаштованих фільтрів",
+						"title": "Зумовлені фільтри"
 					},
 					"grid": {
-						"title": "Gridlines",
+						"title": "Лінії сітки",
 						"x": {
-							"display": "Display horizontal gridlines"
+							"display": "Показати горизонтальні лінії сітки"
 						},
 						"y": {
-							"display": "Display vertical gridlines"
+							"display": "Показати вертикальні лінії сітки"
 						}
 					},
-					"hideLegend": "Hide legend",
+					"hideLegend": "Приховати легенду",
 					"labels": {
-						"percentage": "Percentage",
-						"showCategory": "Show category labels",
-						"showValue": "Show value labels",
-						"title": "Labels",
-						"valueType": "Value type"
+						"percentage": "Відсоток",
+						"showCategory": "Показати мітки категорій",
+						"showValue": "Показати мітки значень",
+						"title": "Мітки",
+						"valueType": "Тип значення"
 					},
-					"legend": "Legend",
-					"orientation": "Orientation",
-					"other": "Other",
+					"legend": "Легенда",
+					"orientation": "Орієнтація",
+					"other": "Інше",
 					"palette": {
-						"enable": "Use Custom Palette",
-						"title": "Color palette"
+						"enable": "Використовувати власну палітру",
+						"title": "Колірна палітра"
 					},
-					"position": "Position",
+					"position": "Позиція",
 					"series": {
-						"fill": "Fill",
+						"fill": "Заливка",
 						"interpolation": {
-							"step": "Крок interpolation",
-							"title": "Interpolation"
+							"step": "Крок інтерполяції",
+							"title": "Інтерполяція"
 						},
-						"showSeries": "Show series",
+						"showSeries": "Показати серію",
 						"stack": {
-							"enable": "Plot series",
-							"usePercentage": "Use percentage"
+							"enable": "Відобразити серію",
+							"usePercentage": "Використовувати відсотки"
 						},
-						"title": "Series"
+						"title": "Серія"
 					},
-					"size": "Size",
-					"stepSize": "Крок size",
-					"style": "Style",
-					"text": "Text",
+					"size": "Розмір",
+					"stepSize": "Розмір кроку",
+					"style": "Стиль",
+					"text": "Текст",
 					"title": {
-						"color": "Назва color",
-						"format": "Назва format"
+						"color": "Колір заголовка",
+						"format": "Формат заголовка"
 					},
 					"tooltip": {
-						"palette": "Palette provides За замовчуванням colors to chart elements if not manually set.",
-						"stepSize": "Interval between each tick mark on the chart's axis, when possible"
+						"palette": "Палітра надає кольори за замовчуванням для елементів діаграми, якщо вони не встановлені вручну.",
+						"stepSize": "Інтервал між кожною позначкою на осі діаграми, коли це можливо"
 					},
-					"type": "Chart Type",
-					"xAxis": "X Axis",
-					"yAxis": "Y Axis"
+					"type": "Тип діаграми",
+					"xAxis": "Вісь X",
+					"yAxis": "Вісь Y"
 				},
 				"close": {
-					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
+					"confirmationMessage": "Деякі зміни будуть втрачені при закритті редагування. Бажаєте продовжити?"
 				},
 				"editor": {
 					"record": {
 						"choices": {
-							"expression": "Use an expression",
-							"manual": "Manual selection"
+							"expression": "Використовувати вираз",
+							"manual": "Ручний вибір"
 						},
-						"expression": "Запис value expression",
-						"title": "Запис selection"
+						"expression": "Вираз значення запису",
+						"title": "Вибір запису"
 					},
-					"title": "Editor",
+					"title": "Редактор",
 					"tooltip": {
 						"record": {
-							"expression": "You can input a static value, or use {{context}} notation to dynamically inject a value"
+							"expression": "Ви можете ввести статичне значення або використовувати нотацію {{context}} для динамічного введення значення"
 						}
 					}
 				},
 				"grid": {
 					"actions": {
-						"add": "Додати new Записи",
-						"convert": "Convert Записи",
-						"delete": "Видалити Записи",
-						"export": "Експорт Записи",
+						"add": "Додати нові записи",
+						"convert": "Конвертувати записи",
+						"delete": "Видалити записи",
+						"export": "Експортувати записи",
 						"goTo": {
 							"column": {
-								"label": "Column Ім'я",
-								"placeholder": "Type a Назва for the column..."
+								"label": "Назва стовпця",
+								"placeholder": "Введіть назву для стовпця..."
 							},
 							"field": {
-								"label": "Pass field as query parameter",
-								"placeholder": "Select a field"
+								"label": "Передати поле як параметр запиту",
+								"placeholder": "Виберіть поле"
 							},
-							"label": "Navigate to Сторінка",
+							"label": "Перехід на сторінку",
 							"target": {
-								"label": "Target Сторінка",
-								"placeholder": "Select a Сторінка"
+								"label": "Цільова сторінка",
+								"placeholder": "Виберіть сторінку"
 							}
 						},
-						"inline": "Inline edition",
+						"inline": "Вбудоване редагування",
 						"remove": "Видалити",
-						"show": "Show Історія",
-						"showDetails": "Show Запис details",
-						"title": "Row Дії",
-						"update": "Оновити Записи",
-						"useRecordId": "Pass id as query parameter"
+						"show": "Показати історію",
+						"showDetails": "Показати деталі запису",
+						"title": "Дії з рядком",
+						"update": "Оновити записи",
+						"useRecordId": "Передати id як параметр запиту"
 					},
 					"aggregations": {
 						"add": {
 							"choice": {
-								"create": "Створити a new aggregation"
+								"create": "Створити нове агрегування"
 							}
 						},
-						"title": "Grid aggregations"
+						"title": "Агрегування сітки"
 					},
 					"buttons": {
 						"callback": {
-							"attach": "Attach to Запис",
-							"displayField": "Display field",
-							"export": "Експорт selected dataset",
-							"modify": "Auto-modify selected rows",
-							"modifyField": "Field to Оновити",
-							"modifyValue": "Value to attribute",
-							"navigateToPage": "Include navigate to Сторінка link",
+							"attach": "Прикріпити до запису",
+							"displayField": "Відображуване поле",
+							"export": "Експортувати вибраний набір даних",
+							"modify": "Автоматично змінити вибрані рядки",
+							"modifyField": "Поле для оновлення",
+							"modifyValue": "Значення для присвоєння",
+							"navigateToPage": "Додати посилання для переходу на сторінку",
 							"notify": {
-								"message": "Сповіщення message"
+								"message": "Повідомлення сповіщення"
 							},
-							"prefill": "Pre-fill form with selected data",
-							"save": "Auto-Зберегти",
-							"selectAllRecords": "Select all Записи",
-							"selectAllRecordsActivePage": "Select all Записи on the Активний Сторінка",
-							"selectDisplay": "Select displayed fields",
-							"sendMail": "Send mail",
+							"prefill": "Попередньо заповнити форму вибраними даними",
+							"save": "Автозбереження",
+							"selectAllRecords": "Вибрати всі записи",
+							"selectAllRecordsActivePage": "Вибрати всі записи на активній сторінці",
+							"selectDisplay": "Вибрати відображувані поля",
+							"sendMail": "Надіслати лист",
 							"workflow": {
 								"close": "Закрити Робочий процес",
-								"confirm": "Confirmation message",
-								"next": "Go to Далі Крок",
-								"previous": "Go to Назад Крок"
+								"confirm": "Повідомлення про підтвердження",
+								"next": "Перейти до наступного кроку",
+								"previous": "Перейти до попереднього кроку"
 							}
 						},
-						"create": "Додати Custom Grid Action",
-						"defaultName": "Action button",
-						"enable": "Enable",
+						"create": "Додати власну дію сітки",
+						"defaultName": "Кнопка дії",
+						"enable": "Увімкнути",
 						"placeholder": {
-							"modifyValue": "Set as null"
+							"modifyValue": "Встановити як null"
 						},
-						"title": "Grid Дії",
+						"title": "Дії сітки",
 						"tooltip": {
-							"attach": "When enabled, you must provide a form and a field of this form. All selected rows will be attached to a Запис from this form. The Користувач will be able to choose which Запис using a the given field",
+							"attach": "Якщо увімкнено, необхідно вказати форму та поле цієї форми. Усі вибрані рядки будуть прикріплені до запису з цієї форми. Користувач зможе вибрати запис за допомогою вказаного поля",
 							"mail": {
-								"selectDistributionList": "Select the distribution list that will set recipients of the email",
-								"selectTemplates": "Select the email Шаблони Користувачі will be allowed to choose from when using the action"
+								"selectDistributionList": "Виберіть список розсилки, який визначатиме отримувачів email",
+								"selectTemplates": "Виберіть шаблони email, які користувачі зможуть обирати під час виконання дії"
 							},
-							"notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single Сповіщення on the specified channel. The provided message is used to define the Сповіщення’s action",
-							"publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the Записи"
+							"notify": "Якщо увімкнено, необхідно вказати канал та повідомлення. Усі вибрані рядки будуть надіслані як одне сповіщення у вказаний канал. Надане повідомлення використовується для визначення дії сповіщення",
+							"publish": "Якщо увімкнено, необхідно вказати канал. Усі вибрані рядки будуть надіслані як одна публікація у вказаний канал. Усі, хто підписаний на цей канал, зможуть отримувати записи"
 						}
 					},
 					"hint": {
 						"actions": {
-							"add": "If authorized, Користувач can Додати new Записи using selected Шаблон",
-							"convert": "If authorized, Користувач can convert Запис using another Шаблон of selected Ресурс",
-							"delete": "If authorized, Користувач can Видалити visible Записи",
-							"export": "Користувач can Експорт selected columns of visible Записи",
-							"goTo": "Користувач can go to specified Сторінка on click",
-							"inline": "If authorized, Користувач can Редагувати Записи in the grid",
-							"show": "Користувач can see full Історія of visible Записи",
-							"showDetails": "Користувач can see full details of visible Записи",
-							"update": "If authorized, Користувач can Оновити visible Записи"
+							"add": "Якщо дозволено, користувач може додавати нові записи за допомогою вибраного шаблону",
+							"convert": "Якщо дозволено, користувач може конвертувати запис за допомогою іншого шаблону вибраного ресурсу",
+							"delete": "Якщо дозволено, користувач може видаляти видимі записи",
+							"export": "Користувач може експортувати вибрані стовпці видимих записів",
+							"goTo": "Користувач може перейти на вказану сторінку при натисканні",
+							"inline": "Якщо дозволено, користувач може редагувати записи в сітці",
+							"show": "Користувач може переглядати повну історію видимих записів",
+							"showDetails": "Користувач може переглядати повну інформацію про видимі записи",
+							"update": "Якщо дозволено, користувач може оновлювати видимі записи"
 						},
-						"attachToRecord": "If the selected Записи are not attached to any Записи, the action will be canceled",
-						"executionOrder": "Selected Дії will be executed in the displayed order",
-						"prefillForm": "If Ні Запис is created at this point, the action will be canceled"
+						"attachToRecord": "Якщо вибрані записи не прикріплені до жодних записів, дію буде скасовано",
+						"executionOrder": "Вибрані дії будуть виконані у відображуваному порядку",
+						"prefillForm": "Якщо на цьому етапі не створено жодного запису, дію буде скасовано"
 					},
 					"layouts": {
 						"add": {
 							"choice": {
-								"create": "Створити a new layout",
-								"load": "Load existing layout"
+								"create": "Створити новий макет",
+								"load": "Завантажити існуючий макет"
 							},
-							"title": "Додати new layout"
+							"title": "Додати новий макет"
 						},
 						"edit": {
-							"title": "Layout configuration"
+							"title": "Конфігурація макету"
 						},
-						"select": "Select a layout",
-						"title": "Grid layouts"
+						"select": "Виберіть макет",
+						"title": "Макети сітки"
 					},
 					"tooltip": {
-						"template": "Select a Шаблон for addition and edition of Записи",
-						"useRecordId": "Url will contain id of the item, in order to redirect to contextual Сторінка, if configured"
+						"template": "Виберіть шаблон для додавання та редагування записів",
+						"useRecordId": "URL міститиме ID елемента для перенаправлення на контекстну сторінку, якщо це налаштовано"
 					},
 					"warnings": {
-						"add": "Please select a Шаблон",
-						"general": "Warning: Дії contain Помилки"
+						"add": "Будь ласка, виберіть шаблон",
+						"general": "Попередження: дії містять помилки"
 					}
 				},
 				"iconPicker": {
 					"default": "За замовчуванням",
-					"placeholder": "Click to select an icon"
+					"placeholder": "Натисніть, щоб вибрати іконку"
 				},
 				"map": {
-					"basemap": "Base map",
-					"category": "Map quick layers",
-					"dataset": "Data set selection",
+					"basemap": "Базова карта",
+					"category": "Швидкі шари карти",
+					"dataset": "Вибір набору даних",
 					"edit": {
-						"aggregation": "Aggregation",
+						"aggregation": "Агрегування",
 						"cluster": {
-							"autoSizeCluster": "Cluster auto-sizing",
-							"cluster": "Cluster",
-							"clusterSettings": "Cluster Параметри",
-							"clustering": "Clustering",
-							"fields": "Cluster fields",
-							"font": "Font",
-							"fontSize": "Font size",
-							"high": "High",
-							"label": "Cluster label",
-							"lightMode": "Light mode",
-							"low": "Low",
-							"max": "Max",
-							"min": "Min",
-							"overrideSymbol": "Override cluster symbol",
-							"popups": "Cluster pop-ups",
-							"radius": "Cluster radius",
-							"sizeRange": "Size range",
-							"symbol": "Symbol style"
+							"autoSizeCluster": "Автоматичний розмір кластера",
+							"cluster": "Кластер",
+							"clusterSettings": "Параметри кластера",
+							"clustering": "Кластеризація",
+							"fields": "Поля кластера",
+							"font": "Шрифт",
+							"fontSize": "Розмір шрифту",
+							"high": "Високий",
+							"label": "Мітка кластера",
+							"lightMode": "Світлий режим",
+							"low": "Низький",
+							"max": "Макс.",
+							"min": "Мін.",
+							"overrideSymbol": "Перевизначити символ кластера",
+							"popups": "Спливаючі вікна кластера",
+							"radius": "Радіус кластера",
+							"sizeRange": "Діапазон розмірів",
+							"symbol": "Стиль символу"
 						},
 						"datasource": {
-							"origin": "Origin"
+							"origin": "Джерело"
 						},
-						"fields": "Fields",
+						"fields": "Поля",
 						"filter": "Фільтр",
-						"groupLayers": "Group layers",
-						"labels": "Labels",
-						"layerDatasource": "Layer datasource",
-						"layerEdition": "Layer edition",
-						"layerProperties": "Layer properties",
-						"layerStyling": "Layer styling",
-						"popup": "Pop-up",
+						"groupLayers": "Групувати шари",
+						"labels": "Мітки",
+						"layerDatasource": "Джерело даних шару",
+						"layerEdition": "Редагування шару",
+						"layerProperties": "Властивості шару",
+						"layerStyling": "Стилізація шару",
+						"popup": "Спливаюче вікно",
 						"properties": {
-							"defaultVisibility": "Visible by За замовчуванням",
-							"from": "from zoom ",
-							"opacity": "Opacity",
-							"to": " to zoom",
-							"visibilityRange": "Visibility range",
-							"zoom": "Current zoom"
+							"defaultVisibility": "Видимий за замовчуванням",
+							"from": "від масштабу ",
+							"opacity": "Прозорість",
+							"to": " до масштабу",
+							"visibilityRange": "Діапазон видимості",
+							"zoom": "Поточний масштаб"
 						},
 						"reduction": {
-							"noReduction": "Ні reduction",
-							"reduction": "Reduction"
+							"noReduction": "Без зменшення",
+							"reduction": "Зменшення"
 						},
 						"style": {
-							"color": "Color",
-							"icon": "Icon",
-							"size": "Size",
-							"stylingType": "{{layerType}} styling"
+							"color": "Колір",
+							"icon": "Іконка",
+							"size": "Розмір",
+							"stylingType": "Стилізація {{layerType}}"
 						},
 						"styling": {
 							"heatmapOptions": {
-								"blur": "Blur",
-								"gradient": "Gradient",
-								"minOpacity": "Minimum opacity",
-								"radius": "Radius"
+								"blur": "Розмиття",
+								"gradient": "Градієнт",
+								"minOpacity": "Мінімальна прозорість",
+								"radius": "Радіус"
 							}
 						}
 					},
 					"errors": {
-						"latitude": "Invalid latitude, please select a number between -90 and 90",
-						"longitude": "Invalid longitude, please select a number between -180 and 180"
+						"latitude": "Недійсна широта, будь ласка, виберіть число від -90 до 90",
+						"longitude": "Недійсна довгота, будь ласка, виберіть число від -180 до 180"
 					},
 					"geospatial": {
 						"layersStyles": {
 							"fill": {
-								"color": "Fill color",
-								"opacity": "Fill opacity",
-								"title": "Fill"
+								"color": "Колір заливки",
+								"opacity": "Прозорість заливки",
+								"title": "Заливка"
 							},
 							"marker": {
-								"color": "Marker color",
-								"opacity": "Marker opacity",
-								"title": "Marker"
+								"color": "Колір маркера",
+								"opacity": "Прозорість маркера",
+								"title": "Маркер"
 							},
 							"outline": {
-								"color": "Outline color",
-								"opacity": "Outline opacity",
-								"title": "Outline",
-								"width": "Outline width"
+								"color": "Колір контуру",
+								"opacity": "Прозорість контуру",
+								"title": "Контур",
+								"width": "Ширина контуру"
 							},
-							"title": "Layer styles"
+							"title": "Стилі шару"
 						}
 					},
 					"help": {
-						"geographicExtent": "Use Фільтр and / or Сторінка context to zoom on the map",
-						"layers": "The layers will be displayed on the map according to their order in the list, with layers at the top appearing above layers with a lower index."
+						"geographicExtent": "Використовуйте контекст фільтра та/або сторінки для масштабування на карті",
+						"layers": "Шари відображатимуться на карті відповідно до їх порядку в списку, причому шари вгорі з'являтимуться над шарами з меншим індексом."
 					},
 					"layers": {
-						"add": "Додати new layer",
-						"chooseLayer": "Choose a layer",
-						"createGroup": "Створити a new group layer",
-						"createLayer": "Створити a new layer",
+						"add": "Додати новий шар",
+						"chooseLayer": "Виберіть шар",
+						"createGroup": "Створити новий груповий шар",
+						"createLayer": "Створити новий шар",
 						"dataSource": {
-							"fieldMapping": "Field Mapping",
+							"fieldMapping": "Зіставлення полів",
 							"geoField": "GeoField",
-							"latitude": "Latitude",
-							"longitude": "Longitude"
+							"latitude": "Широта",
+							"longitude": "Довгота"
 						},
-						"edit": "Оновити layer {{name}}",
+						"edit": "Оновити шар {{name}}",
 						"online": {
-							"info": "Пошук for online layers in arcGIS online",
-							"select": "Пошук layers",
-							"selected": "Selected layers",
-							"title": "Online layers"
+							"info": "Пошук онлайн-шарів в ArcGIS Online",
+							"select": "Шукати шари",
+							"selected": "Вибрані шари",
+							"title": "Онлайн-шари"
 						},
 						"point": {
-							"addNew": "Додати new marker rule",
-							"category": "Map quick layers",
-							"color": "Color",
-							"info": "Display markers in the map for each entry of your data, binding dataset number fields to geolocation",
-							"rules": "Marker rules",
-							"rulesInfo": "Customize the size and colors of your markers",
-							"size": "Size",
-							"title": "Marker layers"
+							"addNew": "Додати нове правило маркера",
+							"category": "Швидкі шари карти",
+							"color": "Колір",
+							"info": "Відображайте маркери на карті для кожного запису ваших даних, прив'язуючи числові поля набору даних до геолокації",
+							"rules": "Правила маркерів",
+							"rulesInfo": "Налаштуйте розмір та кольори ваших маркерів",
+							"size": "Розмір",
+							"title": "Шари маркерів"
 						},
 						"popup": {
-							"addField": "Додати field",
+							"addField": "Додати поле",
 							"description": "Опис",
 							"fields": "Fields",
 							"fieldsElements": {
 								"description": "Опис",
 								"title": "Назва"
 							},
-							"popup": "Popup",
-							"popupElements": "Popup elements",
-							"text": "Text",
+							"popup": "Спливаюче вікно",
+							"popupElements": "Елементи спливаючого вікна",
+							"text": "Текст",
 							"title": "Назва",
 							"tooltip": {
-								"text": "Type '{' to start using fields from the datasource"
+								"text": "Введіть '{', щоб почати використовувати поля з джерела даних"
 							}
 						},
-						"remove": "Видалити layer",
-						"selectLayer": "Select existing layer",
+						"remove": "Видалити шар",
+						"selectLayer": "Вибрати існуючий шар",
 						"styling": {
 							"style": "Style"
 						},
@@ -2270,199 +2270,199 @@
 						}
 					},
 					"legend": {
-						"high": "High",
-						"low": "Low",
-						"title": "Legend"
+						"high": "Високий",
+						"low": "Низький",
+						"title": "Легенда"
 					},
 					"popup": {
-						"label": "Fields displayed in the popup",
-						"location": "Location",
-						"of": "{{current}} of {{total}}",
-						"zoomTo": "Zoom to"
+						"label": "Поля, що відображаються у спливаючому вікні",
+						"location": "Розташування",
+						"of": "{{current}} з {{total}}",
+						"zoomTo": "Наблизити"
 					},
 					"properties": {
-						"basemap": "Base map",
+						"basemap": "Базова карта",
 						"controls": {
 							"download": "Завантажити",
-							"lastUpdate": "Last updated on",
-							"lastUpdateError": "Last modified Час could not be loaded",
-							"lastUpdatePosition": "Select a position to display the control",
-							"layer": "Layers",
-							"legend": "Legend",
-							"measure": "Measure",
+							"lastUpdate": "Востаннє оновлено",
+							"lastUpdateError": "Не вдалося завантажити час останньої зміни",
+							"lastUpdatePosition": "Виберіть положення для відображення елемента керування",
+							"layer": "Шари",
+							"legend": "Легенда",
+							"measure": "Вимірювання",
 							"search": "Пошук",
-							"timedimension": "Час dimension",
-							"title": "Visible Map Controls"
+							"timedimension": "Часовий вимір",
+							"title": "Видимі елементи керування картою"
 						},
-						"geographicExtent": "Geographic extent",
-						"geographicExtentPadding": "Padding (degrees)",
-						"geographicExtentValue": "Geographic extent value",
-						"latitude": "Map center latitude",
-						"longitude": "Map center longitude",
-						"setByMap": "Set By Map",
-						"title": "Map Parameters",
-						"useWebMapInitialState": "Use WebMap initial state",
+						"geographicExtent": "Географічне охоплення",
+						"geographicExtentPadding": "Відступи (градуси)",
+						"geographicExtentValue": "Значення географічного охоплення",
+						"latitude": "Широта центру карти",
+						"longitude": "Довгота центру карти",
+						"setByMap": "Встановити по карті",
+						"title": "Параметри карти",
+						"useWebMapInitialState": "Використовувати початковий стан WebMap",
 						"webmap": "WebMap",
-						"zoom": "За замовчуванням zoom"
+						"zoom": "Масштаб за замовчуванням"
 					},
 					"renderer": {
-						"classBreak": "Class Breaks",
+						"classBreak": "Інтервали класів",
 						"default": "За замовчуванням",
 						"defaultLabel": {
-							"info": "Leave empty to hide in legend",
-							"text": "За замовчуванням label"
+							"info": "Залиште порожнім, щоб приховати в легенді",
+							"text": "Мітка за замовчуванням"
 						},
 						"errors": {
-							"invalidClassBreakOrder": "Incorrect class breaks ordering",
-							"repeatedValues": "Maximum value is repeated",
-							"valuesOrder": "Minimum value must be lower than maximum values in class breaks"
+							"invalidClassBreakOrder": "Неправильний порядок інтервалів класів",
+							"repeatedValues": "Максимальне значення повторюється",
+							"valuesOrder": "Мінімальне значення має бути меншим за максимальні значення в інтервалах класів"
 						},
-						"label": "Label",
-						"maxValue": "Maximum value",
-						"minValue": "Minimum value",
-						"symbol": "Symbol",
-						"uniqueValue": "Unique values",
-						"value": "Value"
+						"label": "Мітка",
+						"maxValue": "Максимальне значення",
+						"minValue": "Мінімальне значення",
+						"symbol": "Символ",
+						"uniqueValue": "Унікальні значення",
+						"value": "Значення"
 					},
 					"tooltip": {
-						"category": "Selecting a field will separate your Записи into different layers, accessible on top right corner of the map",
+						"category": "Вибір поля розділить ваші записи на різні шари, доступні у верхньому правому куті карти",
 						"classBreak": {
 							"maxValue": {
-								"first": "Leave blank to include all items with value greater than the maximum values of subsequent class breaks",
-								"general": "Must be higher than the maximum values of subsequent class breaks"
+								"first": "Залиште порожнім, щоб включити всі елементи зі значенням, більшим за максимальні значення наступних інтервалів класів",
+								"general": "Має бути вищим за максимальні значення наступних інтервалів класів"
 							},
-							"minValue": "All items with values lower than the minimum set will use За замовчуванням rendering"
+							"minValue": "Усі елементи зі значеннями, меншими за встановлений мінімум, використовуватимуть відображення за замовчуванням"
 						},
 						"cluster": {
-							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
-							"lightMode": "If enabled, label uses white. Else, it displays in black."
+							"autoSize": "Якщо увімкнено, розмір кластерів визначається автоматично. В іншому випадку ви можете вибрати його вручну.",
+							"lightMode": "Якщо увімкнено, для мітки використовується білий колір. В іншому випадку вона відображається чорним."
 						},
-						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
+						"dataset": "Виберіть точки даних нижче та перетягніть їх у 'вибрані поля' праворуч. Вони будуть відображатися у спливаючому вікні при натисканні на маркер",
 						"default": {
-							"latitude": "Set the За замовчуванням latitude of the center of the map. You can use 'Set By Map' to use the latitude of the Попередній перегляд map.",
-							"longitude": "Set the За замовчуванням longitude of the center of the map. You can use 'Set By Map' to use the longitude of the Попередній перегляд map.",
-							"zoom": "Select a За замовчуванням zoom for the map display"
+							"latitude": "Встановіть широту центру карти за замовчуванням. Ви можете скористатися функцією 'Встановити по карті', щоб використовувати широту з попереднього перегляду карти.",
+							"longitude": "Встановіть довготу центру карти за замовчуванням. Ви можете скористатися функцією 'Встановити по карті', щоб використовувати довготу з попереднього перегляду карти.",
+							"zoom": "Виберіть масштаб карти за замовчуванням"
 						},
 						"geographicExtent": {
-							"add": "Додати new geographic extent",
-							"admin0": "Use either iso2code, iso3code or country Ім'я",
-							"padding": "You can choose to Додати additional space in degrees to be added around the geographic extent when zooming in, for additional context.",
-							"region": "Use region Ім'я",
-							"remove": "Видалити geographic extent",
-							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+							"add": "Додати нове географічне охоплення",
+							"admin0": "Використовуйте iso2code, iso3code або назву країни",
+							"padding": "Ви можете додати додатковий простір у градусах навколо географічного охоплення під час наближення для отримання додаткового контексту.",
+							"region": "Використовуйте назву регіону",
+							"remove": "Вилучити географічне охоплення",
+							"value": "Ви можете ввести статичне значення або використовувати нотацію {{context}} або {{filter}} для динамічного введення значення"
 						},
 						"gradient": {
-							"reverse": "Reverse gradient"
+							"reverse": "Обернути градієнт"
 						}
 					}
 				},
 				"style": {
-					"customStyling": "Custom Styling"
+					"customStyling": "Власна стилізація"
 				},
 				"summaryCard": {
-					"add": "Додати new card",
+					"add": "Додати нову картку",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
-									"error": "Помилка while building available reference data variables",
+									"error": "Помилка під час побудови доступних змінних довідкових даних",
 									"graphql": {
-										"title": "GraphQL variables mapping",
-										"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the Фільтри using the {{filter.<question-name>}} Шаблони. E.g.: { \"region\": {{filter.region}} }"
+										"title": "Зіставлення змінних GraphQL",
+										"tooltip": "Встановіть значення для змінних GraphQL, визначених у запиті довідкових даних. Ви можете отримати значення з фільтрів, використовуючи шаблони {{filter.<question-name>}}. Наприклад: { \"region\": {{filter.region}} }"
 									},
-									"help": "Make sure to Видалити all unused variables, to prevent null arguments to be sent.",
-									"noVariables": "Ні variables defined",
-									"refresh": "See all variables",
+									"help": "Обов'язково видаліть усі невикористовувані змінні, щоб запобігти надсиланню порожніх (null) аргументів.",
+									"noVariables": "Змінних не визначено",
+									"refresh": "Переглянути всі змінні",
 									"rest": {
-										"title": "REST query params mapping",
-										"tooltip": "Set values for the REST endpoint query params available in the reference data. You can get values from the Фільтри using the {{filter.<question-name>}} Шаблони. E.g.: { \"region\": {{filter.region}} }"
+										"title": "Зіставлення параметрів REST-запиту",
+										"tooltip": "Встановіть значення для параметрів REST-запиту, доступних у довідкових даних. Ви можете отримати значення з фільтрів, використовуючи шаблони {{filter.<question-name>}}. Наприклад: { \"region\": {{filter.region}} }"
 									}
 								},
-								"title": "Layout styles",
-								"use": "Use layout styles",
+								"title": "Стилі макету",
+								"use": "Використовувати стилі макету",
 								"wholeRow": {
-									"option1": "Застосувати to all fields",
-									"option2": "Застосувати to the whole card",
-									"title": "Whole row styles:"
+									"option1": "Застосувати до всіх полів",
+									"option2": "Застосувати до всієї картки",
+									"title": "Стилі всього рядка:"
 								}
 							},
-							"title": "Data source"
+							"title": "Джерело даних"
 						},
 						"display": {
-							"dataSource": "Show link to data source",
-							"header": "Header",
-							"padding": "Use card inner padding",
-							"title": "Card display",
+							"dataSource": "Показати посилання на джерело даних",
+							"header": "Заголовок",
+							"padding": "Використовувати внутрішні відступи картки",
+							"title": "Відображення картки",
 							"tooltip": {
-								"datasource": "Додати a button in widget's header to Переглянути card's data source"
+								"datasource": "Додати кнопку в заголовок віджета для перегляду джерела даних картки"
 							}
 						},
 						"gridActions": {
-							"title": "Row Дії",
-							"tooltip": "Row Дії (grid mode)"
+							"title": "Дії з рядком",
+							"tooltip": "Дії з рядком (режим сітки)"
 						},
 						"preview": {
 							"title": "Попередній перегляд"
 						},
 						"textEditor": {
-							"alert": "You can Додати variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
-							"title": "Text editor"
+							"alert": "Ви можете додавати змінні, наприклад: {{data.variable}}, та обчислювати значення, наприклад: {{calc.round( value ; precision )}}",
+							"title": "Текстовий редактор"
 						},
-						"title": "Card Параметри",
+						"title": "Параметри картки",
 						"valueSelector": {
-							"title": "Value selector"
+							"title": "Селектор значень"
 						}
 					},
 					"create": {
 						"choice": {
-							"blank": "Start from blank",
-							"template": "Start from Шаблон"
+							"blank": "Почати з порожнього",
+							"template": "Почати з шаблону"
 						}
 					},
-					"dynamic": "Dynamic",
-					"exportable": "Allow Експорт of the cards",
-					"gridMode": "Allow to show as grid",
+					"dynamic": "Динамічний",
+					"exportable": "Дозволити експорт карток",
+					"gridMode": "Дозволити показ як сітки",
 					"hint": {
-						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+						"dynamic": "Динамічні картки зведення адаптують своє відображення до кількості елементів у джерелі даних. Ви маєте визначити одну картку, яка буде повторюватися для кожного елемента."
 					},
 					"loadMore": {
-						"infiniteScroll": "Use infinite scrolling",
-						"pagination": "Use pagination",
-						"title": "Trigger for Завантаження more data"
+						"infiniteScroll": "Використовувати нескінченну прокрутку",
+						"pagination": "Використовувати пагінацію",
+						"title": "Тригер для завантаження додаткових даних"
 					},
 					"options": {
-						"ariaLabel": "Select an option"
+						"ariaLabel": "Виберіть опцію"
 					},
-					"static": "Static"
+					"static": "Статичний"
 				},
 				"tabs": {
-					"addNewTab": "Додати a new tab",
-					"deleteTab": "Видалити tab",
+					"addNewTab": "Додати нову вкладку",
+					"deleteTab": "Видалити вкладку",
 					"navBar": {
-						"showIcon": "Display icon in nav bar",
-						"showName": "Display Ім'я in nav bar"
+						"showIcon": "Показувати іконку в панелі навігації",
+						"showName": "Показувати назву в панелі навігації"
 					},
-					"selectIcon": "Select an icon",
+					"selectIcon": "Виберіть іконку",
 					"tooltip": {
-						"navBar": "To be visible in the navigation bar, either the icon or the Ім'я must be displayed."
+						"navBar": "Щоб елемент був видимим у панелі навігації, має відображатися або іконка, або назва."
 					}
 				}
 			},
-			"styling": "Редагувати styling",
+			"styling": "Редагувати стилі",
 			"summaryCard": {
-				"dataSource": "Data Source",
+				"dataSource": "Джерело даних",
 				"errors": {
-					"invalidSource": "The data source is invalid: please Редагувати the Параметри."
+					"invalidSource": "Джерело даних недійсне: будь ласка, відредагуйте параметри."
 				},
-				"viewAsCards": "Переглянути as cards",
-				"viewAsGrid": "Переглянути as grid"
+				"viewAsCards": "Переглянути як картки",
+				"viewAsGrid": "Переглянути як сітку"
 			},
 			"text": {
 				"aggregations": {
-					"alert": "You can build custom aggregations and inject them in the editor using {{aggregation.<id>}} placeholders.",
+					"alert": "Ви можете створювати власні агрегування та вставляти їх у редактор за допомогою плейсхолдерів {{aggregation.<id>}}.",
 					"template": {
-						"add": "Додати new Шаблон aggregation",
-						"edit": "Редагувати Шаблон aggregation"
+						"add": "Додати нове агрегування шаблону",
+						"edit": "Редагувати агрегування шаблону"
 					}
 				}
 			}
@@ -2470,518 +2470,518 @@
 	},
 	"kendo": {
 		"combobox": {
-			"clearTitle": "Очистити value",
-			"noDataText": "Ні available choice"
+			"clearTitle": "Очистити значення",
+			"noDataText": "Немає доступних варіантів"
 		},
 		"datepicker": {
-			"dateFormat": "YYYY/MM/DD or expression ({{today}} or {{now}})",
-			"dateLabel": "Select a Дата",
-			"endLabel": "Select a end Дата",
-			"startLabel": "Select a start Дата",
-			"today": "Today",
-			"toggle": "Choose a Дата"
+			"dateFormat": "РРРР/ММ/ДД або вираз ({{today}} або {{now}})",
+			"dateLabel": "Виберіть дату",
+			"endLabel": "Виберіть кінцеву дату",
+			"startLabel": "Виберіть початкову дату",
+			"today": "Сьогодні",
+			"toggle": "Виберіть дату"
 		},
 		"datetimepicker": {
-			"accept": "Accept",
-			"acceptLabel": "Accept",
+			"accept": "Прийняти",
+			"acceptLabel": "Прийняти",
 			"cancel": "Скасувати",
 			"cancelLabel": "Скасувати",
 			"dateTab": "Дата",
 			"dateTabLabel": "Дата",
-			"now": "Now",
+			"now": "Зараз",
 			"timeTab": "Час",
 			"timeTabLabel": "Час",
-			"today": "Today",
-			"toggle": "Choose a Дата and a Час"
+			"today": "Сьогодні",
+			"toggle": "Виберіть дату та час"
 		},
 		"dropdownlist": {
-			"noDataText": "Ні data found"
+			"noDataText": "Даних не знайдено"
 		},
 		"editor": {
-			"addColumnAfter": "Додати column after",
-			"addColumnBefore": "Додати column before",
-			"addRowAfter": "Додати row after",
-			"addRowBefore": "Додати row before",
-			"alignCenter": "Center text",
-			"alignJustify": "Justify",
-			"alignLeft": "Align text left",
-			"alignRight": "Align text right",
-			"backColor": "Background color",
-			"bold": "Bold",
-			"cleanFormatting": "Clean formatting",
-			"createLink": "Insert link",
-			"deleteColumn": "Видалити column",
-			"deleteRow": "Видалити row",
-			"deleteTable": "Видалити table",
+			"addColumnAfter": "Додати стовпець після",
+			"addColumnBefore": "Додати стовпець перед",
+			"addRowAfter": "Додати рядок після",
+			"addRowBefore": "Додати рядок перед",
+			"alignCenter": "Вирівняти по центру",
+			"alignJustify": "Вирівняти по ширині",
+			"alignLeft": "Вирівняти ліворуч",
+			"alignRight": "Вирівняти праворуч",
+			"backColor": "Колір фону",
+			"bold": "Жирний",
+			"cleanFormatting": "Очистити форматування",
+			"createLink": "Вставити посилання",
+			"deleteColumn": "Видалити стовпець",
+			"deleteRow": "Видалити рядок",
+			"deleteTable": "Видалити таблицю",
 			"dialogApply": "Застосувати",
 			"dialogCancel": "Скасувати",
-			"dialogInsert": "Insert",
+			"dialogInsert": "Вставити",
 			"dialogUpdate": "Оновити",
-			"fileText": "Text",
+			"fileText": "Текст",
 			"fileTitle": "Назва",
-			"fileWebAddress": "Web address",
-			"fontFamily": "Select font family",
-			"fontSize": "Select font size",
-			"foreColor": "Color",
-			"format": "Format",
-			"imageAltText": "Alternate text",
-			"imageHeight": "Height (px)",
-			"imageWebAddress": "Web address",
-			"imageWidth": "Width (px)",
-			"indent": "Indent",
-			"insertFile": "Insert file",
-			"insertImage": "Insert image",
-			"insertOrderedList": "Insert ordered list",
-			"insertTable": "Insert Table",
-			"insertUnorderedList": "Insert unordered list",
-			"italic": "Italic",
-			"linkOpenInNewWindow": "Open link in new window",
-			"linkText": "Text",
+			"fileWebAddress": "Веб-адреса",
+			"fontFamily": "Виберіть сімейство шрифтів",
+			"fontSize": "Виберіть розмір шрифту",
+			"foreColor": "Колір",
+			"format": "Формат",
+			"imageAltText": "Альтернативний текст",
+			"imageHeight": "Висота (px)",
+			"imageWebAddress": "Веб-адреса",
+			"imageWidth": "Ширина (px)",
+			"indent": "Збільшити відступ",
+			"insertFile": "Вставити файл",
+			"insertImage": "Вставити зображення",
+			"insertOrderedList": "Вставити нумерований список",
+			"insertTable": "Вставити таблицю",
+			"insertUnorderedList": "Вставити маркований список",
+			"italic": "Курсив",
+			"linkOpenInNewWindow": "Відкрити посилання в новому вікні",
+			"linkText": "Текст",
 			"linkTitle": "Назва",
-			"linkWebAddress": "Web address",
-			"outdent": "Outdent",
-			"print": "Print",
-			"redo": "Redo",
-			"selectAll": "Select All",
-			"strikethrough": "Strikethrough",
-			"subscript": "Subscript",
-			"superscript": "Superscript",
-			"underline": "Underline",
-			"undo": "Undo",
-			"unlink": "Видалити Link",
-			"unselectAll": "Unselect all",
-			"viewSource": "Переглянути source"
+			"linkWebAddress": "Веб-адреса",
+			"outdent": "Зменшити відступ",
+			"print": "Друк",
+			"redo": "Повторити",
+			"selectAll": "Виділити все",
+			"strikethrough": "Закреслення",
+			"subscript": "Підрядковий індекс",
+			"superscript": "Надрядковий індекс",
+			"underline": "Підкреслення",
+			"undo": "Скасувати",
+			"unlink": "Видалити посилання",
+			"unselectAll": "Зняти виділення з усього",
+			"viewSource": "Переглянути вихідний код"
 		},
 		"fileselect": {
-			"dropFilesHere": "Drop files here to select",
-			"invalidMaxFileSize": "File size too large.",
-			"select": "Select files..."
+			"dropFilesHere": "Перетягніть файли сюди для вибору",
+			"invalidMaxFileSize": "Розмір файлу занадто великий.",
+			"select": "Вибрати файли..."
 		},
 		"grid": {
-			"columnMenu": "'{columnName} Column Menu'",
-			"columns": "Columns",
+			"columnMenu": "Меню стовпця '{columnName}'",
+			"columns": "Стовпці",
 			"columnsApply": "Застосувати",
-			"columnsReset": "Reset",
-			"detailCollapse": "Collapse Details",
-			"detailExpand": "Expand Details",
+			"columnsReset": "Скинути",
+			"detailCollapse": "Згорнути деталі",
+			"detailExpand": "Розгорнути деталі",
 			"filter": "Фільтр",
-			"filterAfterOperator": "Is after",
-			"filterAfterOrEqualOperator": "Is after or equal to",
-			"filterAndLogic": "And",
-			"filterBeforeOperator": "Is before",
-			"filterBeforeOrEqualOperator": "Is before or equal to",
-			"filterBooleanAll": "(All)",
+			"filterAfterOperator": "Після",
+			"filterAfterOrEqualOperator": "Після або дорівнює",
+			"filterAndLogic": "І",
+			"filterBeforeOperator": "Перед",
+			"filterBeforeOrEqualOperator": "Перед або дорівнює",
+			"filterBooleanAll": "(Все)",
 			"filterClearButton": "Очистити",
-			"filterContainsOperator": "Contains",
-			"filterDateToday": "Today",
-			"filterDateToggle": "Toggle calendar",
-			"filterEndsWithOperator": "Ends with",
-			"filterEqOperator": "Is equal to",
+			"filterContainsOperator": "Містить",
+			"filterDateToday": "Сьогодні",
+			"filterDateToggle": "Перемкнути календар",
+			"filterEndsWithOperator": "Закінчується на",
+			"filterEqOperator": "Дорівнює",
 			"filterFilterButton": "Фільтр",
-			"filterGtOperator": "Is greater than",
-			"filterGteOperator": "Is greater than or equal to",
-			"filterInputLabel": "'{columnName} Фільтр'",
-			"filterIsEmptyOperator": "Is empty",
-			"filterIsFalse": "is Хибність",
-			"filterIsInOperator": "Is in",
-			"filterIsNotEmptyOperator": "Is not empty",
-			"filterIsNotInOperator": "Is not in",
-			"filterIsNotNullOperator": "Is not null",
-			"filterIsNullOperator": "Is null",
-			"filterIsTrue": "is Істина",
-			"filterIsWithinTheLast": "Is within the last",
-			"filterLtOperator": "Is less than",
-			"filterLteOperator": "Is less than or equal to",
-			"filterMenuLogicDropDownLabel": "'{columnName} Фільтр Logic'",
-			"filterMenuOperatorsDropDownLabel": "'{columnName} Фільтр Operators'",
-			"filterMenuTitle": "'{columnName} Фільтр Menu'",
-			"filterNotContainsOperator": "Does not contain",
-			"filterNotEqOperator": "Is not equal to",
-			"filterNumericDecrement": "Decrease value",
-			"filterNumericIncrement": "Increase value",
-			"filterOrLogic": "Or",
-			"filterStartsWithOperator": "Starts with",
-			"gridLabel": "Data table",
-			"groupCollapse": "Collapse Group",
-			"groupExpand": "Expand Group",
-			"groupPanelEmpty": "Drag a column header and drop it here to group by that column",
+			"filterGtOperator": "Більше ніж",
+			"filterGteOperator": "Більше або дорівнює",
+			"filterInputLabel": "Фільтр стовпця '{columnName}'",
+			"filterIsEmptyOperator": "Порожньо",
+			"filterIsFalse": "є хибністю",
+			"filterIsInOperator": "Входить до",
+			"filterIsNotEmptyOperator": "Не порожньо",
+			"filterIsNotInOperator": "Не входить до",
+			"filterIsNotNullOperator": "Не є null",
+			"filterIsNullOperator": "Є null",
+			"filterIsTrue": "є істиною",
+			"filterIsWithinTheLast": "Протягом останніх",
+			"filterLtOperator": "Менше ніж",
+			"filterLteOperator": "Менше або дорівнює",
+			"filterMenuLogicDropDownLabel": "Логіка фільтра стовпця '{columnName}'",
+			"filterMenuOperatorsDropDownLabel": "Оператори фільтра стовпця '{columnName}'",
+			"filterMenuTitle": "Меню фільтра стовпця '{columnName}'",
+			"filterNotContainsOperator": "Не містить",
+			"filterNotEqOperator": "Не дорівнює",
+			"filterNumericDecrement": "Зменшити значення",
+			"filterNumericIncrement": "Збільшити значення",
+			"filterOrLogic": "Або",
+			"filterStartsWithOperator": "Починається з",
+			"gridLabel": "Таблиця даних",
+			"groupCollapse": "Згорнути групу",
+			"groupExpand": "Розгорнути групу",
+			"groupPanelEmpty": "Перетягніть заголовок стовпця сюди для групування за цим стовпцем",
 			"loading": "Завантаження",
-			"lock": "Lock",
-			"noRecords": "Ні Записи available.",
-			"pagerFirstPage": "Go to the first Сторінка",
-			"pagerItems": "items",
-			"pagerItemsPerPage": "items per Сторінка",
-			"pagerLabel": "'Сторінка navigation, Сторінка {currentPage} of {totalPages}'",
-			"pagerLastPage": "Go to the last Сторінка",
-			"pagerNextPage": "Go to the Далі Сторінка",
-			"pagerOf": "of",
+			"lock": "Блокувати",
+			"noRecords": "Немає доступних записів.",
+			"pagerFirstPage": "Перейти на першу сторінку",
+			"pagerItems": "елементів",
+			"pagerItemsPerPage": "елементів на сторінку",
+			"pagerLabel": "Навігація по сторінках, сторінка {currentPage} з {totalPages}",
+			"pagerLastPage": "Перейти на останню сторінку",
+			"pagerNextPage": "Перейти на наступну сторінку",
+			"pagerOf": "з",
 			"pagerPage": "Сторінка",
-			"pagerPageNumberInputTitle": "Сторінка Number",
-			"pagerPreviousPage": "Go to the Назад Сторінка",
-			"selectAllCheckboxLabel": "Select All Rows",
-			"selectionCheckboxLabel": "Select Row",
-			"setColumnPosition": "Set Column Position",
-			"sortAscending": "Sort Ascending",
-			"sortDescending": "Sort Descending",
-			"sortable": "Sortable",
-			"sortedAscending": "Sorted ascending",
-			"sortedDefault": "Not sorted",
-			"sortedDescending": "Sorted descending",
-			"stick": "Stick",
-			"unlock": "Unlock",
-			"unstick": "Unstick"
+			"pagerPageNumberInputTitle": "Номер сторінки",
+			"pagerPreviousPage": "Перейти на попередню сторінку",
+			"selectAllCheckboxLabel": "Вибрати всі рядки",
+			"selectionCheckboxLabel": "Вибрати рядок",
+			"setColumnPosition": "Встановити положення стовпця",
+			"sortAscending": "Сортувати за зростанням",
+			"sortDescending": "Сортувати за спаданням",
+			"sortable": "Сортується",
+			"sortedAscending": "Відсортовано за зростанням",
+			"sortedDefault": "Не відсортовано",
+			"sortedDescending": "Відсортовано за спаданням",
+			"stick": "Закріпити",
+			"unlock": "Розблокувати",
+			"unstick": "Відкріпити"
 		},
 		"multiselect": {
-			"clearTitle": "Очистити value",
-			"noDataText": "Ні available choice"
+			"clearTitle": "Очистити значення",
+			"noDataText": "Немає доступних варіантів"
 		},
 		"pager": {
-			"firstPage": "Go to the first Сторінка",
-			"items": "items",
-			"itemsPerPage": "items per Сторінка",
-			"label": "'Сторінка navigation, Сторінка {currentPage} of {totalPages}'",
-			"lastPage": "Go to the last Сторінка",
-			"nextPage": "Go to the Далі Сторінка",
-			"of": "of",
+			"firstPage": "Перейти на першу сторінку",
+			"items": "елементів",
+			"itemsPerPage": "елементів на сторінку",
+			"label": "Навігація по сторінках, сторінка {currentPage} з {totalPages}",
+			"lastPage": "Перейти на останню сторінку",
+			"nextPage": "Перейти на наступну сторінку",
+			"of": "з",
 			"page": "Сторінка",
-			"pageNumberInputTitle": "Сторінка Number",
-			"previousPage": "Go to the Назад Сторінка",
-			"selectPage": "Select Сторінка"
+			"pageNumberInputTitle": "Номер сторінки",
+			"previousPage": "Перейти на попередню сторінку",
+			"selectPage": "Вибрати сторінку"
 		},
 		"tilelayout": {
 			"component": {
-				"items": "items",
-				"itemsPerPage": "Items per Сторінка",
-				"of": "of",
+				"items": "елементів",
+				"itemsPerPage": "Елементів на сторінку",
+				"of": "з",
 				"page": "Сторінка"
 			}
 		},
 		"timepicker": {
-			"accept": "Accept",
-			"acceptLabel": "Accept",
+			"accept": "Прийняти",
+			"acceptLabel": "Прийняти",
 			"cancel": "Скасувати",
 			"cancelLabel": "Скасувати",
-			"now": "Now",
-			"toggle": "Choose a Час"
+			"now": "Зараз",
+			"toggle": "Виберіть час"
 		},
 		"upload": {
-			"dropFilesHere": "Drop files here to Завантажити файл",
-			"invalidMaxFileSize": "File size too large.",
-			"select": "Select files..."
+			"dropFilesHere": "Перетягніть файли сюди для завантаження",
+			"invalidMaxFileSize": "Розмір файлу занадто великий.",
+			"select": "Вибрати файли..."
 		}
 	},
 	"models": {
 		"apiConfiguration": {
-			"authType": "Authentication type",
-			"new": "New API Configuration",
-			"selectAuthType": "Select authentication type"
+			"authType": "Тип автентифікації",
+			"new": "Нова конфігурація API",
+			"selectAuthType": "Виберіть тип автентифікації"
 		},
 		"application": {
 			"description": "Опис",
 			"errors": {
 				"style": {
-					"notFound": "Unable to load Додаток's style"
+					"notFound": "Не вдалося завантажити стиль додатка"
 				}
 			},
-			"id": "Додаток ID",
-			"menu": "Side menu",
-			"new": "New Додаток",
+			"id": "ID додатка",
+			"menu": "Бічне меню",
+			"new": "Новий додаток",
 			"notifications": {
-				"notPublished": "Додаток not published.",
-				"published": "{{value}} Додаток published.",
-				"updated": "Додаток updated."
+				"notPublished": "Додаток не опубліковано.",
+				"published": "Додаток {{value}} опубліковано.",
+				"updated": "Додаток оновлено."
 			},
-			"setAsFavorite": "Set as favorite",
+			"setAsFavorite": "Додати до обраного",
 			"shortcut": {
 				"errors": {
-					"isNotUnique": "Shortcut is already used in the platform",
-					"isNotValid": "Shortcut is not valid"
+					"isNotUnique": "Ярлик уже використовується на платформі",
+					"isNotValid": "Ярлик недійсний"
 				},
-				"info": "Додаток shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
-				"text": "Shortcut"
+				"info": "Ярлик додатка має бути унікальним рядком у системі. Він може містити лише літери, цифри та дефіси",
+				"text": "Ярлик"
 			},
 			"subscription": {
-				"create": "Створити a subscription"
+				"create": "Створити підписку"
 			}
 		},
 		"channel": {
-			"create": "Створити a channel",
-			"edit": "Редагувати channel",
-			"new": "New channel"
+			"create": "Створити канал",
+			"edit": "Редагувати канал",
+			"new": "Новий канал"
 		},
 		"customNotification": {
-			"lastExecution": "Last execution",
-			"schedule": "Schedule",
-			"select": "Select Сповіщення type",
-			"type": "Сповіщення type"
+			"lastExecution": "Останній запуск",
+			"schedule": "Розклад",
+			"select": "Виберіть тип сповіщення",
+			"type": "Тип сповіщення"
 		},
 		"dashboard": {
 			"actionButtons": {
-				"action": "Action",
+				"action": "Дія",
 				"actions": {
 					"addRecord": {
-						"edition": "Редагувати current Запис",
+						"edition": "Редагувати поточний запис",
 						"fieldsForUpdate": {
-							"text": "Attach newly created Запис to current Запис fields"
+							"text": "Прикріпити новостворений запис до полів поточного запису"
 						},
 						"help": {
-							"mapping": "Prefill fields of new Записи by providing static values or mapping them from the Панель керування context using the {{context.<fieldName>}} syntax."
+							"mapping": "Попередньо заповнюйте поля нових записів, надаючи статичні значення або зіставляючи їх із контексту панелі керування за допомогою синтаксису {{context.<fieldName>}}."
 						},
-						"text": "Додати Запис",
+						"text": "Додати запис",
 						"tooltip": {
-							"fieldsForUpdate": "Newly created Запис can be attached to Ресурс & Ресурси fields",
-							"template": "Select a Ресурс Шаблон for addition of new Записи"
+							"fieldsForUpdate": "Новостворений запис можна прикріпити до полів ресурсів",
+							"template": "Виберіть шаблон ресурсу для додавання нових записів"
 						}
 					},
-					"autoReload": "Auto reload Панель керування on Зберегти",
+					"autoReload": "Автоматично оновлювати панель керування при збереженні",
 					"cloneRecord": {
 						"onSave": {
-							"navigateTo": "After Клонувати, navigate to"
+							"navigateTo": "Після клонування перейти до"
 						},
-						"text": "Клонувати Запис",
+						"text": "Клонувати запис",
 						"tooltip": {
-							"template": "Select a Ресурс Шаблон to Клонувати the current Запис.\n If Ні Шаблон is selected, latest form used by the Запис will be used"
+							"template": "Виберіть шаблон ресурсу для клонування поточного запису.\n Якщо шаблон не вибрано, буде використано останню форму, використану цим записом"
 						}
 					},
 					"editRecord": {
-						"text": "Редагувати Запис",
+						"text": "Редагувати запис",
 						"tooltip": {
-							"template": "Select a Ресурс Шаблон for edition of current Запис.\n If Ні Шаблон is selected, latest form used by the Запис will be used"
+							"template": "Виберіть шаблон ресурсу для редагування поточного запису.\n Якщо шаблон не вибрано, буде використано останню форму, використану цим записом"
 						}
 					},
-					"navigateTo": "Navigate to",
-					"openInNewTab": "Open in new tab",
-					"previousPage": "Назад Сторінка",
+					"navigateTo": "Перейти до",
+					"openInNewTab": "Відкрити в новій вкладці",
+					"previousPage": "Попередня сторінка",
 					"sendNotification": {
-						"text": "Send Сповіщення"
+						"text": "Надіслати сповіщення"
 					},
-					"subscribeToNotification": "Subscribe to Сповіщення",
-					"unsubscribeFromNotification": "Unsubscribe from Сповіщення",
-					"url": "Target URL"
+					"subscribeToNotification": "Підписатися на сповіщення",
+					"unsubscribeFromNotification": "Скасувати підписку на сповіщення",
+					"url": "Цільова URL-адреса"
 				},
-				"category": "Button category",
-				"confirmDelete": "Are you sure you want to Видалити this action button?",
-				"create": "Створити an action button",
+				"category": "Категорія кнопки",
+				"confirmDelete": "Ви впевнені, що хочете видалити цю кнопку дії?",
+				"create": "Створити кнопку дії",
 				"edit": {
-					"few": "Редагувати action buttons",
-					"one": "Редагувати action button"
+					"few": "Редагувати кнопки дій",
+					"one": "Редагувати кнопку дії"
 				},
-				"hasRoleRestriction": "Use Роль Restriction",
-				"href": "Button href",
-				"none": "Ні action buttons",
-				"one": "Action button",
-				"openInNewTab": "Open in new tab",
-				"text": "Button text",
-				"variant": "Button variant",
-				"visibleTo": "Visible to Ролі"
+				"hasRoleRestriction": "Використовувати обмеження за ролями",
+				"href": "Посилання кнопки (href)",
+				"none": "Немає кнопок дій",
+				"one": "Кнопка дії",
+				"openInNewTab": "Відкрити в новій вкладці",
+				"text": "Текст кнопки",
+				"variant": "Варіант кнопки",
+				"visibleTo": "Видимо для ролей"
 			},
-			"activateFiltering": "Activate filtering",
-			"closable": "Closable",
+			"activateFiltering": "Активувати фільтрацію",
+			"closable": "Можна закрити",
 			"context": {
-				"addTemplate": "Створити a Шаблон for this Запис",
+				"addTemplate": "Створити шаблон для цього запису",
 				"alert": {
 					"edition": {
-						"element": "You are editing the Переглянути for selected element.",
-						"template": "You are editing Шаблон of the Сторінка. It will be loaded by За замовчуванням if Ні specific Переглянути is created for a Запис."
+						"element": "Ви редагуєте подання для вибраного елемента.",
+						"template": "Ви редагуєте шаблон сторінки. Він завантажуватиметься за замовчуванням, якщо для запису не створено конкретного подання."
 					},
-					"preview": "You are previewing the Переглянути for selected element.\nYou can Створити a specific Шаблон for this Запис."
+					"preview": "Ви переглядаєте подання для вибраного елемента.\nВи можете створити конкретний шаблон для цього запису."
 				},
 				"datasource": {
-					"alert": "Select a datasource, in order to set one Сторінка per Запис of the datasource. You can also set a Шаблон, which would be loaded by За замовчуванням if Ні specific Сторінка is created for a Запис.",
-					"info": "Indicate the field that would be use to select Записи",
-					"set": "Set context datasource",
-					"title": "Context datasource",
-					"update": "Оновити context datasource"
+					"alert": "Виберіть джерело даних, щоб налаштувати одну сторінку на запис джерела даних. Ви також можете встановити шаблон, який завантажуватиметься за замовчуванням, якщо для запису не створено конкретної сторінки.",
+					"info": "Вкажіть поле, яке буде використовуватися для вибору записів",
+					"set": "Встановити джерело даних контексту",
+					"title": "Джерело даних контексту",
+					"update": "Оновити джерело даних контексту"
 				},
-				"displayField": "Display field",
+				"displayField": "Відображуване поле",
 				"notifications": {
-					"creatingTemplate": "Creating new Шаблон",
-					"loadDefault": "Displaying За замовчуванням Шаблон",
-					"templateCreated": "New Шаблон created",
-					"templatesDeleted": "{{number}} Шаблони were deleted for this Панель керування"
+					"creatingTemplate": "Створення нового шаблону",
+					"loadDefault": "Відображення шаблону за замовчуванням",
+					"templateCreated": "Новий шаблон створено",
+					"templatesDeleted": "Видалено шаблонів для цієї панелі керування: {{number}}"
 				},
-				"origin": "Context origin",
+				"origin": "Джерело контексту",
 				"refData": {
-					"element": "Element"
+					"element": "Елемент"
 				},
-				"selectDisplayField": "Select display field",
-				"selectOrigin": "Select context origin",
-				"title": "Context",
+				"selectDisplayField": "Виберіть відображуване поле",
+				"selectOrigin": "Виберіть джерело контексту",
+				"title": "Контекст",
 				"tooltip": {
-					"useContextEditor": "Use context editor",
-					"useDefaultEditor": "Use За замовчуванням editor"
+					"useContextEditor": "Використовувати контекстний редактор",
+					"useDefaultEditor": "Використовувати редактор за замовчуванням"
 				}
 			},
-			"contextFilter": "Context Фільтр",
-			"dashboardFilter": "Панель керування Фільтр",
+			"contextFilter": "Контекстний фільтр",
+			"dashboardFilter": "Фільтр панелі керування",
 			"dashboardTemplates": {
 				"manage": {
-					"few": "Manage Панель керування Шаблони"
+					"few": "Керування шаблонами панелі керування"
 				},
-				"none": "Ні additional Шаблон for this Панель керування"
+				"none": "Немає додаткових шаблонів для цієї панелі керування"
 			},
-			"deactivateFiltering": "Deactivate filtering",
+			"deactivateFiltering": "Деактивувати фільтрацію",
 			"filterVariant": {
-				"title": "Фільтр variant",
+				"title": "Варіант фільтра",
 				"variantsOptions": {
-					"selectOrigin": "Select Фільтр variant",
+					"selectOrigin": "Виберіть варіант фільтра",
 					"variant_default": "За замовчуванням",
-					"variant_modern": "Modern"
+					"variant_modern": "Сучасний"
 				}
 			},
-			"historicalDate": "Get dataset at",
-			"share": "Share Панель керування",
+			"historicalDate": "Отримати набір даних станом на",
+			"share": "Поділитися панеллю керування",
 			"tooltip": {
 				"filter": {
-					"closable": "When variant is modern, or Додаток is used as web element, it will indicate if Фільтр can be closed or not",
-					"fields": "You can use Панель керування Фільтр values with {{filter.<name>}} and current Користувач values with {{user.username}}, {{user.firstName}}, {{user.lastName}}, or WHO attributes such as {{user.country}}.",
-					"position": "Only applicable when За замовчуванням variant is Активний"
+					"closable": "Якщо варіант сучасний або додаток використовується як веб-елемент, це вказує, чи можна закрити фільтр чи ні",
+					"fields": "Ви можете використовувати значення фільтра панелі керування з {{filter.<name>}} та значення поточного користувача з {{user.username}}, {{user.firstName}}, {{user.lastName}} або атрибути ВООЗ (WHO), такі як {{user.country}}.",
+					"position": "Застосовується лише тоді, коли варіант за замовчуванням активний"
 				},
-				"historicalDate": "You can use a field from the Панель керування Фільтр to query dataset at a specific Дата.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
+				"historicalDate": "Ви можете використовувати поле з фільтра панелі керування, щоб запитати набір даних на певну дату.\nВкажіть, яке поле використовувати, за допомогою такого синтаксису: {{filter.<name>}}."
 			}
 		},
 		"form": {
-			"core": "Core",
-			"create": "Створити a Form",
-			"edit": "Редагувати form",
+			"core": "Основне",
+			"create": "Створити форму",
+			"edit": "Редагувати форму",
 			"field": {
-				"label": "Label",
-				"name": "Field Ім'я",
-				"usedIn": "Used in"
+				"label": "Мітка",
+				"name": "Назва поля",
+				"usedIn": "Використовується в"
 			},
-			"new": "New form",
+			"new": "Нова форма",
 			"notifications": {
-				"savingFailed": "Saving failed, some fields require your attention."
+				"savingFailed": "Не вдалося зберегти, деякі поля потребують вашої уваги."
 			},
-			"select": "Select a Form",
+			"select": "Виберіть форму",
 			"template": "Шаблон"
 		},
 		"group": {
-			"create": "Створити a group",
+			"create": "Створити групу",
 			"description": "Опис",
-			"fetch": "Fetch groups from service",
+			"fetch": "Отримати групи зі служби",
 			"title": "Назва"
 		},
 		"mapping": {
-			"add": "Додати a Mapping",
-			"edit": "Редагувати a Mapping"
+			"add": "Додати зіставлення",
+			"edit": "Редагувати зіставлення"
 		},
 		"page": {
-			"add": "Додати a Сторінка",
+			"add": "Додати сторінку",
 			"tooltip": {
-				"duplicate": "Select the Додаток you want to put the copy in"
+				"duplicate": "Виберіть додаток, у який хочете помістити копію"
 			}
 		},
 		"positionAttribute": {
-			"edit": "Редагувати position attribute",
-			"new": "New position attribute"
+			"edit": "Редагувати атрибут позиції",
+			"new": "Новий атрибут позиції"
 		},
 		"pullJob": {
-			"edit": "Редагувати pull job",
-			"new": "New pull job",
-			"nextIteration": "Далі iteration",
-			"path": "Path",
-			"schedule": "Schedule",
-			"url": "Url"
+			"edit": "Редагувати завдання отримання даних (pull job)",
+			"new": "Нове завдання отримання даних (pull job)",
+			"nextIteration": "Наступна ітерація",
+			"path": "Шлях",
+			"schedule": "Розклад",
+			"url": "URL-адреса"
 		},
 		"record": {
-			"convert": "Convert",
-			"edit": "Редагувати Запис",
-			"new": "New Запис",
+			"convert": "Конвертувати",
+			"edit": "Редагувати запис",
+			"new": "Новий запис",
 			"notifications": {
-				"conversionIncomplete": "Selected Запис(s) do not match with some fields from this form.",
-				"rowsAdded": "Added {{length}} row(s) to the field {{field}} in the Запис {{value}}.",
-				"rowsNotAdded": "Помилка on Додати row(s).",
-				"uploadSuccessful": "Записи Завантажити файл successful."
+				"conversionIncomplete": "Вибрані записи не збігаються з деякими полями з цієї форми.",
+				"rowsAdded": "Додано рядків: {{length}} до поля {{field}} у записі {{value}}.",
+				"rowsNotAdded": "Помилка при додаванні рядків.",
+				"uploadSuccessful": "Успішно завантажено записи."
 			},
-			"restore": "Restore",
-			"select": "Select a Запис"
+			"restore": "Відновити",
+			"select": "Виберіть запис"
 		},
 		"referenceData": {
-			"add": "Додати new reference data",
-			"select": "Select a reference data"
+			"add": "Додати нові довідкові дані",
+			"select": "Виберіть довідкові дані"
 		},
 		"resource": {
-			"create": "Створити a Ресурс",
-			"select": "Select a Ресурс"
+			"create": "Створити ресурс",
+			"select": "Виберіть ресурс"
 		},
 		"role": {
-			"create": "Створити a Роль",
+			"create": "Створити роль",
 			"description": "Опис",
 			"title": "Назва"
 		},
 		"step": {
-			"new": "New Крок"
+			"new": "Новий крок"
 		},
 		"subscription": {
-			"edit": "Редагувати subscription",
-			"new": "New subscription"
+			"edit": "Редагувати підписку",
+			"new": "Нова підписка"
 		},
 		"user": {
-			"firstName": "First Ім'я",
-			"lastName": "Last Ім'я",
+			"firstName": "Ім'я",
+			"lastName": "Прізвище",
 			"notifications": {
-				"rolesUpdated": "{{username}} Ролі updated.",
-				"userImportFail": "The Користувач Імпорт has failed"
+				"rolesUpdated": "Ролі користувача {{username}} оновлено.",
+				"userImportFail": "Імпорт користувача завершився помилкою"
 			},
-			"username": "Username"
+			"username": "Ім'я користувача"
 		},
 		"widget": {
-			"add": "Додати a Widget",
+			"add": "Додати віджет",
 			"chart": {
-				"defaultTitle": "Chart Widget"
+				"defaultTitle": "Віджет діаграми"
 			},
 			"delete": {
-				"confirmationMessage": "Do you Підтвердити the deletion of the widget?",
-				"title": "Видалити Widget"
+				"confirmationMessage": "Ви підтверджуєте видалення віджета?",
+				"title": "Видалити віджет"
 			},
 			"display": {
-				"border": "Show widget border",
-				"expand": "Show button to expand widget",
-				"header": "Show widget header",
-				"hideEmpty": "Hide widget when empty",
-				"padding": "Use widget inner padding",
-				"searchable": "Allow Пошук",
-				"sortable": "Allow sorting",
-				"title": "Widget display",
-				"tooltip": "Widget tooltip"
+				"border": "Показувати межу віджета",
+				"expand": "Показувати кнопку розгортання віджета",
+				"header": "Показувати заголовок віджета",
+				"hideEmpty": "Приховувати віджет, коли він порожній",
+				"padding": "Використовувати внутрішні відступи віджета",
+				"searchable": "Дозволити пошук",
+				"sortable": "Дозволити сортування",
+				"title": "Відображення віджета",
+				"tooltip": "Підказка віджета"
 			},
 			"map": {
-				"defaultTitle": "Map Widget",
-				"latitude": "Latitude",
-				"longitude": "Longitude",
-				"zoom": "Zoom"
+				"defaultTitle": "Віджет карти",
+				"latitude": "Широта",
+				"longitude": "Довгота",
+				"zoom": "Масштаб"
 			},
 			"sorting": {
-				"add": "Додати a field",
-				"delete": "Видалити sort field",
-				"empty": "Ні sort field set",
-				"field": "Field",
-				"label": "Label",
-				"management": "Sort fields",
-				"order": "Order",
-				"select": "Select a sort field...",
-				"title": "Sorting"
+				"add": "Додати поле",
+				"delete": "Видалити поле сортування",
+				"empty": "Не встановлено полів сортування",
+				"field": "Поле",
+				"label": "Мітка",
+				"management": "Сортувати поля",
+				"order": "Порядок",
+				"select": "Виберіть поле сортування...",
+				"title": "Сортування"
 			},
 			"tooltip": {
 				"expandButton": {
-					"expand": "Expand widget",
-					"help": "Only appears in front-office or in Попередній перегляд mode",
-					"restore": "Restore За замовчуванням"
+					"expand": "Розгорнути віджет",
+					"help": "З'являється лише у фронт-офісі або в режимі попереднього перегляду",
+					"restore": "Відновити за замовчуванням"
 				},
-				"hideEmpty": "Only hides in front-office or in Попередній перегляд mode",
+				"hideEmpty": "Приховується лише у фронт-офісі або в режимі попереднього перегляду",
 				"selector": {
-					"collapse": "Hide widget selector",
-					"expand": "Show widget selector"
+					"collapse": "Приховати селектор віджетів",
+					"expand": "Показати селектор віджетів"
 				},
-				"tooltip": "Leave empty to hide"
+				"tooltip": "Залиште порожнім, щоб приховати"
 			}
 		},
 		"workflow": {
 			"notifications": {
-				"cannotGoToNextStep": "Cannot go to the Далі Крок.",
-				"cannotGoToPreviousStep": "Cannot go to the Назад Крок.",
-				"goToStep": "Назад to {{step}} Крок."
+				"cannotGoToNextStep": "Не вдається перейти до наступного кроку.",
+				"cannotGoToPreviousStep": "Не вдається перейти до попереднього кроку.",
+				"goToStep": "Повернення до кроку {{step}}."
 			}
 		}
 	},
@@ -2991,44 +2991,44 @@
 		},
 		"aggregation": {
 			"preview": {
-				"help": "Only the first 10 items can be displayed during Попередній перегляд",
-				"label": "Aggregation data Попередній перегляд",
-				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
+				"help": "Під час попереднього перегляду може відображатися лише перші 10 елементів",
+				"label": "Попередній перегляд даних агрегування",
+				"missingAggregation": "Не вдається завантажити вибране агрегування. Агрегування не знайдено"
 			}
 		},
 		"apiConfiguration": {
-			"authentication": "Authentication Параметри",
-			"baseUrl": "Main endpoint",
-			"clientId": "Client ID",
+			"authentication": "Параметри автентифікації",
+			"baseUrl": "Основна кінцева точка",
+			"clientId": "ID клієнта",
 			"graphQL": {
-				"endpoint": "GraphQL endpoint",
-				"title": "GraphQL Параметри"
+				"endpoint": "Кінцева точка GraphQL",
+				"title": "Параметри GraphQL"
 			},
-			"host": "Host Параметри",
+			"host": "Параметри хоста",
 			"notifications": {
-				"authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
-				"pingFailed": "Ping request failed.",
-				"pingReceived": "Received positive response from ping request."
+				"authTokenFetched": "Токен автентифікації отримано, надішліть ping ще раз, щоб отримати фактичну відповідь.",
+				"pingFailed": "Запит ping завершився помилкою.",
+				"pingReceived": "Отримано позитивну відповідь від запиту ping."
 			},
-			"ping": "Try Параметри",
-			"pingUrl": "Ping extension",
+			"ping": "Спробувати параметри",
+			"pingUrl": "Розширення ping",
 			"placeholder": {
-				"baseUrl": "Base URL for the API",
-				"clientId": "Enter client ID",
-				"graphQLEndpoint": "GraphQL extension",
-				"pingUrl": "Enter ping extension URL",
-				"scope": "Enter scope",
-				"secret": "Enter client secret",
-				"token": "Enter token for authentication",
-				"tokenUrl": "Enter access token URL"
+				"baseUrl": "Базовий URL для API",
+				"clientId": "Введіть ID клієнта",
+				"graphQLEndpoint": "Розширення GraphQL",
+				"pingUrl": "Введіть URL розширення ping",
+				"scope": "Введіть область дії (scope)",
+				"secret": "Введіть секрет клієнта",
+				"token": "Введіть токен для автентифікації",
+				"tokenUrl": "Введіть URL токена доступу"
 			},
-			"scope": "Scope",
-			"secret": "Client Secret",
-			"token": "Token",
-			"tokenUrl": "Access token URL"
+			"scope": "Область дії (Scope)",
+			"secret": "Секрет клієнта",
+			"token": "Токен",
+			"tokenUrl": "URL токена доступу"
 		},
 		"apiConfigurations": {
-			"create": "Створити an API Configuration"
+			"create": "Створити конфігурацію API"
 		},
 		"appBuilder": {
 			"title": "Конструктор сайтів"
@@ -3036,27 +3036,27 @@
 		"application": {
 			"addPage": {
 				"form": {
-					"title": "Available forms"
+					"title": "Доступні форми"
 				},
-				"selectType": "Select which type of Сторінка you want to Створити",
-				"startFromWidget": "Start from a widget"
+				"selectType": "Виберіть тип сторінки, яку ви хочете створити",
+				"startFromWidget": "Почати з віджета"
 			},
 			"empty": {
-				"add": "Додати a Сторінка",
-				"create": "Click on Створити to finish the process",
-				"customize": "Customize each of the Сторінки created"
+				"add": "Додати сторінку",
+				"create": "Натисніть 'Створити', щоб завершити процес",
+				"customize": "Налаштуйте кожну зі створених сторінок"
 			},
 			"positionAttributes": {
-				"create": "Створити a position category",
-				"title": "Attributes"
+				"create": "Створити категорію позицій",
+				"title": "Атрибути"
 			},
 			"settings": {
 				"actions": "Дії",
-				"emailCreated": "New email Сповіщення created",
-				"emailDeleted": "Email Сповіщення deleted successfully",
-				"emailEdited": "Email Сповіщення edited successfully",
-				"emailFailMsg": "Oops!... Something went wrong while sending the email",
-				"emailSent": "Email Сповіщення has successfully been saved and sent"
+				"emailCreated": "Створено нове email-сповіщення",
+				"emailDeleted": "Email-сповіщення успішно видалено",
+				"emailEdited": "Email-сповіщення успішно відредаговано",
+				"emailFailMsg": "Ой!... Щось пішло не так під час надсилання email",
+				"emailSent": "Email-сповіщення успішно збережено та надіслано"
 			}
 		},
 		"applications": {
@@ -3067,42 +3067,42 @@
 		},
 		"dashboard": {
 			"update": {
-				"exit": "Exit without saving changes",
-				"exitMessage": "There are unsaved changes on the Сторінка. Are you sure you want to exit?"
+				"exit": "Вийти без збереження змін",
+				"exitMessage": "На сторінці є незбережені зміни. Ви впевнені, що хочете вийти?"
 			}
 		},
 		"error": {
 			"unauthorized": {
-				"footer": "Please contact <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> for more information.",
-				"title": "Your Користувач account does not have access to this content."
+				"footer": "Будь ласка, зверніться до <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> для отримання додаткової інформації.",
+				"title": "Ваш обліковий запис користувача не має доступу до цього вмісту."
 			}
 		},
 		"formBuilder": {
 			"errors": {
 				"choices": {
-					"valueDuplicated": "Please provide unique values for each of the choices of question: {{question}}"
+					"valueDuplicated": "Будь ласка, вкажіть унікальні значення для кожного варіанта вибору питання: {{question}}"
 				},
-				"dataFieldDuplicated": "Data Ім'я duplicated : {{name}}. Please provide different value names for all questions.",
-				"missingName": "Missing value Ім'я for an element on Сторінка {{page}}. Please provide a valid data value Ім'я (snake_case) to Зберегти the form.",
+				"dataFieldDuplicated": "Дублювання назви даних: {{name}}. Будь ласка, вкажіть різні назви значень для всіх питань.",
+				"missingName": "Відсутня назва значення для елемента на сторінці {{page}}. Будь ласка, вкажіть дійсну назву значення даних (snake_case), щоб зберегти форму.",
 				"multipletext": {
-					"missingName": "Please provide Ім'я or Назва for each text of question: {{question}}"
+					"missingName": "Будь ласка, вкажіть назву або заголовок для кожного тексту питання: {{question}}"
 				},
-				"selectApplication": "Missing value Додаток for an element on Сторінка {{page}}. Please select at least one Додаток in properties of {{question}} to Зберегти the form.",
-				"snakecase": "The value Ім'я {{name}} on Сторінка {{page}} is invalid. Please conform to snake_case."
+				"selectApplication": "Відсутнє значення додатка для елемента на сторінці {{page}}. Будь ласка, виберіть принаймні один додаток у властивостях {{question}}, щоб зберегти форму.",
+				"snakecase": "Назва значення {{name}} на сторінці {{page}} недійсна. Будь ласка, дотримуйтесь стилю snake_case."
 			},
 			"functionReference": {
-				"builtin": "SurveyJS built-in functions",
-				"builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
-				"custom": "Custom functions",
-				"docs": "Open SurveyJS docs",
-				"noResults": "Ні functions match your Пошук.",
-				"open": "Function reference",
-				"searchPlaceholder": "Фільтр by Ім'я or Опис...",
-				"title": "Function reference"
+				"builtin": "Вбудовані функції SurveyJS",
+				"builtinHint": "Стандартні функції виразів SurveyJS. Для використання див. офіційну документацію.",
+				"custom": "Власні функції",
+				"docs": "Відкрити документацію SurveyJS",
+				"noResults": "Жодна функція не відповідає вашому пошуку.",
+				"open": "Довідник функцій",
+				"searchPlaceholder": "Фільтрувати за назвою або описом...",
+				"title": "Довідник функцій"
 			},
 			"move": {
-				"down": "Move down",
-				"up": "Move up"
+				"down": "Перемістити вниз",
+				"up": "Перемістити вгору"
 			},
 			"questionsCategories": {
 				"core": "Question Library"
@@ -3114,68 +3114,68 @@
 		},
 		"profile": {
 			"notifications": {
-				"notUpdated": "Помилка on saving Налаштування.",
-				"updated": "Налаштування saved."
+				"notUpdated": "Помилка при збереженні налаштувань.",
+				"updated": "Налаштування збережено."
 			},
-			"title": "Your Профіль"
+			"title": "Ваш профіль"
 		},
 		"pullJobs": {
-			"create": "Створити a pull job"
+			"create": "Створити завдання отримання даних (pull job)"
 		},
 		"referenceData": {
-			"csv": "CSV input",
+			"csv": "Введення CSV",
 			"fields": {
-				"fetch": "Fetch fields",
-				"help": "The fields are calculated based on the attributes of the first item in the payload.",
-				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
-				"noFields": "Ні fields found",
-				"title": "Field"
+				"fetch": "Отримати поля",
+				"help": "Поля розраховуються на основі атрибутів першого елемента в даних.",
+				"missingConfig": "Не вдається отримати поля. Відсутня конфігурація: {{config}}",
+				"noFields": "Полів не знайдено",
+				"title": "Поле"
 			},
-			"graphQLFilter": "GraphQL query parameters",
+			"graphQLFilter": "Параметри запиту GraphQL",
 			"pagination": {
-				"cursorPath": "Cursor path",
-				"cursorVariable": "Cursor query variable",
-				"offsetVariable": "Offset query variable",
-				"pageSizeVariable": "Сторінка size query variable",
-				"pageVariable": "Сторінка number query variable",
-				"strategy": "Pagination strategy",
-				"totalCountPath": "Total items count path",
+				"cursorPath": "Шлях курсора",
+				"cursorVariable": "Змінна запиту курсора",
+				"offsetVariable": "Змінна запиту зсуву (offset)",
+				"pageSizeVariable": "Змінна запиту розміру сторінки",
+				"pageVariable": "Змінна запиту номера сторінки",
+				"strategy": "Стратегія пагінації",
+				"totalCountPath": "Шлях загальної кількості елементів",
 				"usePagination": {
-					"hint": "Depends on API support, allows fetching data by Сторінка",
-					"text": "Use pagination"
+					"hint": "Залежить від підтримки API, дозволяє отримувати дані посторінково",
+					"text": "Використовувати пагінацію"
 				}
 			},
 			"path": {
-				"placeholder": "Enter a valid JSONPath",
-				"title": "Data path"
+				"placeholder": "Введіть дійсний JSONPath",
+				"title": "Шлях до даних"
 			},
 			"payload": {
-				"label": "Payload",
-				"show": "Show payload"
+				"label": "Payload (дані)",
+				"show": "Показати payload"
 			},
 			"placeholder": {
-				"csv": "Insert CSV here",
-				"graphQLFilter": "Enter a Фільтр to be used once choices are already cached"
+				"csv": "Вставте CSV сюди",
+				"graphQLFilter": "Введіть фільтр, який буде використовуватися після кешування варіантів"
 			},
-			"queryName": "Query Ім'я",
+			"queryName": "Назва запиту",
 			"tooltip": {
-				"graphQLFilter": "You can use {{lastUpdate}} to dynamically get the last fetch Дата in SQL format.",
-				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].Ім'я, $.data..countries, $.data.countries.*"
+				"graphQLFilter": "Ви можете використовувати {{lastUpdate}} для динамічного отримання дати останнього запиту у форматі SQL.",
+				"path": "Використовує синтаксис JSONPath для отримання елементів із відповіді JSON. Приклади: $.data[*].Ім'я, $.data..countries, $.data.countries.*"
 			},
-			"type": "Type",
-			"validateCsv": "Validate CSV",
-			"valueField": "Value Field"
+			"type": "Тип",
+			"validateCsv": "Валідувати CSV",
+			"valueField": "Поле значення"
 		},
 		"workflow": {
 			"addStep": {
-				"selectType": "Select which type of Крок you want to Створити"
+				"selectType": "Виберіть тип кроку, який хочете створити"
 			},
 			"deleteStep": {
-				"confirmationMessage": "Are you sure you want to Видалити {{step}}?\n This action cannot be undone."
+				"confirmationMessage": "Ви впевнені, що хочете видалити {{step}}?\n Цю дію не можна скасувати."
 			},
 			"empty": {
-				"add": "Додати Кроки",
-				"customize": "Customize each of the Кроки created"
+				"add": "Додати кроки",
+				"customize": "Налаштувати кожен із створених кроків"
 			}
 		}
 	}
