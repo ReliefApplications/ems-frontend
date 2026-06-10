@@ -9,11 +9,7 @@ import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
  */
 @NgModule({
   declarations: [MapWidgetComponent],
-  imports: [
-    CommonModule,
-    MapModule,
-    LocalizePipe,
-  ],
+  imports: [CommonModule, MapModule, LocalizePipe],
   exports: [MapWidgetComponent],
 })
 export class MapWidgetModule {}

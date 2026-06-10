@@ -111,6 +111,7 @@ export class DashboardService {
    *
    * @param dashboardId id of the dashboard
    * @param name new name
+   * @param nameTranslations name translations
    * @param callback callback method
    */
   public editName(

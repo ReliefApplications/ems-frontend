@@ -95,6 +95,7 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    * @param formHelpersService Shared form helper service.
    * @param injector Angular injector
+   * @param translate Translate service
    */
   constructor(
     public contextService: ContextService,

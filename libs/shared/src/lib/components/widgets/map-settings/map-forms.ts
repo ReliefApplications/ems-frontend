@@ -581,7 +581,10 @@ export const createGeographicExtent = (value?: {
 export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
   const formGroup = fb.group({
     id,
-    title: [get(value, 'title', DEFAULT_MAP.title) as LocalizedString, localizedRequired],
+    title: [
+      get(value, 'title', DEFAULT_MAP.title) as LocalizedString,
+      localizedRequired,
+    ],
     initialState: fb.group({
       useWebMapInitialState: [
         get(

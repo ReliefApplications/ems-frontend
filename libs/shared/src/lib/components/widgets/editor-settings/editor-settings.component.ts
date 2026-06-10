@@ -55,9 +55,7 @@ import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
 import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
-import {
-  TINYMCE_SCRIPT_SRC,
-} from '@tinymce/tinymce-angular';
+import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { EditorModule } from '../editor/editor.module';
 
