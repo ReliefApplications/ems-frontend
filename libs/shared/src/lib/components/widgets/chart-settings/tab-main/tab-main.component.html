@@ -1,8 +1,8 @@
 <div [formGroup]="formGroup" class="flex flex-col last:mb-0">
   <h2>{{ 'common.general' | translate }}</h2>
-  <div uiFormFieldDirective>
-    <label>{{ 'common.title' | translate }}</label>
-    <input formControlName="title" type="string" />
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium">{{ 'common.title' | translate }}</label>
+    <shared-localized-input formControlName="title"></shared-localized-input>
   </div>
   <ng-container formGroupName="chart">
     <div uiFormFieldDirective>

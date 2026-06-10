@@ -5,6 +5,8 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import {
   MapControls,
   DefaultMapControls,
@@ -579,7 +581,7 @@ export const createGeographicExtent = (value?: {
 export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
   const formGroup = fb.group({
     id,
-    title: [get(value, 'title', DEFAULT_MAP.title)],
+    title: [get(value, 'title', DEFAULT_MAP.title) as LocalizedString, localizedRequired],
     initialState: fb.group({
       useWebMapInitialState: [
         get(

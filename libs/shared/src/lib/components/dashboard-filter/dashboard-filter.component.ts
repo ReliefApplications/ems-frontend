@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
+import 'survey-core/survey.i18n';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil, debounceTime, filter } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
@@ -25,6 +26,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Interface for quick filters
@@ -103,7 +105,8 @@ export class DashboardFilterComponent
     @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent,
     private formHelpersService: FormHelpersService,
-    private injector: Injector
+    private injector: Injector,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -151,6 +154,16 @@ export class DashboardFilterComponent
           this.setFilterContainerDimensions();
         }
       );
+
+    // Re-localize the existing filter survey when the user switches language,
+    // without re-initializing it (which would discard current filter values).
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ lang }) => {
+        if (this.survey) {
+          this.survey.locale = lang || 'en';
+        }
+      });
 
     if (!this.variant) {
       this.variant = 'default';
@@ -214,6 +227,8 @@ export class DashboardFilterComponent
   /** Render the survey using the saved structure*/
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey(this.structure);
+    // Render question titles, choices and help text in the user's language.
+    this.survey.locale = this.translate.currentLang || 'en';
 
     this.formHelpersService.addUserVariables(this.survey);
 

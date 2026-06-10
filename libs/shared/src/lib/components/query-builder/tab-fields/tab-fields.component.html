@@ -166,10 +166,14 @@
             <label>{{ 'models.form.field.name' | translate }}</label>
             <input formControlName="name" type="text" [disabled]="true" />
           </div>
-          <!-- Displayed label -->
-          <div uiFormFieldDirective [defaultMargin]="false">
-            <label>{{ 'models.form.field.label' | translate }}</label>
-            <input formControlName="label" type="text" />
+          <!-- Displayed label (localized) -->
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium">
+              {{ 'models.form.field.label' | translate }}
+            </label>
+            <shared-localized-input
+              formControlName="label"
+            ></shared-localized-input>
           </div>
           <!-- Column width -->
           <div

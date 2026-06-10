@@ -108,6 +108,7 @@ export class ApplicationComponent
         .map((x: any) => ({
           id: x.id,
           name: x.name,
+          nameTranslations: x.nameTranslations,
           path:
             x.type === ContentType.form
               ? `./${x.type}/${x.id}`

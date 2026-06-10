@@ -13,18 +13,21 @@
       <ng-template uiTabContent>
         <form [formGroup]="widgetFormGroup">
           <div class="flex flex-col">
-            <div uiFormFieldDirective>
-              <label>{{ 'common.title' | translate }}</label>
-              <input formControlName="title" type="string" />
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-medium">
+                {{ 'common.title' | translate }}
+              </label>
+              <shared-localized-input
+                formControlName="title"
+              ></shared-localized-input>
             </div>
           </div>
-          <editor
+          <shared-localized-editor
             *ngIf="!loading"
-            (onInit)="editorLoading = false"
             [init]="editor"
             formControlName="text"
-          ></editor>
-          <ui-spinner *ngIf="editorLoading"></ui-spinner>
+          ></shared-localized-editor>
+          <ui-spinner *ngIf="loading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>

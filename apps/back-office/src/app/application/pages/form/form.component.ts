@@ -19,6 +19,8 @@ import {
   UnsubscribeComponent,
   WorkflowService,
   RecordQueryResponse,
+  LocalizedString,
+  resolveLocalizedString,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
@@ -244,34 +246,74 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param {string} tabName new tab name
    */
   saveName(tabName: string): void {
-    const currentName = this.page ? this.page.name : this.step?.name;
-    if (tabName && tabName !== currentName) {
-      if (this.isStep) {
-        // If form is workflow step
-        const callback = () => {
-          this.step = { ...this.step, name: tabName };
-        };
-        this.workflowService.updateStepName(
-          {
-            id: this.id,
-            name: tabName,
-          },
-          callback
-        );
-      } else {
-        // If form is page
-        const callback = () => {
-          this.page = { ...this.page, name: tabName };
-        };
-        this.applicationService.updatePageName(
-          {
-            id: this.id,
-            name: tabName,
-          },
-          callback
-        );
+    const currentName = this.step?.name;
+    if (tabName && tabName !== currentName && this.isStep) {
+      const callback = () => {
+        this.step = { ...this.step, name: tabName };
+      };
+      this.workflowService.updateStepName(
+        {
+          id: this.id,
+          name: tabName,
+        },
+        callback
+      );
+    }
+  }
+
+  /**
+   * Persist a localized page name. Receives the full locale map from the
+   * editable-localized-text component (or `null` if the user cancelled).
+   * Sends `nameTranslations` to the backend and keeps `name` populated with
+   * the active locale's value for legacy consumers and as a sort key.
+   *
+   * @param value New locale map, or null when the edit was cancelled.
+   */
+  savePageName(value: LocalizedString | null): void {
+    if (value == null || !this.page) return;
+    const activeName = resolveLocalizedString(
+      value,
+      this.translate.currentLang
+    );
+    if (!activeName) return;
+
+    let isChanged = false;
+    if (typeof value === 'string') {
+      isChanged = value !== this.page.name;
+    } else {
+      const oldTranslations = this.page.nameTranslations || { en: this.page.name || '' };
+      const allKeys = new Set([
+        ...Object.keys(value),
+        ...Object.keys(oldTranslations),
+      ]);
+      for (const key of allKeys) {
+        const val1 = (value as any)[key] || '';
+        const val2 = (oldTranslations as any)[key] || '';
+        if (val1 !== val2) {
+          isChanged = true;
+          break;
+        }
       }
     }
+
+    if (!isChanged) return;
+
+    const nameTranslations = typeof value === 'string' ? undefined : value;
+    const callback = () => {
+      this.page = {
+        ...this.page,
+        name: activeName,
+        nameTranslations,
+      };
+    };
+    this.applicationService.updatePageName(
+      {
+        id: this.id,
+        name: activeName,
+        nameTranslations,
+      },
+      callback
+    );
   }
 
   /**

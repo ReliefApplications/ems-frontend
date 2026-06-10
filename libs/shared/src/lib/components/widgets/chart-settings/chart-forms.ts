@@ -1,5 +1,7 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -344,7 +346,7 @@ export const createChartWidgetForm = (id: any, value: any) => {
   const form = fb.group(
     {
       id,
-      title: [get(value, 'title', ''), Validators.required],
+      title: [get(value, 'title', '') as LocalizedString, localizedRequired],
       chart: createChartForm(get(value, 'chart')),
       resource: [get(value, 'resource', null)],
       referenceData: [get(value, 'referenceData', null)],

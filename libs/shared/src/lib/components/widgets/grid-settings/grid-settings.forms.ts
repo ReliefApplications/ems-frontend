@@ -8,6 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import {
   addNewField,
   createFilterGroup,
@@ -166,7 +168,10 @@ export class GridSettingsFormFactory {
     const formGroup = this.fb.group(
       {
         id,
-        title: [get(configuration, 'title', ''), Validators.required],
+        title: [
+          get(configuration, 'title', '') as LocalizedString,
+          localizedRequired,
+        ],
         resource: [get(configuration, 'resource', null), Validators.required],
         template: [get(configuration, 'template', null)],
         layouts: [get(configuration, 'layouts', []), Validators.required],

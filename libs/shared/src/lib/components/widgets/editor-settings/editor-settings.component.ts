@@ -48,13 +48,14 @@ import {
 import {
   ResourceSelectComponent,
   ReferenceDataSelectComponent,
+  LocalizedInputComponent,
+  LocalizedEditorComponent,
 } from '../../controls/public-api';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
 import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
 import {
-  EditorModule as TinyMceEditorModule,
   TINYMCE_SCRIPT_SRC,
 } from '@tinymce/tinymce-angular';
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
@@ -73,7 +74,6 @@ import { EditorModule } from '../editor/editor.module';
     FormsModule,
     ReactiveFormsModule,
     FormWrapperModule,
-    TinyMceEditorModule,
     TranslateModule,
     DisplaySettingsComponent,
     CoreGridModule,
@@ -90,6 +90,8 @@ import { EditorModule } from '../editor/editor.module';
     ToggleModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    LocalizedInputComponent,
+    LocalizedEditorComponent,
     SpinnerModule,
     TemplateAggregationsComponent,
     // todo: rename ( remove s )

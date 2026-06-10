@@ -19,6 +19,8 @@ import {
   UnsubscribeComponent,
   Workflow,
   WorkflowService,
+  LocalizedString,
+  resolveLocalizedString,
 } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -213,19 +215,62 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param workflowName new workflow name
    */
-  saveName(workflowName: string): void {
-    if (workflowName && workflowName !== this.workflow?.name) {
-      const callback = () => {
-        this.workflow = { ...this.workflow, name: workflowName };
-      };
-      this.applicationService.updatePageName(
-        {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-        callback
-      );
+  /**
+   * Updates the localized name of the workflow via its linked page. Receives
+   * a {@link LocalizedString} (or `null` on cancel) from the
+   * editable-localized-text component; resolves the active locale for legacy
+   * `name` consumers and forwards the full map as `nameTranslations`. The
+   * backend `editPage` mutation propagates both fields to the workflow
+   * document automatically.
+   *
+   * @param value new localized name, or null on cancel
+   */
+  saveName(value: LocalizedString | null): void {
+    if (value == null || !this.workflow) return;
+    const workflow = this.workflow;
+    const activeName = resolveLocalizedString(
+      value,
+      this.translate.currentLang
+    );
+    if (!activeName) return;
+
+    let isChanged = false;
+    if (typeof value === 'string') {
+      isChanged = value !== workflow.name;
+    } else {
+      const oldTranslations = workflow.nameTranslations || { en: workflow.name || '' };
+      const allKeys = new Set([
+        ...Object.keys(value),
+        ...Object.keys(oldTranslations),
+      ]);
+      for (const key of allKeys) {
+        const val1 = (value as any)[key] || '';
+        const val2 = (oldTranslations as any)[key] || '';
+        if (val1 !== val2) {
+          isChanged = true;
+          break;
+        }
+      }
     }
+
+    if (!isChanged) return;
+
+    const nameTranslations = typeof value === 'string' ? undefined : value;
+    const callback = () => {
+      this.workflow = {
+        ...workflow,
+        name: activeName,
+        nameTranslations,
+      };
+    };
+    this.applicationService.updatePageName(
+      {
+        id: workflow.page?.id,
+        name: activeName,
+        nameTranslations,
+      },
+      callback
+    );
   }
 
   /**

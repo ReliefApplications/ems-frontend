@@ -13,6 +13,7 @@ import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.v
 import { createAutomationForm } from '../../../forms/automation.forms';
 import { Injector } from '@angular/core';
 import { Subject } from 'rxjs';
+import { LocalizedString } from '../../../models/localized-string.model';
 
 // todo: put in common
 /** Default context filter value. */
@@ -53,7 +54,7 @@ export class SummaryCardSettingsFormFactory {
     const formGroup = this.fb.group(
       {
         id,
-        title: get<string>(configuration, 'title', ''),
+        title: get<LocalizedString>(configuration, 'title', ''),
         card: this.createCardForm(get(configuration, 'card', null)),
         sortFields: new FormArray<any>([]),
         contextFilters: get<string>(
@@ -116,7 +117,7 @@ export class SummaryCardSettingsFormFactory {
   private createCardForm = (value?: any) => {
     const formGroup = this.fb.group(
       {
-        title: get<string>(value, 'title', 'New Card'),
+        title: get<LocalizedString>(value, 'title', 'New Card'),
         referenceData: get<string | null>(value, 'referenceData', null),
         referenceDataVariableMapping: [
           get<string | null>(value, 'referenceDataVariableMapping', null),
@@ -125,7 +126,7 @@ export class SummaryCardSettingsFormFactory {
         template: get<string | null>(value, 'template', null),
         layout: get<string | null>(value, 'layout', null),
         aggregation: get<string | null>(value, 'aggregation', null),
-        html: get<string | null>(value, 'html', null),
+        html: get<LocalizedString | null>(value, 'html', null),
         showDataSourceLink: [
           {
             value: get<boolean>(value, 'showDataSourceLink', false),

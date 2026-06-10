@@ -16,6 +16,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
+import { LocalizedInputComponent } from '../../../controls/public-api';
 import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
 

@@ -2,6 +2,7 @@ import { Step } from './step.model';
 import { Page } from './page.model';
 import { EventEmitter } from '@angular/core';
 import { ActionButton } from '../components/action-button/action-button.type';
+import { LocalizedString } from './localized-string.model';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -274,6 +275,7 @@ export const WIDGET_TYPES: WidgetType[] = [
 export interface Dashboard {
   id?: string;
   name?: string;
+  nameTranslations?: LocalizedString;
   createdAt?: Date;
   modifiedAt?: Date;
   structure?: any;

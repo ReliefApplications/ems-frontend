@@ -116,15 +116,17 @@ export class DashboardService {
   public editName(
     dashboardId: string | undefined,
     name: string,
+    nameTranslations?: Partial<Record<string, string>>,
     callback?: any
   ): void {
-    if (dashboardId) return;
+    if (!dashboardId) return;
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: dashboardId,
           name,
+          nameTranslations,
         },
       })
       .subscribe(() => {

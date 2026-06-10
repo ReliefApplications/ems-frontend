@@ -708,6 +708,7 @@ export class ApplicationService {
           variables: {
             id: page.id,
             name: page.name,
+            nameTranslations: page.nameTranslations,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -721,7 +722,11 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, name: page.name };
+                  x = {
+                    ...x,
+                    name: page.name,
+                    nameTranslations: page.nameTranslations,
+                  };
                 }
                 return x;
               }),

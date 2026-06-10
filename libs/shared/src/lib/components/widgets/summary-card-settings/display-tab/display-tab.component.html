@@ -6,12 +6,12 @@
   </h2>
   <ng-container formGroupName="card">
     <div class="form-group">
-      <div uiFormFieldDirective>
-        <label>{{
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium">{{
           'components.widget.settings.summaryCard.card.display.header'
             | translate
         }}</label>
-        <input formControlName="title" type="string" />
+        <shared-localized-input formControlName="title"></shared-localized-input>
       </div>
       <ui-divider class="my-1"></ui-divider>
       <div class="flex flex-col gap-2">
