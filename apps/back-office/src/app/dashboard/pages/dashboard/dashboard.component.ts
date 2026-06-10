@@ -617,7 +617,7 @@ export class DashboardComponent
   /**
    * Update the name of the dashboard and the step or page linked to it.
    *
-   * @param {string} dashboardName new dashboard name
+   * @param value new localized dashboard name, or null when the edit was cancelled.
    */
   saveName(value: LocalizedString | null): void {
     if (value == null || !this.dashboard) return;
@@ -632,7 +632,9 @@ export class DashboardComponent
     if (typeof value === 'string') {
       isChanged = value !== dashboard.name;
     } else {
-      const oldTranslations = dashboard.nameTranslations || { en: dashboard.name || '' };
+      const oldTranslations = dashboard.nameTranslations || {
+        en: dashboard.name || '',
+      };
       const allKeys = new Set([
         ...Object.keys(value),
         ...Object.keys(oldTranslations),

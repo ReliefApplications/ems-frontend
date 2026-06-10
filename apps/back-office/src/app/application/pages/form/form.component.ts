@@ -281,7 +281,9 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     if (typeof value === 'string') {
       isChanged = value !== this.page.name;
     } else {
-      const oldTranslations = this.page.nameTranslations || { en: this.page.name || '' };
+      const oldTranslations = this.page.nameTranslations || {
+        en: this.page.name || '',
+      };
       const allKeys = new Set([
         ...Object.keys(value),
         ...Object.keys(oldTranslations),

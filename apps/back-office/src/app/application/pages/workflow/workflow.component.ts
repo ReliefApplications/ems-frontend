@@ -238,7 +238,9 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     if (typeof value === 'string') {
       isChanged = value !== workflow.name;
     } else {
-      const oldTranslations = workflow.nameTranslations || { en: workflow.name || '' };
+      const oldTranslations = workflow.nameTranslations || {
+        en: workflow.name || '',
+      };
       const allKeys = new Set([
         ...Object.keys(value),
         ...Object.keys(oldTranslations),
