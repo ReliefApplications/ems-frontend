@@ -398,52 +398,21 @@ export class FormModalComponent
         );
       }
     }
-    const hasErrors = this.survey?.hasErrors();
-    if (!hasErrors && isNil(uploadErrors)) {
+    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
       if (this.survey?.hasErrors()) {
-        const errors: { question: string; errors: string[] }[] = [];
-        this.survey.getAllQuestions().forEach((q: any) => {
-          const qErrors = q.getAllErrors();
-          if (qErrors && qErrors.length > 0) {
-            errors.push({
-              question: q.title || q.name,
-              errors: qErrors.map((e: any) => e.getText()),
-            });
-          }
-        });
-        if (errors.length > 0) {
-          this.showLocalErrors(errors);
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('models.form.notifications.savingFailed'),
-            { error: true }
-          );
-        }
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.form.notifications.savingFailed'),
+          { error: true }
+        );
         this.saving = false;
       }
     } else {
-      const errors: { question: string; errors: string[] }[] = [];
-      if (hasErrors) {
-        this.survey.getAllQuestions().forEach((q: any) => {
-          const qErrors = q.getAllErrors();
-          if (qErrors && qErrors.length > 0) {
-            errors.push({
-              question: q.title || q.name,
-              errors: qErrors.map((e: any) => e.getText()),
-            });
-          }
-        });
-      }
-      if (errors.length > 0) {
-        this.showLocalErrors(errors);
-      } else {
-        this.snackBar.openSnackBar(
-          this.translate.instant('models.form.notifications.savingFailed') +
-            (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
-          { error: true }
-        );
-      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed') +
+          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        { error: true }
+      );
       this.saving = false;
     }
   }
