@@ -400,13 +400,6 @@ export class FormModalComponent
     }
     if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
-      if (this.survey?.hasErrors()) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('models.form.notifications.savingFailed'),
-          { error: true }
-        );
-        this.saving = false;
-      }
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('models.form.notifications.savingFailed') +
@@ -445,24 +438,17 @@ export class FormModalComponent
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
-    const errors: { question: string; errors: string[] }[] = [];
-    survey.getAllQuestions().forEach((q: any) => {
-      const qErrors = q.getAllErrors();
-      if (qErrors && qErrors.length > 0) {
-        errors.push({
-          question: q.title || q.name,
-          errors: qErrors.map((e: any) => e.getText()),
-        });
-      }
-    });
+    this.survey?.clear(false);
 
-    if (errors.length > 0) {
-      this.showLocalErrors(errors);
+    // If survey has errors, cancel edition
+    if (this.survey?.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
       this.saving = false;
       return;
     }
-
-    this.survey?.clear(false);
 
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
