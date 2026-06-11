@@ -250,14 +250,71 @@ export class FormComponent
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
-    if (!this.survey?.hasErrors()) {
+    const hasErrors = this.survey?.hasErrors();
+    if (!hasErrors) {
       this.survey?.completeLastPage();
+      if (this.survey?.hasErrors()) {
+        const errors: { question: string; errors: string[] }[] = [];
+        this.survey.getAllQuestions().forEach((q: any) => {
+          const qErrors = q.getAllErrors();
+          if (qErrors && qErrors.length > 0) {
+            errors.push({
+              question: q.title || q.name,
+              errors: qErrors.map((e: any) => e.getText()),
+            });
+          }
+        });
+        if (errors.length > 0) {
+          this.showLocalErrors(errors);
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('models.form.notifications.savingFailed'),
+            { error: true }
+          );
+        }
+      }
     } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed'),
-        { error: true }
-      );
+      const errors: { question: string; errors: string[] }[] = [];
+      this.survey.getAllQuestions().forEach((q: any) => {
+        const qErrors = q.getAllErrors();
+        if (qErrors && qErrors.length > 0) {
+          errors.push({
+            question: q.title || q.name,
+            errors: qErrors.map((e: any) => e.getText()),
+          });
+        }
+      });
+      if (errors.length > 0) {
+        this.showLocalErrors(errors);
+      } else {
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.form.notifications.savingFailed'),
+          { error: true }
+        );
+      }
     }
+  }
+
+  /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
   }
 
   /**
@@ -282,6 +339,23 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    const errors: { question: string; errors: string[] }[] = [];
+    this.survey.getAllQuestions().forEach((q: any) => {
+      const qErrors = q.getAllErrors();
+      if (qErrors && qErrors.length > 0) {
+        errors.push({
+          question: q.title || q.name,
+          errors: qErrors.map((e: any) => e.getText()),
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      this.showLocalErrors(errors);
+      this.surveyActive = true;
+      return;
+    }
+
     // Set values from expressions setValueOnComplete
     this.survey.getAllQuestions().forEach((question) => {
       const expression = question.getPropertyValue('setValueOnComplete');
@@ -350,6 +424,16 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
+        if (data.editRecord?.validationErrors?.length) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.save.emit({ completed: false });
+          this.survey.clear(false, true);
+          this.surveyActive = true;
+          return;
+        }
         if (this.lastDraftRecord) {
           const callback = () => {
             this.lastDraftRecord = undefined;

@@ -398,16 +398,76 @@ export class FormModalComponent
         );
       }
     }
-    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
+    const hasErrors = this.survey?.hasErrors();
+    if (!hasErrors && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
+      if (this.survey?.hasErrors()) {
+        const errors: { question: string; errors: string[] }[] = [];
+        this.survey.getAllQuestions().forEach((q: any) => {
+          const qErrors = q.getAllErrors();
+          if (qErrors && qErrors.length > 0) {
+            errors.push({
+              question: q.title || q.name,
+              errors: qErrors.map((e: any) => e.getText()),
+            });
+          }
+        });
+        if (errors.length > 0) {
+          this.showLocalErrors(errors);
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('models.form.notifications.savingFailed'),
+            { error: true }
+          );
+        }
+        this.saving = false;
+      }
     } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed') +
-          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
-        { error: true }
-      );
+      const errors: { question: string; errors: string[] }[] = [];
+      if (hasErrors) {
+        this.survey.getAllQuestions().forEach((q: any) => {
+          const qErrors = q.getAllErrors();
+          if (qErrors && qErrors.length > 0) {
+            errors.push({
+              question: q.title || q.name,
+              errors: qErrors.map((e: any) => e.getText()),
+            });
+          }
+        });
+      }
+      if (errors.length > 0) {
+        this.showLocalErrors(errors);
+      } else {
+        this.snackBar.openSnackBar(
+          this.translate.instant('models.form.notifications.savingFailed') +
+            (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+          { error: true }
+        );
+      }
       this.saving = false;
     }
+  }
+
+  /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
   }
 
   /**
@@ -416,6 +476,23 @@ export class FormModalComponent
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
+    const errors: { question: string; errors: string[] }[] = [];
+    survey.getAllQuestions().forEach((q: any) => {
+      const qErrors = q.getAllErrors();
+      if (qErrors && qErrors.length > 0) {
+        errors.push({
+          question: q.title || q.name,
+          errors: qErrors.map((e: any) => e.getText()),
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      this.showLocalErrors(errors);
+      this.saving = false;
+      return;
+    }
+
     this.survey?.clear(false);
 
     /** we can send to backend empty data if they are not required */
@@ -505,6 +582,7 @@ export class FormModalComponent
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
           },
         });
     }
@@ -533,6 +611,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -569,6 +648,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -598,8 +678,34 @@ export class FormModalComponent
         }),
         { error: true }
       );
+      this.saving = false;
     } else {
       if (data) {
+        if (
+          responseType === 'editRecord' &&
+          data.editRecord?.validationErrors?.length
+        ) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.saving = false;
+          return;
+        }
+        if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
+          const recordWithErrors = data.editRecords.find(
+            (r: any) => r.validationErrors?.length
+          );
+          if (recordWithErrors) {
+            this.showLocalErrors(
+              recordWithErrors.validationErrors,
+              recordWithErrors.incrementalId
+            );
+            this.saving = false;
+            return;
+          }
+        }
+
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,
