@@ -250,48 +250,13 @@ export class FormComponent
    * Calls the complete method of the survey if no error.
    */
   public submit(): void {
-    const hasErrors = this.survey?.hasErrors();
-    if (!hasErrors) {
+    if (!this.survey?.hasErrors()) {
       this.survey?.completeLastPage();
-      if (this.survey?.hasErrors()) {
-        const errors: { question: string; errors: string[] }[] = [];
-        this.survey.getAllQuestions().forEach((q: any) => {
-          const qErrors = q.getAllErrors();
-          if (qErrors && qErrors.length > 0) {
-            errors.push({
-              question: q.title || q.name,
-              errors: qErrors.map((e: any) => e.getText()),
-            });
-          }
-        });
-        if (errors.length > 0) {
-          this.showLocalErrors(errors);
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('models.form.notifications.savingFailed'),
-            { error: true }
-          );
-        }
-      }
     } else {
-      const errors: { question: string; errors: string[] }[] = [];
-      this.survey.getAllQuestions().forEach((q: any) => {
-        const qErrors = q.getAllErrors();
-        if (qErrors && qErrors.length > 0) {
-          errors.push({
-            question: q.title || q.name,
-            errors: qErrors.map((e: any) => e.getText()),
-          });
-        }
-      });
-      if (errors.length > 0) {
-        this.showLocalErrors(errors);
-      } else {
-        this.snackBar.openSnackBar(
-          this.translate.instant('models.form.notifications.savingFailed'),
-          { error: true }
-        );
-      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
     }
   }
 
@@ -339,20 +304,13 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
-    const errors: { question: string; errors: string[] }[] = [];
-    this.survey.getAllQuestions().forEach((q: any) => {
-      const qErrors = q.getAllErrors();
-      if (qErrors && qErrors.length > 0) {
-        errors.push({
-          question: q.title || q.name,
-          errors: qErrors.map((e: any) => e.getText()),
-        });
-      }
-    });
-
-    if (errors.length > 0) {
-      this.showLocalErrors(errors);
-      this.surveyActive = true;
+    // If survey has errors, cancel
+    if (this.survey.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.survey.clear(false, true);
       return;
     }
 
