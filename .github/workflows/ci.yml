@@ -33,31 +33,20 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v5
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v5
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 24.x
+          cache: 'npm'
       - name: Get package version
         id: get_version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
       - name: Install Dependencies
-        run: npm i
+        run: npm ci
       - name: Run ${{ github.event.inputs.project }} tests - ${{ steps.get_version.outputs.version }}
         run: npx nx run ${{ github.event.inputs.project }}:test:ci --skip-nx-cache
         if: ${{ github.event.inputs.project != '' }}

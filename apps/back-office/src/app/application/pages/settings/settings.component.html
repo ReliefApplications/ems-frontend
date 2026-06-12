@@ -88,6 +88,16 @@
       >
       </ui-textarea>
     </div>
+    <!-- Top menu -->
+    <div class="mb-6">
+      <ui-toggle formControlName="topMenu">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.application.update.topMenu' | translate
+          }}</ng-container
+        >
+      </ui-toggle>
+    </div>
     <!-- Side menu -->
     <div class="mb-6">
       <ui-toggle formControlName="sideMenu">

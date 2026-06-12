@@ -749,10 +749,15 @@
 				},
 				"settings": {
 					"actions": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
 					"selectIcon": "******",
 					"showName": "******",
 					"tooltip": {
-						"autoSave": "******"
+						"autoSave": "******",
+						"navBar": "******"
 					}
 				},
 				"show": "******"
@@ -795,7 +800,8 @@
 				"sideMenu": "******",
 				"tooltip": {
 					"hideMenu": "******"
-				}
+				},
+				"topMenu": "******"
 			},
 			"users": {
 				"auto": "******",
@@ -842,6 +848,15 @@
 			"expression": "******",
 			"hint": {
 				"name": "******"
+			},
+			"reference": {
+				"noResults": "******",
+				"open": "******",
+				"operations": "******",
+				"placeholders": "******",
+				"placeholdersHint": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
 			}
 		},
 		"channel": {
@@ -1317,6 +1332,7 @@
 				"apply": "******",
 				"applyField": "******",
 				"field": "******",
+				"loading": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
@@ -1353,6 +1369,8 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},
@@ -2062,7 +2080,6 @@
 							"update": "******"
 						},
 						"attachToRecord": "******",
-						"buttons": "******",
 						"executionOrder": "******",
 						"prefillForm": "******"
 					},
@@ -2411,7 +2428,15 @@
 				},
 				"tabs": {
 					"addNewTab": "******",
-					"deleteTab": "******"
+					"deleteTab": "******",
+					"navBar": {
+						"showIcon": "******",
+						"showName": "******"
+					},
+					"selectIcon": "******",
+					"tooltip": {
+						"navBar": "******"
+					}
 				}
 			},
 			"styling": "******",
@@ -3055,6 +3080,16 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"functionReference": {
+				"builtin": "******",
+				"builtinHint": "******",
+				"custom": "******",
+				"docs": "******",
+				"noResults": "******",
+				"open": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
 			},
 			"move": {
 				"down": "******",

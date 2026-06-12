@@ -6,14 +6,17 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
-import { isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import get from 'lodash/get';
 import {
   ComponentCollection,
+  ConditionRunner,
+  ExpressionRunner,
   JsonObject,
   Serializer,
   SurveyModel,
   SvgRegistry,
+  surveyLocalization,
 } from 'survey-core';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { ResourceQueryResponse } from '../../models/resource.model';
@@ -22,6 +25,7 @@ import {
   GET_RESOURCE_BY_ID,
   GET_SHORT_RESOURCE_BY_ID,
 } from '../graphql/queries';
+import { GET_RECORD_BY_ID } from '../../components/widgets/grid/graphql/queries';
 import { QuestionResource } from '../types';
 import {
   buildAddButton,
@@ -179,6 +183,13 @@ export const init = (
     resourceFieldsName: [] as any[],
     onInit: (): void => {
       Serializer.addProperty('resources', {
+        name: 'displayOnly:boolean',
+        category: 'general',
+        displayName: surveyLocalization.getString('oort:displayOnly'),
+        visibleIndex: 7,
+        default: false,
+      });
+      Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
         type: CustomPropertyGridComponentTypes.resourcesDropdown,
@@ -218,7 +229,7 @@ export const init = (
         dependsOn: 'resource',
         required: true,
         description: 'unique name for this resource question',
-        visibleIf: visibleIfResource,
+        visibleIf: (obj: any) => visibleIfResource(obj) && !obj.displayOnly,
         visibleIndex: 4,
       });
 
@@ -257,6 +268,17 @@ export const init = (
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
         visibleIndex: 3,
+      });
+      // On select JSON mapping (only for display-only grid)
+      Serializer.addProperty('resources', {
+        category: 'Custom Questions',
+        type: CustomPropertyGridComponentTypes.jsonEditor,
+        name: 'onSelect',
+        displayName: surveyLocalization.getString('oort:onSelect'),
+        dependsOn: ['resource', 'displayAsGrid', 'displayOnly'],
+        visibleIf: (obj: any) =>
+          visibleIfResource(obj) && obj.displayOnly && obj.displayAsGrid,
+        visibleIndex: 9,
       });
       Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
@@ -447,39 +469,10 @@ export const init = (
           }
         });
         if (question.customFilter && question.customFilter.trim().length > 0) {
-          /**
-           * Get question filters value
-           *
-           * @param question Current question
-           */
-          const getQuestionFilters = (question: any) => {
-            const surveyData = question.survey?.data;
-
-            const customFilter = JSON.parse(question.customFilter);
-            if (Array.isArray(customFilter)) {
-              question.filters = {
-                logic: 'and',
-                filters: customFilter
-                  .map((x) => updateFilter(surveyData, x))
-                  .filter((x) => !isNil(x)),
-              };
-            } else {
-              question.filters = updateFilter(surveyData, customFilter);
-            }
-
-            // Load question choices
-            if (!question.displayAsGrid) {
-              this.populateChoices(question);
-            }
-          };
-
           // Subscribe to survey value changes
           question.survey?.onValueChanged.add(() => {
-            getQuestionFilters(question);
+            this.getQuestionFilters(question);
           });
-
-          // Initial load
-          getQuestionFilters(question);
         } else {
           // Load question choices
           if (!question.displayAsGrid) {
@@ -514,7 +507,37 @@ export const init = (
         question.prefillWithCurrentRecord = false;
       }
     },
-    onAfterRender: (question: QuestionResource, el: any): void => {
+    /**
+     * Get question filters
+     *
+     * @param question Current question
+     */
+    getQuestionFilters(question: QuestionResource): void {
+      const surveyData = (question.survey as SurveyModel).data;
+      const customFilter = JSON.parse(question.customFilter);
+      if (Array.isArray(customFilter)) {
+        question.filters = {
+          logic: 'and',
+          filters: customFilter
+            .map((x) => updateFilter(surveyData, x))
+            .filter((x) => !isNil(x)),
+        };
+      } else {
+        question.filters = updateFilter(surveyData, customFilter);
+      }
+
+      // Load question choices
+      if (!question.displayAsGrid) {
+        this.populateChoices(question);
+      }
+    },
+    /**
+     * On After render callback
+     *
+     * @param question Current question
+     * @param el Element
+     */
+    onAfterRender(question: QuestionResource, el: any): void {
       const parentElement = el.querySelector('.sd-question__content');
       // Display the add button | grid for resources question
       const actionsButtons = setUpActionsButtonWrapper();
@@ -529,6 +552,13 @@ export const init = (
         }
       }, 500);
 
+      if (question.resource) {
+        if (question.customFilter && question.customFilter.trim().length > 0) {
+          // Initial load
+          this.getQuestionFilters(question);
+        }
+      }
+
       const searchBtn = buildSearchButton(
         question,
         question.gridFieldsSettings,
@@ -540,14 +570,14 @@ export const init = (
       );
       searchBtn.style.display = 'none';
       if (question.resource) {
-        searchBtn.style.display = 'block';
+        searchBtn.style.display = question.displayOnly ? 'none' : 'block';
         if (parentElement) {
           if (question.displayAsGrid) {
             gridComponentRef = buildGridDisplay(question, parentElement);
           }
 
           if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = 'block';
+            searchBtn.style.display = question.displayOnly ? 'none' : 'block';
             const addBtn = buildAddButton(
               question,
               true,
@@ -579,7 +609,7 @@ export const init = (
       actionsButtons.appendChild(searchBtn);
       parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       question.registerFunctionOnPropertyValueChanged('resource', () => {
-        if (question.resource && question.canSearch) {
+        if (question.resource && question.canSearch && !question.displayOnly) {
           searchBtn.style.display = 'block';
         }
       });
@@ -587,7 +617,8 @@ export const init = (
         if (question.displayAsGrid) {
           setGridInputs(gridComponentRef.instance, question);
         } else {
-          searchBtn.style.display = question.canSearch ? 'block' : 'none';
+          searchBtn.style.display =
+            question.canSearch && !question.displayOnly ? 'block' : 'none';
         }
       });
       question.registerFunctionOnPropertyValueChanged(
@@ -614,7 +645,7 @@ export const init = (
           if (element) {
             element.style.display = 'block';
           }
-          if (question.canSearch) {
+          if (question.canSearch && !question.displayOnly) {
             searchBtn.style.display = 'block';
           }
         }
@@ -657,6 +688,47 @@ export const init = (
           (id: string) => !ids.includes(id)
         );
       });
+      if (
+        question.displayOnly &&
+        question.displayAsGrid &&
+        question.onSelect &&
+        question.onSelect.trim()
+      ) {
+        grid.instance.selectionChange.subscribe((selection: any) => {
+          try {
+            const selectedRows = selection?.selectedRows || [];
+            if (!selectedRows.length) return;
+            const selectedId = selectedRows[0]?.dataItem?.id;
+            if (!selectedId) return;
+            const mapping = JSON.parse(question.onSelect || '{}');
+            if (Object.keys(mapping).length === 0) return;
+            apollo
+              .query<any>({
+                query: GET_RECORD_BY_ID,
+                variables: { id: selectedId },
+                fetchPolicy: 'no-cache',
+              })
+              .subscribe(({ data }) => {
+                const record = data?.record;
+                if (!record || !record.data) return;
+                const survey = question.survey as SurveyModel;
+                for (const targetQuestion in mapping) {
+                  try {
+                    const expression = mapping[targetQuestion];
+                    if (!expression) continue;
+                    const runner = new ExpressionRunner(expression);
+                    const value = runner.run(record.data);
+                    survey.setValue(targetQuestion, value);
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }
+              });
+          } catch (e) {
+            console.error('Error applying on select mapping', e);
+          }
+        });
+      }
     }
     return grid;
   }
@@ -679,7 +751,7 @@ export const init = (
     );
     setGridInputs(grid.instance, question);
     question.survey?.onValueChanged.add((_: any, options: any) => {
-      if (options.name === question.name) {
+      if (question.displayOnly || options.name === question.name) {
         setGridInputs(grid.instance, question);
       }
     });
@@ -693,7 +765,14 @@ export const init = (
    * @param question survey question.
    */
   const setGridInputs = async (instance: CoreGridComponent, question: any) => {
-    instance.multiSelect = true;
+    const hasOnSelect =
+      !!question.onSelect &&
+      JSON.parse(question.onSelect || '{}') &&
+      Object.keys(JSON.parse(question.onSelect || '{}')).length > 0 &&
+      typeof question.onSelect === 'string' &&
+      question.onSelect.trim().length > 0;
+    instance.multiSelect = hasOnSelect ? false : !question.displayOnly;
+    instance.selectable = hasOnSelect ? true : !question.displayOnly;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
     if (
@@ -718,9 +797,56 @@ export const init = (
     if (question.canSearch) {
       temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
-    instance.settings = settings;
+    if (question.displayOnly) {
+      // Evaluate the "clear if" expression to determine whether the grid
+      // should fetch data. Skip the query and show an empty grid if true.
+      const clearIfExpression = question.getPropertyValue('clearIf');
+      if (clearIfExpression) {
+        const survey = question.survey as SurveyModel;
+        const conditionRunner = new ConditionRunner(clearIfExpression);
+        const shouldClear = conditionRunner.run(survey.data);
+        if (shouldClear) {
+          // Force an empty result
+          settings.query.filter = {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: [],
+              },
+            ],
+          };
+          Promise.allSettled(promises).then(() => {
+            if (!isEqual(instance.settings, settings)) {
+              instance.settings = settings;
+              instance.configureGrid();
+            }
+          });
+          return;
+        }
+      }
+
+      const filters: any[] = [];
+
+      if (question.filters) {
+        filters.push(question.filters);
+      }
+      if (question.gridFieldsSettings?.filter) {
+        filters.push(question.gridFieldsSettings.filter);
+      }
+
+      settings.query.filter = {
+        logic: 'and',
+        filters: filters,
+      };
+    }
     Promise.allSettled(promises).then(() => {
-      instance.configureGrid();
+      // Only update grid if needed
+      if (!isEqual(instance.settings, settings)) {
+        instance.settings = settings;
+        instance.configureGrid();
+      }
     });
   };
 };

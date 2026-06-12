@@ -53,6 +53,7 @@ export class DataTemplateService {
       ...this.htmlParserService.getDataKeys(fields),
       ...this.htmlParserService.getAggregationKeys(aggregations || []),
       ...this.htmlParserService.getCalcKeys(),
+      ...this.htmlParserService.getHelpersKeys(),
     ];
   }
 

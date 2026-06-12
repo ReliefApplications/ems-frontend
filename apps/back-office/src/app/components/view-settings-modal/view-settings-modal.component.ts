@@ -32,7 +32,7 @@ import {
   DashboardService,
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 import { GridType } from 'angular-gridster2';
@@ -46,6 +46,10 @@ interface DialogData {
   icon?: string;
   visible?: boolean;
   showName?: boolean;
+  navBar?: {
+    showName?: boolean;
+    showIcon?: boolean;
+  };
   accessData: AccessData;
   canUpdate: boolean;
   dashboard?: Dashboard;
@@ -148,35 +152,55 @@ export class ViewSettingsModalComponent
     }
 
     // Listen to icon updates
-    this.settingsForm?.controls.icon.valueChanges
+    this.settingsForm.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: string | null) => {
-        if (value) {
+        if (value || value === null) {
           this.onUpdateIcon(value);
         }
       });
 
     // Listen to showName updates
-    this.settingsForm?.controls.showName?.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
+    this.settingsForm.controls.showName.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
         this.onUpdateShowName(value);
+      });
+
+    // Listen to navBar updates and ensure at least one of the two options is selected
+    this.settingsForm.controls.navBar.controls.showName.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (!value) {
+          this.settingsForm.controls.navBar.controls.showIcon.setValue(true, {
+            emitEvent: false,
+          });
+        }
+        this.onUpdateNavBar(this.settingsForm.controls.navBar.getRawValue());
+      });
+    this.settingsForm.controls.navBar.controls.showIcon.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (!value) {
+          this.settingsForm.controls.navBar.controls.showName.setValue(true, {
+            emitEvent: false,
+          });
+        }
+        this.onUpdateNavBar(this.settingsForm.controls.navBar.getRawValue());
       });
 
     // Listen to visibility updates (only for pages)
     if (this.data.type === 'page') {
-      this.settingsForm?.controls.visible.valueChanges
+      this.settingsForm.controls.visible.valueChanges
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value: boolean | null) => {
-          if (!isNil(value)) {
-            this.onUpdateVisibility(value);
-          }
+        .subscribe((value: boolean) => {
+          this.onUpdateVisibility(value);
         });
     }
 
     if (this.dashboard) {
       // Listen to grid settings updates
-      this.settingsForm?.controls.gridOptions?.valueChanges
+      this.settingsForm.controls.gridOptions?.valueChanges
         .pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe((value: any) => {
           // update only if the form is valid
@@ -269,8 +293,20 @@ export class ViewSettingsModalComponent
     return this.fb.group({
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
-      visible: this.fb.control(this.data.visible ?? true),
-      showName: this.fb.control(this.data.showName ?? true),
+      visible: this.fb.control(this.data.visible ?? true, {
+        nonNullable: true,
+      }),
+      showName: this.fb.control(this.data.showName ?? true, {
+        nonNullable: true,
+      }),
+      navBar: this.fb.group({
+        showName: this.fb.control(get(this.data, 'navBar.showName', true), {
+          nonNullable: true,
+        }),
+        showIcon: this.fb.control(get(this.data, 'navBar.showIcon', true), {
+          nonNullable: true,
+        }),
+      }),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
@@ -322,12 +358,12 @@ export class ViewSettingsModalComponent
    *
    * @param icon new icon name
    */
-  private onUpdateIcon(icon: string): void {
+  private onUpdateIcon(icon: string | null): void {
     if (this.data.type === 'step' && this.step) {
       const callback = () => {
         this.step = {
           ...this.step,
-          icon,
+          icon: icon || undefined,
         };
         // Updates parent component
         const updates = { icon };
@@ -335,14 +371,14 @@ export class ViewSettingsModalComponent
       };
       this.workflowService.updateStepParameter(
         this.step as Step,
-        { icon },
+        { icon: icon || '' },
         callback
       );
     } else {
       const callback = () => {
         this.page = {
           ...this.page,
-          icon,
+          icon: icon || undefined,
         };
         // Updates parent component
         const updates = { icon };
@@ -351,7 +387,7 @@ export class ViewSettingsModalComponent
       this.page &&
         this.applicationService.updatePageParameter(
           this.page as Page,
-          { icon },
+          { icon: icon || '' },
           callback
         );
     }
@@ -392,6 +428,51 @@ export class ViewSettingsModalComponent
         this.applicationService.updatePageParameter(
           this.page as Page,
           { showName },
+          callback
+        );
+    }
+  }
+
+  /**
+   * Save nav bar parameters.
+   *
+   * @param navBar Navbar settings
+   * @param navBar.showName Navbar show name
+   * @param navBar.showIcon Navbar show icon
+   */
+  private onUpdateNavBar(navBar: {
+    showName: boolean;
+    showIcon: boolean;
+  }): void {
+    if (this.data.type === 'step' && this.step) {
+      const callback = () => {
+        this.step = {
+          ...this.step,
+          navBar,
+        };
+        // Updates parent component
+        const updates = { navBar };
+        this.onUpdate.emit(updates);
+      };
+      this.workflowService.updateStepParameter(
+        this.step as Step,
+        { navBar },
+        callback
+      );
+    } else {
+      const callback = () => {
+        this.page = {
+          ...this.page,
+          navBar,
+        };
+        // Updates parent component
+        const updates = { navBar };
+        this.onUpdate.emit(updates);
+      };
+      this.page &&
+        this.applicationService.updatePageParameter(
+          this.page as Page,
+          { navBar },
           callback
         );
     }

@@ -124,15 +124,33 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
    * @returns form group
    */
   private createSettingsForm(application: Application) {
-    return this.fb.group({
+    const form = this.fb.group({
       id: [{ value: application.id, disabled: true }],
       name: [application.name, Validators.required],
       shortcut: [application.shortcut, shortcutValidator],
       sideMenu: [application.sideMenu],
+      topMenu: [application.topMenu],
       hideMenu: [application.hideMenu],
       description: [application.description],
       status: [application.status],
     });
+    // Make sure top menu and side menu are mutually exclusive
+    form.controls.sideMenu.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          form.controls.topMenu.setValue(false, { emitEvent: false });
+        }
+      });
+    form.controls.topMenu.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          form.controls.sideMenu.setValue(false, { emitEvent: false });
+          form.controls.hideMenu.setValue(false, { emitEvent: false });
+        }
+      });
+    return form;
   }
 
   /**

@@ -1,6 +1,6 @@
 <!-- Loading indicator -->
 <ui-spinner
-  *ngIf="emailService.isQuickAction && emailService.loading"
+  *ngIf="emailService.isGridAction && emailService.loading"
   class="flex justify-center items-center w-full"
 ></ui-spinner>
 <form [formGroup]="layoutForm">
@@ -115,7 +115,7 @@
           class="w-1/3 px-2"
           *ngIf="
             this.emailService?.previewData?.datasets?.length === 1 &&
-            !this.emailService.isQuickAction
+            !this.emailService.isGridAction
           "
         >
           <label

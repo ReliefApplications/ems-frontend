@@ -120,8 +120,8 @@ export class SelectDistributionComponent
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
-  /** DL dialog data from Quick Action  */
-  @Input() quickActionDistribution: any;
+  /** DL dialog data from Grid Action  */
+  @Input() gridActionDistribution: any;
 
   ngOnInit(): void {
     this.emailService.distributionListData = this.emailService.datasetsForm.get(

@@ -13,6 +13,7 @@ import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as UsersComponent from './components/users';
+import * as PeopleComponent from './components/people';
 import * as CsApiDocsProperties from './global-properties/cs-api-docs';
 import * as OtherProperties from './global-properties/others';
 import * as CommentWidget from './widgets/comment-widget';
@@ -37,6 +38,7 @@ import * as PopupWidthProperty from './global-properties/popup-width';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
+import { registerOnRecordEditionTrigger } from './triggers/on-record-edition.trigger';
 
 /** Name of the custom components we add to the survey */
 const CUSTOM_COMPONENTS = [
@@ -44,6 +46,8 @@ const CUSTOM_COMPONENTS = [
   'resources',
   'owner',
   'users',
+  'people-dropdown',
+  'people-tagbox',
   'geospatial',
   'editor',
 ];
@@ -129,6 +133,7 @@ export const initCustomSurvey = (
     );
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
+    PeopleComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     EditorComponent.init(injector, ComponentCollection.Instance);
   }
@@ -147,6 +152,8 @@ export const initCustomSurvey = (
 
   // set localization
   initLocalization();
+  // register custom triggers
+  registerOnRecordEditionTrigger();
   // load internal functions
   addCustomFunctions(authService);
 };

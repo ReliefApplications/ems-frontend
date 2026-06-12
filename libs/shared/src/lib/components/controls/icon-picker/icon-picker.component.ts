@@ -54,6 +54,8 @@ export class IconPickerComponent
   private primaryColor!: string;
   /** Input decorator for color */
   @Input() color: string = this.primaryColor;
+  /** Nullable input */
+  @Input() nullable = false;
   /** Boolean to control the visibility of the list. */
   public showList = false;
   /** Timeout listener */
@@ -291,7 +293,7 @@ export class IconPickerComponent
    *
    * @param icon Icon value
    */
-  public setIcon(icon?: string) {
+  public setIcon(icon?: string | null) {
     this.showList = false;
     if (icon) {
       this.value = icon;
@@ -302,6 +304,9 @@ export class IconPickerComponent
       this.setIconTimeoutListener = setTimeout(() => {
         this.appendIconSvgToDOM(icon);
       }, 0);
+      this.onTouched();
+    } else if (icon === null) {
+      this.value = null;
       this.onTouched();
     }
   }

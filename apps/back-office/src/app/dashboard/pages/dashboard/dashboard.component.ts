@@ -868,6 +868,9 @@ export class DashboardComponent
         showName: this.isStep
           ? this.dashboard?.step?.showName
           : this.dashboard?.page?.showName,
+        navBar: this.isStep
+          ? this.dashboard?.step?.navBar
+          : this.dashboard?.page?.navBar,
         accessData: {
           access: this.dashboard?.permissions,
           application: this.applicationId,
@@ -897,6 +900,7 @@ export class DashboardComponent
               step: {
                 ...this.dashboard?.step,
                 ...((has(updates, 'showName') ||
+                  has(updates, 'navBar') ||
                   has(updates, 'permissions') ||
                   has(updates, 'filter')) &&
                   updates),
@@ -911,6 +915,7 @@ export class DashboardComponent
               page: {
                 ...this.dashboard?.page,
                 ...((has(updates, 'showName') ||
+                  has(updates, 'navBar') ||
                   has(updates, 'permissions') ||
                   has(updates, 'filter')) &&
                   updates),

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -30,7 +31,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { startWith, takeUntil } from 'rxjs';
 import { Form } from '../../../models/form.model';
-import { createSummaryCardForm } from './summary-card-settings.forms';
+import { SummaryCardSettingsFormFactory } from './summary-card-settings.forms';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
@@ -63,7 +64,9 @@ import { DisplayTabModule } from './display-tab/display.module';
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 
-export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
+export type SummaryCardFormT = ReturnType<
+  typeof SummaryCardSettingsFormFactory.prototype.createSummaryCardForm
+>;
 
 /**
  * Summary Card Settings component.
@@ -106,7 +109,9 @@ export class SummaryCardSettingsComponent
     OnInit,
     AfterViewInit,
     OnDestroy,
-    WidgetSettings<typeof createSummaryCardForm>
+    WidgetSettings<
+      typeof SummaryCardSettingsFormFactory.prototype.createSummaryCardForm
+    >
 {
   /** Widget configuration */
   @Input() widget: any;
@@ -155,12 +160,14 @@ export class SummaryCardSettingsComponent
    * @param aggregationService Shared aggregation service
    * @param fb FormBuilder instance
    * @param widgetService Shared widget service
+   * @param injector Angular injector
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: AggregationService,
     private fb: FormBuilder,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    private injector: Injector
   ) {
     super();
   }
@@ -450,7 +457,11 @@ export class SummaryCardSettingsComponent
    * Build the settings form, using the widget saved parameters.
    */
   public buildSettingsForm() {
-    this.widgetFormGroup = createSummaryCardForm(
+    const factory = new SummaryCardSettingsFormFactory(
+      this.injector,
+      this.destroy$
+    );
+    this.widgetFormGroup = factory.createSummaryCardForm(
       this.widget.id,
       this.widget.settings
     );

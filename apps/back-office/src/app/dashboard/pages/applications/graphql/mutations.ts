@@ -31,6 +31,10 @@ export const EDIT_APPLICATION = gql`
         id
         icon
         showName
+        navBar {
+          showName
+          showIcon
+        }
         name
         createdAt
         type
@@ -68,6 +72,10 @@ export const ADD_APPLICATION = gql`
       pages {
         id
         name
+        navBar {
+          showName
+          showIcon
+        }
         createdAt
         type
         content

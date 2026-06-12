@@ -30,6 +30,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
+import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
 
 /**
  * Array containing the different types of questions.
@@ -271,6 +272,8 @@ export class FormBuilderComponent
       }))
     );
 
+    this.addFunctionReferenceAction();
+
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(survey.text);
@@ -352,6 +355,26 @@ export class FormBuilderComponent
 
     // add move up/down buttons
     this.addAdorners();
+  }
+
+  /**
+   * Add a toolbar button that opens the function reference modal.
+   */
+  private addFunctionReferenceAction(): void {
+    const action = new Action({
+      id: 'open-function-reference',
+      iconName: 'icon-description',
+      css: 'sv-action-bar-item--secondary',
+      title: this.translate.instant('pages.formBuilder.functionReference.open'),
+      showTitle: true,
+      action: () => {
+        this.dialog.open(FunctionReferenceModalComponent, {
+          width: '720px',
+          autoFocus: false,
+        });
+      },
+    });
+    this.surveyCreator.toolbar.actions.push(action);
   }
 
   /**
@@ -590,14 +613,35 @@ export class FormBuilderComponent
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {
-      if (question.relatedName) {
-        question.relatedName = this.formHelpersService.toSnakeCase(
-          question.relatedName
-        );
-        if (this.relatedNames.includes(question.relatedName)) {
+      // Check that relatedName is set and not duplicated
+      if (!question.displayOnly) {
+        // Skip check if display only
+        if (question.relatedName) {
+          question.relatedName = this.formHelpersService.toSnakeCase(
+            question.relatedName
+          );
+          if (this.relatedNames.includes(question.relatedName)) {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.formBuilder.errors.duplicatedRelatedName',
+                {
+                  question: question.name,
+                  page: page.name,
+                }
+              ),
+              {
+                error: true,
+                duration: 15000,
+              }
+            );
+            return false;
+          } else {
+            this.relatedNames.push(question.relatedName);
+          }
+        } else {
           this.snackBar.openSnackBar(
             this.translate.instant(
-              'components.formBuilder.errors.duplicatedRelatedName',
+              'components.formBuilder.errors.missingRelatedName',
               {
                 question: question.name,
                 page: page.name,
@@ -609,25 +653,10 @@ export class FormBuilderComponent
             }
           );
           return false;
-        } else {
-          this.relatedNames.push(question.relatedName);
         }
-      } else {
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.formBuilder.errors.missingRelatedName',
-            {
-              question: question.name,
-              page: page.name,
-            }
-          ),
-          {
-            error: true,
-            duration: 15000,
-          }
-        );
-        return false;
       }
+
+      // Error if the user selected Add Record without adding a template.
       if (question.addRecord && !question.addTemplate) {
         this.snackBar.openSnackBar(
           this.translate.instant(

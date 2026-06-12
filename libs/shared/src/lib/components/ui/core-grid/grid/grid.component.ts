@@ -36,7 +36,7 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { get, has, intersection, isEqual, isNil } from 'lodash';
+import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
@@ -54,6 +54,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
+import { ActionButton } from '../../../widgets/grid/action-button.type';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -177,6 +178,8 @@ export class GridComponent
   @Output() sortChange = new EventEmitter();
   /** Column change event emitter */
   @Output() columnChange = new EventEmitter();
+  /** Reload event emitter */
+  @Output() reload = new EventEmitter();
   /** KendoGridComponent view child */
   @ViewChild(KendoGridComponent)
   public grid?: KendoGridComponent;
@@ -230,6 +233,12 @@ export class GridComponent
   private columnChooserRef: PopupRef | null = null;
   /** Prevent next column reset */
   private preventColumnResize = false;
+  /** Custom row action button groups */
+  public customRowActionGroups: {
+    label: string;
+    actions: ActionButton[];
+    width: number;
+  }[] = [];
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -378,6 +387,24 @@ export class GridComponent
           this.rowActions
         ).length > 0;
     }
+    // Must resolve before the grid's first render: Kendo's sticky position
+    // cache snapshots the column list once and never re-includes columns
+    // added later, which makes multiple action groups overlap.
+    if (changes['widget']) {
+      const customRowActions: ActionButton[] = get(
+        this.widget,
+        'settings.customRowActions',
+        []
+      );
+      this.customRowActionGroups = map(
+        groupBy(customRowActions, 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+          width: this.getCustomActionColumnWidth({ label, actions }),
+        })
+      );
+    }
     if (
       (changes['data']?.currentValue?.data.length || this.data.data.length) &&
       (changes['fields']?.currentValue?.length || this.fields.length)
@@ -434,6 +461,83 @@ export class GridComponent
     if (this.closeEditorListener) {
       this.closeEditorListener();
     }
+  }
+
+  /**
+   * Get the custom row actions to display in a given group column for a given row.
+   * Filters the full set of actions in the group using the per-row actions
+   * populated by the backend on `dataItem.actions` (grouped by columnLabel).
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
+   * @returns The action buttons to render for this row / group.
+   */
+  public getRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
+    const rowGroups: { label: string; actions: ActionButton[] }[] =
+      dataItem?.actions ?? [];
+    if (!rowGroups.length) {
+      // return group.actions;
+      return [];
+    }
+    const rowGroup = rowGroups.find((g) => g.label === group.label);
+    if (!rowGroup) {
+      return [];
+    }
+    // Intersect by text + columnLabel to preserve widget config order.
+    const visibleKeys = new Set(
+      rowGroup.actions.map((a) => `${a.columnLabel}::${a.text}`)
+    );
+    return group.actions.filter((a) =>
+      visibleKeys.has(`${a.columnLabel}::${a.text}`)
+    );
+  }
+
+  /**
+   * Compute the width of a custom row action column based on the rendered
+   * width of each button's text and the length of the group label.
+   *
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Actions configured for the group.
+   * @returns The column width in pixels.
+   */
+  public getCustomActionColumnWidth(group: {
+    label: string;
+    actions: ActionButton[];
+  }): number {
+    /** Gap between buttons */
+    const gap = 8;
+    /** Left / right cell padding */
+    const cellPadding = 16;
+    /** Approx pixel width per character */
+    const charWidth = 8;
+    /** Padding + border on a single button (left + right) */
+    const buttonPadding = 24;
+    /** Minimum width of a button so icon-only / very short labels stay clickable */
+    const minButtonWidth = 60;
+    /** Additional space reserved for the kendo column header icons */
+    const headerExtras = 32;
+
+    const actions = group.actions ?? [];
+    const buttonsWidth = actions.reduce(
+      (sum, action) =>
+        sum +
+        Math.max(
+          (action.text?.length ?? 0) * charWidth + buttonPadding,
+          minButtonWidth
+        ),
+      0
+    );
+    const count = Math.max(actions.length, 1);
+    const contentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    const titleWidth =
+      (group.label?.length ?? 0) * charWidth + headerExtras + cellPadding;
+    return Math.max(contentWidth, titleWidth, 108);
   }
 
   /**

@@ -20,6 +20,7 @@ import {
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
+import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
@@ -28,6 +29,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
+import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 
 /**
  * This component is used to display forms
@@ -76,6 +78,8 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Evaluated label for the save button (from form expression or default translation) */
+  public saveButtonLabel = '';
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -112,7 +116,7 @@ export class FormComponent
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService, this.record);
+    addCustomFunctions(this.authService);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
@@ -128,12 +132,14 @@ export class FormComponent
     );
 
     this.survey.showCompletedPage = false;
+    this.updateButtonLabels();
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      this.updateButtonLabels();
     });
     this.survey.onComplete.add(() => {
       this.onComplete();
@@ -178,10 +184,14 @@ export class FormComponent
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     } else if (this.record && this.record.data) {
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     }
+    // survey.data does not fire onValueChanged; refresh expression-based button labels
+    this.updateButtonLabels();
 
     // if (this.survey.getUsedLocales().length > 1) {
     //   this.survey.getUsedLocales().forEach((lang) => {
@@ -204,6 +214,15 @@ export class FormComponent
   }
 
   /**
+   * Evaluates all action button label expressions from the survey settings.
+   * Falls back to an empty string (template will use the default translation key).
+   */
+  private updateButtonLabels(): void {
+    const labels = getSurveyFormActionButtonLabels(this.survey);
+    this.saveButtonLabel = labels.saveButtonLabel;
+  }
+
+  /**
    * Reset the survey to empty
    */
   public reset(): void {
@@ -216,6 +235,7 @@ export class FormComponent
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
+    this.updateButtonLabels();
     this.save.emit({ completed: false });
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
@@ -241,6 +261,28 @@ export class FormComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
@@ -262,6 +304,24 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    // If survey has errors, cancel
+    if (this.survey.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.survey.clear(false, true);
+      return;
+    }
+
+    // Set values from expressions setValueOnComplete
+    this.survey.getAllQuestions().forEach((question) => {
+      const expression = question.getPropertyValue('setValueOnComplete');
+      if (expression) {
+        const result = this.survey.runExpression(expression);
+        question.value = result;
+      }
+    });
     let mutation: any;
     this.surveyActive = false;
 
@@ -322,6 +382,16 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
+        if (data.editRecord?.validationErrors?.length) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.save.emit({ completed: false });
+          this.survey.clear(false, true);
+          this.surveyActive = true;
+          return;
+        }
         if (this.lastDraftRecord) {
           const callback = () => {
             this.lastDraftRecord = undefined;
@@ -375,9 +445,11 @@ export class FormComponent
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+      fireOnRecordEditionTriggers(this.survey);
     } else {
       this.survey.clear();
     }
+    this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );

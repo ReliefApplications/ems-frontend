@@ -2,7 +2,8 @@
 <section
   [ngClass]="{
     'border-b': !vertical,
-    'pt-2 flex-col gap-y-7': vertical
+    'pt-2 flex-col gap-y-7': vertical,
+    'justify-center': topMenu
   }"
   class="flex"
 >
@@ -23,7 +24,7 @@
             variant="grey"
             [uiTooltip]="'models.page.add' | translate"
             routerLink="./add-page"
-            (click)="largeDevice ? null : nav.toggle()"
+            (click)="largeDevice ? null : nav?.toggle()"
             class="overflow-visible"
           ></ui-button>
         </div>
@@ -76,27 +77,32 @@
             [ngClass]="{ 'w-full max-w-[200px]': !vertical }"
             class="show-icons"
           >
+            <!-- Menu item -->
             <li routerLinkActive="text-primary-600 bg-gray-50">
               <a
                 class="group"
-                (click)="largeDevice ? null : nav.toggle()"
+                (click)="largeDevice ? null : nav?.toggle()"
                 [routerLink]="item.path"
+                [uiTooltip]="item.name"
               >
                 <ui-icon
-                  variant="grey"
+                  *ngIf="item.showIcon !== false && item.icon"
+                  [variant]="topMenu ? 'light' : 'grey'"
                   [icon]="item.icon"
                   [fontFamily]="item.fontFamily"
                   [size]="vertical ? 24 : 18"
                 >
                 </ui-icon>
-                <p class="truncate m-0" [uiTooltip]="item.name">
+                <p *ngIf="item.showName !== false" class="truncate m-0">
                   {{ item.name }}
                 </p>
               </a>
+              <!-- Item actions (edit, delete, visibility) -->
               <div
                 class="flex flex-row items-center"
                 *ngIf="item.action || item.orderable || item.visible === false"
               >
+                <!-- Is page hidden -->
                 <ui-icon
                   variant="grey"
                   class="eye-icon"
@@ -105,6 +111,7 @@
                   icon="visibility_off"
                   >S
                 </ui-icon>
+                <!-- Delete page -->
                 <ui-button
                   variant="danger"
                   class="hide-icons hover:text-primary-600"
@@ -116,6 +123,7 @@
                   [uiTooltip]="item.action.toolTip"
                 >
                 </ui-button>
+                <!-- Move page -->
                 <ui-button
                   variant="grey"
                   [ngClass]="{ 'hide-icons': vertical }"
@@ -139,11 +147,14 @@
                 class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
               >
                 <ui-icon
+                  *ngIf="item.showIcon !== false"
                   variant="grey"
                   [icon]="item.icon"
                   [fontFamily]="item.fontFamily"
                 ></ui-icon>
-                <div class="pl-2">{{ item.name }}</div>
+                <div class="pl-2" *ngIf="item.showName !== false">
+                  {{ item.name }}
+                </div>
               </a>
             </li>
           </div>
@@ -152,6 +163,8 @@
     </ul>
   </div>
 </ng-template>
+
+<!-- Add page button template -->
 <ng-template #addPageButton>
   <ui-button
     [uiTooltip]="!vertical ? ('models.page.add' | translate) : ''"
@@ -161,7 +174,7 @@
     [category]="vertical ? 'secondary' : 'primary'"
     variant="primary"
     routerLink="./add-page"
-    (click)="!vertical ? null : largeDevice ? null : nav.toggle()"
+    (click)="!vertical ? null : largeDevice ? null : nav?.toggle()"
   >
     <span *ngIf="vertical">
       {{ 'models.page.add' | translate }}

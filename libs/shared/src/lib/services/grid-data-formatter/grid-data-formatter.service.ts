@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { get, isNil } from 'lodash';
+import { get, groupBy, isNil, map } from 'lodash';
 import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
@@ -49,6 +49,12 @@ export class GridDataFormatterService {
     value: {},
   };
   /**
+   * Grid row actions
+   */
+  private actionsObj: { actions: any[] } = {
+    actions: [],
+  };
+  /**
    * Grid full screen button flags helper object
    */
   private showFullScreenButtonObj = {
@@ -83,6 +89,9 @@ export class GridDataFormatterService {
     this.valueObj = {
       value: {},
     };
+    this.actionsObj = {
+      actions: [],
+    };
     this.showFullScreenButtonObj = {
       showFullScreenButton: {},
     };
@@ -97,9 +106,18 @@ export class GridDataFormatterService {
   public formatGridRowData(rowData: any, fields: GridField[]) {
     this.initHelperFields();
     this.iterateFields(rowData, fields);
+    this.actionsObj.actions =
+      map(
+        groupBy(get(rowData, '_meta.actions', []), 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+        })
+      ) || [];
     // General properties
     Object.assign(rowData, this.styleObj);
     Object.assign(rowData, this.textObj);
+    Object.assign(rowData, this.actionsObj);
     // Specific types for each field and meta
     Object.assign(rowData, this.iconObj);
     Object.assign(rowData, this.urlObj);
@@ -213,12 +231,54 @@ export class GridDataFormatterService {
           field
         );
         break;
-      default:
+      case 'people-dropdown': {
+        // People dropdown: { userid, firstname, lastname, emailaddress }
+        const personData = getPropertyValue(rowData, field, parent);
+        if (personData && typeof personData === 'object') {
+          const firstName = personData.firstname || '';
+          const lastName = personData.lastname || '';
+          const email = personData.emailaddress || '';
+          const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+          const displayValue = email
+            ? name
+              ? `${name} (${email})`
+              : email
+            : name || personData.userid || '';
+          finalText = this.htmlParserService.applyLayoutFormat(
+            displayValue,
+            field
+          );
+        }
+        break;
+      }
+      case 'people-tagbox': {
+        // People tagbox: array of { userid, firstname, lastname, emailaddress }
+        const peopleData = getPropertyValue(rowData, field, parent);
+        if (Array.isArray(peopleData) && peopleData.length > 0) {
+          const displayValues = peopleData.map((person: any) => {
+            const firstName = person.firstname || '';
+            const lastName = person.lastname || '';
+            const email = person.emailaddress || '';
+            const name = [firstName, lastName].filter(Boolean).join(' ').trim();
+            return email
+              ? name
+                ? `${name} (${email})`
+                : email
+              : name || person.userid || '';
+          });
+          finalText = this.htmlParserService.applyLayoutFormat(
+            displayValues.join(', '),
+            field
+          );
+        }
+        break;
+      }
+      default: {
         finalText = this.htmlParserService.applyLayoutFormat(
           getPropertyValue(rowData, field, parent),
           field
         );
-        break;
+      }
     }
     return finalText ?? '';
   }
