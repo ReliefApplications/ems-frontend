@@ -411,12 +411,44 @@ export class FormModalComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Creates the record, or update it if provided.
    *
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
+
+    // If survey has errors, cancel edition
+    if (this.survey?.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.saving = false;
+      return;
+    }
 
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
@@ -505,6 +537,7 @@ export class FormModalComponent
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
           },
         });
     }
@@ -533,6 +566,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -569,6 +603,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -598,8 +633,34 @@ export class FormModalComponent
         }),
         { error: true }
       );
+      this.saving = false;
     } else {
       if (data) {
+        if (
+          responseType === 'editRecord' &&
+          data.editRecord?.validationErrors?.length
+        ) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.saving = false;
+          return;
+        }
+        if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
+          const recordWithErrors = data.editRecords.find(
+            (r: any) => r.validationErrors?.length
+          );
+          if (recordWithErrors) {
+            this.showLocalErrors(
+              recordWithErrors.validationErrors,
+              recordWithErrors.incrementalId
+            );
+            this.saving = false;
+            return;
+          }
+        }
+
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,
