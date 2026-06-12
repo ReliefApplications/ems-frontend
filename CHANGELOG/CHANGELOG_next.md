@@ -1,3 +1,10 @@
+# [2.23.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.2...v2.23.0-rc.3) (2026-06-12)
+
+
+### Bug Fixes
+
+* improve custom action column sizing and update logic for dynamic widths ([#2871](https://github.com/ReliefApplications/ems-frontend/issues/2871)) ([98648a9](https://github.com/ReliefApplications/ems-frontend/commit/98648a90a829f9a0c6efb4047aa7b66a812c04da)), closes [AB#133813](https://github.com/AB/issues/133813)
+
 # [2.23.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.1...v2.23.0-rc.2) (2026-06-11)
 
 
