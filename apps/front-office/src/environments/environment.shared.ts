@@ -10,5 +10,7 @@ export const sharedEnvironment = {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   version: require('../../../../package.json').version,
   esriApiKey: esriApiKey,
+  // set to true to hide the date & time format picker in the preferences modal
+  hideDateFormatPicker: true,
   /* cSpell:enable */
 };

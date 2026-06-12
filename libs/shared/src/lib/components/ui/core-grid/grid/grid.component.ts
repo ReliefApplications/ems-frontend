@@ -369,6 +369,14 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.data && this.data.data) {
+        this.data.data.forEach((gridRow) => {
+          this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
+        });
+        this.data = { ...this.data };
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

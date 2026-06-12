@@ -35,7 +35,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://hems.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'uk'],
   authConfig,
   theme,
   availableWidgets: [

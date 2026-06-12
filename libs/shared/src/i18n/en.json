@@ -1173,6 +1173,8 @@
 		},
 		"header": {
 			"goToApp": "Go to application",
+			"goToBackOffice": "Navigate to back office",
+			"goToFrontOffice": "Navigate to front office",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
