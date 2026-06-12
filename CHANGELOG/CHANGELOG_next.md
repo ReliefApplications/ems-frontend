@@ -1,3 +1,10 @@
+# [2.23.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.1...v2.23.0-rc.2) (2026-06-11)
+
+
+### Bug Fixes
+
+* Some errors not taken into account before sending form would end up in bad UX ([#2869](https://github.com/ReliefApplications/ems-frontend/issues/2869)) ([4009491](https://github.com/ReliefApplications/ems-frontend/commit/4009491cd2525b2ad24ce6d5a4cf89d426917e9c)), closes [AB#133817](https://github.com/AB/issues/133817)
+
 # [2.23.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0...v2.23.0-rc.1) (2026-05-29)
 
 

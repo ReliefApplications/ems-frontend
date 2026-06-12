@@ -1,3 +1,23 @@
+# [2.22.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.22.0-beta.1...v2.22.0-beta.2) (2025-10-20)
+
+
+### Features
+
+* Add lowercase & uppercase methods to widget templating ([#2827](https://github.com/ReliefApplications/ems-frontend/issues/2827)) ([8db5524](https://github.com/ReliefApplications/ems-frontend/commit/8db55240d21226aebae2e8063c92d7b91720e576)), closes [AB#122364](https://github.com/AB/issues/122364)
+* Admins can configure auto redirection after cloning from dashboard ([463ea7a](https://github.com/ReliefApplications/ems-frontend/commit/463ea7a8c9e8083ffb3114609a53670079449a7c)), closes [AB#118658](https://github.com/AB/issues/118658)
+
+# [2.22.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.21.1...v2.22.0-beta.1) (2025-09-23)
+
+
+### Bug Fixes
+
+* Custom adorners for panel questions without elements would break form edition ([d3dd7c4](https://github.com/ReliefApplications/ems-frontend/commit/d3dd7c48a120f93e83326e7e523783c0c8f7f9e3)), closes [AB#120779](https://github.com/AB/issues/120779)
+
+
+### Features
+
+* allow to replace any field in widget filters ([#2820](https://github.com/ReliefApplications/ems-frontend/issues/2820)) ([335bb57](https://github.com/ReliefApplications/ems-frontend/commit/335bb57e272cf575229322aaaa21b88837a9f64a)), closes [AB#120295](https://github.com/AB/issues/120295)
+
 # [2.17.0-beta.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.22...v2.17.0-beta.23) (2025-02-10)
 
 
