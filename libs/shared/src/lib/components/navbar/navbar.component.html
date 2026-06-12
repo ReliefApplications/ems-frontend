@@ -83,7 +83,9 @@
                 class="group"
                 (click)="largeDevice ? null : nav?.toggle()"
                 [routerLink]="item.path"
-                [uiTooltip]="item.nameTranslations || item.name | sharedLocalize"
+                [uiTooltip]="
+                  item.nameTranslations || item.name | sharedLocalize
+                "
               >
                 <ui-icon
                   *ngIf="item.showIcon !== false && item.icon"

@@ -2,9 +2,11 @@
 
 <ng-template #headerTemplate>
   <div class="overflow-hidden flex-1 flex gap-1 items-center">
-    <span class="widget-title" [title]="(settings ? settings.title : '') | sharedLocalize">{{
-      settings.title | sharedLocalize
-    }}</span>
+    <span
+      class="widget-title"
+      [title]="(settings ? settings.title : '') | sharedLocalize"
+      >{{ settings.title | sharedLocalize }}</span
+    >
     <span
       *ngIf="settings?.widgetDisplay?.tooltip"
       class="widget-tooltip"
