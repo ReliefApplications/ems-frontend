@@ -59,7 +59,7 @@ import { ActionButton } from '../../../widgets/grid/action-button.type';
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
 /** Maximum column width */
-const MAX_COLUMN_WIDTH = 250;
+const MAX_COLUMN_WIDTH = 400;
 
 /**
  * Test if an element match a css selector
@@ -373,6 +373,22 @@ export class GridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (
+      changes['status'] &&
+      this.status.error &&
+      this.status.message &&
+      this.environment === 'backoffice'
+    ) {
+      const message = this.status.message;
+      setTimeout(() => {
+        if (this.snackBarRef) {
+          this.snackBarRef.instance.dismiss();
+        }
+        this.snackBarRef = this.snackBar.openSnackBar(message, {
+          error: true,
+        });
+      });
+    }
     if (
       !isEqual(
         changes['actions']?.previousValue,
@@ -1030,14 +1046,6 @@ export class GridComponent
    */
   public getStatusMessage(): string {
     if (this.status.error) {
-      if (this.status.message && this.environment === 'backoffice') {
-        if (this.snackBarRef) {
-          this.snackBarRef.instance.dismiss();
-        }
-        this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
-          error: true,
-        });
-      }
       return this.translate.instant(
         `components.widget.grid.errors.invalid.${this.environment}`
       );
@@ -1124,47 +1132,14 @@ export class GridComponent
    */
   private setColumnsWidth() {
     const gridElement = this.gridRef.nativeElement;
-    // Stores the columns width percentage
+    // Stores the columns width character length
     const activeColumns: { [key: string]: number } = {};
 
-    // get the width of visible sticky columns
-    const stickyColumns = this.columns.filter(
-      (column) => !column.hidden && !!column.sticky
-    );
-    let totalWidthSticky = 0;
-    stickyColumns.forEach((column: any) => {
-      if (column.width) {
-        totalWidthSticky += column.width;
-      }
-    });
-    // fixed amount required for select column
-    if (this.selectable) {
-      totalWidthSticky += 41;
-    }
-
-    // Set the width of fixed width columns
-    const fixedWidthColumns = this.columns.filter(
-      (column) =>
-        this.fields.find(
-          (field) => field.name === column.field && !column.hidden
-        )?.fixedWidth
-    );
-    fixedWidthColumns.forEach(
-      (column) =>
-        (column.width = this.fields.find(
-          (field) => field.name === column.field
-        ).fixedWidth)
-    );
-    /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
-    const gridTotalWidth =
-      gridElement.offsetWidth -
-      totalWidthSticky -
-      fixedWidthColumns.reduce((sum, column) => sum + column.width, 0) -
-      12;
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
       (column) => !column.hidden && !!column.title && !column.sticky
     );
+
     // Verify what kind of field is and deal with this logic
     const typesFields: {
       field: string;
@@ -1186,26 +1161,20 @@ export class GridComponent
           });
         }
       });
-    // Get average column width given the active columns and the grid's actual width
-    const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
-    // Max size of the column is the average * 2
-    const maxPixelsPerColumn = averagePixelsPerColumn * 2;
-    // Min size of the column is the average / 2
-    const minPixelsPerColumn = averagePixelsPerColumn / 2;
+
     // Most of font sizes follow a 3:5 aspect ratio
     const pixelWidthPerCharacter =
-      parseInt(window.getComputedStyle(document.body).fontSize) * 0.6;
+      parseInt(window.getComputedStyle(document.body).fontSize) * 0.6 || 9.6;
+
     // Get each column content with the max length
     // or the column title if no content is added in the current data
     typesFields.forEach((type: any) => {
+      const titleSize = type.title ? type.title.length : 0;
+      let maxContentSize = titleSize;
+
       this.data.data.forEach((data: any) => {
-        if (
-          activeColumns[type.field] === undefined ||
-          (data[type.field] &&
-            activeColumns[type.field] < data[type.field].length) ||
-          (type.title && activeColumns[type.field] < type.title.length)
-        ) {
-          const titleSize = type.title.length;
+        const val = get(data, type.field);
+        if (val !== undefined && val !== null) {
           let contentSize = 0;
           switch (type.type) {
             case 'time':
@@ -1213,151 +1182,74 @@ export class GridComponent
             case 'datetime':
             case 'date': {
               contentSize = (
-                this.gridDataFormatterService.datePipe.transform(
-                  data[type.field]
-                ) || ''
+                this.gridDataFormatterService.datePipe.transform(val) || ''
               ).length;
               break;
             }
             case 'file': {
-              contentSize = data[type.field]
-                ? data[type.field][0]?.name?.length
-                : 0;
+              contentSize = val[0]?.name ? val[0].name.length : 0;
               break;
             }
             case 'numeric': {
-              contentSize = data[type.field]?.toString()?.length;
+              contentSize = val.toString().length;
               break;
             }
             case 'checkbox':
             case 'tagbox': {
               let checkboxLength = 0;
-              (data[type.field] || []).forEach((obj: any) => {
-                checkboxLength += obj.length;
+              (val || []).forEach((obj: any) => {
+                checkboxLength += (obj || '').toString().length;
               });
               contentSize = checkboxLength;
               break;
             }
             case 'boolean':
             case 'color': {
-              //min size
               contentSize = 0;
               break;
             }
             default: {
-              contentSize = (data[type.field] ?? '').length;
+              contentSize = val.toString().length;
             }
           }
-
-          activeColumns[type.field] = contentSize
-            ? Math.max(titleSize, contentSize)
-            : Math.max(titleSize, 0);
+          if (contentSize > maxContentSize) {
+            maxContentSize = contentSize;
+          }
         }
       });
+
+      activeColumns[type.field] = maxContentSize;
     });
 
-    const avgPixelPerCol = gridTotalWidth / typesFields.length;
-
-    // If there are too many columns, we can't do the calculations by percentage
-    // Instead, clamp the columns to the min and max width
-    if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
-      this.columns.forEach((column) => {
-        if (!column.hidden) {
-          const colWidth = activeColumns[column.field];
-          if (colWidth) {
-            column.width = Math.min(
-              Math.max(colWidth * pixelWidthPerCharacter, MIN_COLUMN_WIDTH),
-              MAX_COLUMN_WIDTH
-            );
-          }
-
-          // Make sure that every column has a width set
-          if (column.width <= 0) {
-            column.width = MIN_COLUMN_WIDTH;
-          }
-        }
-      });
-      return;
-    }
-    // Calculates the widest column in character number
-    const maxCharacterToDisplay = Math.floor(
-      maxPixelsPerColumn / pixelWidthPerCharacter
-    );
-    // Calculates the smallest column in character number
-    const minCharacterToDisplay = Math.floor(
-      minPixelsPerColumn / pixelWidthPerCharacter
-    );
-
-    // Total character count after set the max width
-    let totalCharacterCountColumns = 0;
-    let entries = Object.entries(activeColumns);
-    for (const [key, value] of entries) {
-      if (value > maxCharacterToDisplay) {
-        activeColumns[key] = maxCharacterToDisplay;
-      } else if (value < minCharacterToDisplay) {
-        activeColumns[key] = minCharacterToDisplay;
-      }
-      if (activeColumns[key]) {
-        totalCharacterCountColumns += activeColumns[key];
-      }
-    }
-
-    entries = Object.entries(activeColumns);
-    const minPercentage = Math.floor(
-      (minCharacterToDisplay / totalCharacterCountColumns) * 100
-    );
-    let total_percentage = 0;
-    const arrayColumns = [];
-    for (const [key, value] of entries) {
-      activeColumns[key] = Math.floor(
-        (value / totalCharacterCountColumns) * 100
-      );
-      total_percentage += activeColumns[key];
-      arrayColumns.push({ key: key, value: activeColumns[key] });
-    }
-
-    // Now adjust the percentages of each column
-    // Order the values from thinner to wider column element
-    arrayColumns.sort((a, b) => a.value - b.value);
-
-    if (arrayColumns.length > 0) {
-      const widestColumnIndex = arrayColumns.length - 1;
-      // if the value of the smallest element is 4x times smaller than the widest one
-      // or the total percentage did not reach 100% after all conversions
-      // we adjust the overall percentages set for columns
-      while (
-        arrayColumns[0].value < 0.25 * arrayColumns[widestColumnIndex].value ||
-        total_percentage < 100
-      ) {
-        // Add the percentage available
-        if (total_percentage < 100) {
-          activeColumns[arrayColumns[0].key] += 1;
-          total_percentage += 1;
-          arrayColumns[0].value += 1;
-        } else {
-          // Remove percentage from the biggest and put in the smallest
-          activeColumns[arrayColumns[0].key] += 1;
-          activeColumns[arrayColumns[widestColumnIndex].key] -= 1;
-          arrayColumns[0].value += 1;
-          arrayColumns[widestColumnIndex].value -= 1;
-        }
-        arrayColumns.sort((a, b) => a.value - b.value);
-      }
-    }
-
-    // Finally, resize the columns
+    // Resize the columns directly based on character length
     availableColumns.forEach((column) => {
+      // Respect fixedWidth fields
+      const fieldDef = this.fields.find((f) => f.name === column.field);
+      if (fieldDef?.fixedWidth) {
+        column.width = fieldDef.fixedWidth;
+        return;
+      }
+
       const columnFieldType = typesFields.find(
-        (type: any) => column.title === type.title && activeColumns[type.field]
+        (type: any) =>
+          (column.field ? column.field === type.field : column.title === type.title) &&
+          activeColumns[type.field] !== undefined
       );
       if (columnFieldType) {
-        column.width = Math.floor(
-          (activeColumns[columnFieldType.field] * gridTotalWidth) / 100
+        const colChars = activeColumns[columnFieldType.field];
+        // Add 36px padding for cell padding, border, sort icon
+        const padding = 36;
+        column.width = Math.min(
+          Math.max(colChars * pixelWidthPerCharacter + padding, MIN_COLUMN_WIDTH),
+          MAX_COLUMN_WIDTH
         );
       } else {
-        // If contains a title, we set the minPercentage
         if (column.title) {
-          column.width = Math.floor((minPercentage * gridTotalWidth) / 100);
+          const padding = 36;
+          column.width = Math.min(
+            Math.max(column.title.length * pixelWidthPerCharacter + padding, MIN_COLUMN_WIDTH),
+            MAX_COLUMN_WIDTH
+          );
         }
       }
       // Make sure that every column has a width set

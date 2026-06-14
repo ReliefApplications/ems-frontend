@@ -91,6 +91,9 @@ export function getPropertyValue(
       return meta.choices.find((x: any) => x.value == value)?.text || value;
     }
   } else {
+    if (parent) {
+      value = get(item, field.name);
+    }
     if (meta.type === 'geospatial') {
       return [
         get(value, 'properties.address'),

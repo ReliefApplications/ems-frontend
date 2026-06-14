@@ -14,6 +14,7 @@ export interface GridSettings {
       order?: 'asc' | 'desc';
     };
     filter?: CompositeFilterDescriptor;
+    archived?: boolean;
   };
   actions?: GridActions;
   // showDetails?: boolean;
@@ -40,4 +41,5 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  restore?: boolean;
 }

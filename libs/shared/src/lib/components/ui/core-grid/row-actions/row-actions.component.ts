@@ -13,12 +13,13 @@ export class GridRowActionsComponent {
 
   // === ACTIONS ===
   /** Actions */
-  @Input() actions = {
+  @Input() actions: any = {
     update: false,
     delete: false,
     history: false,
     convert: false,
     remove: false,
+    restore: false,
   };
   /** Event emitter for the action event */
   @Output() action = new EventEmitter();
@@ -28,6 +29,7 @@ export class GridRowActionsComponent {
     return (
       this.actions.history ||
       this.actions.remove ||
+      this.actions.restore ||
       (this.item.canDelete && this.actions.delete) ||
       (this.item.canUpdate && (this.actions.update || this.actions.convert))
     );
