@@ -121,6 +121,7 @@ export const buildSearchButton = (
       
       console.log('[buildSearchButton] opening ResourceGridModalComponent with data:', {
         multiselect,
+        displayField: qResource.displayField || 'id',
         gridSettings: {
           ...settingsForm,
           filter: buildFilter(),
@@ -137,6 +138,7 @@ export const buildSearchButton = (
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
+            displayField: qResource.displayField || 'id',
             gridSettings: {
               ...settingsForm,
               filter: buildFilter(),
@@ -150,13 +152,25 @@ export const buildSearchButton = (
           },
           panelClass: 'closable-dialog',
         });
-        dialogRef.closed.subscribe((rows: any) => {
-          console.log('[buildSearchButton] modal closed, rows:', rows);
-          if (!rows) {
+        dialogRef.closed.subscribe((result: any) => {
+          console.log('[buildSearchButton] modal closed, result:', result);
+          if (!result) {
             return;
           }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
+          const choices = question.contentQuestion.choices || [];
+          result.forEach((item: any) => {
+            if (!choices.find((c: any) => c.value === item.id)) {
+              choices.push({
+                value: item.id,
+                text: item.text,
+              });
+            }
+          });
+          question.contentQuestion.choices = choices;
+
+          if (result.length > 0) {
+            const values = result.map((item: any) => item.id);
+            question.value = multiselect ? values : values[0];
           } else {
             question.value = null;
           }

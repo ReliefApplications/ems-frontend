@@ -17,6 +17,7 @@ interface DialogData {
   multiselect?: boolean;
   selectedRows?: string[];
   selectable?: boolean;
+  displayField?: string;
 }
 
 /**
@@ -46,6 +47,8 @@ export class ResourceGridModalComponent {
   public gridSettings: GridSettings;
   /** Selected rows */
   public selectedRows: any[] = [];
+  /** Mapped selected items (id -> display field text) */
+  public selectedItemsMap: Map<string, string> = new Map();
 
   /**
    * Is the data selectable
@@ -98,8 +101,14 @@ export class ResourceGridModalComponent {
    * @param selection selection event
    */
   onSelectionChange(selection: any): void {
+    const displayField = this.data.displayField || 'id';
     if (this.multiSelect) {
       if (selection.selectedRows.length > 0) {
+        selection.selectedRows.forEach((x: any) => {
+          const id = x.dataItem.id;
+          const text = x.dataItem[displayField] ?? id;
+          this.selectedItemsMap.set(id, text);
+        });
         this.selectedRows = this.selectedRows.concat(
           selection.selectedRows.map((x: any) => x.dataItem.id)
         );
@@ -108,11 +117,21 @@ export class ResourceGridModalComponent {
         const deselectedRows = selection.deselectedRows.map(
           (r: any) => r.dataItem.id
         );
+        deselectedRows.forEach((id: string) => {
+          this.selectedItemsMap.delete(id);
+        });
         this.selectedRows = this.selectedRows.filter(
           (r: any) => !deselectedRows.includes(r)
         );
       }
     } else {
+      this.selectedItemsMap.clear();
+      if (selection.selectedRows.length > 0) {
+        const x = selection.selectedRows[0];
+        const id = x.dataItem.id;
+        const text = x.dataItem[displayField] ?? id;
+        this.selectedItemsMap.set(id, text);
+      }
       this.selectedRows = selection.selectedRows.map((x: any) => x.dataItem.id);
     }
   }
@@ -125,7 +144,11 @@ export class ResourceGridModalComponent {
   closeModal(saveChanges = true): void {
     this.ref.tick();
     if (saveChanges) {
-      this.dialogRef.close(this.selectedRows as any);
+      const result = this.selectedRows.map((id) => ({
+        id,
+        text: this.selectedItemsMap.get(id) || id,
+      }));
+      this.dialogRef.close(result as any);
     }
   }
 }
