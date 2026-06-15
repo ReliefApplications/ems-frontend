@@ -17,6 +17,8 @@ export const EDIT_RESOURCE = gql`
     editResource(id: $id, permissions: $permissions) {
       id
       name
+      queryName
+      singleQueryName
       createdAt
       fields
       forms {

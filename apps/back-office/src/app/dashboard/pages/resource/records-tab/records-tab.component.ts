@@ -74,7 +74,7 @@ export class RecordsTabComponent
       parentRoute = parentRoute.parent;
     }
 
-    if (history.state.resource) {
+    if (history.state.resource && history.state.resource.queryName && history.state.resource.fields) {
       this.resource = history.state.resource;
       this.waitForQueryBuilder();
     } else if (resourceId) {
@@ -208,6 +208,7 @@ export class RecordsTabComponent
         restore: this.showDeletedRecords,
         navigateToPage: true,
         search: false,
+        export: true,
       },
     };
   }
@@ -236,7 +237,10 @@ export class RecordsTabComponent
   onDownload(type: string): void {
     const path = `download/resource/records/${this.resource.id}`;
     const fileName = `${this.resource.name}.${type}`;
-    const queryString = new URLSearchParams({ type }).toString();
+    const queryString = new URLSearchParams({
+      type,
+      archived: String(this.showDeletedRecords),
+    }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,
       `text/${type};charset=utf-8;`,

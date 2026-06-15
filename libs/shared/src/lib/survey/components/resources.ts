@@ -86,15 +86,15 @@ export const init = (
     displayField: string
   ) => {
     const query = gql`
-      query GetSingleRecord($id: ID!) {
-        ${details.singleQueryName}(id: $id) {
+      query GetSingleRecord($id: ID!, $display: Boolean) {
+        ${details.singleQueryName}(id: $id, display: $display) {
           id
           ${displayField}
         }
       }
     `;
     return apollo
-      .query<any>({ query, variables: { id: recordId } })
+      .query<any>({ query, variables: { id: recordId, display: true } })
       .pipe(map(({ data }) => data[details.singleQueryName]));
   };
 

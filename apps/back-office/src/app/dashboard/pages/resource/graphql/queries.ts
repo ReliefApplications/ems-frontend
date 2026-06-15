@@ -7,6 +7,7 @@ export const GET_RESOURCE_BY_ID = gql`
       id
       name
       queryName
+      singleQueryName
       createdAt
       fields
       metadata {

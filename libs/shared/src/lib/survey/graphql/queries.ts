@@ -64,10 +64,10 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
 
 /** Fetch a single record's full data for survey variable context */
 export const GET_RECORD_DATA_BY_ID = gql`
-  query GetRecordDataById($id: ID!) {
+  query GetRecordDataById($id: ID!, $display: Boolean) {
     record(id: $id) {
       id
-      data
+      data(display: $display)
     }
   }
 `;
