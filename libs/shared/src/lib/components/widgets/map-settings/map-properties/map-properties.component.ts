@@ -14,7 +14,10 @@ import { createGeographicExtent } from '../map-forms';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends UnsubscribeComponent implements OnInit {
+export class MapPropertiesComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Current form group */
   @Input() form!: UntypedFormGroup;
   /** Map settings */

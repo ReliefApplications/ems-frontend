@@ -20,7 +20,7 @@
     <span
       *ngIf="settings.widgetDisplay?.tooltip"
       class="widget-tooltip"
-      [title]="settings.widgetDisplay.tooltip"
+      [title]="settings.widgetDisplay.tooltip | sharedLocalize"
       >?</span
     >
   </div>
