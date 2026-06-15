@@ -11,6 +11,7 @@ import {
   DashboardFilterModule,
   DashboardExportButtonComponent,
   ActionButtonsComponent,
+  LocalizePipe,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { TranslateModule } from '@ngx-translate/core';
@@ -60,6 +61,7 @@ import { ContextSelectorComponent } from './components/context-selector/context-
     ActionButtonsComponent,
     ContextSelectorComponent,
     DashboardExportButtonComponent,
+    LocalizePipe,
   ],
   exports: [DashboardComponent],
 })

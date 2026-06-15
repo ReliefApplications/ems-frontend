@@ -111,20 +111,23 @@ export class DashboardService {
    *
    * @param dashboardId id of the dashboard
    * @param name new name
+   * @param nameTranslations name translations
    * @param callback callback method
    */
   public editName(
     dashboardId: string | undefined,
     name: string,
+    nameTranslations?: Partial<Record<string, string>>,
     callback?: any
   ): void {
-    if (dashboardId) return;
+    if (!dashboardId) return;
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: dashboardId,
           name,
+          nameTranslations,
         },
       })
       .subscribe(() => {

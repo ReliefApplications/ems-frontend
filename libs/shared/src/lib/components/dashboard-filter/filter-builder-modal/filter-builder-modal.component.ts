@@ -7,14 +7,15 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { PageModel, SurveyModel } from 'survey-core';
+import { PageModel, SurveyModel, surveyLocalization } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
@@ -173,6 +174,8 @@ export class FilterBuilderModalComponent
 {
   /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
+  /** Emits on destroy to tear down language-change subscription. */
+  private destroy$ = new Subject<void>();
 
   /**
    * Dialog component to build the filter
@@ -183,6 +186,7 @@ export class FilterBuilderModalComponent
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
    * @param injector Angular injector
+   * @param translate Angular translate service, used to localize the survey creator UI
    */
   constructor(
     private formService: FormService,
@@ -190,8 +194,21 @@ export class FilterBuilderModalComponent
     @Inject(DIALOG_DATA) public data: DialogData,
     private formHelpersService: FormHelpersService,
     private snackBar: SnackbarService,
-    private injector: Injector
-  ) {}
+    private injector: Injector,
+    private translate: TranslateService
+  ) {
+    // Localize the survey creator UI (button labels, property panel, etc.)
+    // in the same language as the rest of the platform.
+    surveyLocalization.currentLocale = this.translate.currentLang || 'en';
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ lang }) => {
+        surveyLocalization.currentLocale = lang || 'en';
+        if (this.surveyCreator) {
+          this.surveyCreator.survey.locale = lang || 'en';
+        }
+      });
+  }
 
   ngOnInit(): void {
     // Initialize survey creator instance without custom questions
@@ -218,7 +235,7 @@ export class FilterBuilderModalComponent
       showEmbededSurveyTab: false,
       showJSONEditorTab: false,
       generateValidJSON: true,
-      showTranslationTab: false,
+      showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
@@ -277,6 +294,9 @@ export class FilterBuilderModalComponent
     });
 
     this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
+    // Render the preview survey in the user's UI language so question titles,
+    // choices and help text reflect any per-locale translations the user added.
+    this.surveyCreator.survey.locale = surveyLocalization.currentLocale || 'en';
   }
 
   /**
@@ -319,5 +339,7 @@ export class FilterBuilderModalComponent
   ngOnDestroy(): void {
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config
     this.formService.initialize();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

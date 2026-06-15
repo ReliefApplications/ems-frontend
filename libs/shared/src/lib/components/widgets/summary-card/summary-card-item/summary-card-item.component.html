@@ -1,7 +1,9 @@
 <!-- Default Header -->
 <div class="widget-header k-card-header" *ngIf="card.title">
   <!-- Title -->
-  <span class="widget-title" [title]="card.title">{{ card.title }}</span>
+  <span class="widget-title" [title]="card.title | sharedLocalize">{{
+    card.title | sharedLocalize
+  }}</span>
   <!-- Actions -->
   <div class="floating-button"></div>
 </div>
@@ -12,7 +14,7 @@
     card.wholeCardStyles !== null &&
     card.wholeCardStyles !== undefined
   "
-  [html]="card.html"
+  [html]="card.html | sharedLocalize"
   [fields]="fields"
   [fieldsValue]="fieldsValue"
   [styles]="card.useStyles ? styles : []"

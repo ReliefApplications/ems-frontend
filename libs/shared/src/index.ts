@@ -65,6 +65,7 @@ export * from './lib/models/step.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/user.model';
 export * from './lib/models/workflow.model';
+export * from './lib/models/localized-string.model';
 
 // === COMPONENTS ===
 export * from './lib/components/access/public-api';
@@ -151,6 +152,7 @@ export * from '../.storybook/storybook-translate.module';
 export * from './lib/pipes/cron-parser/public-api';
 export * from './lib/pipes/date/public-api';
 export * from './lib/pipes/readable-cron/public-api';
+export * from './lib/pipes/localize/localize.pipe';
 
 // === UTILS ===
 export * from './lib/utils/public-api';

@@ -1827,6 +1827,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"details": "Détails",
 					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
@@ -2008,6 +2009,7 @@
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Détails",
 								"label": "Nom de la colonne",
 								"placeholder": "Entrez un nom pour la colonne..."
 							},

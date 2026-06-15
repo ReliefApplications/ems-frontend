@@ -7,6 +7,7 @@ import {
   SkeletonModule,
   EditableTextModule,
   DashboardExportButtonComponent,
+  LocalizePipe,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { IconModule, TooltipModule } from '@oort-front/ui';
@@ -31,6 +32,7 @@ import { ButtonModule, SpinnerModule } from '@oort-front/ui';
     ButtonModule,
     TooltipModule,
     DashboardExportButtonComponent,
+    LocalizePipe,
   ],
   exports: [WorkflowComponent],
 })

@@ -64,6 +64,7 @@ export const GET_PAGE_BY_ID = gql`
         showIcon
       }
       name
+      nameTranslations
       visible
       createdAt
       modifiedAt
