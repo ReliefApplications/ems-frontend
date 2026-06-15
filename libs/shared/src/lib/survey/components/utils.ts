@@ -27,6 +27,7 @@ export const buildSearchButton = (
   document: Document,
   ngZone: NgZone
 ): any => {
+  const qResource = question as any;
   const searchButton = document.createElement('button');
   searchButton.id = 'resourceSearchButton';
   searchButton.innerText = surveyLocalization.getString(
@@ -34,18 +35,27 @@ export const buildSearchButton = (
     (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
+  console.log('[buildSearchButton] Initializing for:', question.name, {
+    fieldsSettingsForm,
+    canSearch: question.canSearch,
+    isReadOnly: question.isReadOnly,
+    displayField: qResource.displayField,
+    resource: qResource.resource
+  });
+
   let settingsForm = fieldsSettingsForm;
-  const qResource = question as any;
   if (!settingsForm || !settingsForm.fields || settingsForm.fields.length === 0) {
     settingsForm = {
       ...(settingsForm || {}),
       fields: qResource.displayField ? ['id', qResource.displayField] : ['id'],
     };
+    console.log('[buildSearchButton] Stubbed settingsForm:', settingsForm);
   }
 
   temporaryRecords.valueChanges.subscribe((res: any) => {
     if (res) {
       settingsForm.temporaryRecords = res;
+      console.log('[buildSearchButton] temporaryRecords updated:', res);
     }
   });
 
@@ -86,41 +96,70 @@ export const buildSearchButton = (
     return filter;
   };
 
-  searchButton.onclick = async () => {
-    if (!settingsForm.name) {
-      settingsForm.name = qResource.queryName || '';
-    }
-    const { ResourceGridModalComponent } = await import(
-      '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
-    );
-    ngZone.run(() => {
-      const dialogRef = dialog.open(ResourceGridModalComponent, {
-        data: {
-          multiselect,
-          gridSettings: {
-            ...settingsForm,
-            filter: buildFilter(),
-          },
-          selectedRows: Array.isArray(question.value)
-            ? question.value
-            : question.value
-            ? [question.value]
-            : [],
-          selectable: true,
-        },
-        panelClass: 'closable-dialog',
-      });
-      dialogRef.closed.subscribe((rows: any) => {
-        if (!rows) {
-          return;
-        }
-        if (rows.length > 0) {
-          question.value = multiselect ? rows : rows[0];
-        } else {
-          question.value = null;
-        }
-      });
+  searchButton.onclick = async (event) => {
+    console.log('[buildSearchButton] click event triggered!', {
+      questionName: question.name,
+      settingsForm,
+      queryName: qResource.queryName,
+      event
     });
+    try {
+      if (!settingsForm.name) {
+        settingsForm.name = qResource.queryName || '';
+        console.log('[buildSearchButton] resolved queryName to settingsForm.name:', settingsForm.name);
+      }
+      
+      console.log('[buildSearchButton] importing ResourceGridModalComponent...');
+      const { ResourceGridModalComponent } = await import(
+        '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
+      );
+      
+      console.log('[buildSearchButton] opening ResourceGridModalComponent with data:', {
+        multiselect,
+        gridSettings: {
+          ...settingsForm,
+          filter: buildFilter(),
+        },
+        selectedRows: Array.isArray(question.value)
+          ? question.value
+          : question.value
+          ? [question.value]
+          : [],
+        selectable: true,
+      });
+
+      ngZone.run(() => {
+        const dialogRef = dialog.open(ResourceGridModalComponent, {
+          data: {
+            multiselect,
+            gridSettings: {
+              ...settingsForm,
+              filter: buildFilter(),
+            },
+            selectedRows: Array.isArray(question.value)
+              ? question.value
+              : question.value
+              ? [question.value]
+              : [],
+            selectable: true,
+          },
+          panelClass: 'closable-dialog',
+        });
+        dialogRef.closed.subscribe((rows: any) => {
+          console.log('[buildSearchButton] modal closed, rows:', rows);
+          if (!rows) {
+            return;
+          }
+          if (rows.length > 0) {
+            question.value = multiselect ? rows : rows[0];
+          } else {
+            question.value = null;
+          }
+        });
+      });
+    } catch (err: any) {
+      console.error('[buildSearchButton] Error in click handler:', err);
+    }
   };
 
   searchButton.style.display =
