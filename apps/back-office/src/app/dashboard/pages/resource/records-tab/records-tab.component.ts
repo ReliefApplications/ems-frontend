@@ -130,6 +130,9 @@ export class RecordsTabComponent
       });
   }
 
+  /**
+   *
+   */
   private buildGridSettings(): void {
     const queryName = this.resource?.queryName || '';
     const fields = this.queryBuilder.getFields(queryName).map((field: any) => {

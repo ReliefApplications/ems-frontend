@@ -1131,7 +1131,6 @@ export class GridComponent
    * Automatically set the width of each column
    */
   private setColumnsWidth() {
-    const gridElement = this.gridRef.nativeElement;
     // Stores the columns width character length
     const activeColumns: { [key: string]: number } = {};
 
@@ -1232,7 +1231,9 @@ export class GridComponent
 
       const columnFieldType = typesFields.find(
         (type: any) =>
-          (column.field ? column.field === type.field : column.title === type.title) &&
+          (column.field
+            ? column.field === type.field
+            : column.title === type.title) &&
           activeColumns[type.field] !== undefined
       );
       if (columnFieldType) {
@@ -1240,14 +1241,20 @@ export class GridComponent
         // Add 36px padding for cell padding, border, sort icon
         const padding = 36;
         column.width = Math.min(
-          Math.max(colChars * pixelWidthPerCharacter + padding, MIN_COLUMN_WIDTH),
+          Math.max(
+            colChars * pixelWidthPerCharacter + padding,
+            MIN_COLUMN_WIDTH
+          ),
           MAX_COLUMN_WIDTH
         );
       } else {
         if (column.title) {
           const padding = 36;
           column.width = Math.min(
-            Math.max(column.title.length * pixelWidthPerCharacter + padding, MIN_COLUMN_WIDTH),
+            Math.max(
+              column.title.length * pixelWidthPerCharacter + padding,
+              MIN_COLUMN_WIDTH
+            ),
             MAX_COLUMN_WIDTH
           );
         }

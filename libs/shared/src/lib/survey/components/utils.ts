@@ -41,15 +41,20 @@ export const buildSearchButton = (
     canSearch: question.canSearch,
     isReadOnly: question.isReadOnly,
     displayField: qResource.displayField,
-    resource: qResource.resource
+    resource: qResource.resource,
   });
 
   let settingsForm = fieldsSettingsForm;
-  if (!settingsForm || !settingsForm.fields || settingsForm.fields.length === 0) {
+  if (
+    !settingsForm ||
+    !settingsForm.fields ||
+    settingsForm.fields.length === 0
+  ) {
     const displayField = qResource.displayField;
-    const defaultFields = displayField && displayField !== 'id'
-      ? [createDefaultField('id'), createDefaultField(displayField)]
-      : [createDefaultField('id')];
+    const defaultFields =
+      displayField && displayField !== 'id'
+        ? [createDefaultField('id'), createDefaultField(displayField)]
+        : [createDefaultField('id')];
     settingsForm = {
       ...(settingsForm || {}),
       fields: defaultFields,
@@ -106,33 +111,41 @@ export const buildSearchButton = (
       questionName: question.name,
       settingsForm,
       queryName: qResource.queryName,
-      event
+      event,
     });
     try {
       if (!settingsForm.name) {
         settingsForm.name = qResource.queryName || '';
-        console.log('[buildSearchButton] resolved queryName to settingsForm.name:', settingsForm.name);
+        console.log(
+          '[buildSearchButton] resolved queryName to settingsForm.name:',
+          settingsForm.name
+        );
       }
-      
-      console.log('[buildSearchButton] importing ResourceGridModalComponent...');
+
+      console.log(
+        '[buildSearchButton] importing ResourceGridModalComponent...'
+      );
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
-      
-      console.log('[buildSearchButton] opening ResourceGridModalComponent with data:', {
-        multiselect,
-        displayField: qResource.displayField || 'id',
-        gridSettings: {
-          ...settingsForm,
-          filter: buildFilter(),
-        },
-        selectedRows: Array.isArray(question.value)
-          ? question.value
-          : question.value
-          ? [question.value]
-          : [],
-        selectable: true,
-      });
+
+      console.log(
+        '[buildSearchButton] opening ResourceGridModalComponent with data:',
+        {
+          multiselect,
+          displayField: qResource.displayField || 'id',
+          gridSettings: {
+            ...settingsForm,
+            filter: buildFilter(),
+          },
+          selectedRows: Array.isArray(question.value)
+            ? question.value
+            : question.value
+            ? [question.value]
+            : [],
+          selectable: true,
+        }
+      );
 
       ngZone.run(() => {
         const dialogRef = dialog.open(ResourceGridModalComponent, {

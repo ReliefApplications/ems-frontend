@@ -186,7 +186,9 @@ export class GridService {
               layoutFields,
               fullName,
               {
-                ...(!typeName.endsWith(REFERENCE_DATA_END) && { disabled: true }),
+                ...(!typeName.endsWith(REFERENCE_DATA_END) && {
+                  disabled: true,
+                }),
                 hidden: !typeName.endsWith(REFERENCE_DATA_END),
                 filter: false,
               }
