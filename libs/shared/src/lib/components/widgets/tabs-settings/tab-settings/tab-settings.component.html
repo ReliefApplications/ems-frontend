@@ -16,8 +16,8 @@
 </div>
 <!-- Tab label & display options -->
 <div [formGroup]="tabGroup" class="flex flex-col gap-4">
-  <div class="flex flex-col gap-1">
-    <label class="text-sm font-medium">
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <label>
       {{ 'common.label' | translate }}
     </label>
     <shared-localized-input formControlName="label"></shared-localized-input>
