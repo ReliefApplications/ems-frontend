@@ -87,6 +87,9 @@ export const buildSearchButton = (
   };
 
   searchButton.onclick = async () => {
+    if (!settingsForm.name) {
+      settingsForm.name = qResource.queryName || '';
+    }
     const { ResourceGridModalComponent } = await import(
       '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
     );

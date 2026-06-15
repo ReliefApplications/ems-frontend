@@ -520,6 +520,7 @@ export const init = (
             })
           );
       fetchDetails.subscribe((details) => {
+        (question as any).queryName = details.queryName;
         const displayField = question.displayField || 'id';
         // Build paginated query using the custom query name
         const query = gql`
