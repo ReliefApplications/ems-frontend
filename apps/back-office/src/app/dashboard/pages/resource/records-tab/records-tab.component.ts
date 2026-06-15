@@ -74,7 +74,11 @@ export class RecordsTabComponent
       parentRoute = parentRoute.parent;
     }
 
-    if (history.state.resource && history.state.resource.queryName && history.state.resource.fields) {
+    if (
+      history.state.resource &&
+      history.state.resource.queryName &&
+      history.state.resource.fields
+    ) {
       this.resource = history.state.resource;
       this.waitForQueryBuilder();
     } else if (resourceId) {
