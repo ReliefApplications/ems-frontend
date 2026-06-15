@@ -194,6 +194,7 @@ export class RecordsTabComponent
     };
 
     this.gridSettings = {
+      resource: this.resource.id,
       query: {
         name: queryName,
         fields,
