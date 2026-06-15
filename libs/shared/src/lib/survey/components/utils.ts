@@ -5,6 +5,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
+import { createDefaultField } from '../../components/query-builder/query-builder-forms';
 
 /**
  * Build the search button for resource and resources components
@@ -45,9 +46,13 @@ export const buildSearchButton = (
 
   let settingsForm = fieldsSettingsForm;
   if (!settingsForm || !settingsForm.fields || settingsForm.fields.length === 0) {
+    const displayField = qResource.displayField;
+    const defaultFields = displayField && displayField !== 'id'
+      ? [createDefaultField('id'), createDefaultField(displayField)]
+      : [createDefaultField('id')];
     settingsForm = {
       ...(settingsForm || {}),
-      fields: qResource.displayField ? ['id', qResource.displayField] : ['id'],
+      fields: defaultFields,
     };
     console.log('[buildSearchButton] Stubbed settingsForm:', settingsForm);
   }
