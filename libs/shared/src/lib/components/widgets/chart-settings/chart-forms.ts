@@ -1,6 +1,9 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { LocalizedString } from '../../../models/localized-string.model';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../../models/localized-string.model';
 import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
@@ -10,6 +13,17 @@ import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.v
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
+
+/**
+ * Whether a (possibly localized) chart title has any non-empty text. Handles
+ * legacy plain strings as well as per-locale maps, treating an empty `{}`
+ * (e.g. after clearing every locale) as no title.
+ *
+ * @param text Plain string or per-locale map.
+ * @returns True when at least one locale (or the plain string) is non-empty.
+ */
+const hasTitleText = (text: LocalizedString | null | undefined): boolean =>
+  !!resolveLocalizedString(text, null);
 
 /**
  * Create chart form group
@@ -42,43 +56,43 @@ export const createChartForm = (value: any) => {
       position: [
         {
           value: get(title, 'position', 'top'),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       bold: [
         {
           value: get(title, 'bold', false),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       italic: [
         {
           value: get(title, 'italic', false),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       underline: [
         {
           value: get(title, 'underline', false),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       font: [
         {
           value: get(title, 'font', ''),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       size: [
         {
           value: get(title, 'size', 12),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
       color: [
         {
           value: get(title, 'color', null),
-          disabled: !get(title, 'text', false),
+          disabled: !hasTitleText(get(title, 'text')),
         },
       ],
     }),
@@ -296,7 +310,7 @@ export const createChartForm = (value: any) => {
   });
 
   formGroup.get('title.text')?.valueChanges.subscribe((value) => {
-    if (!value) {
+    if (!hasTitleText(value)) {
       formGroup.get('title.position')?.disable();
       formGroup.get('title.size')?.disable();
       formGroup.get('title.color')?.disable();
