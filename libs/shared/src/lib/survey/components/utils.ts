@@ -34,84 +34,92 @@ export const buildSearchButton = (
     (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
-  if (fieldsSettingsForm) {
-    temporaryRecords.valueChanges.subscribe((res: any) => {
-      if (res) {
-        fieldsSettingsForm.temporaryRecords = res;
-      }
-    });
-
-    const buildFilter = () => {
-      // Calculated at runtime
-      const dynamicFilter = question.filters;
-      // Static, in question settings
-      const preBuiltFilter = fieldsSettingsForm.filter;
-      const filter: CompositeFilterDescriptor = {
-        logic: 'and',
-        filters: [],
-      };
-
-      if (dynamicFilter) {
-        if (dynamicFilter.filters) {
-          filter.filters.push(dynamicFilter);
-        } else {
-          if (Array.isArray(dynamicFilter)) {
-            filter.filters.push(...dynamicFilter);
-          } else {
-            filter.filters.push(dynamicFilter);
-          }
-        }
-      }
-
-      if (preBuiltFilter) {
-        if (preBuiltFilter.filters) {
-          filter.filters.push(preBuiltFilter);
-        } else {
-          if (Array.isArray(preBuiltFilter)) {
-            filter.filters.push(...preBuiltFilter);
-          } else {
-            filter.filters.push(preBuiltFilter);
-          }
-        }
-      }
-
-      return filter;
-    };
-
-    searchButton.onclick = async () => {
-      const { ResourceGridModalComponent } = await import(
-        '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
-      );
-      ngZone.run(() => {
-        const dialogRef = dialog.open(ResourceGridModalComponent, {
-          data: {
-            multiselect,
-            gridSettings: {
-              ...fieldsSettingsForm,
-              filter: buildFilter(),
-            },
-            selectedRows: Array.isArray(question.value)
-              ? question.value
-              : question.value
-              ? [question.value]
-              : [],
-            selectable: true,
-          },
-          panelClass: 'closable-dialog',
-        });
-        dialogRef.closed.subscribe((rows: any) => {
-          if (!rows) {
-            return;
-          }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
-          } else {
-            question.value = null;
-          }
-        });
-      });
+  let settingsForm = fieldsSettingsForm;
+  const qResource = question as any;
+  if (!settingsForm || !settingsForm.fields || settingsForm.fields.length === 0) {
+    settingsForm = {
+      ...(settingsForm || {}),
+      fields: qResource.displayField ? ['id', qResource.displayField] : ['id'],
     };
   }
+
+  temporaryRecords.valueChanges.subscribe((res: any) => {
+    if (res) {
+      settingsForm.temporaryRecords = res;
+    }
+  });
+
+  const buildFilter = () => {
+    // Calculated at runtime
+    const dynamicFilter = question.filters;
+    // Static, in question settings
+    const preBuiltFilter = settingsForm.filter;
+    const filter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [],
+    };
+
+    if (dynamicFilter) {
+      if (dynamicFilter.filters) {
+        filter.filters.push(dynamicFilter);
+      } else {
+        if (Array.isArray(dynamicFilter)) {
+          filter.filters.push(...dynamicFilter);
+        } else {
+          filter.filters.push(dynamicFilter);
+        }
+      }
+    }
+
+    if (preBuiltFilter) {
+      if (preBuiltFilter.filters) {
+        filter.filters.push(preBuiltFilter);
+      } else {
+        if (Array.isArray(preBuiltFilter)) {
+          filter.filters.push(...preBuiltFilter);
+        } else {
+          filter.filters.push(preBuiltFilter);
+        }
+      }
+    }
+
+    return filter;
+  };
+
+  searchButton.onclick = async () => {
+    const { ResourceGridModalComponent } = await import(
+      '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
+    );
+    ngZone.run(() => {
+      const dialogRef = dialog.open(ResourceGridModalComponent, {
+        data: {
+          multiselect,
+          gridSettings: {
+            ...settingsForm,
+            filter: buildFilter(),
+          },
+          selectedRows: Array.isArray(question.value)
+            ? question.value
+            : question.value
+            ? [question.value]
+            : [],
+          selectable: true,
+        },
+        panelClass: 'closable-dialog',
+      });
+      dialogRef.closed.subscribe((rows: any) => {
+        if (!rows) {
+          return;
+        }
+        if (rows.length > 0) {
+          question.value = multiselect ? rows : rows[0];
+        } else {
+          question.value = null;
+        }
+      });
+    });
+  };
+
   searchButton.style.display =
     !question.isReadOnly && question.canSearch ? 'block' : 'none';
   return searchButton;
