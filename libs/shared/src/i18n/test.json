@@ -2457,6 +2457,13 @@
 					}
 				}
 			}
+		},
+		"pwa": {
+			"updateAvailable": {
+				"title": "******",
+				"content": "******",
+				"reload": "******"
+			}
 		}
 	},
 	"kendo": {
