@@ -28,6 +28,7 @@ import { ReferenceData } from '../../../models/reference-data.model';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { ContextService } from '../../../services/context/context.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { GridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -149,6 +150,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param dashboardService Dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -167,7 +169,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -276,6 +279,16 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       this.toggleActiveFilters(filterValue, child);
     }
   };
+
+  /**
+   * Reload the editor data from the server and re-render its content.
+   * Used to keep the widget in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.cancelRefresh$.next();
+    this.loading = true;
+    this.setHtml();
+  }
 
   /**
    * Set widget html.
@@ -532,6 +545,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
         if (value) {
           this.loading = true;
+          // Notify the dashboard so other widgets reload and reflect the edited record
+          this.dashboardService.triggerReloadWidgets();
           // Update the record, based on new configuration
           this.getRecord()
             .then(() => {

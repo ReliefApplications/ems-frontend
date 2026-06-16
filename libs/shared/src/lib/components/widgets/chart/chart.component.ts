@@ -355,6 +355,14 @@ export class ChartComponent
   }
 
   /**
+   * Reload the chart data from the server.
+   * Used to keep the chart in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.loadChart();
+  }
+
+  /**
    * Get chart options from settings
    */
   public getOptions(): void {
