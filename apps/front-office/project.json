@@ -42,7 +42,8 @@
             "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/"
-          }
+          },
+          "apps/front-office/src/manifest.webmanifest"
         ],
         "styles": [
           "apps/front-office/src/styles.scss",
@@ -87,7 +88,8 @@
           "esri-leaflet-renderers",
           "jsonpath",
           "to-json-schema",
-          "email-validator"
+          "email-validator",
+          "maplibre-gl"
         ]
       },
       "configurations": {
@@ -112,6 +114,8 @@
           ],
           "baseHref": "/apps/",
           "outputHashing": "all",
+          "serviceWorker": true,
+          "ngswConfigPath": "apps/front-office/src/ngsw-config.json",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }
@@ -137,6 +141,8 @@
           ],
           "baseHref": "/apps/",
           "outputHashing": "all",
+          "serviceWorker": true,
+          "ngswConfigPath": "apps/front-office/src/ngsw-config.json",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }
@@ -162,6 +168,8 @@
           ],
           "baseHref": "/apps/",
           "outputHashing": "all",
+          "serviceWorker": true,
+          "ngswConfigPath": "apps/front-office/src/ngsw-config.json",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }
@@ -196,6 +204,8 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true,
+          "serviceWorker": true,
+          "ngswConfigPath": "apps/front-office/src/ngsw-config.json",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }

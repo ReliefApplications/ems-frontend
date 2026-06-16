@@ -1299,6 +1299,13 @@
 				"ariaLabel": "Select page of pull jobs"
 			}
 		},
+		"pwa": {
+			"updateAvailable": {
+				"content": "A new version of the application is available. Reload to update?",
+				"reload": "Reload",
+				"title": "New version available"
+			}
+		},
 		"queryBuilder": {
 			"apply": "Apply filter",
 			"dataset": {

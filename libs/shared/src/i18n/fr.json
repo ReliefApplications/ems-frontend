@@ -1299,6 +1299,13 @@
 				"ariaLabel": "Sélectionez la page de tâches programmées"
 			}
 		},
+		"pwa": {
+			"updateAvailable": {
+				"content": "Une nouvelle version de l'application est disponible. Recharger pour mettre à jour ?",
+				"reload": "Recharger",
+				"title": "Nouvelle version disponible"
+			}
+		},
 		"queryBuilder": {
 			"action": {
 				"title": "Aller à la page"
