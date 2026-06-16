@@ -1001,6 +1001,7 @@ export class EmailService {
     if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
+      this.sendSeparateBlocks = [];
       datasetsValues.forEach((dataset: any) => {
         if (
           (dataset.query.name && dataset.resource) ||
