@@ -157,6 +157,16 @@ export class WidgetGridComponent
         // sending 'false' to prevent triggering this function infinitely due to cloning
         this.setVisibleWidgets(false);
       });
+
+    // Reload all widgets' data when dashboard data is edited (e.g. inline grid
+    // edition, record edition), so every display reflects the changes.
+    this.dashboardService.reloadWidgets$
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.widgetComponents?.forEach((widgetComponent) =>
+          widgetComponent.reload()
+        );
+      });
     // Listen to dashboard filters changes if it is necessary
     // So when hiding empty widgets, we can re-display them on filter change
     this.contextService.filter$
