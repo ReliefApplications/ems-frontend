@@ -150,6 +150,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param dashboardService Dashboard service
    */
   constructor(
     private apollo: Apollo,
