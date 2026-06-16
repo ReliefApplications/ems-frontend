@@ -30,6 +30,7 @@ import {
   CONVERT_RECORD,
   DELETE_RECORDS,
   EDIT_RECORD,
+  RESTORE_RECORD,
 } from './graphql/mutations';
 import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
 import { searchFilters } from '../../../utils/filter/search-filters';
@@ -128,6 +129,10 @@ export class CoreGridComponent
   @Input() canCreateRecords = false;
   /** Whether records can be downloaded */
   @Input() canDownloadRecords = false;
+  /** Whether columns are reorderable */
+  @Input() reorderable = true;
+  /** Whether the grid is filterable */
+  @Input() filterable = true;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -138,6 +143,8 @@ export class CoreGridComponent
   @Output() defaultLayoutReset: EventEmitter<any> = new EventEmitter();
   /** Event emitter for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for update navigation events */
+  @Output() update: EventEmitter<any> = new EventEmitter();
   /** Event emitter for inline edition of records */
   @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
@@ -433,6 +440,7 @@ export class CoreGridComponent
         title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
       remove: get(this.settings, 'actions.remove', false),
+      restore: get(this.settings, 'actions.restore', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     if (!isNil(this.settings.actions?.search)) {
@@ -471,11 +479,13 @@ export class CoreGridComponent
             filter: this.queryFilter,
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
+            display: true,
             styles: this.style,
             actions: this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
+            archived: this.settings.query?.archived || false,
           },
           fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
@@ -583,7 +593,7 @@ export class CoreGridComponent
    * @param item item to update
    * @param value Updated value of the item.
    */
-  private update(item: any, value: any): void {
+  private updateRecordLocal(item: any, value: any): void {
     let updatedItem = this.updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
@@ -949,7 +959,7 @@ export class CoreGridComponent
       }
       case 'edit': {
         if (event.item && event.value) {
-          this.update(event.item, event.value);
+          this.updateRecordLocal(event.item, event.value);
         }
         break;
       }
@@ -988,11 +998,18 @@ export class CoreGridComponent
         break;
       }
       case 'update': {
-        if (event.item) {
-          this.onUpdate([event.item]);
-        }
-        if (event.items && event.items.length > 0) {
-          this.onUpdate(event.items);
+        if (this.actions.navigateToPage) {
+          if (event.item) {
+            this.update.emit(event.item);
+            this.edit.emit(event.item);
+          }
+        } else {
+          if (event.item) {
+            this.onUpdate([event.item]);
+          }
+          if (event.items && event.items.length > 0) {
+            this.onUpdate(event.items);
+          }
         }
         break;
       }
@@ -1017,6 +1034,15 @@ export class CoreGridComponent
         }
         if (event.items && event.items.length > 0) {
           this.onDelete(event.items);
+        }
+        break;
+      }
+      case 'restore': {
+        if (event.item) {
+          this.onRestore([event.item]);
+        }
+        if (event.items && event.items.length > 0) {
+          this.onRestore(event.items);
         }
         break;
       }
@@ -1243,6 +1269,7 @@ export class CoreGridComponent
             mutation: DELETE_RECORDS,
             variables: {
               ids,
+              hardDelete: this.settings.query?.archived || false,
             },
           })
           .pipe(takeUntil(this.destroy$))
@@ -1252,6 +1279,31 @@ export class CoreGridComponent
           });
       }
     });
+  }
+
+  /**
+   *
+   * @param items
+   */
+  public onRestore(items: any[]): void {
+    const ids: string[] = items.map((x) => (x.id ? x.id : x));
+    const restores = ids.map((id) =>
+      firstValueFrom(
+        this.apollo.mutate({
+          mutation: RESTORE_RECORD,
+          variables: { id },
+        })
+      )
+    );
+    this.loading = true;
+    Promise.all(restores)
+      .then(() => {
+        this.reloadData();
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error('Failed to restore record(s)', err);
+      });
   }
 
   /**
@@ -1429,6 +1481,10 @@ export class CoreGridComponent
               filters: [{ operator: 'eq', field: 'ids', value: ids }],
             }
           : this.queryFilter,
+      ...(e.records !== 'selected' && {
+        skip: this.skip,
+        limit: this.pageSize,
+      }),
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
       sortField: this.sortField,
@@ -1504,7 +1560,9 @@ export class CoreGridComponent
         filter: this.queryFilter,
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
+        display: true,
         styles: this.style,
+        archived: this.settings.query?.archived || false,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
         }),

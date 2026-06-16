@@ -27,6 +27,7 @@ interface QueryVariables {
   styles?: any;
   actions?: any;
   at?: Date;
+  archived?: boolean;
 }
 
 /** Interface for a query response */
@@ -120,9 +121,9 @@ export class QueryBuilderService {
         query: GET_QUERY_TYPES,
       })
       .subscribe(({ data }) => {
-        this.isDoneLoading.next(true);
         this.availableQueries.next(data.types.availableQueries);
         this.userFields = data.types.userFields;
+        this.isDoneLoading.next(true);
       });
   }
 
@@ -228,12 +229,18 @@ export class QueryBuilderService {
     const defaultField: string[] = withId ? ['id\n'] : [];
     return defaultField.concat(
       fields.map((x) => {
-        switch (x.kind) {
+        const kind = x.kind || x.type?.kind;
+        const typeName =
+          typeof x.type === 'string'
+            ? x.type
+            : x.type?.name || x.type?.ofType?.name || '';
+        const isRefData = typeName.endsWith(REFERENCE_DATA_END);
+        switch (kind) {
           case 'SCALAR': {
             return x.name + '\n';
           }
           case 'LIST': {
-            if (x.type.endsWith(REFERENCE_DATA_END)) {
+            if (isRefData) {
               return (
                 `${x.name} {
               ${this.buildFields(x.fields, false)}
@@ -242,10 +249,10 @@ export class QueryBuilderService {
             }
             return (
               `${x.name} (
-            sortField: ${x.sort.field ? `"${x.sort.field}"` : null},
-            sortOrder: "${x.sort.order}",
+            sortField: ${x.sort?.field ? `"${x.sort.field}"` : null},
+            sortOrder: "${x.sort?.order || 'asc'}",
             first: ${get(x, 'first', null)},
-            filter: ${this.filterToString(x.filter)}
+            filter: ${x.filter ? this.filterToString(x.filter) : null}
           ) {
             ${['canUpdate\ncanDelete\n'].concat(this.buildFields(x.fields))}
           }` + '\n'
@@ -254,7 +261,7 @@ export class QueryBuilderService {
           case 'OBJECT': {
             return (
               `${x.name} {
-            ${this.buildFields(x.fields, !x.type.endsWith(REFERENCE_DATA_END))}
+            ${this.buildFields(x.fields, !isRefData)}
           }` + '\n'
             );
           }
@@ -381,7 +388,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date, $archived: Boolean) {
       ${name}(
       first: $first
       skip: $skip
@@ -392,6 +399,7 @@ export class QueryBuilderService {
       styles: $styles
       actions: $actions
       at: $at
+      archived: $archived
       ) {
         edges {
           node {

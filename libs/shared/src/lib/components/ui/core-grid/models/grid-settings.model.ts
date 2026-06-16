@@ -6,6 +6,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
  */
 export interface GridSettings {
   id?: string;
+  resource?: string;
   query?: {
     name: string;
     fields: any[];
@@ -14,6 +15,7 @@ export interface GridSettings {
       order?: 'asc' | 'desc';
     };
     filter?: CompositeFilterDescriptor;
+    archived?: boolean;
   };
   actions?: GridActions;
   // showDetails?: boolean;
@@ -40,4 +42,5 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  restore?: boolean;
 }

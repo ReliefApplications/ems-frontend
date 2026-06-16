@@ -111,9 +111,14 @@ export class GridService {
           (!isNil(canSee) && !canSee) || options.hidden || false;
         const disabled: boolean = options.disabled || !canUpdate;
 
-        switch (f.kind) {
+        const kind = f.kind || f.type?.kind;
+        const typeName =
+          typeof f.type === 'string'
+            ? f.type
+            : f.type?.name || f.type?.ofType?.name || '';
+        switch (kind) {
           case 'OBJECT': {
-            if (f.type.endsWith(REFERENCE_DATA_END)) {
+            if (typeName.endsWith(REFERENCE_DATA_END)) {
               metaData = Object.assign([], metaData);
               metaData.type = 'referenceData';
               const cachedField = get(layoutFields, fullName);
@@ -124,10 +129,10 @@ export class GridService {
                 layoutFields,
                 fullName,
                 {
-                  ...(!f.type.endsWith(REFERENCE_DATA_END) && {
+                  ...(!typeName.endsWith(REFERENCE_DATA_END) && {
                     disabled: true,
                   }),
-                  hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                  hidden: !typeName.endsWith(REFERENCE_DATA_END),
                   filter: false,
                 }
               );
@@ -135,11 +140,11 @@ export class GridService {
                 name: fullName,
                 title,
                 type: f.type,
-                format: this.getFieldFormat(f.type),
-                editor: this.getFieldFilterOrEditor(f.type),
-                filter: prefix ? '' : this.getFieldFilterOrEditor(f.type),
+                format: this.getFieldFormat(typeName),
+                editor: this.getFieldFilterOrEditor(typeName),
+                filter: prefix ? '' : this.getFieldFilterOrEditor(typeName),
                 meta: metaData,
-                disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
+                disabled: typeName.endsWith(REFERENCE_DATA_END) ? false : true,
                 hidden: hidden || cachedField?.hidden || false,
                 width: cachedField?.width || title.length * 7 + 50,
                 fixedWidth: f.width, // width used to overwrite autocalculation
@@ -168,7 +173,7 @@ export class GridService {
           }
           case 'LIST': {
             metaData = Object.assign([], metaData);
-            if (f.type.endsWith(REFERENCE_DATA_END)) {
+            if (typeName.endsWith(REFERENCE_DATA_END)) {
               metaData.type = 'referenceData';
             } else {
               metaData.type = 'records';
@@ -181,8 +186,10 @@ export class GridService {
               layoutFields,
               fullName,
               {
-                ...(!f.type.endsWith(REFERENCE_DATA_END) && { disabled: true }),
-                hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                ...(!typeName.endsWith(REFERENCE_DATA_END) && {
+                  disabled: true,
+                }),
+                hidden: !typeName.endsWith(REFERENCE_DATA_END),
                 filter: false,
               }
             );
@@ -190,11 +197,11 @@ export class GridService {
               name: fullName,
               title,
               type: f.type,
-              format: this.getFieldFormat(f.type),
-              editor: this.getFieldFilterOrEditor(f.type),
-              filter: prefix ? '' : this.getFieldFilterOrEditor(f.type),
+              format: this.getFieldFormat(typeName),
+              editor: this.getFieldFilterOrEditor(typeName),
+              filter: prefix ? '' : this.getFieldFilterOrEditor(typeName),
               meta: metaData,
-              disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
+              disabled: typeName.endsWith(REFERENCE_DATA_END) ? false : true,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               fixedWidth: f.width, // width used to overwrite autocalculation
@@ -218,11 +225,11 @@ export class GridService {
               title,
               type: f.type,
               layoutFormat: f.format,
-              format: this.getFieldFormat(f.type),
-              editor: this.getFieldFilterOrEditor(f.type),
+              format: this.getFieldFormat(typeName),
+              editor: this.getFieldFilterOrEditor(typeName),
               filter: !options.filter
                 ? ''
-                : this.getFieldFilterOrEditor(f.type),
+                : this.getFieldFilterOrEditor(typeName),
               meta: metaData ? metaData : { type: 'text' },
               disabled:
                 disabled ||
@@ -230,7 +237,13 @@ export class GridService {
                 get(metaData, 'readOnly', false) ||
                 get(metaData, 'isCalculated', false) ||
                 this.isFieldDisabled(metaData),
-              hidden: hidden || cachedField?.hidden || false,
+              hidden:
+                hidden ||
+                (cachedField
+                  ? cachedField.hidden
+                  : f.name === 'modifiedAt' ||
+                    metaData?.type === 'resource' ||
+                    metaData?.type === 'resources'),
               width: cachedField?.width || title.length * 7 + 50,
               fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,

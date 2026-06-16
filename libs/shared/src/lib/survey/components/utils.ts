@@ -5,6 +5,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
+import { createDefaultField } from '../../components/query-builder/query-builder-forms';
 
 /**
  * Build the search button for resource and resources components
@@ -27,6 +28,7 @@ export const buildSearchButton = (
   document: Document,
   ngZone: NgZone
 ): any => {
+  const qResource = question as any;
   const searchButton = document.createElement('button');
   searchButton.id = 'resourceSearchButton';
   searchButton.innerText = surveyLocalization.getString(
@@ -34,60 +36,124 @@ export const buildSearchButton = (
     (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-1';
-  if (fieldsSettingsForm) {
-    temporaryRecords.valueChanges.subscribe((res: any) => {
-      if (res) {
-        fieldsSettingsForm.temporaryRecords = res;
-      }
-    });
+  console.log('[buildSearchButton] Initializing for:', question.name, {
+    fieldsSettingsForm,
+    canSearch: question.canSearch,
+    isReadOnly: question.isReadOnly,
+    displayField: qResource.displayField,
+    resource: qResource.resource,
+  });
 
-    const buildFilter = () => {
-      // Calculated at runtime
-      const dynamicFilter = question.filters;
-      // Static, in question settings
-      const preBuiltFilter = fieldsSettingsForm.filter;
-      const filter: CompositeFilterDescriptor = {
-        logic: 'and',
-        filters: [],
-      };
+  let settingsForm = fieldsSettingsForm;
+  if (
+    !settingsForm ||
+    !settingsForm.fields ||
+    settingsForm.fields.length === 0
+  ) {
+    const displayField = qResource.displayField;
+    const defaultFields =
+      displayField && displayField !== 'id'
+        ? [createDefaultField('id'), createDefaultField(displayField)]
+        : [createDefaultField('id')];
+    settingsForm = {
+      ...(settingsForm || {}),
+      fields: defaultFields,
+    };
+    console.log('[buildSearchButton] Stubbed settingsForm:', settingsForm);
+  }
 
-      if (dynamicFilter) {
-        if (dynamicFilter.filters) {
-          filter.filters.push(dynamicFilter);
-        } else {
-          if (Array.isArray(dynamicFilter)) {
-            filter.filters.push(...dynamicFilter);
-          } else {
-            filter.filters.push(dynamicFilter);
-          }
-        }
-      }
+  temporaryRecords.valueChanges.subscribe((res: any) => {
+    if (res) {
+      settingsForm.temporaryRecords = res;
+      console.log('[buildSearchButton] temporaryRecords updated:', res);
+    }
+  });
 
-      if (preBuiltFilter) {
-        if (preBuiltFilter.filters) {
-          filter.filters.push(preBuiltFilter);
-        } else {
-          if (Array.isArray(preBuiltFilter)) {
-            filter.filters.push(...preBuiltFilter);
-          } else {
-            filter.filters.push(preBuiltFilter);
-          }
-        }
-      }
-
-      return filter;
+  const buildFilter = () => {
+    // Calculated at runtime
+    const dynamicFilter = question.filters;
+    // Static, in question settings
+    const preBuiltFilter = settingsForm.filter;
+    const filter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [],
     };
 
-    searchButton.onclick = async () => {
+    if (dynamicFilter) {
+      if (dynamicFilter.filters) {
+        filter.filters.push(dynamicFilter);
+      } else {
+        if (Array.isArray(dynamicFilter)) {
+          filter.filters.push(...dynamicFilter);
+        } else {
+          filter.filters.push(dynamicFilter);
+        }
+      }
+    }
+
+    if (preBuiltFilter) {
+      if (preBuiltFilter.filters) {
+        filter.filters.push(preBuiltFilter);
+      } else {
+        if (Array.isArray(preBuiltFilter)) {
+          filter.filters.push(...preBuiltFilter);
+        } else {
+          filter.filters.push(preBuiltFilter);
+        }
+      }
+    }
+
+    return filter;
+  };
+
+  searchButton.onclick = async (event) => {
+    console.log('[buildSearchButton] click event triggered!', {
+      questionName: question.name,
+      settingsForm,
+      queryName: qResource.queryName,
+      event,
+    });
+    try {
+      if (!settingsForm.name) {
+        settingsForm.name = qResource.queryName || '';
+        console.log(
+          '[buildSearchButton] resolved queryName to settingsForm.name:',
+          settingsForm.name
+        );
+      }
+
+      console.log(
+        '[buildSearchButton] importing ResourceGridModalComponent...'
+      );
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
+
+      console.log(
+        '[buildSearchButton] opening ResourceGridModalComponent with data:',
+        {
+          multiselect,
+          displayField: qResource.displayField || 'id',
+          gridSettings: {
+            ...settingsForm,
+            filter: buildFilter(),
+          },
+          selectedRows: Array.isArray(question.value)
+            ? question.value
+            : question.value
+            ? [question.value]
+            : [],
+          selectable: true,
+        }
+      );
+
       ngZone.run(() => {
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
+            displayField: qResource.displayField || 'id',
             gridSettings: {
-              ...fieldsSettingsForm,
+              ...settingsForm,
               filter: buildFilter(),
             },
             selectedRows: Array.isArray(question.value)
@@ -99,19 +165,35 @@ export const buildSearchButton = (
           },
           panelClass: 'closable-dialog',
         });
-        dialogRef.closed.subscribe((rows: any) => {
-          if (!rows) {
+        dialogRef.closed.subscribe((result: any) => {
+          console.log('[buildSearchButton] modal closed, result:', result);
+          if (!result) {
             return;
           }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
+          const choices = question.contentQuestion.choices || [];
+          result.forEach((item: any) => {
+            if (!choices.find((c: any) => c.value === item.id)) {
+              choices.push({
+                value: item.id,
+                text: item.text,
+              });
+            }
+          });
+          question.contentQuestion.choices = choices;
+
+          if (result.length > 0) {
+            const values = result.map((item: any) => item.id);
+            question.value = multiselect ? values : values[0];
           } else {
             question.value = null;
           }
         });
       });
-    };
-  }
+    } catch (err: any) {
+      console.error('[buildSearchButton] Error in click handler:', err);
+    }
+  };
+
   searchButton.style.display =
     !question.isReadOnly && question.canSearch ? 'block' : 'none';
   return searchButton;

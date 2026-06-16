@@ -163,3 +163,11 @@ export * from './lib/components/dashboard-filter/enums/dashboard-filters.enum';
 
 // === ENVIRONMENTS ===
 export * from './lib/environments/esri.config';
+
+// === CORE GRID ===
+export { CoreGridModule } from './lib/components/ui/core-grid/core-grid.module';
+export { CoreGridComponent } from './lib/components/ui/core-grid/core-grid.component';
+export {
+  GridSettings,
+  GridActions,
+} from './lib/components/ui/core-grid/models/grid-settings.model';

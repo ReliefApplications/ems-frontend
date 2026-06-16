@@ -587,7 +587,7 @@
           <kendo-grid-column
             [field]="subField.name"
             [title]="subField.title"
-            [filterable]="true"
+            [filterable]="filterable"
             [width]="subField.width"
             [hidden]="subField.hidden"
             [minResizableWidth]="50"
@@ -654,7 +654,7 @@
       <kendo-grid-column
         *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
         [field]="field.name"
-        [filterable]="true"
+        [filterable]="filterable"
         [title]="field.title"
         [editor]="field.editor"
         [editable]="!field.disabled"
@@ -682,7 +682,7 @@
       <kendo-grid-column
         *ngIf="field.meta.type === 'editor'"
         [field]="field.name"
-        [filterable]="true"
+        [filterable]="filterable"
         [title]="field.title"
         [editor]="field.editor"
         [editable]="false"
@@ -737,7 +737,7 @@
           field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
         "
         [field]="field.name"
-        [filterable]="true"
+        [filterable]="filterable"
         [title]="field.title"
         [editor]="field.editor"
         [editable]="!field.disabled"

@@ -21,10 +21,7 @@ import {
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { DomService } from '../../services/dom/dom.service';
-import {
-  GET_RESOURCE_BY_ID,
-  GET_SHORT_RESOURCE_BY_ID,
-} from '../graphql/queries';
+import { GET_SHORT_RESOURCE_BY_ID } from '../graphql/queries';
 import { GET_RECORD_BY_ID } from '../../components/widgets/grid/graphql/queries';
 import { QuestionResource } from '../types';
 import {
@@ -35,9 +32,21 @@ import {
 } from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import { gql } from 'apollo-angular';
+import { forkJoin, map, of } from 'rxjs';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
+
+/** Cache for resource details (queryName, singleQueryName, fields) */
+const resourceDetailsCache: Map<
+  string,
+  {
+    queryName: string;
+    singleQueryName: string;
+    fields: any[];
+  }
+> = new Map();
 
 /**
  * Inits the resources question component for survey.
@@ -71,34 +80,22 @@ export const init = (
       },
     });
 
-  const mapQuestionChoices = (data: any, question: any) => {
-    return (
-      data.resource.records?.edges?.map((x: any) => {
-        return {
-          value: x.node?.id,
-          text: x.node?.data[question.displayField || 'id'],
-        };
-      }) || []
-    );
-  };
-
-  /**
-   * Fetch records of resource
-   *
-   * @param question Current question
-   * @returns Resource records query
-   */
-  const getResourceRecordsById = (question: any) => {
-    return apollo.query<ResourceQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
-      variables: {
-        id: question.resource, // id of the resource
-        ...(question.filters && {
-          filter: question.filters,
-        }),
-      },
-      fetchPolicy: 'no-cache',
-    });
+  const fetchSingleRecord = (
+    details: { singleQueryName: string },
+    recordId: string,
+    displayField: string
+  ) => {
+    const query = gql`
+      query GetSingleRecord($id: ID!, $display: Boolean) {
+        ${details.singleQueryName}(id: $id, display: $display) {
+          id
+          ${displayField}
+        }
+      }
+    `;
+    return apollo
+      .query<any>({ query, variables: { id: recordId, display: true } })
+      .pipe(map(({ data }) => data[details.singleQueryName]));
   };
 
   /**
@@ -487,9 +484,88 @@ export const init = (
      * @param question Current question
      */
     populateChoices: (question: any): void => {
-      getResourceRecordsById(question).subscribe(({ data }) => {
-        const choices = mapQuestionChoices(data, question);
-        question.contentQuestion.choices = choices;
+      const resourceId = question.resource;
+      if (!resourceId) {
+        question.contentQuestion.choices = [];
+        return;
+      }
+      const cachedDetails = resourceDetailsCache.get(resourceId);
+      const fetchDetails = cachedDetails
+        ? of(cachedDetails)
+        : getResourceById(resourceId).pipe(
+            map(({ data }) => {
+              const details = {
+                queryName: data.resource.queryName || '',
+                singleQueryName: data.resource.singleQueryName || '',
+                fields: data.resource.fields || [],
+              };
+              resourceDetailsCache.set(resourceId, details);
+              return details;
+            })
+          );
+      fetchDetails.subscribe((details) => {
+        (question as any).queryName = details.queryName;
+        const displayField = question.displayField || 'id';
+        // Build paginated query using the custom query name
+        const query = gql`
+          query GetResourceChoices($first: Int, $filter: JSON, $display: Boolean) {
+            ${details.queryName}(first: $first, filter: $filter, display: $display) {
+              edges {
+                node {
+                  id
+                  ${displayField}
+                }
+              }
+              totalCount
+            }
+          }
+        `;
+        apollo
+          .query<any>({
+            query,
+            variables: {
+              first: 100,
+              display: true,
+              ...(question.filters && { filter: question.filters }),
+            },
+            fetchPolicy: 'no-cache',
+          })
+          .subscribe(({ data }) => {
+            const connection = data[details.queryName];
+            const choices =
+              connection?.edges?.map((edge: any) => ({
+                value: edge.node?.id,
+                text: edge.node?.[displayField] ?? edge.node?.id,
+              })) || [];
+            question.contentQuestion.choices = choices;
+
+            if (!question.placeholder) {
+              question.contentQuestion.optionsCaption = 'Select a record...';
+            }
+            // Handle preselected values not in first page
+            if (question.value && Array.isArray(question.value)) {
+              const missingIds = question.value.filter(
+                (val: any) => !choices.find((c: any) => c.value === val)
+              );
+              if (missingIds.length > 0) {
+                const fetches = missingIds.map((val: any) =>
+                  fetchSingleRecord(details, val, displayField)
+                );
+                forkJoin(fetches).subscribe((records: any) => {
+                  const newChoices = (records as any[])
+                    .filter((r: any) => !!r)
+                    .map((r: any) => ({
+                      value: r.id,
+                      text: r[displayField] ?? r.id,
+                    }));
+                  question.contentQuestion.choices = [
+                    ...newChoices,
+                    ...choices,
+                  ];
+                });
+              }
+            }
+          });
       });
     },
     /**
