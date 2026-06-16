@@ -1,3 +1,10 @@
+# [2.23.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.3...v2.23.0-rc.4) (2026-06-16)
+
+
+### Bug Fixes
+
+* make geospatial field of form builder readonly when required ([#2874](https://github.com/ReliefApplications/ems-frontend/issues/2874)) ([d9814fa](https://github.com/ReliefApplications/ems-frontend/commit/d9814fab2e29057cd29c072a8af7b108d144fada)), closes [AB#134281](https://github.com/AB/issues/134281)
+
 # [2.23.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.2...v2.23.0-rc.3) (2026-06-12)
 
 
