@@ -1,3 +1,10 @@
+# [2.23.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.4...v2.23.0-rc.5) (2026-06-16)
+
+
+### Bug Fixes
+
+* addition / deletion / edition of records would not always reload dashboard widgets ([#2875](https://github.com/ReliefApplications/ems-frontend/issues/2875)) ([c4e05e1](https://github.com/ReliefApplications/ems-frontend/commit/c4e05e13e2402cfc6ca1e252dbda354f122e6f79)), closes [AB#134282](https://github.com/AB/issues/134282)
+
 # [2.23.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.3...v2.23.0-rc.4) (2026-06-16)
 
 
