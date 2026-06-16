@@ -88,8 +88,7 @@
           "esri-leaflet-renderers",
           "jsonpath",
           "to-json-schema",
-          "email-validator",
-          "maplibre-gl"
+          "email-validator"
         ]
       },
       "configurations": {
