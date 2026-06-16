@@ -161,7 +161,6 @@ export class LayoutComponent
   ngOnInit(): void {
     if (this.emailService.isGridAction) {
       this.emailService.resetPreviewData();
-      this.emailService.sendSeparateBlocks = [];
       if (
         !this.emailService.isCustomTemplateEdit &&
         !this.emailService.isNewCustomTemplate
@@ -308,6 +307,23 @@ export class LayoutComponent
         this.emailService.quickEmailDistributionListQuery.cc;
       query.emailDistributionList.bcc =
         this.emailService.quickEmailDistributionListQuery.bcc;
+
+      if (
+        this.emailService.gridActionSendSeparateEmail &&
+        this.emailService.allPreviewData?.[0]?.dataQuery?.queryName
+      ) {
+        if (query.datasets?.length > 0) {
+          const previewData = this.emailService.allPreviewData[0];
+          query.datasets[0].name = 'Block 1';
+          query.datasets[0].individualEmail = true;
+          query.datasets[0].individualEmailFields =
+            previewData.separateEmailFields ?? [];
+          query.datasets[0].query.name = previewData.dataQuery.queryName ?? '';
+          query.datasets[0].query.filter = previewData.dataQuery.filter;
+          query.datasets[0].query.fields = previewData.dataQuery.fields ?? [];
+          query.datasets[0].resource = previewData.dataQuery.resource ?? '';
+        }
+      }
     }
     //Start:- When We are checking from Grid Action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
@@ -346,6 +362,25 @@ export class LayoutComponent
         bcc: this.emailService.emailDistributionList?.bcc || [],
       };
     }
+
+    if (response?.individualEmailList?.length > 0) {
+      const sseEmails = [
+        ...new Set(
+          response.individualEmailList.flatMap(
+            (block: any) => block.emails ?? []
+          )
+        ),
+      ];
+      this.emailService.emailDistributionList.to = [
+        ...new Set([
+          ...(Array.isArray(this.emailService.emailDistributionList.to)
+            ? this.emailService.emailDistributionList.to
+            : []),
+          ...sseEmails,
+        ]),
+      ];
+    }
+
     this.populateDLForm();
     this.emailService.loading = false;
   }
@@ -410,10 +445,14 @@ export class LayoutComponent
    * Block Data for Body
    */
   getBlockData() {
-    if (
+    const hasFieldsInForm =
       this.emailService.datasetsForm.get('datasets')?.value?.[0]?.query?.fields
-        ?.length > 0
-    ) {
+        ?.length > 0;
+    const hasFieldsInGridAction =
+      this.emailService.isGridAction &&
+      this.emailService.gridActionDataQuery?.fields?.length > 0;
+
+    if (hasFieldsInForm || hasFieldsInGridAction) {
       this.blockData =
         this.emailService.previewData?.datasets ??
         this.emailService.getAllPreviewData();
@@ -610,6 +649,18 @@ export class LayoutComponent
    * Initializes the field select dropdown.
    */
   initialiseFieldSelectDropdown(): void {
+    if (
+      this.emailService.isGridAction &&
+      this.emailService.gridActionSendSeparateEmail
+    ) {
+      this.firstBlockFields = (
+        this.emailService.gridActionDataQuery?.fields ?? []
+      )
+        .map((f: any) => f.name)
+        .filter(Boolean);
+      return;
+    }
+
     const firstBlock = this.emailService.getAllPreviewData()[0];
     if (
       firstBlock?.datasetFields?.length > 0 ||
@@ -1133,7 +1184,10 @@ export class LayoutComponent
    * Validate Grid Action To emails
    */
   validateQuickActionToEmails() {
-    if (this.emailService.isGridAction) {
+    if (
+      this.emailService.isGridAction &&
+      !this.emailService.gridActionSendSeparateEmail
+    ) {
       this.emailService.disableNextActionBtn =
         this.layoutForm?.getRawValue()?.to?.length === 0 ? true : false;
     }

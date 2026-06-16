@@ -2145,6 +2145,9 @@
               "selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
               "selectDisplay": "Sélectionner les champs affichés",
               "sendMail": "Envoyer le mail",
+              "sendSeparateEmail": "Envoyer un e-mail séparé",
+              "separateEmailFields": "Champs d'envoi séparé",
+              "separateEmailTokens": "Tokens disponibles dans le corps :",
               "workflow": {
                 "close": "Fermer le workflow",
                 "confirm": "Message de confirmation",

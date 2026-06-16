@@ -434,7 +434,7 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="!this.emailService.isGridAction"
+          *ngIf="!this.emailService.isGridAction || blockFieldSelect.length > 0"
         >
           <label
             for="fieldSelect"

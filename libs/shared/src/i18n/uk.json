@@ -2143,6 +2143,9 @@
               "selectAllRecordsActivePage": "Вибрати всі записи на активній сторінці",
               "selectDisplay": "Вибрати відображувані поля",
               "sendMail": "Надіслати лист",
+              "sendSeparateEmail": "Send separate email",
+              "separateEmailFields": "Send Separate Email Fields",
+              "separateEmailTokens": "Available body tokens:",
               "workflow": {
                 "close": "Закрити Робочий процес",
                 "confirm": "Повідомлення про підтвердження",

@@ -127,7 +127,9 @@ export class GridSettingsFormFactory {
       sendMail: [value && value.sendMail ? value.sendMail : false],
       distributionList: [
         get(value, 'distributionList', null),
-        value && value.sendMail ? Validators.required : null,
+        value && value.sendMail && !value.sendSeparateEmail
+          ? Validators.required
+          : null,
       ],
       templates: [
         get(value, 'templates', []),
@@ -139,6 +141,12 @@ export class GridSettingsFormFactory {
           ? value.bodyFields.map((x: any) => addNewField(x))
           : [],
         value && value.sendMail ? Validators.required : null
+      ),
+      sendSeparateEmail: [get(value, 'sendSeparateEmail', false)],
+      separateEmailFields: this.fb.array(
+        (get(value, 'separateEmailFields', []) as any[]).map((x: any) =>
+          addNewField(x)
+        )
       ),
       navigateToPage: [
         value && value.navigateToPage ? value.navigateToPage : false,

@@ -2142,6 +2142,9 @@
               "selectAllRecordsActivePage": "******",
               "selectDisplay": "******",
               "sendMail": "******",
+              "sendSeparateEmail": "******",
+              "separateEmailFields": "******",
+              "separateEmailTokens": "******",
               "workflow": {
                 "close": "******",
                 "confirm": "******",

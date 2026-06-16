@@ -422,6 +422,27 @@
           [showLimit]="true"
           [showColumnWidth]="true"
         ></shared-tab-fields>
+
+        <!-- Send Separate Email -->
+        <ui-checkbox formControlName="sendSeparateEmail">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.sendSeparateEmail'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <ng-container *ngIf="formGroup.value.sendSeparateEmail">
+          <h2>{{
+            'components.widget.settings.grid.buttons.callback.separateEmailFields'
+              | translate
+          }}</h2>
+          <shared-tab-fields
+            *ngIf="fields.length > 0"
+            [form]="separateEmailFieldsArray"
+            [fields]="fields"
+            [showLimit]="false"
+            [showColumnWidth]="false"
+          ></shared-tab-fields>
+        </ng-container>
       </div>
 
       <!-- Workflow actions -->
