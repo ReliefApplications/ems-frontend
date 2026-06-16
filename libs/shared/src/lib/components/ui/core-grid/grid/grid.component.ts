@@ -60,6 +60,33 @@ import { ActionButton } from '../../../widgets/grid/action-button.type';
 const MIN_COLUMN_WIDTH = 100;
 /** Maximum column width */
 const MAX_COLUMN_WIDTH = 250;
+/** PDF mime type */
+const PDF_MIME_TYPE = 'application/pdf';
+/** Previewable image file extensions */
+const IMAGE_EXTENSIONS = [
+  'apng',
+  'avif',
+  'bmp',
+  'gif',
+  'jpeg',
+  'jpg',
+  'png',
+  'svg',
+  'webp',
+];
+
+/** Grid file object content from document management. */
+interface GridDocumentManagementFileContent {
+  driveId: string;
+  itemId: string;
+}
+
+/** Grid file object. */
+interface GridFile {
+  name: string;
+  type?: string;
+  content?: string | GridDocumentManagementFileContent;
+}
 
 /**
  * Test if an element match a css selector
@@ -894,11 +921,48 @@ export class GridComponent
   }
 
   /**
+   * Opens a preview for PDF/images or downloads other files.
+   *
+   * @param file File to open.
+   */
+  public onOpenFile(file: GridFile): void {
+    if (!this.isPreviewableFile(file)) {
+      this.onDownload(file);
+      return;
+    }
+
+    if (typeof file.content === 'string') {
+      if (file.content.startsWith('data')) {
+        void this.openFilePreview(file, file.content);
+      } else {
+        const path = `download/file/${file.content}`;
+        this.downloadService
+          .getFileBlob(path, this.getFileType(file))
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (blob) => this.openBlobPreview(file, blob),
+            error: () => this.showFilePreviewError(),
+          });
+      }
+    } else if (this.isDocumentManagementFile(file)) {
+      this.documentManagementService
+        .getFileBlob({ ...file, type: this.getFileType(file) })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (blob) => this.openBlobPreview(file, blob),
+          error: () => this.showFilePreviewError(),
+        });
+    } else {
+      this.onDownload(file);
+    }
+  }
+
+  /**
    * Downloads file of record.
    *
    * @param file File to download.
    */
-  public onDownload(file: any): void {
+  public onDownload(file: GridFile): void {
     if (typeof file.content === 'string') {
       if (file.content.startsWith('data')) {
         const downloadLink = this.document.createElement('a');
@@ -907,12 +971,131 @@ export class GridComponent
         downloadLink.click();
       } else {
         const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
+        this.downloadService.getFile(path, this.getFileType(file), file.name);
       }
-    } else {
+    } else if (this.isDocumentManagementFile(file)) {
       // Using document management
       this.documentManagementService.getFile(file);
+    } else {
+      this.showFilePreviewError();
     }
+  }
+
+  /**
+   * Opens a blob in the file preview modal.
+   *
+   * @param file File to preview
+   * @param blob File blob
+   */
+  private openBlobPreview(file: GridFile, blob: Blob): void {
+    const url = URL.createObjectURL(blob);
+    void this.openFilePreview(file, url).then((opened) => {
+      if (!opened) {
+        URL.revokeObjectURL(url);
+      }
+    });
+  }
+
+  /**
+   * Opens the preview modal for the file.
+   *
+   * @param file File to preview
+   * @param url File URL
+   * @returns true when the modal opened
+   */
+  private async openFilePreview(file: GridFile, url: string): Promise<boolean> {
+    try {
+      const { FilePreviewModalComponent } = await import(
+        './file-preview-modal/file-preview-modal.component'
+      );
+      this.dialog.open(FilePreviewModalComponent, {
+        data: {
+          fileName: file.name,
+          fileType: this.getFileType(file),
+          url,
+        },
+        autoFocus: false,
+        width: '90vw',
+        height: '90vh',
+      });
+
+      return true;
+    } catch {
+      this.showFilePreviewError();
+      return false;
+    }
+  }
+
+  /**
+   * Checks if file is previewable.
+   *
+   * @param file File to check
+   * @returns true for PDFs and images
+   */
+  private isPreviewableFile(file: GridFile): boolean {
+    const type = file.type?.toLowerCase() || '';
+    const extension = this.getFileExtension(file.name);
+
+    return (
+      type === PDF_MIME_TYPE ||
+      type.startsWith('image/') ||
+      extension === 'pdf' ||
+      IMAGE_EXTENSIONS.includes(extension)
+    );
+  }
+
+  /**
+   * Gets file MIME type from metadata or extension.
+   *
+   * @param file File to inspect
+   * @returns file MIME type
+   */
+  private getFileType(file: GridFile): string {
+    if (file.type) {
+      return file.type;
+    }
+
+    const extension = this.getFileExtension(file.name);
+    if (extension === 'pdf') {
+      return PDF_MIME_TYPE;
+    }
+
+    return IMAGE_EXTENSIONS.includes(extension) ? `image/${extension}` : '';
+  }
+
+  /**
+   * Gets the file extension.
+   *
+   * @param fileName File name
+   * @returns lowercase extension
+   */
+  private getFileExtension(fileName: string): string {
+    return fileName.split('.').pop()?.toLowerCase() || '';
+  }
+
+  /**
+   * Checks if the file comes from document management.
+   *
+   * @param file File to check
+   * @returns true when file has document management content
+   */
+  private isDocumentManagementFile(
+    file: GridFile
+  ): file is GridFile & { content: GridDocumentManagementFileContent } {
+    return (
+      !!file.content &&
+      typeof file.content !== 'string' &&
+      typeof file.content.driveId === 'string' &&
+      typeof file.content.itemId === 'string'
+    );
+  }
+
+  /** Shows a file preview/download error. */
+  private showFilePreviewError(): void {
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.file.download.error'),
+      { error: true }
+    );
   }
 
   /**
