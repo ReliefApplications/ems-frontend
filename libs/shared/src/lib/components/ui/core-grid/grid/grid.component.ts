@@ -401,7 +401,7 @@ export class GridComponent
         (actions, label) => ({
           label,
           actions,
-          width: this.getCustomActionColumnWidth({ label, actions }),
+          width: 0,
         })
       );
     }
@@ -412,6 +412,9 @@ export class GridComponent
       this.data.data.forEach((gridRow) => {
         this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
+    }
+    if (changes['widget'] || changes['data']) {
+      this.updateCustomActionColumnWidths();
     }
     // First load of records, or on page change
     if (
@@ -427,6 +430,7 @@ export class GridComponent
           this.updateColumnShowFullScreenButton((column as any).field);
         });
       }, 0);
+      this.updateCustomActionColumnWidths();
       this.preventColumnResize
         ? (this.preventColumnResize = false)
         : this.setColumnsWidth();
@@ -513,31 +517,68 @@ export class GridComponent
     /** Gap between buttons */
     const gap = 8;
     /** Left / right cell padding */
-    const cellPadding = 16;
+    /** Left / right cell padding */
+    const cellPadding = 10;
     /** Approx pixel width per character */
     const charWidth = 8;
     /** Padding + border on a single button (left + right) */
-    const buttonPadding = 24;
+    const buttonPadding = 20;
     /** Minimum width of a button so icon-only / very short labels stay clickable */
-    const minButtonWidth = 60;
+    const minButtonWidth = 34;
     /** Additional space reserved for the kendo column header icons */
     const headerExtras = 32;
 
-    const actions = group.actions ?? [];
-    const buttonsWidth = actions.reduce(
-      (sum, action) =>
-        sum +
-        Math.max(
-          (action.text?.length ?? 0) * charWidth + buttonPadding,
-          minButtonWidth
-        ),
-      0
-    );
-    const count = Math.max(actions.length, 1);
-    const contentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    let maxContentWidth = 0;
+
+    if (this.data && this.data.data && this.data.data.length > 0) {
+      this.data.data.forEach((dataItem) => {
+        const visibleActions = this.getRowActions(dataItem, group);
+        if (visibleActions && visibleActions.length > 0) {
+          const rowButtonsWidth = visibleActions.reduce(
+            (sum, action) =>
+              sum +
+              Math.max(
+                (action.text?.length ?? 0) * charWidth + buttonPadding,
+                minButtonWidth
+              ),
+            0
+          );
+          const rowContentWidth =
+            rowButtonsWidth + (visibleActions.length - 1) * gap + cellPadding;
+          if (rowContentWidth > maxContentWidth) {
+            maxContentWidth = rowContentWidth;
+          }
+        }
+      });
+    } else {
+      const actions = group.actions ?? [];
+      const buttonsWidth = actions.reduce(
+        (sum, action) =>
+          sum +
+          Math.max(
+            (action.text?.length ?? 0) * charWidth + buttonPadding,
+            minButtonWidth
+          ),
+        0
+      );
+      const count = Math.max(actions.length, 1);
+      maxContentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    }
+
     const titleWidth =
       (group.label?.length ?? 0) * charWidth + headerExtras + cellPadding;
-    return Math.max(contentWidth, titleWidth, 108);
+    return Math.max(maxContentWidth, titleWidth, 108);
+  }
+
+  /**
+   * Recalculates the width of all custom row action columns.
+   */
+  public updateCustomActionColumnWidths(): void {
+    if (this.customRowActionGroups) {
+      this.customRowActionGroups.forEach((group) => {
+        group.width = this.getCustomActionColumnWidth(group);
+      });
+    }
   }
 
   /**

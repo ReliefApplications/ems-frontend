@@ -261,6 +261,28 @@ export class FormComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
@@ -282,6 +304,16 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    // If survey has errors, cancel
+    if (this.survey.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.survey.clear(false, true);
+      return;
+    }
+
     // Set values from expressions setValueOnComplete
     this.survey.getAllQuestions().forEach((question) => {
       const expression = question.getPropertyValue('setValueOnComplete');
@@ -352,6 +384,16 @@ export class FormComponent
           this.surveyActive = true;
           this.snackBar.openSnackBar(errors[0].message, { error: true });
         } else {
+          if (data.editRecord?.validationErrors?.length) {
+            this.showLocalErrors(
+              data.editRecord.validationErrors,
+              data.editRecord.incrementalId
+            );
+            this.save.emit({ completed: false });
+            this.survey.clear(false, true);
+            this.surveyActive = true;
+            return;
+          }
           if (this.lastDraftRecord) {
             const callback = () => {
               this.lastDraftRecord = undefined;
@@ -371,17 +413,41 @@ export class FormComponent
               this.modifiedAt = data.editRecord.modifiedAt;
             }
             this.surveyActive = true;
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
           } else {
-            this.survey.showCompletedPage = true;
+            if (this.lastDraftRecord) {
+              const callback = () => {
+                this.lastDraftRecord = undefined;
+              };
+              this.formHelpersService.deleteRecordDraft(
+                this.lastDraftRecord,
+                callback
+              );
+            }
+            // localStorage.removeItem(this.storageId);
+            if (data.editRecord || data.addRecord.form.uniqueRecord) {
+              this.survey.clear(false, false);
+              if (data.addRecord) {
+                this.record = data.addRecord;
+                this.modifiedAt = this.record?.modifiedAt || null;
+              } else {
+                this.modifiedAt = data.editRecord.modifiedAt;
+              }
+              this.surveyActive = true;
+            } else {
+              this.survey.showCompletedPage = true;
+            }
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.form.display.submissionMessage'
+              )
+            );
+            this.save.emit({
+              completed: true,
+              hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+              record: data.addRecord || data.editRecord,
+            });
           }
-          this.snackBar.openSnackBar(
-            this.translate.instant('components.form.display.submissionMessage')
-          );
-          this.save.emit({
-            completed: true,
-            hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
-            record: data.addRecord || data.editRecord,
-          });
         }
       });
   }

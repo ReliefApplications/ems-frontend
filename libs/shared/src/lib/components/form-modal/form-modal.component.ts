@@ -48,6 +48,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
+import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
 
 /**
  * Interface of Dialog data.
@@ -161,6 +162,15 @@ export class FormModalComponent
   }
 
   /**
+   * Whether the modal edits an existing record (update) rather than creating one.
+   *
+   * @returns True when a record id was provided to the modal
+   */
+  private get isUpdate(): boolean {
+    return !!this.data.recordId;
+  }
+
+  /**
    * Create confirmation message on save edition based on action button or default context
    *
    * @returns Confirmation message for form record edit for each context
@@ -170,21 +180,10 @@ export class FormModalComponent
       ? this.data.recordId.length
       : 1;
     let confirmMessage: ConfirmDialogData = {
-      title: this.translate.instant('common.updateObject', {
-        name:
-          rowsSelected > 1
-            ? this.translate.instant('common.row.few')
-            : this.translate.instant('common.row.one'),
-      }),
-      content: this.translate.instant(
-        'components.form.updateRow.confirmationMessage',
-        {
-          quantity: rowsSelected,
-          rowText:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }
+      title: this.translate.instant(
+        rowsSelected > 1
+          ? 'components.form.update.confirmTitle.few'
+          : 'components.form.update.confirmTitle.one'
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
@@ -192,21 +191,9 @@ export class FormModalComponent
     if (this.data.actionButtonCtx) {
       confirmMessage = {
         title: this.translate.instant(
-          this.data.recordId ? 'common.updateObject' : 'common.uploadObject',
-          {
-            name:
-              this.translate.instant('common.record.one') +
-              ' ' +
-              this.form?.name,
-          }
-        ),
-        content: this.translate.instant(
-          'components.form.update.confirmMessage',
-          {
-            action: this.translate
-              .instant(this.data.recordId ? 'common.update' : 'common.creation')
-              .toLowerCase(),
-          }
+          this.isUpdate
+            ? 'components.form.update.confirmActionTitle.update'
+            : 'components.form.update.confirmActionTitle.create'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
@@ -247,7 +234,7 @@ export class FormModalComponent
         })
       );
     }
-    if (!this.data.recordId || this.data.template) {
+    if (!this.isUpdate || this.data.template) {
       promises.push(
         firstValueFrom(
           this.apollo.query<FormQueryResponse>({
@@ -337,7 +324,7 @@ export class FormModalComponent
       this.temporaryFilesStorage
     );
 
-    if (this.data.recordId && this.record) {
+    if (this.isUpdate && this.record) {
       if (this.isMultiEdition) {
         this.survey.data = null;
       } else {
@@ -411,6 +398,28 @@ export class FormModalComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Creates the record, or update it if provided.
    *
    * @param survey Survey instance.
@@ -418,10 +427,25 @@ export class FormModalComponent
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
 
+    // If survey has errors, cancel edition
+    if (this.survey?.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.saving = false;
+      return;
+    }
+
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
+    // Creation only relies on the caller's askForConfirm flag, whereas an update
+    // additionally requires the form-level "confirm before updating" setting.
+    const askForConfirm = this.isUpdate
+      ? this.data.askForConfirm && shouldConfirmRecordUpdate(this.survey)
+      : this.data.askForConfirm;
     // Displays confirmation modal.
-    if (this.data.askForConfirm) {
+    if (askForConfirm) {
       const confirmMessage = this.getConfirmMessageByContext();
       const dialogRef = this.confirmService.openConfirmModal(confirmMessage);
       dialogRef.closed
@@ -505,6 +529,7 @@ export class FormModalComponent
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
           },
         });
     }
@@ -533,6 +558,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -569,6 +595,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -598,8 +625,34 @@ export class FormModalComponent
         }),
         { error: true }
       );
+      this.saving = false;
     } else {
       if (data) {
+        if (
+          responseType === 'editRecord' &&
+          data.editRecord?.validationErrors?.length
+        ) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.saving = false;
+          return;
+        }
+        if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
+          const recordWithErrors = data.editRecords.find(
+            (r: any) => r.validationErrors?.length
+          );
+          if (recordWithErrors) {
+            this.showLocalErrors(
+              recordWithErrors.validationErrors,
+              recordWithErrors.incrementalId
+            );
+            this.saving = false;
+            return;
+          }
+        }
+
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,

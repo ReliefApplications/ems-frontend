@@ -1,4 +1,18 @@
-kendo-numerictextbox,
-kendo-textbox {
-  display: flex;
+// Match the look of native SurveyJS text inputs
+:host ::ng-deep {
+  .sd-input {
+    width: 100%;
+  }
+
+  // Hide the native number spinners on the coordinate inputs so they
+  // visually match the plain text fields
+  input[type='number'] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
 }

@@ -1136,6 +1136,16 @@ export class MapComponent
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }
 
+  /**
+   * Reload all map layers, re-fetching their data from the server.
+   * Used to keep the map in sync after data is edited elsewhere on the dashboard.
+   */
+  public async reloadData(): Promise<void> {
+    // Force every layer to refetch, then redraw using the current filters
+    this.layers.forEach((layer: any) => (layer.shouldRefresh = true));
+    await this.filterLayers();
+  }
+
   /** Set the new layers based on the filter value */
   private async filterLayers() {
     this.cancelRefresh$.next();

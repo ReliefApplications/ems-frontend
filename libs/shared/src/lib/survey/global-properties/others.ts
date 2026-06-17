@@ -12,6 +12,10 @@ import {
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from '../../utils/survey-form-action-labels.util';
+import {
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+} from '../../utils/survey-confirm-record-update.util';
 import { Question } from '../types';
 
 type SurveyPropertyOwner = {
@@ -168,6 +172,30 @@ export const init = (environment: any): void => {
     visibleIndex: -1,
     category: 'logic',
     default: '',
+  });
+
+  // Require a confirmation modal before updating an existing record.
+  serializer.addProperty('survey', {
+    name: `${SURVEY_PROP_CONFIRM_RECORD_UPDATE}:boolean`,
+    type: 'boolean',
+    category: 'general',
+    visibleIndex: 50,
+    displayName: 'Confirm before updating a record',
+    description:
+      'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.',
+    default: true,
+  });
+  // Expression overriding the confirmation toggle (evaluated as a boolean).
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+    type: 'expression',
+    category: 'logic',
+    visibleIndex: 200,
+    displayName: 'Confirm before updating a record (expression)',
+    description:
+      'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.',
+    default: '',
+    isLocalizable: false,
   });
 
   // Add custom label expressions for the form action buttons
