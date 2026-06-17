@@ -10,9 +10,9 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
+- task: UseNode@1
   inputs:
-    versionSpec: '22.x'
+    version: '24.x'
   displayName: 'Install Node.js'
 
 - script: |
@@ -28,10 +28,14 @@ steps:
 - script: |
     npx nx run front-office:build:azure-dev --skip-nx-cache
   displayName: 'Build front-office'
+  env:
+    NODE_OPTIONS: --max-old-space-size=8192
 
 - script: |
     npx nx run back-office:build:azure-dev --skip-nx-cache
   displayName: 'Build back-office'
+  env:
+    NODE_OPTIONS: --max-old-space-size=8192
 
 - task: ArchiveFiles@2
   inputs:

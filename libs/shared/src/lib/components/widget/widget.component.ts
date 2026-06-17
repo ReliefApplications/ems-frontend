@@ -153,6 +153,17 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /**
+   * Reload the widget's data, if its inner content component supports it.
+   * Called when dashboard data was edited so all widgets reflect the changes.
+   */
+  reload(): void {
+    const content = this.widgetContentComponent as { reload?: () => void };
+    if (typeof content?.reload === 'function') {
+      content.reload();
+    }
+  }
+
   /** Resize widget, by button click. */
   onResize() {
     if (this.grid.options.api?.resize && this.grid.options.api.optionsChanged) {

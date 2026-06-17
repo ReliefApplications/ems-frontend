@@ -77,11 +77,16 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [disabled]="saving"
+      [disabled]="loading || saving"
       (click)="submit()"
       cdkFocusInitial
     >
-      {{ 'components.record.modal.update' | translate }}
+      <ng-container *ngIf="loading; else saveButtonLabelTmpl">
+        <ui-spinner size="medium" class="m-auto block"></ui-spinner>
+      </ng-container>
+      <ng-template #saveButtonLabelTmpl>
+        {{ saveButtonLabel || ('components.record.modal.update' | translate) }}
+      </ng-template>
     </ui-button>
   </ng-container>
 </ui-dialog>

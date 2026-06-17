@@ -235,8 +235,11 @@ export class GridComponent
   /** Prevent next column reset */
   private preventColumnResize = false;
   /** Custom row action button groups */
-  public customRowActionGroups: { label: string; actions: ActionButton[] }[] =
-    [];
+  public customRowActionGroups: {
+    label: string;
+    actions: ActionButton[];
+    width: number;
+  }[] = [];
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -385,6 +388,24 @@ export class GridComponent
           this.rowActions
         ).length > 0;
     }
+    // Must resolve before the grid's first render: Kendo's sticky position
+    // cache snapshots the column list once and never re-includes columns
+    // added later, which makes multiple action groups overlap.
+    if (changes['widget']) {
+      const customRowActions: ActionButton[] = get(
+        this.widget,
+        'settings.customRowActions',
+        []
+      );
+      this.customRowActionGroups = map(
+        groupBy(customRowActions, 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+          width: 0,
+        })
+      );
+    }
     if (
       (changes['data']?.currentValue?.data.length || this.data.data.length) &&
       (changes['fields']?.currentValue?.length || this.fields.length)
@@ -392,6 +413,9 @@ export class GridComponent
       this.data.data.forEach((gridRow) => {
         this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
+    }
+    if (changes['widget'] || changes['data']) {
+      this.updateCustomActionColumnWidths();
     }
     // First load of records, or on page change
     if (
@@ -407,22 +431,10 @@ export class GridComponent
           this.updateColumnShowFullScreenButton((column as any).field);
         });
       }, 0);
+      this.updateCustomActionColumnWidths();
       this.preventColumnResize
         ? (this.preventColumnResize = false)
         : this.setColumnsWidth();
-      // Load custom action buttons
-      const customRowActions: ActionButton[] = get(
-        this.widget,
-        'settings.customRowActions',
-        []
-      );
-      this.customRowActionGroups = map(
-        groupBy(customRowActions, 'columnLabel'),
-        (actions, label) => ({
-          label,
-          actions,
-        })
-      );
     }
   }
 
@@ -453,6 +465,120 @@ export class GridComponent
     }
     if (this.closeEditorListener) {
       this.closeEditorListener();
+    }
+  }
+
+  /**
+   * Get the custom row actions to display in a given group column for a given row.
+   * Filters the full set of actions in the group using the per-row actions
+   * populated by the backend on `dataItem.actions` (grouped by columnLabel).
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
+   * @returns The action buttons to render for this row / group.
+   */
+  public getRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
+    const rowGroups: { label: string; actions: ActionButton[] }[] =
+      dataItem?.actions ?? [];
+    if (!rowGroups.length) {
+      // return group.actions;
+      return [];
+    }
+    const rowGroup = rowGroups.find((g) => g.label === group.label);
+    if (!rowGroup) {
+      return [];
+    }
+    // Intersect by text + columnLabel to preserve widget config order.
+    const visibleKeys = new Set(
+      rowGroup.actions.map((a) => `${a.columnLabel}::${a.text}`)
+    );
+    return group.actions.filter((a) =>
+      visibleKeys.has(`${a.columnLabel}::${a.text}`)
+    );
+  }
+
+  /**
+   * Compute the width of a custom row action column based on the rendered
+   * width of each button's text and the length of the group label.
+   *
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Actions configured for the group.
+   * @returns The column width in pixels.
+   */
+  public getCustomActionColumnWidth(group: {
+    label: string;
+    actions: ActionButton[];
+  }): number {
+    /** Gap between buttons */
+    const gap = 8;
+    /** Left / right cell padding */
+    /** Left / right cell padding */
+    const cellPadding = 10;
+    /** Approx pixel width per character */
+    const charWidth = 8;
+    /** Padding + border on a single button (left + right) */
+    const buttonPadding = 20;
+    /** Minimum width of a button so icon-only / very short labels stay clickable */
+    const minButtonWidth = 34;
+    /** Additional space reserved for the kendo column header icons */
+    const headerExtras = 32;
+
+    let maxContentWidth = 0;
+
+    if (this.data && this.data.data && this.data.data.length > 0) {
+      this.data.data.forEach((dataItem) => {
+        const visibleActions = this.getRowActions(dataItem, group);
+        if (visibleActions && visibleActions.length > 0) {
+          const rowButtonsWidth = visibleActions.reduce(
+            (sum, action) =>
+              sum +
+              Math.max(
+                (action.text?.length ?? 0) * charWidth + buttonPadding,
+                minButtonWidth
+              ),
+            0
+          );
+          const rowContentWidth =
+            rowButtonsWidth + (visibleActions.length - 1) * gap + cellPadding;
+          if (rowContentWidth > maxContentWidth) {
+            maxContentWidth = rowContentWidth;
+          }
+        }
+      });
+    } else {
+      const actions = group.actions ?? [];
+      const buttonsWidth = actions.reduce(
+        (sum, action) =>
+          sum +
+          Math.max(
+            (action.text?.length ?? 0) * charWidth + buttonPadding,
+            minButtonWidth
+          ),
+        0
+      );
+      const count = Math.max(actions.length, 1);
+      maxContentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    }
+
+    const titleWidth =
+      (group.label?.length ?? 0) * charWidth + headerExtras + cellPadding;
+    return Math.max(maxContentWidth, titleWidth, 108);
+  }
+
+  /**
+   * Recalculates the width of all custom row action columns.
+   */
+  public updateCustomActionColumnWidths(): void {
+    if (this.customRowActionGroups) {
+      this.customRowActionGroups.forEach((group) => {
+        group.width = this.getCustomActionColumnWidth(group);
+      });
     }
   }
 

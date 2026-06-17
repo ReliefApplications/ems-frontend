@@ -848,6 +848,15 @@
 			"expression": "Expression",
 			"hint": {
 				"name": "Entrez un nom composé uniquement delettres, dechiffres et de tirets bas. Ce nom ne doit pas dupliquer le nom d'un autre champ de la resource éditée."
+			},
+			"reference": {
+				"noResults": "Aucun résultat ne correspond à votre recherche.",
+				"open": "Ouvrir la référence des champs dérivés",
+				"operations": "Opérations",
+				"placeholders": "Espaces réservés",
+				"placeholdersHint": "Utilisez ces espaces réservés dans une expression pour référencer les données d'un enregistrement, l'utilisateur courant ou le résultat d'un autre calcul.",
+				"searchPlaceholder": "Filtrer par nom ou description...",
+				"title": "Référence des champs dérivés"
 			}
 		},
 		"channel": {
@@ -1326,6 +1335,7 @@
 				"apply": "Appliquer le filtre",
 				"applyField": "Définir les champs",
 				"field": "Champ",
+				"loading": "Chargement des filtres. Cela peut prendre un moment, veuillez patienter.",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
@@ -1367,6 +1377,8 @@
 					},
 					"criteria": "Critère",
 					"fields": "Champ",
+					"isBadge": "Afficher comme badge",
+					"isBadgeTooltip": "Lorsque cette option est activée, le style est appliqué sous forme de badge : les couleurs et les styles affectent le badge plutôt que la cellule.",
 					"name": "Nom de la règle",
 					"selectedColumns": "Seulement les colonnes sélectionnées.",
 					"text": {
@@ -2825,7 +2837,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",
-					"fields": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+					"fields": "Vous pouvez utiliser les valeurs du filtre du tableau de bord avec {{filter.<nom>}}, ainsi que les informations de l'utilisateur connecté avec {{user.username}}, {{user.firstName}}, {{user.lastName}} ou des attributs OMS tels que {{user.country}}.",
 					"position": "Ne s'applique que lorsque la variant par défaut est active"
 				},
 				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}."
@@ -3080,6 +3092,16 @@
 				},
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"functionReference": {
+				"builtin": "Fonctions natives SurveyJS",
+				"builtinHint": "Fonctions d'expression standard de SurveyJS. Consultez la documentation officielle pour leur utilisation.",
+				"custom": "Fonctions personnalisées",
+				"docs": "Ouvrir la doc SurveyJS",
+				"noResults": "Aucune fonction ne correspond à votre recherche.",
+				"open": "Référence des fonctions",
+				"searchPlaceholder": "Filtrer par nom ou description...",
+				"title": "Référence des fonctions"
 			},
 			"move": {
 				"down": "Descendre la question",

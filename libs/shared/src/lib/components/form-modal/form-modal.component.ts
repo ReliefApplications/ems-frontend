@@ -41,11 +41,13 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
+import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
+import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 
 /**
  * Interface of Dialog data.
@@ -118,6 +120,8 @@ export class FormModalComponent
   public pages$ = this.pages.asObservable();
   /** Is multi edition of records enabled ( for grid actions ) */
   protected isMultiEdition = false;
+  /** Evaluated label for the modal save button */
+  public saveButtonLabel = '';
   /** Temporary storage of files */
   protected temporaryFilesStorage: any = {};
   /** Stored cloned data */
@@ -297,9 +301,11 @@ export class FormModalComponent
       this.record
     );
 
+    this.updateButtonLabels();
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      this.updateButtonLabels();
     });
     this.survey.onComplete.add(this.onComplete);
 
@@ -317,7 +323,6 @@ export class FormModalComponent
       const resourceNames = new Set(resourcesFields.map((f) => f.name));
       // Omit nil values and resources questions from prefill data
       const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
-        console.log({ key, value });
         return isNil(value) || resourceNames.has(key);
       });
       Object.keys(cleanedData).forEach((question) => {
@@ -347,9 +352,24 @@ export class FormModalComponent
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
+
+      // Fire once now that the existing record's data is in the survey
+      fireOnRecordEditionTriggers(this.survey);
     }
 
+    // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
+    this.updateButtonLabels();
+
     this.loading = false;
+  }
+
+  /**
+   * Evaluates all action button label expressions from the survey settings.
+   * Falls back to an empty string (template will use the default translation key).
+   */
+  private updateButtonLabels(): void {
+    const labels = getSurveyFormActionButtonLabels(this.survey);
+    this.saveButtonLabel = labels.modalSaveButtonLabel;
   }
 
   /**
@@ -391,12 +411,44 @@ export class FormModalComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Creates the record, or update it if provided.
    *
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
+
+    // If survey has errors, cancel edition
+    if (this.survey?.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.saving = false;
+      return;
+    }
 
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
@@ -485,6 +537,7 @@ export class FormModalComponent
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
           },
         });
     }
@@ -513,6 +566,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -549,6 +603,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -578,8 +633,34 @@ export class FormModalComponent
         }),
         { error: true }
       );
+      this.saving = false;
     } else {
       if (data) {
+        if (
+          responseType === 'editRecord' &&
+          data.editRecord?.validationErrors?.length
+        ) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.saving = false;
+          return;
+        }
+        if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
+          const recordWithErrors = data.editRecords.find(
+            (r: any) => r.validationErrors?.length
+          );
+          if (recordWithErrors) {
+            this.showLocalErrors(
+              recordWithErrors.validationErrors,
+              recordWithErrors.incrementalId
+            );
+            this.saving = false;
+            return;
+          }
+        }
+
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,

@@ -848,6 +848,15 @@
 			"expression": "******",
 			"hint": {
 				"name": "******"
+			},
+			"reference": {
+				"noResults": "******",
+				"open": "******",
+				"operations": "******",
+				"placeholders": "******",
+				"placeholdersHint": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
 			}
 		},
 		"channel": {
@@ -1323,6 +1332,7 @@
 				"apply": "******",
 				"applyField": "******",
 				"field": "******",
+				"loading": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
@@ -1364,6 +1374,8 @@
 					},
 					"criteria": "******",
 					"fields": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"name": "******",
 					"selectedColumns": "******",
 					"text": {
@@ -2822,7 +2834,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "******",
-					"fields": "******",
+					"fields": "****** {{filter.<name>}} ****** {{user.username}} ****** {{user.firstName}} ****** {{user.lastName}} ****** {{user.country}} ******",
 					"position": "******"
 				},
 				"historicalDate": "****** {{filter.<name>}} ******"
@@ -3077,6 +3089,16 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"functionReference": {
+				"builtin": "******",
+				"builtinHint": "******",
+				"custom": "******",
+				"docs": "******",
+				"noResults": "******",
+				"open": "******",
+				"searchPlaceholder": "******",
+				"title": "******"
 			},
 			"move": {
 				"down": "******",

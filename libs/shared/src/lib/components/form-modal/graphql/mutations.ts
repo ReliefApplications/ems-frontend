@@ -71,9 +71,14 @@ export const EDIT_RECORDS = gql`
   ) {
     editRecords(ids: $ids, data: $data, template: $template, lang: $lang) {
       id
+      incrementalId
       data
       createdAt
       modifiedAt
+      validationErrors {
+        question
+        errors
+      }
     }
   }
 `;

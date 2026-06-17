@@ -170,7 +170,8 @@ ui-checkbox {
 
 @font-face {
   font-family: 'DejaVu Sans';
-  src: url('../../../../../assets/fonts/DejaVu/DejaVuSans.ttf') format('truetype');
+  src: url('../../../../../assets/fonts/DejaVu/DejaVuSans.ttf')
+    format('truetype');
 }
 
 @font-face {
@@ -226,4 +227,9 @@ ui-checkbox {
   kendo-icon {
     display: none;
   }
+}
+
+.layout__badge {
+  padding: 0.4rem;
+  border-radius: 8px;
 }

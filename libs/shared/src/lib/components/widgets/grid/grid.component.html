@@ -54,7 +54,7 @@
     [settings]="gridSettings"
     (defaultLayoutReset)="onResetLayout()"
     (edit)="edit.emit($event)"
-    (inlineEdition)="inlineEdition.emit()"
+    (inlineEdition)="onInlineEdition()"
     [widget]="widget"
     [canUpdate]="canUpdate"
     [status]="status"
