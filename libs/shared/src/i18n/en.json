@@ -1116,6 +1116,10 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "Confirm Record Creation",
+					"update": "Confirm Record Update"
+				},
 				"confirmMessage": "Do you confirm the {{action}} of the current record?",
 				"confirmTitle": {
 					"few": "Confirm Rows Update",

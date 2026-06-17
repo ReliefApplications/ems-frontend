@@ -1116,6 +1116,10 @@
 				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "Confirmer la création de l'enregistrement",
+					"update": "Confirmer la mise à jour de l'enregistrement"
+				},
 				"confirmMessage": "************************?",
 				"confirmTitle": {
 					"few": "Confirmer la mise à jour des lignes",

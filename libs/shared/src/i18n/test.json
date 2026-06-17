@@ -1117,6 +1117,10 @@
 			},
 			"update": {
 				"confirmMessage": "****** {{action}} ******",
+				"confirmActionTitle": {
+					"create": "******",
+					"update": "******"
+				},
 				"confirmTitle": {
 					"few": "******",
 					"one": "******"

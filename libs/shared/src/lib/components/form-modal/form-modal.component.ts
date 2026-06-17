@@ -181,21 +181,9 @@ export class FormModalComponent
     if (this.data.actionButtonCtx) {
       confirmMessage = {
         title: this.translate.instant(
-          this.data.recordId ? 'common.updateObject' : 'common.uploadObject',
-          {
-            name:
-              this.translate.instant('common.record.one') +
-              ' ' +
-              this.form?.name,
-          }
-        ),
-        content: this.translate.instant(
-          'components.form.update.confirmMessage',
-          {
-            action: this.translate
-              .instant(this.data.recordId ? 'common.update' : 'common.creation')
-              .toLowerCase(),
-          }
+          this.data.recordId
+            ? 'components.form.update.confirmActionTitle.update'
+            : 'components.form.update.confirmActionTitle.create'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
