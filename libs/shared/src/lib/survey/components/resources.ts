@@ -713,38 +713,38 @@ export const init = (
       ) {
         subscriptions.push(
           grid.instance.selectionChange.subscribe((selection: any) => {
-          try {
-            const selectedRows = selection?.selectedRows || [];
-            if (!selectedRows.length) return;
-            const selectedId = selectedRows[0]?.dataItem?.id;
-            if (!selectedId) return;
-            const mapping = JSON.parse(question.onSelect || '{}');
-            if (Object.keys(mapping).length === 0) return;
-            apollo
-              .query<any>({
-                query: GET_RECORD_BY_ID,
-                variables: { id: selectedId },
-                fetchPolicy: 'no-cache',
-              })
-              .subscribe(({ data }) => {
-                const record = data?.record;
-                if (!record || !record.data) return;
-                const survey = question.survey as SurveyModel;
-                for (const targetQuestion in mapping) {
-                  try {
-                    const expression = mapping[targetQuestion];
-                    if (!expression) continue;
-                    const runner = new ExpressionRunner(expression);
-                    const value = runner.run(record.data);
-                    survey.setValue(targetQuestion, value);
-                  } catch (error) {
-                    console.error(error);
+            try {
+              const selectedRows = selection?.selectedRows || [];
+              if (!selectedRows.length) return;
+              const selectedId = selectedRows[0]?.dataItem?.id;
+              if (!selectedId) return;
+              const mapping = JSON.parse(question.onSelect || '{}');
+              if (Object.keys(mapping).length === 0) return;
+              apollo
+                .query<any>({
+                  query: GET_RECORD_BY_ID,
+                  variables: { id: selectedId },
+                  fetchPolicy: 'no-cache',
+                })
+                .subscribe(({ data }) => {
+                  const record = data?.record;
+                  if (!record || !record.data) return;
+                  const survey = question.survey as SurveyModel;
+                  for (const targetQuestion in mapping) {
+                    try {
+                      const expression = mapping[targetQuestion];
+                      if (!expression) continue;
+                      const runner = new ExpressionRunner(expression);
+                      const value = runner.run(record.data);
+                      survey.setValue(targetQuestion, value);
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
-                }
-              });
-          } catch (e) {
-            console.error('Error applying on select mapping', e);
-          }
+                });
+            } catch (e) {
+              console.error('Error applying on select mapping', e);
+            }
           })
         );
       }
