@@ -35,6 +35,12 @@ import {
 } from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import {
+  addGridTeardown,
+  destroyGrid,
+  registerGridForCleanup,
+} from './utils/grid-cleanup';
+import { Subscription } from 'rxjs';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -626,7 +632,11 @@ export const init = (
         () => {
           if (question.displayAsGrid) {
             // Update grid configuration display
-            domService.removeComponentFromBody(gridComponentRef);
+            destroyGrid(
+              question.survey as SurveyModel,
+              gridComponentRef,
+              domService
+            );
             gridComponentRef = buildGridDisplay(question, parentElement);
             searchBtn.style.display = 'none';
           }
@@ -641,7 +651,11 @@ export const init = (
           searchBtn.style.display = 'none';
           gridComponentRef = buildGridDisplay(question, parentElement);
         } else {
-          domService.removeComponentFromBody(gridComponentRef);
+          destroyGrid(
+            question.survey as SurveyModel,
+            gridComponentRef,
+            domService
+          );
           if (element) {
             element.style.display = 'block';
           }
@@ -683,18 +697,22 @@ export const init = (
     const grid: ComponentRef<CoreGridComponent> =
       buildRecordsGrid(question, parentElement.firstChild) || undefined;
     if (grid.instance) {
-      grid.instance.removeRowIds.subscribe((ids) => {
-        question.value = question.value.filter(
-          (id: string) => !ids.includes(id)
-        );
-      });
+      const subscriptions: Subscription[] = [];
+      subscriptions.push(
+        grid.instance.removeRowIds.subscribe((ids) => {
+          question.value = question.value.filter(
+            (id: string) => !ids.includes(id)
+          );
+        })
+      );
       if (
         question.displayOnly &&
         question.displayAsGrid &&
         question.onSelect &&
         question.onSelect.trim()
       ) {
-        grid.instance.selectionChange.subscribe((selection: any) => {
+        subscriptions.push(
+          grid.instance.selectionChange.subscribe((selection: any) => {
           try {
             const selectedRows = selection?.selectedRows || [];
             if (!selectedRows.length) return;
@@ -727,9 +745,16 @@ export const init = (
           } catch (e) {
             console.error('Error applying on select mapping', e);
           }
-        });
+          })
+        );
       }
+      // Unsubscribe these grid output subscriptions when the grid is destroyed.
+      addGridTeardown(grid, () =>
+        subscriptions.forEach((subscription) => subscription.unsubscribe())
+      );
     }
+    // Track the grid so it is destroyed when the survey is disposed.
+    registerGridForCleanup(question.survey as SurveyModel, grid, domService);
     return grid;
   }
 
@@ -750,11 +775,16 @@ export const init = (
       el.parentElement
     );
     setGridInputs(grid.instance, question);
-    question.survey?.onValueChanged.add((_: any, options: any) => {
+    const onValueChanged = (_: any, options: any) => {
       if (question.displayOnly || options.name === question.name) {
         setGridInputs(grid.instance, question);
       }
-    });
+    };
+    question.survey?.onValueChanged.add(onValueChanged);
+    // Release this survey handler when the grid is destroyed.
+    addGridTeardown(grid, () =>
+      question.survey?.onValueChanged.remove(onValueChanged)
+    );
     return grid;
   };
 
