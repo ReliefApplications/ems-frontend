@@ -1116,7 +1116,15 @@
 				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "Confirmer la création de l'enregistrement",
+					"update": "Confirmer la mise à jour de l'enregistrement"
+				},
 				"confirmMessage": "************************?",
+				"confirmTitle": {
+					"few": "Confirmer la mise à jour des lignes",
+					"one": "Confirmer la mise à jour de la ligne"
+				},
 				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
 			},

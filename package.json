@@ -1,12 +1,12 @@
 {
   "name": "oort-front",
-  "version": "2.23.0-rc.5",
+  "version": "2.23.0-rc.7",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
-    "format": "npx prettier --write \"**/*.{scss,html}\"",
+    "format": "npx prettier --write \"**/*.{ts,scss,html}\"",
     "test": "npx nx run-many --target=test --projects=ui,shared --configuration=ci",
     "postinstall": "./setup-hooks.sh"
   },

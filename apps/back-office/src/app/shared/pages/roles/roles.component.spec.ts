@@ -56,7 +56,7 @@ describe('RolesComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

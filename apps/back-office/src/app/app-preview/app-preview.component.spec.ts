@@ -61,7 +61,7 @@ describe('AppPreviewComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

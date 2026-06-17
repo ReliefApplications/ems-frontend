@@ -54,7 +54,7 @@ describe('FormComponent', () => {
           },
         }),
         HttpClientTestingModule,
-      ]
+      ],
     }).compileComponents();
   });
 
