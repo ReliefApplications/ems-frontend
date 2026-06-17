@@ -212,7 +212,10 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    this.surveyCreator.survey?.dispose();
+    // Dispose the whole creator ( toolbox, property grid, plugins, survey and
+    // all of their event handlers ), not only the survey, otherwise the creator
+    // graph stays referenced and its memory is never released.
+    this.surveyCreator?.dispose();
   }
 
   /**
