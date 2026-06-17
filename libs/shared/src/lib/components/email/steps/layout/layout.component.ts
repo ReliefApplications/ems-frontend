@@ -100,6 +100,8 @@ export class LayoutComponent
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   /** Block field select values */
   blockFieldSelect: string[] = [];
+  /** SSE recipients for read-only preview (not merged into to/cc/bcc) */
+  distributionListSeparate: any[] = [];
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -364,23 +366,18 @@ export class LayoutComponent
     }
 
     if (response?.individualEmailList?.length > 0) {
-      const sseEmails = [
-        ...new Set(
-          response.individualEmailList.flatMap(
-            (block: any) => block.emails ?? []
-          )
-        ),
-      ];
-      this.emailService.emailDistributionList.to = [
-        ...new Set([
-          ...(Array.isArray(this.emailService.emailDistributionList.to)
-            ? this.emailService.emailDistributionList.to
-            : []),
-          ...sseEmails,
-        ]),
-      ];
+      this.distributionListSeparate = response.individualEmailList;
+      this.distributionListSeparate.forEach((block: any) => {
+        // client-side UI flag for showing >6 emails.
+        block.isExpanded = false;
+        block.emails = Array.from(new Set(block.emails));
+      });
+    } else {
+      this.distributionListSeparate = [];
     }
-
+    this.emailService.hasSseRecipients = this.distributionListSeparate.some(
+      (block: any) => block.emails.length > 0
+    );
     this.populateDLForm();
     this.emailService.loading = false;
   }
