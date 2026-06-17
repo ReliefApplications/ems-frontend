@@ -51,7 +51,7 @@ describe('ChannelsComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

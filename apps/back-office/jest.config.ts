@@ -11,10 +11,7 @@ export default {
     },
   },
   coverageDirectory: '../../coverage/apps/back-office',
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "<rootDir>/src/app/__mocks__/"
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/src/app/__mocks__/'],
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

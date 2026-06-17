@@ -36,7 +36,7 @@ describe('RecordsTabComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

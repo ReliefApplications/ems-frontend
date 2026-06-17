@@ -28,7 +28,7 @@ describe('ResourceComponent', () => {
         }),
       ],
       declarations: [ResourceComponent],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

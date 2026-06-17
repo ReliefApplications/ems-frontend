@@ -38,7 +38,7 @@ describe('WorkflowComponent', () => {
             params: of({}),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 
