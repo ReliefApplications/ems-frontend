@@ -27,6 +27,10 @@ import { Form } from '../../models/form.model';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import {
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+} from '../../utils/survey-confirm-record-update.util';
 import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
@@ -226,6 +230,35 @@ export class FormBuilderComponent
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    // While a confirmation expression drives the behavior, the matching toggle
+    // in the general settings is forced on and made read-only.
+    this.surveyCreator.onPropertyGridSurveyCreated.add(
+      (_: any, options: any) => {
+        const grid: SurveyModel = options.survey;
+        const toggle = grid.getQuestionByName(
+          SURVEY_PROP_CONFIRM_RECORD_UPDATE
+        );
+        if (!toggle) {
+          return;
+        }
+        const syncToggleState = () => {
+          const hasExpression = !!grid.getValue(
+            SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF
+          );
+          toggle.readOnly = hasExpression;
+          if (hasExpression) {
+            toggle.value = true;
+          }
+        };
+        syncToggleState();
+        grid.onValueChanged.add((__: any, opt: any) => {
+          if (opt.name === SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF) {
+            syncToggleState();
+          }
+        });
+      }
+    );
 
     this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
