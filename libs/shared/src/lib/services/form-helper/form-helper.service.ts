@@ -18,6 +18,8 @@ import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { BlobType, DownloadService } from '../download/download.service';
+import { FilePreviewService } from '../file-preview/file-preview.service';
+import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
@@ -42,6 +44,8 @@ export class FormHelpersService {
    * @param authService Shared auth service
    * @param downloadService Shared download service
    * @param documentManagementService Shared cs documentation
+   * @param htmlParserService Html parser service to parse html questions
+   * @param filePreviewService Shared file preview service
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -51,7 +55,9 @@ export class FormHelpersService {
     private translate: TranslateService,
     private authService: AuthService,
     private downloadService: DownloadService,
-    private documentManagementService: DocumentManagementService
+    private documentManagementService: DocumentManagementService,
+    private htmlParserService: HtmlParserService,
+    private filePreviewService: FilePreviewService
   ) {}
 
   /**
@@ -462,10 +468,14 @@ export class FormHelpersService {
    * @param options.question current question
    * @param options.htmlElement html element associated to question
    */
-  public addQuestionTooltips(
+  public addQuestionTooltips = (
     survey: SurveyModel,
     options: { question: Question; htmlElement: HTMLElement }
-  ): void {
+  ): void => {
+    if (options.question.getType() === 'html') {
+      this.renderHtmlQuestionFileLinks(survey, options.htmlElement);
+    }
+
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
@@ -496,6 +506,37 @@ export class FormHelpersService {
       wrapper.appendChild(htmlQuestion);
       createTooltip(wrapper);
     }
+  };
+
+  /**
+   * Parses file placeholders in HTML questions and attaches file click behavior.
+   *
+   * @param survey Current survey
+   * @param htmlElement HTML question root element
+   */
+  private renderHtmlQuestionFileLinks(
+    survey: SurveyModel,
+    htmlElement: HTMLElement
+  ): void {
+    const htmlQuestion = htmlElement.querySelector<HTMLElement>('.sd-html');
+    if (!htmlQuestion) {
+      return;
+    }
+
+    const fields = survey.getAllQuestions().map((question) => ({
+      name: question.valueName || question.name,
+      type: question.getType(),
+    }));
+    htmlQuestion.innerHTML = this.htmlParserService.parseHtml(
+      htmlQuestion.innerHTML,
+      {
+        data: survey.data,
+        fields,
+      }
+    );
+    htmlQuestion.addEventListener('click', (event) =>
+      this.filePreviewService.openFileFromEvent(event, survey.data)
+    );
   }
 
   /**

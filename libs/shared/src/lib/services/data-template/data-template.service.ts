@@ -1,13 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import get from 'lodash/get';
 import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
-import { DownloadService } from '../download/download.service';
+import { FilePreviewService } from '../file-preview/file-preview.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
-import { DocumentManagementService } from '../document-management/document-management.service';
 
 /**
  * Data template service
@@ -24,19 +22,17 @@ export class DataTemplateService {
    * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
-   * @param downloadService Used to download file type fields
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param htmlParserService Html parser service to parse the values for html layout
-   * @param documentManagementService Shared document management service
+   * @param filePreviewService Shared file preview service
    */
   constructor(
     private sanitizer: DomSanitizer,
-    private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
     private htmlParserService: HtmlParserService,
-    private documentManagementService: DocumentManagementService
+    private filePreviewService: FilePreviewService
   ) {
     this.environment = environment;
   }
@@ -134,22 +130,8 @@ export class DataTemplateService {
    * @param event click event
    * @param data content data
    */
-  onClick(event: any, data: any): void {
-    const type = event.target.getAttribute('type');
-    if (type === 'file') {
-      // Download file from definition
-      const fieldName = event.target.getAttribute('field');
-      const index = event.target.getAttribute('index');
-      const file = get(data, `${fieldName}[${index}]`, null);
-      if (file) {
-        if (typeof file.content === 'string') {
-          const path = `download/file/${file.content}`;
-          this.downloadService.getFile(path, file.type, file.name);
-        } else {
-          this.documentManagementService.getFile(file);
-        }
-      }
-    }
+  onClick(event: MouseEvent, data: unknown): void {
+    this.filePreviewService.openFileFromEvent(event, data);
   }
 
   /**
