@@ -1,3 +1,10 @@
+# [2.23.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.6...v2.23.0-rc.7) (2026-06-17)
+
+
+### Bug Fixes
+
+* Improve performance of form in general ([#2878](https://github.com/ReliefApplications/ems-frontend/issues/2878)) ([07c3e0e](https://github.com/ReliefApplications/ems-frontend/commit/07c3e0e7bf53eba0519d97092b486411cad8bb99)), closes [AB#133165](https://github.com/AB/issues/133165)
+
 # [2.23.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.5...v2.23.0-rc.6) (2026-06-17)
 
 
