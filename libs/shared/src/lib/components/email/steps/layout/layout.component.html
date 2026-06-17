@@ -96,6 +96,43 @@
       />
     </div>
 
+    <!-- Emails from Send Separate Email Preview -->
+    <div class="mb-4" *ngIf="emailService.hasSseRecipients">
+      <label class="block text-sm font-medium leading-6 text-gray-900">
+        {{ 'components.select.distribution.sendseparate.list' | translate }}
+      </label>
+      <div uiChipList>
+        <ng-container
+          *ngFor="let email of distributionListSeparate[0].emails; let j = index"
+        >
+          <ui-chip
+            *ngIf="j < 6 || distributionListSeparate[0].isExpanded"
+            variant="primary"
+            class="w-full flex-row flex-wrap justify-between mr-1"
+            >{{ email }}</ui-chip
+          >
+        </ng-container>
+      </div>
+      <ui-button
+        *ngIf="
+          distributionListSeparate[0].emails.length > 6 &&
+          !distributionListSeparate[0].isExpanded
+        "
+        class="inline-block mt-2"
+        (click)="distributionListSeparate[0].isExpanded = true"
+        >{{
+          'components.email.preview.more'
+            | translate : { length: distributionListSeparate[0].emails.length - 6 }
+        }}</ui-button
+      >
+      <ui-button
+        *ngIf="distributionListSeparate[0].isExpanded"
+        class="inline-block mt-2"
+        (click)="distributionListSeparate[0].isExpanded = false"
+        >{{ 'components.email.preview.less' | translate }}</ui-button
+      >
+    </div>
+
     <!-- Dropdowns and Subject Input -->
     <div class="flex flex-col mb-4 py-5">
       <!-- Subject Input Label -->
