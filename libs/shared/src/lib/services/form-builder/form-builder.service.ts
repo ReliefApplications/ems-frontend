@@ -7,6 +7,7 @@ import { isNil } from 'lodash';
 import get from 'lodash/get';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import {
+  AfterRenderQuestionEvent,
   Model,
   Question,
   QuestionFileModel,
@@ -190,6 +191,7 @@ export class FormBuilderService {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });
+    this.addFilePreviewToSurvey(survey);
   }
 
   /**
@@ -355,6 +357,117 @@ export class FormBuilderService {
         buildRequest(token, url);
       });
     }
+  }
+
+  /**
+   * Registers an onAfterRenderQuestion handler that injects an inline preview
+   * (<img> for images, <iframe> for PDFs) below file questions when the survey
+   * is in display or update mode and the question holds exactly one already-uploaded file.
+   *
+   * @param survey Survey model to attach the preview handler to
+   */
+  private addFilePreviewToSurvey(survey: SurveyModel): void {
+    survey.onAfterRenderQuestion.add(
+      (_sender: SurveyModel, options: AfterRenderQuestionEvent) => {
+        const { question, htmlElement } = options;
+
+        if (!(question instanceof QuestionFileModel)) return;
+
+        const hasRecord = !!survey.getPropertyValue('record');
+        const isDisplayMode = survey.mode === 'display';
+        if (!hasRecord && !isDisplayMode) return;
+
+        const value: Array<{ name: string; type: string; content: any }> =
+          question.value;
+        if (!Array.isArray(value) || value.length !== 1) return;
+
+        const { name, type, content } = value[0];
+
+        const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|bmp|svg)$/i;
+        const isImage =
+          (typeof type === 'string' && type.startsWith('image/')) ||
+          (!type && IMAGE_EXTENSIONS.test(name));
+        const isPdf =
+          type === 'application/pdf' || (!type && /\.pdf$/i.test(name));
+        if (!isImage && !isPdf) return;
+
+        // Idempotency guard — prevent duplicates on re-render
+        const PREVIEW_ATTR = 'data-file-preview-injected';
+        if (htmlElement.hasAttribute(PREVIEW_ATTR)) return;
+        htmlElement.setAttribute(PREVIEW_ATTR, 'true');
+
+        const fetchAndInject = (token: string, url: string): void => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', url);
+          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+          xhr.responseType = 'blob';
+          xhr.onload = () => {
+            if (xhr.status < 200 || xhr.status >= 300) return;
+            const blobUrl = URL.createObjectURL(xhr.response);
+            this.injectPreviewElement(htmlElement, blobUrl, name, isImage);
+          };
+          xhr.send();
+        };
+
+        if (typeof content === 'string') {
+          if (content.indexOf('data:') === 0) return;
+          if (content.indexOf('http') === 0) {
+            this.injectPreviewElement(htmlElement, content, name, isImage);
+          } else {
+            const token = localStorage.getItem('idtoken') as string;
+            fetchAndInject(
+              token,
+              `${this.restService.apiUrl}/download/file/${content}`
+            );
+          }
+        } else {
+          firstValueFrom(
+            this.documentManagementService.getDocumentDriveId(content.itemId)
+          ).then((driveId) => {
+            const token = localStorage.getItem('access_token') as string;
+            const url = `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${content.itemId}/content`;
+            fetchAndInject(token, url);
+          });
+        }
+      }
+    );
+  }
+
+  /**
+   * Appends an <img> (image) or <iframe> (PDF) preview element to the question container.
+   *
+   * @param container The question's root HTML element
+   * @param src Blob URL or direct URL of the file to preview
+   * @param fileName File name used as alt text / title
+   * @param isImage True renders an img; false renders an iframe for PDF
+   */
+  private injectPreviewElement(
+    container: HTMLElement,
+    src: string,
+    fileName: string,
+    isImage: boolean
+  ): void {
+    const wrapper = document.createElement('div');
+    wrapper.style.marginTop = '8px';
+
+    if (isImage) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = fileName;
+      img.style.maxWidth = '100%';
+      img.style.display = 'block';
+      wrapper.appendChild(img);
+    } else {
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.title = fileName;
+      iframe.style.width = '100%';
+      iframe.style.height = '600px';
+      iframe.style.border = 'none';
+      wrapper.appendChild(iframe);
+    }
+
+    container.appendChild(wrapper);
   }
 
   /**
