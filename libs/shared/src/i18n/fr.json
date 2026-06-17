@@ -306,6 +306,8 @@
           "noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
           "noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
           "noFields": "Type de document et informationsLa confidentialité est requise pour continuer !",
+          "noRecipient": "Au moins un destinataire est requis pour continuer !",
+          "noRecipientSse": "Au moins un destinataire est requis pour continuer ! Assurez-vous que les champs utilisés pour l'envoi d'e-mails séparés contiennent au moins un champ avec des adresses e-mail valides.",
           "noSubject": "Le sujet doit continuer!",
           "noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
           "preview": "Erreur lors de la génération de l'e-mail"

@@ -288,8 +288,14 @@ export class PreviewTemplateModalComponent implements OnInit {
       !this.emailService.emailDistributionList ||
       this.emailService.emailDistributionList?.to?.length === 0;
 
-    if (!this.data.sendSeparateEmail && toMissing) {
-      this.snackBar.openSnackBar('To is required to proceed!', {
+    const hasSseRecipients = this.emailService.hasSseRecipients;
+
+    if (toMissing && (!this.data.sendSeparateEmail || !hasSseRecipients)) {
+      const errorKey =
+        this.data.sendSeparateEmail && !hasSseRecipients
+          ? 'common.notifications.email.errors.noRecipientSse'
+          : 'common.notifications.email.errors.noRecipient';
+      this.snackBar.openSnackBar(this.translate.instant(errorKey), {
         error: true,
       });
     } else {

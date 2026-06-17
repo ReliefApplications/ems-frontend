@@ -8,15 +8,29 @@
   <div>
     <div
       *ngIf="isPreviewTemplate"
-      [uiErrorMessage]="emailsError | translate"
+      [uiErrorMessage]="
+        showRecipientError
+          ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSseRecipients
+              ? 'common.notifications.email.errors.noRecipientSse'
+              : 'common.notifications.email.errors.noRecipient') | translate)
+          : (emailsError | translate)
+      "
       [uiErrorMessageIf]="
-        layoutForm.get('to')?.errors && layoutForm.get('to')?.touched
+        (layoutForm.get('to')?.errors && layoutForm.get('to')?.touched) ||
+        showRecipientError
       "
       uiFormFieldDirective
     >
-      <label class="block text-sm font-medium leading-6 text-gray-900"
-        >{{ 'components.email.distributionList.to' | translate }}*</label
-      >
+      <label class="block text-sm font-medium leading-6 text-gray-900">
+        {{ 'components.email.distributionList.to' | translate
+        }}<ng-container
+          *ngIf="
+            !emailService.gridActionSendSeparateEmail ||
+            !emailService.hasSseRecipients
+          "
+          >*</ng-container
+        >
+      </label>
       <div uiChipList #chipList formControlName="to">
         <ui-chip
           *ngFor="let to of layoutForm.get('to')?.value"

@@ -306,6 +306,8 @@
           "noCustomTitle": "Назва власного шаблону обов'язкова для продовження!",
           "noDistributionList": "Щось пішло не так під час надсилання листа: не знайдено списку розсилки",
           "noFields": "DocumentType & InformationConfidentiality обов'язкові для продовження!",
+          "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSse": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Тема обов'язкова для продовження!",
           "noTemplate": "Щось пішло не так під час надсилання листа: шаблон не знайдено",
           "preview": "Не вдалося завантажити попередній перегляд листа"

@@ -102,6 +102,8 @@ export class LayoutComponent
   blockFieldSelect: string[] = [];
   /** SSE recipients for read-only preview (not merged into to/cc/bcc) */
   distributionListSeparate: any[] = [];
+  /** Drives the To-field inline error; set explicitly after API resolves to ensure false→true transition */
+  showRecipientError = false;
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -292,6 +294,9 @@ export class LayoutComponent
    */
   async loadDistributionList() {
     this.emailService.loading = true;
+    this.emailService.hasSseRecipients = false;
+    this.distributionListSeparate = [];
+    this.showRecipientError = false;
     const query = this.emailService.datasetsForm?.getRawValue();
     query.datasets = this.emailService.datasetsForm
       ?.get('datasets')
@@ -434,6 +439,7 @@ export class LayoutComponent
           .get('bcc')
           ?.setValue(this.emailService.emailDistributionList.bcc);
       }
+      this.onTxtSubjectChange();
       this.validateQuickActionToEmails();
     }
   }
@@ -1185,8 +1191,17 @@ export class LayoutComponent
       this.emailService.isGridAction &&
       !this.emailService.gridActionSendSeparateEmail
     ) {
-      this.emailService.disableNextActionBtn =
-        this.layoutForm?.getRawValue()?.to?.length === 0 ? true : false;
+      const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
+      this.emailService.disableNextActionBtn = toEmpty;
+      this.showRecipientError = toEmpty;
+    } else if (
+      this.emailService.isGridAction &&
+      this.emailService.gridActionSendSeparateEmail
+    ) {
+      const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
+      const missing = toEmpty && !this.emailService.hasSseRecipients;
+      this.emailService.disableNextActionBtn = missing;
+      this.showRecipientError = missing;
     }
   }
 }
