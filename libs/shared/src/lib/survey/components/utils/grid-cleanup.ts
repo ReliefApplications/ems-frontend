@@ -59,7 +59,7 @@ export const registerGridForCleanup = (
   gridRef: GridRef | undefined,
   domService: DomService
 ): void => {
-  if (!survey || !gridRef) {
+  if (!survey || !gridRef || typeof survey.dispose !== 'function') {
     return;
   }
   const host = survey as SurveyModel & Record<string, any>;

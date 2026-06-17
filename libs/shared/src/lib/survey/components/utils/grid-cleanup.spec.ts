@@ -92,6 +92,18 @@ describe('grid-cleanup', () => {
       expect(survey.dispose).toBe(originalDispose);
     });
 
+    it('is a no-op when the survey has no dispose method', () => {
+      const domService = createFakeDomService();
+      const surveyWithoutDispose = {} as any;
+      expect(() =>
+        registerGridForCleanup(
+          surveyWithoutDispose,
+          createFakeGrid(1),
+          domService
+        )
+      ).not.toThrow();
+    });
+
     it('swallows teardown and removal errors so dispose still completes', () => {
       const survey = createFakeSurvey();
       const originalDispose = survey.dispose;
