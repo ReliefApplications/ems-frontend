@@ -170,21 +170,10 @@ export class FormModalComponent
       ? this.data.recordId.length
       : 1;
     let confirmMessage: ConfirmDialogData = {
-      title: this.translate.instant('common.updateObject', {
-        name:
-          rowsSelected > 1
-            ? this.translate.instant('common.row.few')
-            : this.translate.instant('common.row.one'),
-      }),
-      content: this.translate.instant(
-        'components.form.updateRow.confirmationMessage',
-        {
-          quantity: rowsSelected,
-          rowText:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }
+      title: this.translate.instant(
+        rowsSelected > 1
+          ? 'components.form.update.confirmTitle.few'
+          : 'components.form.update.confirmTitle.one'
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',

@@ -1117,6 +1117,10 @@
 			},
 			"update": {
 				"confirmMessage": "Do you confirm the {{action}} of the current record?",
+				"confirmTitle": {
+					"few": "Confirm Rows Update",
+					"one": "Confirm Row Update"
+				},
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
