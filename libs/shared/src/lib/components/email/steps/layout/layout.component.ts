@@ -522,7 +522,14 @@ export class LayoutComponent
     } else {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
-      this.emailService.disableNextActionBtn = false;
+      // In grid-action mode the recipient validator is the authority for the
+      // Next button once the layout is valid; blanket-enabling here would stomp
+      // the SSE/To recipient gate (last-writer-wins on disableNextActionBtn).
+      if (this.emailService.isGridAction) {
+        this.validateQuickActionToEmails();
+      } else {
+        this.emailService.disableNextActionBtn = false;
+      }
     }
   }
 
@@ -1180,12 +1187,16 @@ export class LayoutComponent
    * Validate Grid Action To emails
    */
   validateQuickActionToEmails() {
+    // Layout validity must keep gating Next even when this recipient-aware
+    // check runs last (on load via loadDistributionList, or on a To-field
+    // change), so the two writers of disableNextActionBtn agree.
+    const layoutInvalid = this.showSubjectValidator || this.showBodyValidator;
     if (
       this.emailService.isGridAction &&
       !this.emailService.gridActionSendSeparateEmail
     ) {
       const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
-      this.emailService.disableNextActionBtn = toEmpty;
+      this.emailService.disableNextActionBtn = toEmpty || layoutInvalid;
       this.showRecipientError = toEmpty;
     } else if (
       this.emailService.isGridAction &&
@@ -1193,7 +1204,7 @@ export class LayoutComponent
     ) {
       const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
       const missing = toEmpty && !this.emailService.hasSseRecipients;
-      this.emailService.disableNextActionBtn = missing;
+      this.emailService.disableNextActionBtn = missing || layoutInvalid;
       this.showRecipientError = missing;
     }
   }
