@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import get from 'lodash/get';
 import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
-import { DownloadService } from '../download/download.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
-import { DocumentManagementService } from '../document-management/document-management.service';
+import { File, FileService } from '../file/file.service';
+import get from 'lodash/get';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Data template service
@@ -24,19 +25,17 @@ export class DataTemplateService {
    * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
-   * @param downloadService Used to download file type fields
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param htmlParserService Html parser service to parse the values for html layout
-   * @param documentManagementService Shared document management service
+   * @param fileService File service
    */
   constructor(
     private sanitizer: DomSanitizer,
-    private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
     private htmlParserService: HtmlParserService,
-    private documentManagementService: DocumentManagementService
+    private fileService: FileService
   ) {
     this.environment = environment;
   }
@@ -131,25 +130,49 @@ export class DataTemplateService {
   /**
    * Handle click event
    *
+   * Detects clicks on file elements rendered in the template and triggers a
+   * download or preview of the matching file from the content data.
+   *
    * @param event click event
    * @param data content data
+   * @param destroy$ optional notifier to cancel an in-flight preview request
+   * when the caller is destroyed
    */
-  onClick(event: any, data: any): void {
-    const type = event.target.getAttribute('type');
-    if (type === 'file') {
-      // Download file from definition
-      const fieldName = event.target.getAttribute('field');
-      const index = event.target.getAttribute('index');
-      const file = get(data, `${fieldName}[${index}]`, null);
-      if (file) {
-        if (typeof file.content === 'string') {
-          const path = `download/file/${file.content}`;
-          this.downloadService.getFile(path, file.type, file.name);
-        } else {
-          this.documentManagementService.getFile(file);
-        }
-      }
+  onClick(event: any, data: unknown, destroy$?: Observable<unknown>): void {
+    const target = event?.target as HTMLElement | null;
+    if (!target?.getAttribute) {
+      return;
     }
+    const type = target.getAttribute('type');
+    if (type !== 'file') {
+      return;
+    }
+    // Download or preview file from definition
+    const fieldName = target.getAttribute('field');
+    const index = target.getAttribute('index');
+    if (!fieldName || index === null) {
+      return;
+    }
+    const file = get(data, `${fieldName}[${index}]`, null);
+    if (!this.isFile(file)) {
+      return;
+    }
+    const preview$ = this.fileService.downloadOrPreview(file);
+    (destroy$ ? preview$.pipe(takeUntil(destroy$)) : preview$).subscribe();
+  }
+
+  /**
+   * Type guard checking the given value is a valid file definition.
+   *
+   * @param value value to check
+   * @returns true when the value is a file
+   */
+  private isFile(value: unknown): value is File {
+    return (
+      !!value &&
+      typeof value === 'object' &&
+      typeof (value as File).name === 'string'
+    );
   }
 
   /**
