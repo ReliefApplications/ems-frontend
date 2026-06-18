@@ -1,3 +1,10 @@
+# [2.23.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.8...v2.23.0-rc.9) (2026-06-18)
+
+
+### Features
+
+* Enable image & PDF preview in HTML fields in forms ([#2881](https://github.com/ReliefApplications/ems-frontend/issues/2881)) ([3d0d48a](https://github.com/ReliefApplications/ems-frontend/commit/3d0d48ad77aa61948838fa92fbc58d5589179fd4)), closes [AB#134013](https://github.com/AB/issues/134013)
+
 # [2.23.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.7...v2.23.0-rc.8) (2026-06-18)
 
 
