@@ -891,7 +891,10 @@ export class GridComponent
    * @param file File to open.
    */
   public onOpenFile(file: File): void {
-    this.fileService.downloadOrPreview(file);
+    this.fileService
+      .downloadOrPreview(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   /**

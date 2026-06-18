@@ -9,6 +9,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
+import { from, Observable, of } from 'rxjs';
+import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 3000;
@@ -59,37 +61,78 @@ export class FileService {
   private snackBar = inject(SnackbarService);
 
   /**
-   * Download or preview file in modal
+   * Download or preview file in modal.
+   *
+   * Returns an observable so callers can tie the preview request to their
+   * lifecycle (e.g. `takeUntil(destroy$)`); unsubscribing cancels the
+   * in-flight blob request and dismisses the loading snackbar.
    *
    * @param file File
+   * @returns observable that emits once the action settles
    */
-  public downloadOrPreview(file: File) {
-    if (!this.canPreview(file)) {
+  public downloadOrPreview(file: File): Observable<void> {
+    const source = this.canPreview(file) ? this.resolvePreviewUrl(file) : null;
+    if (!source) {
       this.download(file);
-    } else if (typeof file.content === 'string') {
-      const snackBarRef = this.createPreviewLoader();
-      if (file.content.startsWith('data')) {
-        void this.openFilePreview(file, file.content, snackBarRef);
-      } else {
-        const path = `download/file/${file.content}`;
-        this.downloadService
-          .getFileBlob(path, this.getFileType(file))
-          .subscribe({
-            next: (blob) => this.openBlobPreview(file, blob, snackBarRef),
-            error: () => this.showFilePreviewError(snackBarRef),
-          });
-      }
-    } else if (this.isDocumentManagementFile(file)) {
-      const snackBarRef = this.createPreviewLoader();
-      this.documentManagementService
-        .getFileBlob({ ...file, type: this.getFileType(file) })
-        .subscribe({
-          next: (blob) => this.openBlobPreview(file, blob, snackBarRef),
-          error: () => this.showFilePreviewError(snackBarRef),
-        });
-    } else {
-      this.download(file);
+      return of(undefined);
     }
+
+    const snackBarRef = this.createPreviewLoader();
+    let settled = false;
+    return source.pipe(
+      switchMap(({ url, revoke }) =>
+        from(this.openFilePreview(file, url, snackBarRef)).pipe(
+          tap((opened) => {
+            settled = true;
+            if (!opened && revoke) {
+              URL.revokeObjectURL(url);
+            }
+          })
+        )
+      ),
+      catchError(() => {
+        settled = true;
+        this.showFilePreviewError(snackBarRef);
+        return of(false);
+      }),
+      finalize(() => {
+        // Dismiss the loader if the request was cancelled before settling.
+        if (!settled) {
+          snackBarRef.instance.dismiss();
+        }
+      }),
+      map(() => undefined)
+    );
+  }
+
+  /**
+   * Resolves the URL to preview for the given file.
+   *
+   * @param file File to preview
+   * @returns observable of the preview URL, or null when cannot be previewed
+   */
+  private resolvePreviewUrl(
+    file: File
+  ): Observable<{ url: string; revoke: boolean }> | null {
+    if (typeof file.content === 'string') {
+      if (file.content.startsWith('data')) {
+        return of({ url: file.content, revoke: false });
+      }
+      const path = `download/file/${file.content}`;
+      return this.downloadService
+        .getFileBlob(path, this.getFileType(file))
+        .pipe(
+          map((blob) => ({ url: URL.createObjectURL(blob), revoke: true }))
+        );
+    }
+    if (this.isDocumentManagementFile(file)) {
+      return this.documentManagementService
+        .getFileBlob({ ...file, type: this.getFileType(file) })
+        .pipe(
+          map((blob) => ({ url: URL.createObjectURL(blob), revoke: true }))
+        );
+    }
+    return null;
   }
 
   /**
@@ -181,22 +224,6 @@ export class FileService {
   }
 
   /**
-   * Opens a blob in the file preview modal.
-   *
-   * @param file File to preview
-   * @param blob File blob
-   * @param snackBarRef Loading snackbar reference to dismiss once opened
-   */
-  private openBlobPreview(file: File, blob: Blob, snackBarRef?: any): void {
-    const url = URL.createObjectURL(blob);
-    void this.openFilePreview(file, url, snackBarRef).then((opened) => {
-      if (!opened) {
-        URL.revokeObjectURL(url);
-      }
-    });
-  }
-
-  /**
    * Opens the preview modal for the file.
    *
    * @param file File to preview
@@ -220,8 +247,6 @@ export class FileService {
           url,
         },
         autoFocus: false,
-        width: '90vw',
-        height: '90vh',
       });
 
       snackBarRef?.instance.dismiss();

@@ -1,4 +1,4 @@
-<ui-dialog>
+<ui-dialog size="fullscreen">
   <!-- Header -->
   <ng-container ngProjectAs="header">
     <div class="flex items-center justify-between gap-4 w-full">
@@ -10,6 +10,7 @@
   <!-- Content -->
   <ng-container ngProjectAs="content">
     <div class="file-preview-content">
+      <!-- Image preview -->
       <img
         *ngIf="isImage; else pdfPreview"
         class="file-preview-image"
@@ -17,6 +18,7 @@
         [alt]="data.fileName"
       />
       <ng-template #pdfPreview>
+        <!-- Iframe preview -->
         <iframe
           class="file-preview-frame"
           [src]="safeUrl"
@@ -27,9 +29,11 @@
   </ng-container>
   <!-- Actions -->
   <ng-container ngProjectAs="actions">
+    <!-- Close -->
     <ui-button [uiDialogClose] variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
+    <!-- Download -->
     <ui-button
       category="secondary"
       variant="primary"
