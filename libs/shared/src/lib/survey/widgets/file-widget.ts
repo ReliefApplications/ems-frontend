@@ -216,7 +216,10 @@ const updateFilePreview = (
 
   const inject = (src: string): void => {
     // Discard if a newer change superseded us or the element was detached.
-    if ((question as any).__filePreviewSeq !== seq || !htmlElement.isConnected) {
+    if (
+      (question as any).__filePreviewSeq !== seq ||
+      !htmlElement.isConnected
+    ) {
       return;
     }
     removeCustomPreview(htmlElement);
