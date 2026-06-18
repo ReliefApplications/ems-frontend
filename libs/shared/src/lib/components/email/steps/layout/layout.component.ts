@@ -648,11 +648,12 @@ export class LayoutComponent
       this.emailService.isGridAction &&
       this.emailService.gridActionSendSeparateEmail
     ) {
-      this.firstBlockFields = (
-        this.emailService.gridActionDataQuery?.fields ?? []
-      )
-        .map((f: any) => f.name)
-        .filter(Boolean);
+      const fields: string[] = [];
+      (this.emailService.gridActionDataQuery?.fields ?? []).forEach(
+        (field: any) =>
+          this.emailService.appendFields(field, field.name, fields)
+      );
+      this.firstBlockFields = fields;
       return;
     }
 
