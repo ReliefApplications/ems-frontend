@@ -37,10 +37,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import {
-  FilePreviewService,
-  PreviewFile,
-} from '../../../../services/file-preview/file-preview.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
@@ -56,6 +52,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { ActionButton } from '../../../widgets/grid/action-button.type';
+import { File, FileService } from '../../../../services/file/file.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -320,10 +317,9 @@ export class GridComponent
    * @param renderer The renderer library
    * @param translate The translate service
    * @param snackBar The snackbar service
-   * @param el Ref to html element
    * @param popupService Kendo popup service
    * @param gridDataFormatterService GridDataFormatterService
-   * @param filePreviewService Shared file preview service
+   * @param fileService File service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -333,10 +329,9 @@ export class GridComponent
     private renderer: Renderer2,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private el: ElementRef,
     private popupService: PopupService,
     private gridDataFormatterService: GridDataFormatterService,
-    private filePreviewService: FilePreviewService
+    private fileService: FileService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -895,8 +890,11 @@ export class GridComponent
    *
    * @param file File to open.
    */
-  public onOpenFile(file: PreviewFile): void {
-    this.filePreviewService.openFile(file);
+  public onOpenFile(file: File): void {
+    this.fileService
+      .downloadOrPreview(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   /**

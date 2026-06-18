@@ -67,7 +67,7 @@ describe('ApplicationsComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService, PureAbility]
+      providers: [TranslateService, PureAbility],
     }).compileComponents();
   });
 

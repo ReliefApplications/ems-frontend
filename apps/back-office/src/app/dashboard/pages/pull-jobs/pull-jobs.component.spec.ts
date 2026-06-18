@@ -8,10 +8,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import {
-  ButtonModule,
-  PaginatorModule,
-} from '@oort-front/ui';
+import { ButtonModule, PaginatorModule } from '@oort-front/ui';
 import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('PullJobsComponent', () => {
@@ -34,7 +31,7 @@ describe('PullJobsComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

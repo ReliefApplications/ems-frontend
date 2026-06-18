@@ -40,7 +40,7 @@ describe('ApplicationComponent', () => {
           useValue: {
             availableLanguages: [],
             theme: {},
-          } 
+          },
         },
         {
           provide: ActivatedRoute,
@@ -63,7 +63,7 @@ describe('ApplicationComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

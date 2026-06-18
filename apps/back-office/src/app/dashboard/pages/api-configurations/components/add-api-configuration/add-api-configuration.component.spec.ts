@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddApiConfigurationComponent } from './add-api-configuration.component';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
   TranslateFakeLoader,
@@ -34,10 +38,10 @@ describe('AddApiConfigurationComponent', () => {
         TranslateService,
         UntypedFormBuilder,
         {
-          provide: DialogRef, 
+          provide: DialogRef,
           useValue: {
             updateSize: jest.fn(),
-          }
+          },
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
