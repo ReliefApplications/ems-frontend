@@ -180,6 +180,7 @@
 			"none": "No distribution list",
 			"one": "Distribution list"
 		},
+		"download": "Download",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
@@ -375,6 +376,9 @@
 					"ongoing": "Your file export is ongoing. You will receive an email once ready.",
 					"processing": "Downloading file...",
 					"ready": "Your file is ready"
+				},
+				"preview": {
+					"processing": "Opening preview..."
 				},
 				"upload": {
 					"error": "Something went wrong during the upload",

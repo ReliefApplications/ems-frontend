@@ -180,6 +180,7 @@
 			"none": "Aucune liste de distribution",
 			"one": "Liste de distribution"
 		},
+		"download": "Télécharger",
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
@@ -375,6 +376,9 @@
 					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
 					"processing": "Téléchargement du fichier en cours...",
 					"ready": "Votre fichier est prêt"
+				},
+				"preview": {
+					"processing": "Ouverture de l'aperçu..."
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
@@ -1899,6 +1903,13 @@
 				},
 				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Titre de la colonne"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",

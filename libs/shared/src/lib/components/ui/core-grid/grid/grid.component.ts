@@ -1,5 +1,4 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -38,7 +37,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
@@ -53,8 +51,8 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
 import { ActionButton } from '../../../widgets/grid/action-button.type';
+import { File, FileService } from '../../../../services/file/file.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -317,14 +315,11 @@ export class GridComponent
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
-   * @param downloadService The download service
    * @param translate The translate service
    * @param snackBar The snackbar service
-   * @param el Ref to html element
-   * @param document document
    * @param popupService Kendo popup service
-   * @param documentManagementService Shared document management service
    * @param gridDataFormatterService GridDataFormatterService
+   * @param fileService File service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -332,14 +327,11 @@ export class GridComponent
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
-    private downloadService: DownloadService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document,
     private popupService: PopupService,
-    private documentManagementService: DocumentManagementService,
-    private gridDataFormatterService: GridDataFormatterService
+    private gridDataFormatterService: GridDataFormatterService,
+    private fileService: FileService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -894,25 +886,15 @@ export class GridComponent
   }
 
   /**
-   * Downloads file of record.
+   * Opens a preview for PDF/images or downloads other files.
    *
-   * @param file File to download.
+   * @param file File to open.
    */
-  public onDownload(file: any): void {
-    if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
-        const downloadLink = this.document.createElement('a');
-        downloadLink.href = file.content;
-        downloadLink.download = file.name;
-        downloadLink.click();
-      } else {
-        const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
-      }
-    } else {
-      // Using document management
-      this.documentManagementService.getFile(file);
-    }
+  public onOpenFile(file: File): void {
+    this.fileService
+      .downloadOrPreview(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   /**
