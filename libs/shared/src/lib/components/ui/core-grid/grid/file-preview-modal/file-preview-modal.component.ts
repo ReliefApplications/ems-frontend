@@ -1,7 +1,7 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { DialogModule, ButtonModule, TooltipModule } from '@oort-front/ui';
+import { DialogModule, ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
@@ -15,13 +15,7 @@ export interface FilePreviewModalData {
 /** Preview modal for grid image and PDF files. */
 @Component({
   standalone: true,
-  imports: [
-    CommonModule,
-    DialogModule,
-    ButtonModule,
-    TooltipModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, DialogModule, ButtonModule, TranslateModule],
   selector: 'shared-file-preview-modal',
   templateUrl: './file-preview-modal.component.html',
   styleUrls: ['./file-preview-modal.component.scss'],

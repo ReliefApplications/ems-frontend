@@ -180,6 +180,7 @@
 			"none": "Aucune liste de distribution",
 			"one": "Liste de distribution"
 		},
+		"download": "Télécharger",
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",

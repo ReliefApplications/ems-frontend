@@ -180,6 +180,7 @@
 			"none": "No distribution list",
 			"one": "Distribution list"
 		},
+		"download": "Download",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",

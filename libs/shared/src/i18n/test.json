@@ -180,6 +180,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"download": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
