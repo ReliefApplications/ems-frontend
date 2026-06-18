@@ -395,7 +395,7 @@
       <editor
         #headerEditor
         formControlName="header"
-        [init]="editor"
+        [init]="headerTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
@@ -429,6 +429,46 @@
               >{{ option.label }}</ui-select-option
             >
           </ui-select-menu>
+        </div>
+        <div
+          uiFormFieldDirective
+          [defaultMargin]="false"
+          class="w-1/3 px-2"
+          *ngIf="!this.emailService.isGridAction"
+        >
+          <label
+            for="fieldSelect"
+            class="block text-sm font-normal leading-6 text-gray-900"
+          >
+            {{ 'common.notifications.email.field.selectTitle' | translate }}
+          </label>
+          <ui-select-menu
+            id="bodyFieldSelect"
+            formControlName="bodyFieldSelect"
+            (ngModelChange)="insertTokenToBody($event)"
+            [placeholder]="
+              'common.notifications.email.fieldselect.placeholder' | translate
+            "
+            class="w-full"
+          >
+            <ui-select-option
+              *ngFor="let field of blockFieldSelect"
+              [value]="field.split(' - ').join('.')"
+              >{{
+                this.emailService.replaceUnderscores(field) | titlecase
+              }}</ui-select-option
+            >
+          </ui-select-menu>
+          <ui-icon
+            class="cursor-help !pl-0"
+            icon="info_outline"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="
+              'common.notifications.email.fieldselect.tooltipTwo' | translate
+            "
+          >
+          </ui-icon>
         </div>
       </div>
       <div class="flex flex-row mb-4 gap-5">
@@ -530,7 +570,7 @@
         formControlName="body"
         class="rounded"
         [ngClass]="{ 'form-error': showBodyValidator }"
-        [init]="editor"
+        [init]="bodyTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
@@ -633,7 +673,7 @@
         #footerEditor
         [(ngModel)]="emailService.allLayoutdata.footerHtml"
         [ngModelOptions]="{ standalone: true }"
-        [init]="editor"
+        [init]="footerTinyEditor"
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>

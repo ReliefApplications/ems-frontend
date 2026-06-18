@@ -320,7 +320,8 @@
 				},
 				"fieldselect": {
 					"placeholder": "******",
-					"tooltip": "******"
+					"tooltip": "******",
+					"tooltipTwo": "*******"
 				},
 				"footer": {
 					"logo": "******",
@@ -938,6 +939,9 @@
 				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
+				"scheduler": {
+					"invalid": "******"
+				},
 				"selectChildFields": "******",
 				"selectedNonEmailFields": "******",
 				"subscribeExists": "****** {{message}}",
@@ -1013,6 +1017,15 @@
 				"title": "******"
 			},
 			"saveAsDraft": "******",
+			"schedule": {
+				"disable": {
+					"checkbox": "***********"
+				},
+				"enable": {
+					"checkbox": "***********"
+				},
+				"title": "*******"
+			},
 			"subscribe": {
 				"error": {
 					"restricted": "******"

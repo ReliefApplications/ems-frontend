@@ -320,7 +320,8 @@
 				},
 				"fieldselect": {
 					"placeholder": "Field Select",
-					"tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+					"tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results",
+					"tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
 				},
 				"footer": {
 					"logo": "Footer logo",
@@ -938,6 +939,9 @@
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
+				"scheduler": {
+					"invalid": "Error! Please enter a valid cron value"
+				},
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
 				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
 				"subscribeExists": "Error! {{message}}",
@@ -1013,6 +1017,17 @@
 				"title": "Restrict user subscription"
 			},
 			"saveAsDraft": "Save as draft",
+			"schedule": {
+				"disable": {
+					"checkbox": "Disable Scheduler",
+					"tooltip": "Click to disable scheduler"
+				},
+				"enable": {
+					"checkbox": "Enable scheduler",
+					"tooltip": "Click to enable scheduler"
+				},
+				"title": "Schedule alerts"
+			},
 			"subscribe": {
 				"error": {
 					"restricted": "Subscription Restricted"

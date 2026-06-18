@@ -243,6 +243,8 @@ export class EmailService {
   public distributionListData: FormGroup | any = [];
   /** Show File Upload */
   public showFileUpload = false;
+  /** Send Separate Dataset Blocks */
+  public sendSeparateBlocks: string[] = [];
 
   /**
    * Generates new dataset group.
@@ -806,11 +808,23 @@ export class EmailService {
       subscriptionList: this.formBuilder.array([]),
       restrictSubscription: false,
       emailLayout: this.emailLayout,
-      schedule: [''],
+      schedule: this.createScheduleGroup(),
       attachments: this.formBuilder.group({
         files: [],
         sendAsAttachment: null,
       }),
+    });
+  }
+
+  /**
+   * Creates a new schedule form group.
+   *
+   * @returns A new schedule form group.
+   */
+  createScheduleGroup(): FormGroup {
+    return this.formBuilder.group({
+      scheduleEnabled: false,
+      cronValue: new FormControl(),
     });
   }
 
@@ -988,14 +1002,17 @@ export class EmailService {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
       datasetsValues.forEach((dataset: any) => {
-        if (dataset.query.name && dataset.resource) {
+        if (
+          (dataset.query.name && dataset.resource) ||
+          (dataset.query.name && dataset.reference)
+        ) {
           datasets.push(dataset.name);
-        } else {
-          dataset.query.name && dataset.reference
-            ? datasets.push(dataset.name)
-            : '';
+          if (dataset.individualEmail) {
+            this.sendSeparateBlocks.push(dataset.name);
+          }
         }
       });
+
       const fields: string[] = [];
       datasetsValues[0].query.fields.forEach((field: any) => {
         this.appendFields(field, field.name, fields);
@@ -1015,6 +1032,7 @@ export class EmailService {
       datasets: [],
       fields: [],
     };
+    this.sendSeparateBlocks = [];
   }
 
   /**

@@ -12,6 +12,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { cloneDeep } from 'lodash';
+import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 
 /**
  * Email layout page component.
@@ -45,7 +46,11 @@ export class LayoutComponent
   /** Flag indicating whether subject validation is shown. */
   showSubjectValidator = false;
   /** Configuration object for the Tinymce editor. */
-  public editor: any = EMAIL_LAYOUT_EDITOR_CONFIG;
+  public headerTinyEditor: any = EMAIL_LAYOUT_EDITOR_CONFIG;
+  /** Body configuration object for the Tinymce editor. */
+  public bodyTinyEditor: any = EMAIL_LAYOUT_EDITOR_CONFIG;
+  /** Footer configuration object for the Tinymce editor. */
+  public footerTinyEditor: any = EMAIL_LAYOUT_EDITOR_CONFIG;
   /** HTML content for the body. */
   bodyHtml: any = '';
   /** HTML content for the header. */
@@ -98,6 +103,8 @@ export class LayoutComponent
   EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   /** Key codes of separators */
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
+  /** Block field select values */
+  blockFieldSelect: string[] = [];
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -141,24 +148,33 @@ export class LayoutComponent
    * @param emailService Service used for email-related operations and state management
    * @param snackbar Snackbar helper function
    * @param translate i18n translate service
+   * @param dataTemplateService Data template helper functions
    */
   constructor(
     private fb: FormBuilder,
     public editorService: EditorService,
     public emailService: EmailService,
     public snackbar: SnackbarService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public dataTemplateService: DataTemplateService
   ) {
     super();
     // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.url;
+    this.headerTinyEditor.base_url =
+      this.bodyTinyEditor.base_url =
+      this.footerTinyEditor.base_url =
+        editorService.url;
     // Set the editor language
-    this.editor.language = editorService.language;
+    this.headerTinyEditor.language =
+      this.bodyTinyEditor.language =
+      this.footerTinyEditor.language =
+        editorService.language;
   }
 
   ngOnInit(): void {
     if (this.emailService.isGridAction) {
       this.emailService.resetPreviewData();
+      this.emailService.sendSeparateBlocks = [];
       if (
         !this.emailService.isCustomTemplateEdit &&
         !this.emailService.isNewCustomTemplate
@@ -206,6 +222,7 @@ export class LayoutComponent
         inTheLastDropdown: [''],
         headerTimeInput: [''],
         header: [this.emailService.allLayoutdata.headerHtml],
+        bodyFieldSelect: [''],
         block: [''],
         body: [this.emailService.allLayoutdata.bodyHtml],
         to: [''],
@@ -225,6 +242,7 @@ export class LayoutComponent
           this.emailService.datasetsForm?.get('emailLayout')?.value?.header
             ?.headerHtml,
         ],
+        bodyFieldSelect: [''],
         block: [''],
         body: [
           this.emailService.datasetsForm?.get('emailLayout')?.value?.body
@@ -274,7 +292,19 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
+
+    const pageKeys = this.dataTemplateService.getAutoCompleterPageKeys();
     this.getBlockData();
+
+    this.editorService.addCalcAndKeysAutoCompleter(this.headerTinyEditor, [
+      ...pageKeys,
+    ]);
+    this.editorService.addCalcAndKeysAutoCompleter(this.bodyTinyEditor, [
+      ...pageKeys,
+    ]);
+    this.editorService.addCalcAndKeysAutoCompleter(this.footerTinyEditor, [
+      ...pageKeys,
+    ]);
     if (this.emailService.isGridAction) {
       this.loadDistributionList();
     }
@@ -412,6 +442,11 @@ export class LayoutComponent
       this.blockData =
         this.emailService.previewData?.datasets ??
         this.emailService.getAllPreviewData();
+
+      this.blockFieldSelect = this.emailService.sendSeparateBlocks.flatMap(
+        (block: any) =>
+          this.firstBlockFields.map((field: string) => `${block} - ${field}`)
+      );
     } else {
       this.blockData = [];
     }
@@ -995,7 +1030,11 @@ export class LayoutComponent
       this.layoutForm.get('body')?.value;
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
-    // this.emailService.patchEmailLayout();
+
+    this.blockFieldSelect = [];
+    this.editorService.addCalcAndKeysAutoCompleter(this.headerTinyEditor, []);
+    this.editorService.addCalcAndKeysAutoCompleter(this.bodyTinyEditor, []);
+    this.editorService.addCalcAndKeysAutoCompleter(this.footerTinyEditor, []);
   }
 
   /**
