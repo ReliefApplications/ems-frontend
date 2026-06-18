@@ -18,13 +18,13 @@ import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { BlobType, DownloadService } from '../download/download.service';
-import { FilePreviewService } from '../file-preview/file-preview.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { File, FileService } from '../file/file.service';
 
 /**
  * Shared survey helper service.
@@ -45,7 +45,7 @@ export class FormHelpersService {
    * @param downloadService Shared download service
    * @param documentManagementService Shared cs documentation
    * @param htmlParserService Html parser service to parse html questions
-   * @param filePreviewService Shared file preview service
+   * @param fileService File service
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -57,7 +57,7 @@ export class FormHelpersService {
     private downloadService: DownloadService,
     private documentManagementService: DocumentManagementService,
     private htmlParserService: HtmlParserService,
-    private filePreviewService: FilePreviewService
+    private fileService: FileService
   ) {}
 
   /**
@@ -472,10 +472,6 @@ export class FormHelpersService {
     survey: SurveyModel,
     options: { question: Question; htmlElement: HTMLElement }
   ): void => {
-    if (options.question.getType() === 'html') {
-      this.renderHtmlQuestionFileLinks(survey, options.htmlElement);
-    }
-
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
@@ -509,35 +505,157 @@ export class FormHelpersService {
   };
 
   /**
-   * Parses file placeholders in HTML questions and attaches file click behavior.
+   * Runs all the rendering logic that should happen after a survey question is
+   * rendered ( tooltips, HTML file links, ... ). Registered on the survey's
+   * onAfterRenderQuestion event.
    *
-   * @param survey Current survey
-   * @param htmlElement HTML question root element
+   * @param survey current survey
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
    */
-  private renderHtmlQuestionFileLinks(
+  public onAfterRenderQuestion = (
     survey: SurveyModel,
-    htmlElement: HTMLElement
-  ): void {
-    const htmlQuestion = htmlElement.querySelector<HTMLElement>('.sd-html');
-    if (!htmlQuestion) {
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void => {
+    this.addQuestionTooltips(survey, options);
+    this.bindHtmlQuestionFileClicks(survey, options);
+  };
+
+  /**
+   * Registers the custom survey behaviors ( file links rendering, tooltips, ... )
+   * on the given survey.
+   *
+   * @param survey survey to enhance
+   */
+  public registerCustomSurveyHandlers = (survey: SurveyModel): void => {
+    survey.onProcessTextValue.add(this.onProcessTextValue);
+    survey.onAfterRenderQuestion.add(this.onAfterRenderQuestion);
+  };
+
+  /**
+   * Substitutes the value of a file question in HTML questions with clickable
+   * file links. Registered on the survey's onProcessTextValue event so that,
+   * when SurveyJS resolves a `{field}` placeholder pointing to a file question,
+   * it renders our links instead of the default `[object Object]`.
+   *
+   * @param survey current survey
+   * @param options process text value options
+   * @param options.name name of the placeholder being processed
+   * @param options.value value to render in place of the placeholder
+   * @param options.isExists whether the value should be used
+   */
+  public onProcessTextValue = (
+    survey: SurveyModel,
+    options: { name: string; value: any; isExists: boolean }
+  ): void => {
+    const question =
+      survey.getQuestionByValueName(options.name) ||
+      survey.getQuestionByName(options.name);
+    if (!question || question.getType() !== 'file') {
       return;
     }
-
-    const fields = survey.getAllQuestions().map((question) => ({
-      name: question.valueName || question.name,
-      type: question.getType(),
-    }));
-    htmlQuestion.innerHTML = this.htmlParserService.parseHtml(
-      htmlQuestion.innerHTML,
-      {
-        data: survey.data,
-        fields,
-      }
+    options.value = this.renderFileLinks(
+      options.name,
+      get(survey.data, options.name)
     );
-    htmlQuestion.addEventListener(
-      'click',
-      () => {}
-      // this.filePreviewService.openFileFromEvent(event, survey.data)
+    options.isExists = true;
+  };
+
+  /**
+   * Builds the clickable file links markup for a file question value.
+   *
+   * The `type`/`field`/`index` attributes let onFileClick identify the
+   * file to download or preview when the link is clicked.
+   *
+   * @param fieldName name of the file question ( key in survey data )
+   * @param files file question value
+   * @returns html markup for the file links
+   */
+  private renderFileLinks(fieldName: string, files: unknown): string {
+    if (!Array.isArray(files)) {
+      return '';
+    }
+    return files
+      .filter((file) => this.isFile(file))
+      .map(
+        (file, index) =>
+          `<button type="file" field="${fieldName}" index="${index}" ` +
+          `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
+          `title="${file.name}">${file.name}</button>`
+      )
+      .join('');
+  }
+
+  /**
+   * Attaches the file click behavior to a rendered HTML question.
+   *
+   * @param survey Current survey
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private bindHtmlQuestionFileClicks = (
+    survey: SurveyModel,
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void => {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    const htmlQuestion =
+      options.htmlElement.querySelector<HTMLElement>('.sd-html');
+    if (!htmlQuestion || htmlQuestion.dataset['fileLinksBound'] === 'true') {
+      return;
+    }
+    // Bind the click handler once per rendered element.
+    htmlQuestion.dataset['fileLinksBound'] = 'true';
+    htmlQuestion.addEventListener('click', (event) =>
+      this.onFileClick(event, survey.data)
+    );
+  };
+
+  /**
+   * Handle click event on a rendered HTML question.
+   *
+   * Detects clicks on file elements rendered in the question and triggers a
+   * download or preview of the matching file from the survey data.
+   *
+   * @param event click event
+   * @param data survey data
+   */
+  private onFileClick(event: Event, data: unknown): void {
+    const target = event?.target as HTMLElement | null;
+    if (!target?.getAttribute) {
+      return;
+    }
+    const type = target.getAttribute('type');
+    if (type !== 'file') {
+      return;
+    }
+    // Download or preview file from definition
+    const fieldName = target.getAttribute('field');
+    const index = target.getAttribute('index');
+    if (!fieldName || index === null) {
+      return;
+    }
+    const file = get(data, `${fieldName}[${index}]`, null);
+    if (!this.isFile(file)) {
+      return;
+    }
+    this.fileService.downloadOrPreview(file).subscribe();
+  }
+
+  /**
+   * Type guard checking the given value is a valid file definition.
+   *
+   * @param value value to check
+   * @returns true when the value is a file
+   */
+  private isFile(value: unknown): value is File {
+    return (
+      !!value &&
+      typeof value === 'object' &&
+      typeof (value as File).name === 'string'
     );
   }
 
