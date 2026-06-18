@@ -2146,6 +2146,7 @@
               "sendMail": "******",
               "sendSeparateEmail": "******",
               "separateEmailFields": "******",
+              "separateEmailRecipientRequired": "******",
               "separateEmailTokens": "******",
               "workflow": {
                 "close": "******",

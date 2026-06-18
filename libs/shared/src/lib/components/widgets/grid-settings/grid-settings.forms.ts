@@ -152,6 +152,9 @@ export class GridSettingsFormFactory {
         value && value.navigateToPage ? value.navigateToPage : false,
       ],
     });
+    // Require an SSE grid action to have a recipient source (DL or fields)
+    formGroup.addValidators(this.sendSeparateEmailRecipientValidator);
+    formGroup.updateValueAndValidity();
     // Avoid goToNextStep & goToPreviousStep to coexist
     if (formGroup.get('goToNextStep')?.value) {
       formGroup.get('goToPreviousStep')?.setValue(false);
@@ -169,6 +172,32 @@ export class GridSettingsFormFactory {
       }
     });
     return formGroup;
+  };
+
+  /**
+   * Cross-field validator for a grid action form group: a "Send separate email"
+   * action must have at least one recipient source — a distribution list OR
+   * separate-email fields (the per-row recipient extraction fields). Neither
+   * present would mean the email could reach nobody, so it blocks save.
+   *
+   * @param group grid action form group
+   * @returns validation errors
+   */
+  sendSeparateEmailRecipientValidator = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    const sendMail = group.get('sendMail')?.value;
+    const sendSeparateEmail = group.get('sendSeparateEmail')?.value;
+    if (!sendMail || !sendSeparateEmail) {
+      return null;
+    }
+    const hasDistributionList = !!group.get('distributionList')?.value;
+    const separateEmailFields = group.get('separateEmailFields') as FormArray;
+    const hasSeparateEmailFields = (separateEmailFields?.length ?? 0) > 0;
+    if (!hasDistributionList && !hasSeparateEmailFields) {
+      return { missingRecipientSource: true };
+    }
+    return null;
   };
 
   /**

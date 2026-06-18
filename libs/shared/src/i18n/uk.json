@@ -2147,6 +2147,7 @@
               "sendMail": "Надіслати лист",
               "sendSeparateEmail": "Send separate email",
               "separateEmailFields": "Send Separate Email Fields",
+              "separateEmailRecipientRequired": "Select a distribution list or add at least one separate email field containing email values, otherwise the email has no recipients.",
               "separateEmailTokens": "Available body tokens:",
               "workflow": {
                 "close": "Закрити Робочий процес",

@@ -442,6 +442,16 @@
             [showLimit]="false"
             [showColumnWidth]="false"
           ></shared-tab-fields>
+          <ui-alert
+            *ngIf="formGroup.errors?.missingRecipientSource"
+            variant="danger"
+            class="mt-2"
+          >
+            {{
+              'components.widget.settings.grid.buttons.callback.separateEmailRecipientRequired'
+                | translate
+            }}
+          </ui-alert>
         </ng-container>
       </div>
 
