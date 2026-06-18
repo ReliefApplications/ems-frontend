@@ -4,8 +4,8 @@ import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
-import { FilePreviewService } from '../file-preview/file-preview.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
+import { FileService } from '../file/file.service';
 
 /**
  * Data template service
@@ -25,14 +25,14 @@ export class DataTemplateService {
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param htmlParserService Html parser service to parse the values for html layout
-   * @param filePreviewService Shared file preview service
+   * @param fileService File service
    */
   constructor(
     private sanitizer: DomSanitizer,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
     private htmlParserService: HtmlParserService,
-    private filePreviewService: FilePreviewService
+    private fileService: FileService
   ) {
     this.environment = environment;
   }
@@ -131,7 +131,22 @@ export class DataTemplateService {
    * @param data content data
    */
   onClick(event: MouseEvent, data: unknown): void {
-    this.filePreviewService.openFileFromEvent(event, data);
+    // this.filePreviewService.openFileFromEvent(event, data);
+    // const type = event.target.getAttribute('type');
+    // if (type === 'file') {
+    //   // Download file from definition
+    //   const fieldName = event.target.getAttribute('field');
+    //   const index = event.target.getAttribute('index');
+    //   const file = get(data, `${fieldName}[${index}]`, null);
+    //   if (file) {
+    //     if (typeof file.content === 'string') {
+    //       const path = `download/file/${file.content}`;
+    //       this.downloadService.getFile(path, file.type, file.name);
+    //     } else {
+    //       this.documentManagementService.getFile(file);
+    //     }
+    //   }
+    // }
   }
 
   /**
