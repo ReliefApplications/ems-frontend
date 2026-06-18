@@ -110,41 +110,35 @@
       />
     </div>
 
-    <!-- Emails from Send Separate Email Preview -->
-    <div class="mb-4" *ngIf="emailService.hasSseRecipients">
+    <!-- Emails from Send Separate Email Preview (read-only) -->
+    <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSseRecipients">
       <label class="block text-sm font-medium leading-6 text-gray-900">
         {{ 'components.select.distribution.sendseparate.list' | translate }}
       </label>
-      <div uiChipList>
-        <ng-container
-          *ngFor="let email of distributionListSeparate[0].emails; let j = index"
+      <ng-container *ngFor="let block of emailService.distributionListSeparate">
+        <div uiChipList>
+          <ng-container *ngFor="let email of block.emails; let j = index">
+            <ui-chip
+              *ngIf="j < 6 || block.isExpanded"
+              variant="primary"
+              class="w-full flex-row flex-wrap justify-between mr-1"
+              >{{ email }}</ui-chip
+            >
+          </ng-container>
+        </div>
+        <ui-button
+          *ngIf="block.emails.length > 6 && !block.isExpanded"
+          class="inline-block mt-2"
+          (click)="block.isExpanded = true"
+          >{{ 'components.email.preview.more' | translate : { length: block.emails.length - 6 } }}</ui-button
         >
-          <ui-chip
-            *ngIf="j < 6 || distributionListSeparate[0].isExpanded"
-            variant="primary"
-            class="w-full flex-row flex-wrap justify-between mr-1"
-            >{{ email }}</ui-chip
-          >
-        </ng-container>
-      </div>
-      <ui-button
-        *ngIf="
-          distributionListSeparate[0].emails.length > 6 &&
-          !distributionListSeparate[0].isExpanded
-        "
-        class="inline-block mt-2"
-        (click)="distributionListSeparate[0].isExpanded = true"
-        >{{
-          'components.email.preview.more'
-            | translate : { length: distributionListSeparate[0].emails.length - 6 }
-        }}</ui-button
-      >
-      <ui-button
-        *ngIf="distributionListSeparate[0].isExpanded"
-        class="inline-block mt-2"
-        (click)="distributionListSeparate[0].isExpanded = false"
-        >{{ 'components.email.preview.less' | translate }}</ui-button
-      >
+        <ui-button
+          *ngIf="block.isExpanded"
+          class="inline-block mt-2"
+          (click)="block.isExpanded = false"
+          >{{ 'components.email.preview.less' | translate }}</ui-button
+        >
+      </ng-container>
     </div>
 
     <!-- Dropdowns and Subject Input -->

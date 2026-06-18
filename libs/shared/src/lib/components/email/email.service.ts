@@ -247,8 +247,16 @@ export class EmailService {
   public gridActionDataQuery: any = null;
   /** Whether SSE is enabled for the current grid action */
   public gridActionSendSeparateEmail = false;
-  /** True when the last preview-distribution-lists call returned at least one SSE recipient */
-  public hasSseRecipients = false;
+  /** SSE recipients returned by the last preview-distribution-lists call (read-only display) */
+  public distributionListSeparate: any[] = [];
+
+  /** @returns true when the last preview-distribution-lists call returned at least one SSE recipient */
+  get hasSseRecipients(): boolean {
+    return (
+      this.distributionListSeparate?.some((b: any) => b?.emails?.length > 0) ??
+      false
+    );
+  }
 
   /**
    * Block names marked for individual-email sending. Derived from form state; returns ['Block 1'] in grid-action SSE mode.

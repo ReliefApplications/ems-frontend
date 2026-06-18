@@ -100,8 +100,6 @@ export class LayoutComponent
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   /** Block field select values */
   blockFieldSelect: string[] = [];
-  /** SSE recipients for read-only preview (not merged into to/cc/bcc) */
-  distributionListSeparate: any[] = [];
   /** Drives the To-field inline error; set explicitly after API resolves to ensure false→true transition */
   showRecipientError = false;
 
@@ -294,8 +292,7 @@ export class LayoutComponent
    */
   async loadDistributionList() {
     this.emailService.loading = true;
-    this.emailService.hasSseRecipients = false;
-    this.distributionListSeparate = [];
+    this.emailService.distributionListSeparate = [];
     this.showRecipientError = false;
     const query = this.emailService.datasetsForm?.getRawValue();
     query.datasets = this.emailService.datasetsForm
@@ -371,18 +368,14 @@ export class LayoutComponent
     }
 
     if (response?.individualEmailList?.length > 0) {
-      this.distributionListSeparate = response.individualEmailList;
-      this.distributionListSeparate.forEach((block: any) => {
-        // client-side UI flag for showing >6 emails.
-        block.isExpanded = false;
+      this.emailService.distributionListSeparate = response.individualEmailList;
+      this.emailService.distributionListSeparate.forEach((block: any) => {
+        block.isExpanded = false; // client-side UI flag for >6 emails
         block.emails = Array.from(new Set(block.emails));
       });
     } else {
-      this.distributionListSeparate = [];
+      this.emailService.distributionListSeparate = [];
     }
-    this.emailService.hasSseRecipients = this.distributionListSeparate.some(
-      (block: any) => block.emails.length > 0
-    );
     this.populateDLForm();
     this.emailService.loading = false;
   }
