@@ -13,7 +13,7 @@ import {
 } from './html-parser-helper';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
-import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
 type Shape = 'circle' | 'square';
 
@@ -975,15 +975,9 @@ export class HtmlParserService {
         if (isArray(value)) {
           for (let i = 0; value[i]; ) {
             const file = value[i];
-            const fileExt = file.name.split('.').pop();
-            const fileIcon =
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? ICON_EXTENSIONS[fileExt]
-                : 'k-i-file';
+            const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                : file.name,
+              removeFileExtension(file.name),
               field
             );
             convertedValue += `<button type="file"
