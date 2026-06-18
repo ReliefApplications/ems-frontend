@@ -377,6 +377,9 @@
 					"processing": "Téléchargement du fichier en cours...",
 					"ready": "Votre fichier est prêt"
 				},
+				"preview": {
+					"processing": "Ouverture de l'aperçu..."
+				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
 					"maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",

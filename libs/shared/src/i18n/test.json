@@ -377,6 +377,9 @@
 					"processing": "******",
 					"ready": "******"
 				},
+				"preview": {
+					"processing": "******"
+				},
 				"upload": {
 					"error": "******",
 					"maxFileSize": "****** {{size}} ******",

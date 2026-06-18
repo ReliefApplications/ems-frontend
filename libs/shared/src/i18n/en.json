@@ -377,6 +377,9 @@
 					"processing": "Downloading file...",
 					"ready": "Your file is ready"
 				},
+				"preview": {
+					"processing": "Opening preview..."
+				},
 				"upload": {
 					"error": "Something went wrong during the upload",
 					"maxFileSize": "Maximum file size is {{size}} MB.",

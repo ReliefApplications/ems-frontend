@@ -8,7 +8,10 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 
+/** Snackbar duration in ms */
+const SNACKBAR_DURATION = 3000;
 /** PDF mime type */
 const PDF_MIME_TYPE = 'application/pdf';
 /** Image file extensions */
@@ -56,37 +59,54 @@ export class FileService {
   private snackBar = inject(SnackbarService);
 
   /**
-   * Download or preview file
+   * Download or preview file in modal
    *
    * @param file File
    */
   public downloadOrPreview(file: File) {
     if (!this.canPreview(file)) {
       this.download(file);
-    } else {
-      if (typeof file.content === 'string') {
-        if (file.content.startsWith('data')) {
-          void this.openFilePreview(file, file.content);
-        } else {
-          const path = `download/file/${file.content}`;
-          this.downloadService
-            .getFileBlob(path, this.getFileType(file))
-            .subscribe({
-              next: (blob) => this.openBlobPreview(file, blob),
-              error: () => this.showFilePreviewError(),
-            });
-        }
-      } else if (this.isDocumentManagementFile(file)) {
-        this.documentManagementService
-          .getFileBlob({ ...file, type: this.getFileType(file) })
-          .subscribe({
-            next: (blob) => this.openBlobPreview(file, blob),
-            error: () => this.showFilePreviewError(),
-          });
+    } else if (typeof file.content === 'string') {
+      const snackBarRef = this.createPreviewLoader();
+      if (file.content.startsWith('data')) {
+        void this.openFilePreview(file, file.content, snackBarRef);
       } else {
-        this.download(file);
+        const path = `download/file/${file.content}`;
+        this.downloadService
+          .getFileBlob(path, this.getFileType(file))
+          .subscribe({
+            next: (blob) => this.openBlobPreview(file, blob, snackBarRef),
+            error: () => this.showFilePreviewError(snackBarRef),
+          });
       }
+    } else if (this.isDocumentManagementFile(file)) {
+      const snackBarRef = this.createPreviewLoader();
+      this.documentManagementService
+        .getFileBlob({ ...file, type: this.getFileType(file) })
+        .subscribe({
+          next: (blob) => this.openBlobPreview(file, blob, snackBarRef),
+          error: () => this.showFilePreviewError(snackBarRef),
+        });
+    } else {
+      this.download(file);
     }
+  }
+
+  /**
+   * Opens a loading spinner snackbar for the preview action.
+   *
+   * @returns snackbar reference
+   */
+  private createPreviewLoader() {
+    return this.snackBar.openComponentSnackBar(SnackbarSpinnerComponent, {
+      duration: 0,
+      data: {
+        message: this.translate.instant(
+          'common.notifications.file.preview.processing'
+        ),
+        loading: true,
+      },
+    });
   }
 
   /**
@@ -165,10 +185,11 @@ export class FileService {
    *
    * @param file File to preview
    * @param blob File blob
+   * @param snackBarRef Loading snackbar reference to dismiss once opened
    */
-  private openBlobPreview(file: File, blob: Blob): void {
+  private openBlobPreview(file: File, blob: Blob, snackBarRef?: any): void {
     const url = URL.createObjectURL(blob);
-    void this.openFilePreview(file, url).then((opened) => {
+    void this.openFilePreview(file, url, snackBarRef).then((opened) => {
       if (!opened) {
         URL.revokeObjectURL(url);
       }
@@ -180,9 +201,14 @@ export class FileService {
    *
    * @param file File to preview
    * @param url File URL
+   * @param snackBarRef Loading snackbar reference to dismiss once opened
    * @returns true when the modal opened
    */
-  private async openFilePreview(file: File, url: string): Promise<boolean> {
+  private async openFilePreview(
+    file: File,
+    url: string,
+    snackBarRef?: any
+  ): Promise<boolean> {
     try {
       const { FilePreviewModalComponent } = await import(
         '../../components/file-preview-modal/file-preview-modal.component'
@@ -198,9 +224,10 @@ export class FileService {
         height: '90vh',
       });
 
+      snackBarRef?.instance.dismiss();
       return true;
     } catch {
-      this.showFilePreviewError();
+      this.showFilePreviewError(snackBarRef);
       return false;
     }
   }
@@ -222,11 +249,23 @@ export class FileService {
     );
   }
 
-  /** Shows a file preview/download error. */
-  private showFilePreviewError(): void {
-    this.snackBar.openSnackBar(
-      this.translate.instant('common.notifications.file.download.error'),
-      { error: true }
+  /**
+   * Shows a file preview/download error.
+   *
+   * @param snackBarRef Loading snackbar reference to turn into the error message
+   */
+  private showFilePreviewError(snackBarRef?: any): void {
+    const message = this.translate.instant(
+      'common.notifications.file.download.error'
     );
+    const spinner = snackBarRef?.instance.nestedComponent;
+    if (spinner) {
+      spinner.instance.message = message;
+      spinner.instance.loading = false;
+      spinner.instance.error = true;
+      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+    } else {
+      this.snackBar.openSnackBar(message, { error: true });
+    }
   }
 }
