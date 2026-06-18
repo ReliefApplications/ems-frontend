@@ -989,7 +989,8 @@ export class HtmlParserService {
             convertedValue += `<button type="file"
               field="${field.name}"
               index="${i++}"
-              style="border: none; padding: 4px 6px; cursor: pointer; ${style}"
+              style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
+              ${file.name}
               >
               <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
               ${fileName}
