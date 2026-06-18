@@ -1132,6 +1132,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * used to create new custom template
    */
   createTemplate(): void {
+    this.emailService.gridActionSendSeparateEmail = false;
+    this.emailService.gridActionDataQuery = null;
     this.emailService.showFileUpload = false;
     this.showTemplateCreationWizard = true;
     if (!this.emailService.isCustomTemplateEdit) {
