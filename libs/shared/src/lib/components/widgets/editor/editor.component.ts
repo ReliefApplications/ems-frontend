@@ -678,7 +678,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param event Click event
    */
   public onClick(event: any) {
-    this.dataTemplateService.onClick(event, this.fieldsValue);
+    this.dataTemplateService.onClick(event, this.fieldsValue, this.destroy$);
   }
 
   /**

@@ -534,8 +534,10 @@ export class FormHelpersService {
         fields,
       }
     );
-    htmlQuestion.addEventListener('click', (event) =>
-      this.filePreviewService.openFileFromEvent(event, survey.data)
+    htmlQuestion.addEventListener(
+      'click',
+      () => {}
+      // this.filePreviewService.openFileFromEvent(event, survey.data)
     );
   }
 

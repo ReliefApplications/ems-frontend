@@ -5,7 +5,10 @@ import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
-import { FileService } from '../file/file.service';
+import { File, FileService } from '../file/file.service';
+import get from 'lodash/get';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Data template service
@@ -127,26 +130,49 @@ export class DataTemplateService {
   /**
    * Handle click event
    *
+   * Detects clicks on file elements rendered in the template and triggers a
+   * download or preview of the matching file from the content data.
+   *
    * @param event click event
    * @param data content data
+   * @param destroy$ optional notifier to cancel an in-flight preview request
+   * when the caller is destroyed
    */
-  onClick(event: MouseEvent, data: unknown): void {
-    // this.filePreviewService.openFileFromEvent(event, data);
-    // const type = event.target.getAttribute('type');
-    // if (type === 'file') {
-    //   // Download file from definition
-    //   const fieldName = event.target.getAttribute('field');
-    //   const index = event.target.getAttribute('index');
-    //   const file = get(data, `${fieldName}[${index}]`, null);
-    //   if (file) {
-    //     if (typeof file.content === 'string') {
-    //       const path = `download/file/${file.content}`;
-    //       this.downloadService.getFile(path, file.type, file.name);
-    //     } else {
-    //       this.documentManagementService.getFile(file);
-    //     }
-    //   }
-    // }
+  onClick(event: any, data: unknown, destroy$?: Observable<unknown>): void {
+    const target = event?.target as HTMLElement | null;
+    if (!target?.getAttribute) {
+      return;
+    }
+    const type = target.getAttribute('type');
+    if (type !== 'file') {
+      return;
+    }
+    // Download or preview file from definition
+    const fieldName = target.getAttribute('field');
+    const index = target.getAttribute('index');
+    if (!fieldName || index === null) {
+      return;
+    }
+    const file = get(data, `${fieldName}[${index}]`, null);
+    if (!this.isFile(file)) {
+      return;
+    }
+    const preview$ = this.fileService.downloadOrPreview(file);
+    (destroy$ ? preview$.pipe(takeUntil(destroy$)) : preview$).subscribe();
+  }
+
+  /**
+   * Type guard checking the given value is a valid file definition.
+   *
+   * @param value value to check
+   * @returns true when the value is a file
+   */
+  private isFile(value: unknown): value is File {
+    return (
+      !!value &&
+      typeof value === 'object' &&
+      typeof (value as File).name === 'string'
+    );
   }
 
   /**
