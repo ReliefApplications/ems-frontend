@@ -25,6 +25,7 @@ import {
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
+import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
 
 /**
  * Shared survey helper service.
@@ -578,12 +579,21 @@ export class FormHelpersService {
     }
     return files
       .filter((file) => this.isFile(file))
-      .map(
-        (file, index) =>
+      .map((file, index) => {
+        const fileExt = file.name.split('.').pop();
+        const fileIcon =
+          fileExt && ICON_EXTENSIONS[fileExt]
+            ? ICON_EXTENSIONS[fileExt]
+            : 'k-i-file';
+        return (
           `<button type="file" field="${fieldName}" index="${index}" ` +
           `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
-          `title="${file.name}">${file.name}</button>`
-      )
+          `class="k-button k-button-flat"` +
+          `title="${file.name}">` +
+          `<span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>` +
+          `${file.name}</button>`
+        );
+      })
       .join('');
   }
 
