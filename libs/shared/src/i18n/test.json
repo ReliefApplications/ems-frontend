@@ -1120,11 +1120,11 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
-				"confirmMessage": "****** {{action}} ******",
 				"confirmActionTitle": {
 					"create": "******",
 					"update": "******"
 				},
+				"confirmMessage": "****** {{action}} ******",
 				"confirmTitle": {
 					"few": "******",
 					"one": "******"
@@ -1381,13 +1381,13 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
-					"isBadge": "******",
-					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},
 					"criteria": "******",
 					"fields": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"name": "******",
 					"selectedColumns": "******",
 					"text": {
@@ -1900,6 +1900,13 @@
 				},
 				"openEditor": "******",
 				"openSettings": "******",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "******"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "******",
 					"displayMap": "******",
@@ -2837,7 +2844,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "******",
-					"fields": "******",
+					"fields": "****** {{filter.<name>}} ****** {{user.username}} ****** {{user.firstName}} ****** {{user.lastName}} ****** {{user.country}} ******",
 					"position": "******"
 				},
 				"historicalDate": "****** {{filter.<name>}} ******"
