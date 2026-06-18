@@ -18,7 +18,6 @@ import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { BlobType, DownloadService } from '../download/download.service';
-import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
@@ -45,7 +44,6 @@ export class FormHelpersService {
    * @param authService Shared auth service
    * @param downloadService Shared download service
    * @param documentManagementService Shared cs documentation
-   * @param htmlParserService Html parser service to parse html questions
    * @param fileService File service
    */
   constructor(
@@ -57,7 +55,6 @@ export class FormHelpersService {
     private authService: AuthService,
     private downloadService: DownloadService,
     private documentManagementService: DocumentManagementService,
-    private htmlParserService: HtmlParserService,
     private fileService: FileService
   ) {}
 
@@ -583,7 +580,7 @@ export class FormHelpersService {
         (file, index) =>
           `<button type="file" field="${fieldName}" index="${index}" ` +
           `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
-          `class="k-button k-button-flat"` +
+          `class="k-button k-button-flat k-button-flat-base"` +
           `title="${file.name}">` +
           `<span class="k-icon ${getFileIcon(
             file.name

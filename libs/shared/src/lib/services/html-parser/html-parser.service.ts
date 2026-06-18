@@ -980,15 +980,21 @@ export class HtmlParserService {
               removeFileExtension(file.name),
               field
             );
-            convertedValue += `<button type="file"
-              field="${field.name}"
-              index="${i++}"
-              style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
-              ${file.name}
+            convertedValue += `
+              <button
+                type="file"
+                class="k-button k-button-flat k-button-flat-base"
+                field="${field.name}"
+                index="${i++}"
+                style="padding: 4px 6px; cursor: pointer; ${style}"
+                title="${file.name}"
               >
-              <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
-              ${fileName}
-              </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
+                <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                ${fileName}
+              </button>
+            `
+              .replace(/\s+/g, ' ')
+              .trim(); // add elements to be able to identify file when clicking on button
           }
         }
         break;
