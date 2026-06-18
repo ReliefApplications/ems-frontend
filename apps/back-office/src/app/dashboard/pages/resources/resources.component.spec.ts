@@ -8,11 +8,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import {
-  ButtonModule,
-  PaginatorModule,
-  IconModule
-} from '@oort-front/ui';
+import { ButtonModule, PaginatorModule, IconModule } from '@oort-front/ui';
 import { SkeletonTableModule } from '@oort-front/shared';
 import { FilterComponent } from './filter/filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,7 +36,7 @@ describe('ResourcesComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

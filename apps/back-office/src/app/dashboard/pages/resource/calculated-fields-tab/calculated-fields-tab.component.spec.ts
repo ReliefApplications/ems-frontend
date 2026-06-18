@@ -30,9 +30,7 @@ describe('CalculatedFieldsTabComponent', () => {
           },
         }),
       ],
-      providers: [
-        TranslateService,
-      ]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

@@ -56,7 +56,7 @@ describe('RoleSummaryComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

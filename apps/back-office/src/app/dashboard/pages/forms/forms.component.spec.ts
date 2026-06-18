@@ -19,11 +19,7 @@ import { AbilityModule } from '@casl/angular';
 import { AppAbility } from '@oort-front/shared';
 import { FilterComponent } from './components/filter/filter.component';
 import { PureAbility } from '@casl/ability';
-import {
-  ButtonModule,
-  IconModule, 
-  PaginatorModule,
-} from '@oort-front/ui';
+import { ButtonModule, IconModule, PaginatorModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SkeletonTableModule } from '@oort-front/shared';
 
@@ -40,7 +36,7 @@ describe('FormsComponent', () => {
         HttpClientTestingModule,
         AbilityModule,
         ButtonModule,
-        IconModule, 
+        IconModule,
         PaginatorModule,
         FormsModule,
         ReactiveFormsModule,
@@ -64,7 +60,7 @@ describe('FormsComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 
