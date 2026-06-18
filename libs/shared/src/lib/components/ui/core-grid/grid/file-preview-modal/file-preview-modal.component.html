@@ -8,7 +8,9 @@
         variant="default"
         icon="file_download"
         (click)="download()"
-        [uiTooltip]="'common.downloadObject' | translate : { name: data.fileName }"
+        [uiTooltip]="
+          'common.downloadObject' | translate : { name: data.fileName }
+        "
       ></ui-button>
     </div>
   </ng-container>
