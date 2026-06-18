@@ -204,8 +204,8 @@ export class FilterBuilderModalComponent
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.registerCustomSurveyHandlers(
+        this.surveyCreator.survey
       );
     }
   }
@@ -225,9 +225,7 @@ export class FilterBuilderModalComponent
 
     this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
-      survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
-      );
+      this.formHelpersService.registerCustomSurveyHandlers(survey);
     });
 
     new SurveyCustomJSONEditorPlugin(this.surveyCreator);
@@ -266,8 +264,8 @@ export class FilterBuilderModalComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.injector)
     );
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+    this.formHelpersService.registerCustomSurveyHandlers(
+      this.surveyCreator.survey
     );
     this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) => {
       this.formHelpersService.addUserVariables(opt.survey);
