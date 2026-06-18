@@ -432,7 +432,6 @@ export class LayoutComponent
           .get('bcc')
           ?.setValue(this.emailService.emailDistributionList.bcc);
       }
-      this.onTxtSubjectChange();
       this.validateQuickActionToEmails();
     }
   }
