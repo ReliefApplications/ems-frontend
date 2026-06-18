@@ -29,6 +29,17 @@ import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { getLanguageName, getLanguageNativeName } from '../../utils/languages';
+
+/** Language option displayed in the header switcher. */
+interface LanguageOption {
+  /** Language code. */
+  code: string;
+  /** Language name in the active language. */
+  currentName: string;
+  /** Language native name. */
+  nativeName: string;
+}
 
 /**
  * Component for the main layout of the platform
@@ -108,6 +119,10 @@ export class LayoutComponent
    * Languages available
    */
   languages: string[] = [];
+  /** Current active language. */
+  public currentLanguage = '';
+  /** Other available languages shown in the header switcher. */
+  public languageOptions: LanguageOption[] = [];
 
   // === NOTIFICATIONS ===
   /**
@@ -236,7 +251,7 @@ export class LayoutComponent
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
-    this.getLanguage();
+    this.setCurrentLanguage(this.getLanguage());
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -421,9 +436,27 @@ export class LayoutComponent
    *
    * @param language id of the language.
    */
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translate.use(language);
     localStorage.setItem('lang', language);
+    this.setCurrentLanguage(language);
+  }
+
+  /**
+   * Changes current active language from the header switcher and reloads the page.
+   *
+   * @param language id of the language.
+   */
+  onSelectLanguage(language: string): void {
+    this.setLanguage(language);
+    this.reloadPage();
+  }
+
+  /**
+   * Reloads the current page so all translated content is initialized again.
+   */
+  reloadPage(): void {
+    window.location.reload();
   }
 
   /**
@@ -443,6 +476,31 @@ export class LayoutComponent
       this.translate.use(language);
     }
     return language;
+  }
+
+  /**
+   * Gets the display name of the active language.
+   *
+   * @returns Language native name
+   */
+  get currentLanguageName(): string {
+    return getLanguageNativeName(this.currentLanguage);
+  }
+
+  /**
+   * Updates the active language and rebuilds the selectable language list.
+   *
+   * @param language Active language id
+   */
+  private setCurrentLanguage(language: string): void {
+    this.currentLanguage = language;
+    this.languageOptions = this.languages
+      .filter((code: string) => code !== language)
+      .map((code: string) => ({
+        code,
+        currentName: getLanguageName(code, this.translate),
+        nativeName: getLanguageNativeName(code),
+      }));
   }
 
   /**
