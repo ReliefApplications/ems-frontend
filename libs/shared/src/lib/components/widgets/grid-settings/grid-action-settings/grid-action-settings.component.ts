@@ -380,6 +380,7 @@ export class GridActionSettingsComponent
         if (this.formGroup?.get('sendMail')?.value) {
           if (sendSeparateEmail) {
             this.formGroup?.get('distributionList')?.clearValidators();
+            this.formGroup?.get('distributionList')?.setValue(null);
           } else {
             this.formGroup
               ?.get('distributionList')

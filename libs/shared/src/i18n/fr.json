@@ -2149,7 +2149,7 @@
               "sendMail": "Envoyer le mail",
               "sendSeparateEmail": "Envoyer un e-mail séparé",
               "separateEmailFields": "Champs d'envoi séparé",
-              "separateEmailRecipientRequired": "Sélectionnez une liste de distribution ou ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, sinon l'e-mail n'a aucun destinataire.",
+              "separateEmailRecipientRequired": "Ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, ou désactivez l'envoi séparé pour utiliser une liste de distribution, sinon l'e-mail n'a aucun destinataire.",
               "separateEmailTokens": "Tokens disponibles dans le corps :",
               "workflow": {
                 "close": "Fermer le workflow",

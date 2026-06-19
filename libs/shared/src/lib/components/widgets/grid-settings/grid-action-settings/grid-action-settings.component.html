@@ -315,7 +315,7 @@
       </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <!-- Distribution list -->
-        <div uiFormFieldDirective>
+        <div uiFormFieldDirective *ngIf="!formGroup.value.sendSeparateEmail">
           <label>{{
             'components.emailBuilder.distribution' | translate
           }}</label>

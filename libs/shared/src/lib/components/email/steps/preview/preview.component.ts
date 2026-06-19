@@ -158,6 +158,8 @@ export class PreviewComponent
       this.distributionListTo = this.emailService.emailDistributionList?.to;
       this.distributionListCc = this.emailService.emailDistributionList?.cc;
       this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
+      this.distributionListSeparate =
+        this.emailService.distributionListSeparate ?? [];
     }
 
     this.query = this.emailService.datasetsForm.value;

@@ -176,9 +176,10 @@ export class GridSettingsFormFactory {
 
   /**
    * Cross-field validator for a grid action form group: a "Send separate email"
-   * action must have at least one recipient source — a distribution list OR
-   * separate-email fields (the per-row recipient extraction fields). Neither
-   * present would mean the email could reach nobody, so it blocks save.
+   * action must have at least one separate-email field (the per-row recipient
+   * extraction source). The distribution list is hidden while SSE is on, so it
+   * is not an alternative; without a field the email reaches nobody, so it
+   * blocks save.
    *
    * @param group grid action form group
    * @returns validation errors
@@ -191,10 +192,9 @@ export class GridSettingsFormFactory {
     if (!sendMail || !sendSeparateEmail) {
       return null;
     }
-    const hasDistributionList = !!group.get('distributionList')?.value;
     const separateEmailFields = group.get('separateEmailFields') as FormArray;
     const hasSeparateEmailFields = (separateEmailFields?.length ?? 0) > 0;
-    if (!hasDistributionList && !hasSeparateEmailFields) {
+    if (!hasSeparateEmailFields) {
       return { missingRecipientSource: true };
     }
     return null;

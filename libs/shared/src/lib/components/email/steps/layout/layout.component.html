@@ -7,7 +7,10 @@
   <!-- 5th step Layout -->
   <div>
     <div
-      *ngIf="isPreviewTemplate"
+      *ngIf="
+        isPreviewTemplate &&
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+      "
       [uiErrorMessage]="
         showRecipientError
           ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSseRecipients
@@ -51,7 +54,10 @@
     </div>
 
     <div
-      *ngIf="isPreviewTemplate"
+      *ngIf="
+        isPreviewTemplate &&
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+      "
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
         layoutForm.get('cc')?.errors && layoutForm.get('cc')?.touched
@@ -81,7 +87,10 @@
     </div>
 
     <div
-      *ngIf="isPreviewTemplate"
+      *ngIf="
+        isPreviewTemplate &&
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+      "
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
         layoutForm.get('bcc')?.errors && layoutForm.get('bcc')?.touched
@@ -112,9 +121,9 @@
 
     <!-- Emails from Send Separate Email Preview (read-only) -->
     <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSseRecipients">
-      <label class="block text-sm font-medium leading-6 text-gray-900">
+      <h1>
         {{ 'components.select.distribution.sendseparate.list' | translate }}
-      </label>
+      </h1>
       <ng-container *ngFor="let block of emailService.distributionListSeparate">
         <div uiChipList>
           <ng-container *ngFor="let email of block.emails; let j = index">
