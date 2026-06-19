@@ -256,11 +256,6 @@ export class GridActionSettingsComponent
       .subscribe((value) => {
         if (value) {
           this.formGroup?.get('templates')?.setValidators(Validators.required);
-          if (!this.formGroup?.get('sendSeparateEmail')?.value) {
-            this.formGroup
-              ?.get('distributionList')
-              ?.setValidators(Validators.required);
-          }
         } else {
           this.formGroup?.get('distributionList')?.clearValidators();
           this.formGroup?.get('templates')?.clearValidators();
@@ -381,10 +376,6 @@ export class GridActionSettingsComponent
           if (sendSeparateEmail) {
             this.formGroup?.get('distributionList')?.clearValidators();
             this.formGroup?.get('distributionList')?.setValue(null);
-          } else {
-            this.formGroup
-              ?.get('distributionList')
-              ?.setValidators(Validators.required);
           }
           this.formGroup?.get('distributionList')?.updateValueAndValidity();
         }
