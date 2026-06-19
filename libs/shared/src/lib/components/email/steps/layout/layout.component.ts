@@ -453,8 +453,26 @@ export class LayoutComponent
         this.emailService.getAllPreviewData();
 
       this.blockFieldSelect = this.emailService.sendSeparateBlocks.flatMap(
-        (block: any) =>
-          this.firstBlockFields.map((field: string) => `${block} - ${field}`)
+        (blockName: string) => {
+          let fields: string[];
+          if (this.emailService.isGridAction) {
+            // single 'Block 1', already appendFields-flattened in initialiseFieldSelectDropdown
+            fields = this.firstBlockFields;
+          } else {
+            // Source each SSE block's OWN dataset fields (flattened via appendFields so nested
+            // tokens survive) instead of always using the first block's fields.
+            const dataset = (
+              this.emailService.datasetsForm?.get('datasets')?.getRawValue() ??
+              []
+            ).find((d: any) => d.name === blockName);
+            const acc: string[] = [];
+            (dataset?.query?.fields ?? []).forEach((f: any) =>
+              this.emailService.appendFields(f, f.name, acc)
+            );
+            fields = acc;
+          }
+          return fields.map((field: string) => `${blockName} - ${field}`);
+        }
       );
     } else {
       this.blockData = [];
