@@ -7,6 +7,10 @@ export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
     key: 'fr',
     tinymceKey: 'fr_FR',
   },
+  {
+    key: 'uk',
+    tinymceKey: 'uk',
+  },
 ];
 
 /** Widget Editor tinymce configuration. */
