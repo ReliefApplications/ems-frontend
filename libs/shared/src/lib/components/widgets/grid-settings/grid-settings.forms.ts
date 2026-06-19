@@ -125,12 +125,7 @@ export class GridSettingsFormFactory {
         value && value.publish ? Validators.required : null,
       ],
       sendMail: [value && value.sendMail ? value.sendMail : false],
-      distributionList: [
-        get(value, 'distributionList', null),
-        value && value.sendMail && !value.sendSeparateEmail
-          ? Validators.required
-          : null,
-      ],
+      distributionList: [get(value, 'distributionList', null)],
       templates: [
         get(value, 'templates', []),
         value && value.sendMail ? Validators.required : null,
