@@ -314,6 +314,33 @@
         }}</ng-container>
       </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
+        <!-- Export dataset -->
+        <ui-checkbox formControlName="export">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.export'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+
+        <!-- Send Separate Email -->
+        <ui-checkbox formControlName="sendSeparateEmail">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.sendSeparateEmail'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+
+        <!-- Include navigate To Page -->
+        <ui-checkbox
+          formControlName="navigateToPage"
+          *ngIf="widgetFormGroup.value.actions.navigateToPage"
+        >
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.navigateToPage'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+
         <!-- Distribution list -->
         <div uiFormFieldDirective *ngIf="!formGroup.value.sendSeparateEmail">
           <label>{{
@@ -395,24 +422,7 @@
           >
           </ui-button>
         </div>
-        <!-- Export dataset -->
-        <ui-checkbox formControlName="export">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.export'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
 
-        <!-- Include navigate To Page -->
-        <ui-checkbox
-          formControlName="navigateToPage"
-          *ngIf="widgetFormGroup.value.actions.navigateToPage"
-        >
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.navigateToPage'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <shared-tab-fields
@@ -423,13 +433,7 @@
           [showColumnWidth]="true"
         ></shared-tab-fields>
 
-        <!-- Send Separate Email -->
-        <ui-checkbox formControlName="sendSeparateEmail">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.sendSeparateEmail'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
+        <!-- Separate email fields -->
         <ng-container *ngIf="formGroup.value.sendSeparateEmail">
           <h2>{{
             'components.widget.settings.grid.buttons.callback.separateEmailFields'
