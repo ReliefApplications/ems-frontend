@@ -29,6 +29,7 @@ export const environment: Environment = {
   /* cSpell:disable */
   ...sharedEnvironment,
   production: false,
+  serviceWorker: true,
   href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
