@@ -180,6 +180,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"download": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -375,6 +376,9 @@
 					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"upload": {
 					"error": "******",
@@ -1116,7 +1120,15 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "******",
+					"update": "******"
+				},
 				"confirmMessage": "****** {{action}} ******",
+				"confirmTitle": {
+					"few": "******",
+					"one": "******"
+				},
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -1299,6 +1311,13 @@
 				"ariaLabel": "******"
 			}
 		},
+		"pwa": {
+			"updateAvailable": {
+				"content": "******",
+				"reload": "******",
+				"title": "******"
+			}
+		},
 		"queryBuilder": {
 			"apply": "******",
 			"dataset": {
@@ -1369,13 +1388,13 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
-					"isBadge": "******",
-					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},
 					"criteria": "******",
 					"fields": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"name": "******",
 					"selectedColumns": "******",
 					"text": {
@@ -1888,6 +1907,13 @@
 				},
 				"openEditor": "******",
 				"openSettings": "******",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "******"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "******",
 					"displayMap": "******",
@@ -2457,13 +2483,6 @@
 					}
 				}
 			}
-		},
-		"pwa": {
-			"updateAvailable": {
-				"title": "******",
-				"content": "******",
-				"reload": "******"
-			}
 		}
 	},
 	"kendo": {
@@ -2832,7 +2851,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "******",
-					"fields": "******",
+					"fields": "****** {{filter.<name>}} ****** {{user.username}} ****** {{user.firstName}} ****** {{user.lastName}} ****** {{user.country}} ******",
 					"position": "******"
 				},
 				"historicalDate": "****** {{filter.<name>}} ******"

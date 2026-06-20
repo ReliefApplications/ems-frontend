@@ -26,12 +26,33 @@ import {
   GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import {
+  firstValueFrom,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import {
   FileExplorerTagKey,
   FileExplorerTagSelection,
 } from '../../components/file-explorer/types/file-explorer-filter.type';
+
+/** Document management file content. */
+export interface DocumentManagementFileContent {
+  driveId: string;
+  itemId: string;
+}
+
+/** Document management file. */
+export interface DocumentManagementFile {
+  name: string;
+  type?: string;
+  content: DocumentManagementFileContent;
+}
 
 /**
  * Property query response type
@@ -206,10 +227,7 @@ export class DocumentManagementService {
    * @param file.content.itemId file item id
    * @param options (optional) request options
    */
-  getFile(
-    file: { name: string; content: { driveId: string; itemId: string } },
-    options?: any
-  ): void {
+  getFile(file: DocumentManagementFile, options?: any): void {
     const snackBarRef = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
@@ -248,6 +266,32 @@ export class DocumentManagementService {
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
+  }
+
+  /**
+   * Gets a document management file as a blob.
+   *
+   * @param file Uploaded file
+   * @param options optional request options
+   * @returns file blob observable
+   */
+  getFileBlob(
+    file: DocumentManagementFile,
+    options?: Record<string, unknown>
+  ): Observable<Blob> {
+    return this.getDocumentDriveId(file.content.itemId).pipe(
+      switchMap((driveId) =>
+        this.restService.get(
+          `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${file.content.itemId}/content`,
+          {
+            ...options,
+            responseType: 'blob',
+            headers: this.getRequestHeaders(),
+          }
+        )
+      ),
+      map((res) => new Blob([res], { type: file.type || '' }))
+    );
   }
 
   /**

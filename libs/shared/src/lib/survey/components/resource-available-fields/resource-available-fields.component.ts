@@ -89,6 +89,7 @@ export class ResourceAvailableFieldsComponent
           id: this.model.obj.resource,
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.loading = false;

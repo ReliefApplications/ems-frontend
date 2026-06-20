@@ -52,7 +52,7 @@ describe('UserSummaryComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

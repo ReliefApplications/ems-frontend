@@ -21,7 +21,7 @@ import {
   PaginatorModule,
   ErrorMessageModule,
   IconModule,
-  ButtonModule
+  ButtonModule,
 } from '@oort-front/ui';
 import { SkeletonTableModule } from '@oort-front/shared';
 import { FormsModule } from '@angular/forms';
@@ -57,7 +57,7 @@ describe('ApiConfigurationsComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService, PureAbility]
+      providers: [TranslateService, PureAbility],
     }).compileComponents();
   });
 

@@ -1131,6 +1131,14 @@ export class SummaryCardComponent
   }
 
   /**
+   * Reload the summary card data from the server.
+   * Used to keep the card in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.refresh();
+  }
+
+  /**
    * Refresh view
    */
   public refresh() {

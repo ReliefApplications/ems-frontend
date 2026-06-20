@@ -44,7 +44,7 @@ describe('FormRecordsComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

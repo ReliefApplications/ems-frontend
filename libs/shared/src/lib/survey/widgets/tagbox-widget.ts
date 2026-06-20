@@ -216,6 +216,17 @@ export const init = (
     willUnmount: (question: any): void => {
       question.destroy$?.next();
       question.destroy$?.complete();
+      // Destroy the Kendo component created through DomService. Without this it
+      // stays attached to the Angular ApplicationRef: it leaks and keeps being
+      // change-detected on every tick, degrading the whole app over time.
+      if (question._componentRef) {
+        try {
+          domService.removeComponentFromBody(question._componentRef);
+        } catch {
+          /* component already detached */
+        }
+        question._componentRef = undefined;
+      }
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;
@@ -244,6 +255,9 @@ export const init = (
       MultiSelectComponent,
       element
     );
+    // Keep the ComponentRef so willUnmount can destroy it ( DomService only
+    // returns the instance otherwise, leaving no handle to release it ).
+    (question as any)._componentRef = tagbox;
     const tagboxInstance: MultiSelectComponent = tagbox.instance;
     tagboxInstance.virtual = {
       itemHeight: 28,
