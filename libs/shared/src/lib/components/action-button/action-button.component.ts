@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   Inject,
+  Optional,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
@@ -21,6 +22,8 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { WidgetComponent } from '../widget/widget.component';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { lastValueFrom, map, of, Subject, takeUntil, tap } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
@@ -105,6 +108,8 @@ export class ActionButtonComponent
    * @param translate TranslateService
    * @param queryBuilder QueryBuilderService
    * @param contextService Shared context service
+   * @param dashboardService Shared dashboard service
+   * @param widgetComponent Parent widget component, if the button is inside a dashboard widget
    */
   constructor(
     @Inject('environment') environment: any,
@@ -119,7 +124,9 @@ export class ActionButtonComponent
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private dashboardService: DashboardService,
+    @Optional() private widgetComponent: WidgetComponent
   ) {
     super();
     this.environment = environment;
@@ -342,6 +349,11 @@ export class ActionButtonComponent
           if (shouldReload) {
             this.reloadParent.emit();
           }
+          // If the action button lives inside a dashboard widget, reload all
+          // dashboard widgets so the edited/added record is reflected everywhere.
+          if (this.widgetComponent) {
+            this.dashboardService.triggerReloadWidgets();
+          }
         };
         const dialogRef = this.dialog.open(FormModalComponent, {
           disableClose: true,
@@ -453,6 +465,8 @@ export class ActionButtonComponent
                     );
                     if (navigateTo.targetUrl.openInNewTab) {
                       window.open(href, '_blank');
+                      // As user stays on same page, execute callback
+                      callback();
                     } else {
                       if (href?.startsWith('./')) {
                         this.router.navigateByUrl(href.substring(1));

@@ -22,6 +22,7 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
+  serviceWorker: true,
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',

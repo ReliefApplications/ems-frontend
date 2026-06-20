@@ -180,6 +180,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"download": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -375,6 +376,9 @@
 					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"upload": {
 					"error": "******",
@@ -1116,7 +1120,15 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "******",
+					"update": "******"
+				},
 				"confirmMessage": "****** {{action}} ******",
+				"confirmTitle": {
+					"few": "******",
+					"one": "******"
+				},
 				"exit": "******",
 				"exitMessage": "******"
 			},

@@ -164,6 +164,14 @@ export class FileExplorerWidgetComponent
   }
 
   /**
+   * Reload the document list from the server, keeping the current page.
+   * Used to keep the widget in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.page.next(this.page.getValue());
+  }
+
+  /**
    * On page change, emit a new page event to subscribe to
    *
    * @param page Page change event
