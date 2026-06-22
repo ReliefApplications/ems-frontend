@@ -307,7 +307,7 @@
           "noDistributionList": "Something went wrong during the email sending: no distribution list found",
           "noFields": "DocumentType & InformationConfidentiality is required to proceed!",
           "noRecipient": "At least one recipient is required to proceed!",
-          "noRecipientSse": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Subject is required to proceed!",
           "noTemplate": "Something went wrong during the email sending: no template found",
           "preview": "Preview of email failed"
@@ -2144,10 +2144,7 @@
               "selectAllRecordsActivePage": "Select all records on the active page",
               "selectDisplay": "Select displayed fields",
               "sendMail": "Send mail",
-              "sendSeparateEmail": "Send separate email",
-              "separateEmailFields": "Send Separate Email Fields",
               "separateEmailRecipientRequired": "Add at least one separate email field containing email values, or turn off Send Separate Email to use a distribution list, otherwise the email has no recipients.",
-              "separateEmailTokens": "Available body tokens:",
               "workflow": {
                 "close": "Close workflow",
                 "confirm": "Confirmation message",

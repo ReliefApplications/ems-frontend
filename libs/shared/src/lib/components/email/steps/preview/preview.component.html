@@ -21,7 +21,7 @@
         *ngIf="
           this.emailService.datasetsForm?.getRawValue()?.emailDistributionList
             ?.name &&
-          !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+          !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
         "
       >
         <p>
@@ -38,7 +38,7 @@
         *ngIf="
           distributionListTo &&
           distributionListTo.length > 0 &&
-          !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+          !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
         "
       >
         <h2>{{ 'components.select.distribution.to' | translate }}:</h2>
@@ -122,7 +122,7 @@
         *ngIf="
           distributionListCc &&
           distributionListCc.length > 0 &&
-          !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+          !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
         "
         class="mb-4"
       >
@@ -165,7 +165,7 @@
         *ngIf="
           distributionListBcc &&
           distributionListBcc.length > 0 &&
-          !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+          !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
         "
         class="mb-4"
       >

@@ -245,13 +245,13 @@ export class EmailService {
   public showFileUpload = false;
   /** dataQuery for the current grid action (set before child components initialise) */
   public gridActionDataQuery: any = null;
-  /** Whether SSE is enabled for the current grid action */
+  /** Whether send separate email is enabled for the current grid action */
   public gridActionSendSeparateEmail = false;
-  /** SSE recipients returned by the last preview-distribution-lists call (read-only display) */
+  /** Send-separate-email recipients returned by the last preview-distribution-lists call (read-only display) */
   public distributionListSeparate: any[] = [];
 
-  /** @returns true when the last preview-distribution-lists call returned at least one SSE recipient */
-  get hasSseRecipients(): boolean {
+  /** @returns true when the last preview-distribution-lists call returned at least one send-separate-email recipient */
+  get hasSeparateEmailRecipients(): boolean {
     return (
       this.distributionListSeparate?.some((b: any) => b?.emails?.length > 0) ??
       false
@@ -259,9 +259,9 @@ export class EmailService {
   }
 
   /**
-   * Block names marked for individual-email sending. Derived from form state; returns ['Block 1'] in grid-action SSE mode.
+   * Block names marked for individual-email sending. Derived from form state; returns ['Block 1'] in grid-action send-separate-email mode.
    *
-   * @returns array of block names with SSE enabled
+   * @returns array of block names with send separate email enabled
    */
   get sendSeparateBlocks(): string[] {
     if (this.isGridAction) {

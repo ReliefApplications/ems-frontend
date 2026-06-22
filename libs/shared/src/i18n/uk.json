@@ -307,6 +307,7 @@
           "noDistributionList": "Щось пішло не так під час надсилання листа: не знайдено списку розсилки",
           "noFields": "DocumentType & InformationConfidentiality обов'язкові для продовження!",
           "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noRecipientSse": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Тема обов'язкова для продовження!",
           "noTemplate": "Щось пішло не так під час надсилання листа: шаблон не знайдено",

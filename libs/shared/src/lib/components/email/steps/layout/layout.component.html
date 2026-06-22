@@ -9,12 +9,12 @@
     <div
       *ngIf="
         isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
       "
       [uiErrorMessage]="
         showRecipientError
-          ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSseRecipients
-              ? 'common.notifications.email.errors.noRecipientSse'
+          ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSeparateEmailRecipients
+              ? 'common.notifications.email.errors.noRecipientSeparateEmail'
               : 'common.notifications.email.errors.noRecipient') | translate)
           : (emailsError | translate)
       "
@@ -29,7 +29,7 @@
         }}<ng-container
           *ngIf="
             !emailService.gridActionSendSeparateEmail ||
-            !emailService.hasSseRecipients
+            !emailService.hasSeparateEmailRecipients
           "
           >*</ng-container
         >
@@ -56,7 +56,7 @@
     <div
       *ngIf="
         isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
       "
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
@@ -89,7 +89,7 @@
     <div
       *ngIf="
         isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSseRecipients)
+        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
       "
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
@@ -120,7 +120,7 @@
     </div>
 
     <!-- Emails from Send Separate Email Preview (read-only) -->
-    <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSseRecipients">
+    <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSeparateEmailRecipients">
       <h1>
         {{ 'components.select.distribution.sendseparate.list' | translate }}
       </h1>

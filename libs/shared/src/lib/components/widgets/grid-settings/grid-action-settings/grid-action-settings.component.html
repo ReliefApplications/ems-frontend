@@ -325,8 +325,7 @@
         <!-- Send Separate Email -->
         <ui-checkbox formControlName="sendSeparateEmail">
           <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.sendSeparateEmail'
-              | translate
+            'components.select.distribution.separateEmail' | translate
           }}</ng-container>
         </ui-checkbox>
 
@@ -436,8 +435,7 @@
         <!-- Separate email fields -->
         <ng-container *ngIf="formGroup.value.sendSeparateEmail">
           <h2>{{
-            'components.widget.settings.grid.buttons.callback.separateEmailFields'
-              | translate
+            'components.queryBuilder.sendSeparate.title' | translate
           }}</h2>
           <shared-tab-fields
             *ngIf="fields.length > 0"

@@ -459,8 +459,8 @@ export class LayoutComponent
             // single 'Block 1', already appendFields-flattened in initialiseFieldSelectDropdown
             fields = this.firstBlockFields;
           } else {
-            // Source each SSE block's OWN dataset fields (flattened via appendFields so nested
-            // tokens survive) instead of always using the first block's fields.
+            // Source each send-separate-email block's OWN dataset fields (flattened via
+            // appendFields so nested tokens survive) instead of always using the first block's fields.
             const dataset = (
               this.emailService.datasetsForm?.get('datasets')?.getRawValue() ??
               []
@@ -542,7 +542,7 @@ export class LayoutComponent
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
       // In grid-action mode the recipient validator is the authority for the
       // Next button once the layout is valid; blanket-enabling here would stomp
-      // the SSE/To recipient gate (last-writer-wins on disableNextActionBtn).
+      // the send-separate-email / To recipient gate (last-writer-wins on disableNextActionBtn).
       if (this.emailService.isGridAction) {
         this.validateQuickActionToEmails();
       } else {
@@ -1209,19 +1209,18 @@ export class LayoutComponent
     // check runs last (on load via loadDistributionList, or on a To-field
     // change), so the two writers of disableNextActionBtn agree.
     const layoutInvalid = this.showSubjectValidator || this.showBodyValidator;
+    const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
     if (
       this.emailService.isGridAction &&
       !this.emailService.gridActionSendSeparateEmail
     ) {
-      const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
       this.emailService.disableNextActionBtn = toEmpty || layoutInvalid;
       this.showRecipientError = toEmpty;
     } else if (
       this.emailService.isGridAction &&
       this.emailService.gridActionSendSeparateEmail
     ) {
-      const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
-      const missing = toEmpty && !this.emailService.hasSseRecipients;
+      const missing = toEmpty && !this.emailService.hasSeparateEmailRecipients;
       this.emailService.disableNextActionBtn = missing || layoutInvalid;
       this.showRecipientError = missing;
     }
