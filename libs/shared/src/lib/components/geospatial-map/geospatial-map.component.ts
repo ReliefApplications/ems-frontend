@@ -75,6 +75,25 @@ export class GeospatialMapComponent
   @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
 
   /**
+   * Whether the map is read-only (no drawing/editing tools and disabled fields)
+   */
+  @Input() set readOnly(value: boolean) {
+    this._readOnly = value;
+    this.applyReadOnly();
+  }
+
+  /** @returns is Field ready only */
+  get readOnly(): boolean {
+    return this._readOnly;
+  }
+
+  /** Backing field for the read-only state */
+  private _readOnly = false;
+
+  /** Whether the geoman controls are currently added to the map */
+  private controlsAdded = false;
+
+  /**
    * Form group
    */
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
@@ -168,9 +187,10 @@ export class GeospatialMapComponent
   }
 
   ngAfterViewInit(): void {
-    this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
+    // Add geoman controls / disable fields depending on the read-only state
+    this.applyReadOnly();
 
     (['lat', 'lng'] as const).forEach((key) => {
       this.geoForm
@@ -195,6 +215,37 @@ export class GeospatialMapComponent
           }
         });
     });
+  }
+
+  /**
+   * Applies the current read-only state: toggles the geoman drawing/editing
+   * controls and enables/disables the geospatial fields form.
+   * Safe to call before the view is initialized (map/form may not exist yet);
+   * it is re-applied from ngAfterViewInit once they are available.
+   */
+  private applyReadOnly(): void {
+    // The form is built in ngOnInit
+    if (this.geoForm) {
+      if (this._readOnly) {
+        this.geoForm.disable({ emitEvent: false });
+      } else {
+        this.geoForm.enable({ emitEvent: false });
+      }
+    }
+    // The map is only available after the view has been initialized
+    const map = this.mapComponent?.map;
+    if (!map) {
+      return;
+    }
+    if (this._readOnly) {
+      if (this.controlsAdded) {
+        map.pm.removeControls();
+        this.controlsAdded = false;
+      }
+    } else if (!this.controlsAdded) {
+      map.pm.addControls(this.controls);
+      this.controlsAdded = true;
+    }
   }
 
   /**
@@ -398,6 +449,11 @@ export class GeospatialMapComponent
    * @param address searched address
    */
   onSearch(address: any): void {
+    // In read-only mode, selecting a search result must not move the marker
+    // nor populate the geospatial fields
+    if (this._readOnly) {
+      return;
+    }
     if (address) {
       const value = {
         coordinates: {

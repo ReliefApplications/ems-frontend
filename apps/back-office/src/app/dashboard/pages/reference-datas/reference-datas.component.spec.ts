@@ -37,7 +37,11 @@ describe('ReferenceDatasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReferenceDatasComponent, FilterComponent, AddReferenceDataComponent],
+      declarations: [
+        ReferenceDatasComponent,
+        FilterComponent,
+        AddReferenceDataComponent,
+      ],
       imports: [
         ApolloTestingModule,
         DialogModule,
@@ -72,7 +76,7 @@ describe('ReferenceDatasComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

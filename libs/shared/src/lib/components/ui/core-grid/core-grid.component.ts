@@ -53,6 +53,7 @@ import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 
@@ -348,6 +349,7 @@ export class CoreGridComponent
    * @param contextService Shared context service
    * @param router Angular Router
    * @param el Element reference
+   * @param dashboardService Dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -364,7 +366,8 @@ export class CoreGridComponent
     private applicationService: ApplicationService,
     private contextService: ContextService,
     private router: Router,
-    private el: ElementRef
+    private el: ElementRef,
+    private dashboardService: DashboardService
   ) {
     super();
     this.environment = environment;
@@ -1092,6 +1095,7 @@ export class CoreGridComponent
         .subscribe((value: any) => {
           if (value) {
             this.reloadData();
+            this.dashboardService.triggerReloadWidgets();
           }
         });
     }
@@ -1195,6 +1199,7 @@ export class CoreGridComponent
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
+        this.dashboardService.triggerReloadWidgets();
       }
     });
   }
@@ -1248,6 +1253,7 @@ export class CoreGridComponent
           .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
+            this.dashboardService.triggerReloadWidgets();
             this.layoutService.setRightSidenav(null);
           });
       }
@@ -1289,6 +1295,7 @@ export class CoreGridComponent
         }
         Promise.all(promises).then(() => {
           this.reloadData();
+          this.dashboardService.triggerReloadWidgets();
         });
       }
     });
@@ -1381,6 +1388,7 @@ export class CoreGridComponent
                 );
               } else {
                 this.reloadData();
+                this.dashboardService.triggerReloadWidgets();
                 this.layoutService.setRightSidenav(null);
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')

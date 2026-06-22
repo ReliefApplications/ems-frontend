@@ -15,6 +15,7 @@ import {
 import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs';
+import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 import { WidgetService } from '../../../../services/widget/widget.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -92,6 +93,7 @@ export class SummaryCardItemContentComponent
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private dataTemplateService: DataTemplateService,
@@ -103,7 +105,8 @@ export class SummaryCardItemContentComponent
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -171,7 +174,7 @@ export class SummaryCardItemContentComponent
    * @param event Click event
    */
   public onClick(event: any) {
-    this.dataTemplateService.onClick(event, this.fieldsValue);
+    this.dataTemplateService.onClick(event, this.fieldsValue, this.destroy$);
   }
 
   /**
@@ -197,20 +200,8 @@ export class SummaryCardItemContentComponent
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
         if (value) {
           this.parent.refresh();
-          // Update the record, based on new configuration
-          // this.getRecord().then(() => {
-          //   this.formattedStyle = this.dataTemplateService.renderStyle(
-          //     this.settings.wholeCardStyles || false,
-          //     this.fieldsValue,
-          //     this.styles
-          //   );
-          //   this.formattedHtml = this.dataTemplateService.renderHtml(
-          //     this.settings.text,
-          //     this.fieldsValue,
-          //     this.fields,
-          //     this.styles
-          //   );
-          // });
+          // Notify the dashboard so other widgets reload and reflect the edited record
+          this.dashboardService.triggerReloadWidgets();
         }
       });
     }

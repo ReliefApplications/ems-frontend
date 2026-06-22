@@ -1,7 +1,31 @@
 {
+  "routes": [
+    {
+      "route": "/ngsw-worker.js",
+      "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/ngsw.json",
+      "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/safety-worker.js",
+      "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/worker-basic.min.js",
+      "headers": { "Cache-Control": "no-cache" }
+    }
+  ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/assets/", "/.css", "/*.js"]
+    "exclude": [
+      "/assets/",
+      "/*.css",
+      "/*.js",
+      "/manifest.webmanifest",
+      "/ngsw.json"
+    ]
   },
   "globalHeaders": {
     "referrer-policy": "strict-origin-when-cross-origin"

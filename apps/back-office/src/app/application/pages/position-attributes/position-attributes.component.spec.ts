@@ -18,12 +18,14 @@ describe('PositionComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => {return {}}
-              }
-            }
+                get: () => {
+                  return {};
+                },
+              },
+            },
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

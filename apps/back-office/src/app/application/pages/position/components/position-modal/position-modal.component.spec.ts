@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DialogRef,DIALOG_DATA } from '@angular/cdk/dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { PositionModalComponent } from './position-modal.component';
 import {
   TranslateFakeLoader,
@@ -33,9 +33,9 @@ describe('PositionModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
-        }
-      ]
+          useValue: {},
+        },
+      ],
     }).compileComponents();
   });
 

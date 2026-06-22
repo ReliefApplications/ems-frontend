@@ -14,6 +14,7 @@ import {
 
 // Env
 import { environment } from '../environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
@@ -122,6 +123,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.serviceWorker ?? environment.production,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [
     {

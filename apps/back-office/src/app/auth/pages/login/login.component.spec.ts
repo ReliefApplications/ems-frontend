@@ -16,7 +16,7 @@ describe('LoginComponent', () => {
         SpinnerModule,
         HttpClientModule,
         OAuthModule.forRoot(),
-        ApolloTestingModule
+        ApolloTestingModule,
       ],
       declarations: [LoginComponent],
       providers: [
@@ -25,7 +25,7 @@ describe('LoginComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

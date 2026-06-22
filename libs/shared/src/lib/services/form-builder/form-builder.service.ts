@@ -74,10 +74,8 @@ export class FormBuilderService {
     const survey = new Model(structure);
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(renderGlobalProperties(this.injector));
-    //Add tooltips to questions if exist
-    survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
-    );
+    //Add tooltips to questions & render html question file links if exist
+    this.formHelpersService.registerCustomSurveyHandlers(survey);
 
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {

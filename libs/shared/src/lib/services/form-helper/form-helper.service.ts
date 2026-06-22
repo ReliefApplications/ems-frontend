@@ -23,6 +23,8 @@ import {
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { File, FileService } from '../file/file.service';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
 /**
  * Shared survey helper service.
@@ -42,6 +44,7 @@ export class FormHelpersService {
    * @param authService Shared auth service
    * @param downloadService Shared download service
    * @param documentManagementService Shared cs documentation
+   * @param fileService File service
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -51,7 +54,8 @@ export class FormHelpersService {
     private translate: TranslateService,
     private authService: AuthService,
     private downloadService: DownloadService,
-    private documentManagementService: DocumentManagementService
+    private documentManagementService: DocumentManagementService,
+    private fileService: FileService
   ) {}
 
   /**
@@ -462,10 +466,10 @@ export class FormHelpersService {
    * @param options.question current question
    * @param options.htmlElement html element associated to question
    */
-  public addQuestionTooltips(
+  public addQuestionTooltips = (
     survey: SurveyModel,
     options: { question: Question; htmlElement: HTMLElement }
-  ): void {
+  ): void => {
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
@@ -496,6 +500,187 @@ export class FormHelpersService {
       wrapper.appendChild(htmlQuestion);
       createTooltip(wrapper);
     }
+  };
+
+  /**
+   * Runs all the rendering logic that should happen after a survey question is
+   * rendered ( tooltips, HTML file links, ... ). Registered on the survey's
+   * onAfterRenderQuestion event.
+   *
+   * @param survey current survey
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  public onAfterRenderQuestion = (
+    survey: SurveyModel,
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void => {
+    this.addQuestionTooltips(survey, options);
+    this.bindHtmlQuestionFileClicks(survey, options);
+  };
+
+  /**
+   * Registers the custom survey behaviors ( file links rendering, tooltips, ... )
+   * on the given survey.
+   *
+   * @param survey survey to enhance
+   */
+  public registerCustomSurveyHandlers = (survey: SurveyModel): void => {
+    survey.onProcessTextValue.add(this.onProcessTextValue);
+    survey.onAfterRenderQuestion.add(this.onAfterRenderQuestion);
+  };
+
+  /**
+   * Resolves a named value from the survey. A name may point either to a
+   * question value (in survey.data) or to a survey variable — e.g.
+   * `{resourceQuestion.fileField}` populated from a linked record by the
+   * resource component. survey.data takes precedence, falling back to the
+   * variable so file fields coming from resource context are handled too.
+   *
+   * @param survey current survey
+   * @param name name of the value / variable to resolve
+   * @returns the resolved value, or undefined when absent
+   */
+  private resolveValue(survey: SurveyModel, name: string): any {
+    return get(survey.data, name) ?? survey.getVariable(name);
+  }
+
+  /**
+   * Substitutes the value of a file question in HTML questions with clickable
+   * file links. Registered on the survey's onProcessTextValue event so that,
+   * when SurveyJS resolves a `{field}` placeholder pointing to a file question,
+   * it renders our links instead of the default `[object Object]`.
+   *
+   * @param survey current survey
+   * @param options process text value options
+   * @param options.name name of the placeholder being processed
+   * @param options.value value to render in place of the placeholder
+   * @param options.isExists whether the value should be used
+   */
+  public onProcessTextValue = (
+    survey: SurveyModel,
+    options: { name: string; value: any; isExists: boolean }
+  ): void => {
+    const question =
+      survey.getQuestionByValueName(options.name) ||
+      survey.getQuestionByName(options.name);
+    const value = this.resolveValue(survey, options.name);
+    if (!question || question.getType() !== 'file') {
+      // No file question resolved for this placeholder, but the value may still
+      // be compatible with the file links format (an array of file objects).
+      if (Array.isArray(value) && value.some((file) => this.isFile(file))) {
+        options.value = this.renderFileLinks(options.name, value);
+        options.isExists = true;
+      }
+      return;
+    }
+    options.value = this.renderFileLinks(options.name, value);
+    options.isExists = true;
+  };
+
+  /**
+   * Builds the clickable file links markup for a file question value.
+   *
+   * The `type`/`field`/`index` attributes let onFileClick identify the
+   * file to download or preview when the link is clicked.
+   *
+   * @param fieldName name of the file question ( key in survey data )
+   * @param files file question value
+   * @returns html markup for the file links
+   */
+  private renderFileLinks(fieldName: string, files: unknown): string {
+    if (!Array.isArray(files)) {
+      return '';
+    }
+    return files
+      .filter((file) => this.isFile(file))
+      .map(
+        (file, index) =>
+          `<button type="file" field="${fieldName}" index="${index}" ` +
+          `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
+          `class="k-button k-button-flat k-button-flat-base"` +
+          `title="${file.name}">` +
+          `<span class="k-icon ${getFileIcon(
+            file.name
+          )}" style="margin-right: 4px"></span>` +
+          `${removeFileExtension(file.name)}</button>`
+      )
+      .join('');
+  }
+
+  /**
+   * Attaches the file click behavior to a rendered HTML question.
+   *
+   * @param survey Current survey
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private bindHtmlQuestionFileClicks = (
+    survey: SurveyModel,
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void => {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    const htmlQuestion =
+      options.htmlElement.querySelector<HTMLElement>('.sd-html');
+    if (!htmlQuestion || htmlQuestion.dataset['fileLinksBound'] === 'true') {
+      return;
+    }
+    // Bind the click handler once per rendered element.
+    htmlQuestion.dataset['fileLinksBound'] = 'true';
+    htmlQuestion.addEventListener('click', (event) =>
+      this.onFileClick(event, survey)
+    );
+  };
+
+  /**
+   * Handle click event on a rendered HTML question.
+   *
+   * Detects clicks on file elements rendered in the question and triggers a
+   * download or preview of the matching file. The file is resolved from the
+   * survey data or, for resource-context fields, from a survey variable.
+   *
+   * @param event click event
+   * @param survey current survey
+   */
+  private onFileClick(event: Event, survey: SurveyModel): void {
+    const target = event?.target as HTMLElement | null;
+    if (!target?.getAttribute) {
+      return;
+    }
+    const type = target.getAttribute('type');
+    if (type !== 'file') {
+      return;
+    }
+    // Download or preview file from definition
+    const fieldName = target.getAttribute('field');
+    const index = target.getAttribute('index');
+    if (!fieldName || index === null) {
+      return;
+    }
+    const files = this.resolveValue(survey, fieldName);
+    const file = Array.isArray(files) ? files[Number(index)] : null;
+    if (!this.isFile(file)) {
+      return;
+    }
+    this.fileService.downloadOrPreview(file).subscribe();
+  }
+
+  /**
+   * Type guard checking the given value is a valid file definition.
+   *
+   * @param value value to check
+   * @returns true when the value is a file
+   */
+  private isFile(value: unknown): value is File {
+    return (
+      !!value &&
+      typeof value === 'object' &&
+      typeof (value as File).name === 'string'
+    );
   }
 
   /**

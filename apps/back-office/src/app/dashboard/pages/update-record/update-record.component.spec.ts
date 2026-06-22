@@ -32,12 +32,14 @@ describe('UpdateRecordComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => {return {}}
-              }
-            }
+                get: () => {
+                  return {};
+                },
+              },
+            },
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

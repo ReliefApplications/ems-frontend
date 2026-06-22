@@ -15,6 +15,7 @@ export interface Environment {
   module: string;
   version: any;
   production: boolean;
+  serviceWorker?: boolean;
   apiUrl: string;
   subscriptionApiUrl: string;
   frontOfficeUri: string;
