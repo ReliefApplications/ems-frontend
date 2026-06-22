@@ -91,17 +91,24 @@ const initializeAuthAndTranslations =
         Promise.resolve(null)
       );
       locationInitialized.then(() => {
+        const fallbackLanguage = environment.availableLanguages[0];
+        const storedLanguage = localStorage.getItem('lang') || fallbackLanguage;
+        const activeLanguage = environment.availableLanguages.includes(
+          storedLanguage
+        )
+          ? storedLanguage
+          : fallbackLanguage;
         translate.addLangs(environment.availableLanguages);
-        translate.setDefaultLang(environment.availableLanguages[0]);
-        translate.use(environment.availableLanguages[0]).subscribe({
+        translate.setDefaultLang(fallbackLanguage);
+        translate.use(activeLanguage).subscribe({
           next: () => {
             console.log(
-              `Successfully initialized '${environment.availableLanguages[0]}' language.'`
+              `Successfully initialized '${activeLanguage}' language.'`
             );
           },
           error: () => {
             console.error(
-              `Problem with '${environment.availableLanguages[0]}' language initialization.'`
+              `Problem with '${activeLanguage}' language initialization.'`
             );
           },
           complete: () => {

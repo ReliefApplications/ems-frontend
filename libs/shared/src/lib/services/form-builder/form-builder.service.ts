@@ -135,14 +135,12 @@ export class FormBuilderService {
       }
     }
     // set the lang of the survey
+    const lang = this.translate.currentLang || this.translate.defaultLang;
     const surveyLang = localStorage.getItem('surveyLang');
-    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
+    if (survey.getUsedLocales().includes(lang)) {
+      survey.locale = lang;
+    } else if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
       survey.locale = surveyLang;
-    } else {
-      const lang = this.translate.currentLang || this.translate.defaultLang;
-      if (survey.getUsedLocales().includes(lang)) {
-        survey.locale = lang;
-      }
     }
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';

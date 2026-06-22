@@ -29,13 +29,13 @@ export const init = (
     ): void => {
       let currentSearchValue = '';
       const defaultDropdown = el.querySelector('sv-ng-dropdown');
+      const defaultWrapper =
+        el.parentElement?.querySelector('.sv_select_wrapper');
       // Remove previous input if already rendered
       el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       question.destroy$ = new Subject<void>();
       question.abortSignal = new AbortController();
-      // remove default render
-      el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
       dropdownDiv = document.createElement('div');
       dropdownDiv.classList.add('flex', 'min-h-[36px]');
@@ -116,7 +116,13 @@ export const init = (
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
       question._instance = dropdownInstance;
-      defaultDropdown?.replaceWith(dropdownDiv);
+      if (defaultWrapper?.parentElement) {
+        defaultWrapper.replaceWith(dropdownDiv);
+      } else if (defaultDropdown?.parentElement) {
+        defaultDropdown.replaceWith(dropdownDiv);
+      } else {
+        el.appendChild(dropdownDiv);
+      }
     },
     willUnmount: (question: any): void => {
       question.destroy$?.next();

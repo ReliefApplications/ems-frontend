@@ -22,13 +22,23 @@ import { createClient } from 'graphql-ws';
  * @returns void
  */
 export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
-  const basic = setContext(() => ({
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json; charset=utf-8',
-      UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    },
-  }));
+  const basic = setContext(() => {
+    const fallbackLanguage = environment.availableLanguages?.[0] || 'en';
+    const storedLanguage = localStorage.getItem('lang') || fallbackLanguage;
+    const language = environment.availableLanguages?.includes(storedLanguage)
+      ? storedLanguage
+      : fallbackLanguage;
+
+    return {
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json; charset=utf-8',
+        UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Language: language,
+      },
+    };
+  });
 
   const auth = setContext(() => {
     // Get the authentication token from local storage if it exists

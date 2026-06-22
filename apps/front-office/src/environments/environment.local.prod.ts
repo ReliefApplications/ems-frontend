@@ -26,7 +26,7 @@ export const environment: Environment = {
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'https://hems.who.int/backoffice/',
-  availableLanguages: ['en', 'fr', 'test'],
+  availableLanguages: ['en', 'fr', 'uk', 'test'],
   authConfig,
   theme,
   user: {

@@ -19,7 +19,7 @@ export const sharedAzureEnvironment = {
   /* cSpell:disable */
   ...sharedEnvironment,
   production: true,
-  availableLanguages: ['en', 'test'],
+  availableLanguages: ['en', 'fr', 'uk', 'test'],
   theme,
   /* cSpell:enable */
 };

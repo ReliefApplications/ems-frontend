@@ -109,6 +109,8 @@ export const init = (
       unRegisterRelatedPropertyChangeCallbacks(question);
       let currentSearchValue = '';
       const defaultTagbox = el.querySelector('sv-ng-tagbox');
+      const defaultWrapper =
+        el.parentElement?.querySelector('.sv_select_wrapper');
       const parentQuestion = question.parentQuestion;
       if (
         parentQuestion &&
@@ -211,7 +213,13 @@ export const init = (
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
       question._instance = tagboxInstance;
-      defaultTagbox?.replaceWith(tagboxDiv);
+      if (defaultWrapper?.parentElement) {
+        defaultWrapper.replaceWith(tagboxDiv);
+      } else if (defaultTagbox?.parentElement) {
+        defaultTagbox.replaceWith(tagboxDiv);
+      } else {
+        el.appendChild(tagboxDiv);
+      }
     },
     willUnmount: (question: any): void => {
       question.destroy$?.next();

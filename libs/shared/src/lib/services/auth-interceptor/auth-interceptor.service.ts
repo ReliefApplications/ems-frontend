@@ -96,6 +96,28 @@ export class AuthInterceptorService implements HttpInterceptor {
   }
 
   /**
+   * Clones the current intercepted request and sets the active application language.
+   *
+   * @param request Current intercepted request
+   * @returns Intercepted request with the current language
+   */
+  private addLanguageToRequest(request: HttpRequest<any>): HttpRequest<any> {
+    const fallbackLanguage = this.environment.availableLanguages?.[0] || 'en';
+    const storedLanguage = localStorage.getItem('lang') || fallbackLanguage;
+    const language = this.environment.availableLanguages?.includes(
+      storedLanguage
+    )
+      ? storedLanguage
+      : fallbackLanguage;
+
+    return request.clone({
+      setHeaders: {
+        Language: language,
+      },
+    });
+  }
+
+  /**
    * Clones the current intercepted request and sets the current tokens
    *
    * @param request Current intercepted request
@@ -103,6 +125,7 @@ export class AuthInterceptorService implements HttpInterceptor {
    */
   private addTokensToRequest(request: HttpRequest<any>): HttpRequest<any> {
     if (request.url.startsWith(this.restService.apiUrl)) {
+      request = this.addLanguageToRequest(request);
       request = this.addBearerTokenToRequest(request);
       request = this.addAccessTokenToRequest(request);
     } else if (
