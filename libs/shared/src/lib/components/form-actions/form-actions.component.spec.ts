@@ -64,7 +64,9 @@ describe('FormActionsComponent', () => {
     onLangChange.next({ lang: 'fr' });
 
     expect(component.survey.locale).toBe('fr');
-    expect(renderedQuestion._propertyValueChangedVirtual).not.toHaveBeenCalled();
+    expect(
+      renderedQuestion._propertyValueChangedVirtual
+    ).not.toHaveBeenCalled();
   });
 
   it('supports Ukrainian when syncing the survey locale', () => {
