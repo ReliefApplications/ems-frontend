@@ -30,6 +30,7 @@ export default {
   testMatch: [
     '<rootDir>/src/lib/services/context/*.spec.ts',
     '<rootDir>/src/lib/services/auth-interceptor/*.spec.ts',
+    '<rootDir>/src/lib/services/file/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/components/form-actions/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',

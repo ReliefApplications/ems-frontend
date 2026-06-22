@@ -5,10 +5,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   FormWrapperModule,
   IconModule,
-  TextareaModule,
   ToggleModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
 
 /** Component for selecting the widget display options */
 @Component({
@@ -23,7 +23,7 @@ import {
     IconModule,
     TooltipModule,
     FormWrapperModule,
-    TextareaModule,
+    LocalizedInputComponent,
   ],
   templateUrl: './display-settings.component.html',
   styleUrls: ['./display-settings.component.scss'],

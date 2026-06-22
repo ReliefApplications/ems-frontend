@@ -16,9 +16,11 @@
 </div>
 <!-- Tab label & display options -->
 <div [formGroup]="tabGroup" class="flex flex-col gap-4">
-  <div uiFormFieldDirective>
-    <label>{{ 'common.label' | translate }}</label>
-    <input formControlName="label" type="text" placeholder="Type a label..." />
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <label>
+      {{ 'common.label' | translate }}
+    </label>
+    <shared-localized-input formControlName="label"></shared-localized-input>
   </div>
   <!-- Nav bar settings -->
   <ng-container formGroupName="navBar">

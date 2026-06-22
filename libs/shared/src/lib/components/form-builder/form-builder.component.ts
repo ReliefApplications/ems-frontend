@@ -201,8 +201,8 @@ export class FormBuilderComponent
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.injector)
       );
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.registerCustomSurveyHandlers(
+        this.surveyCreator.survey
       );
     }
   }
@@ -269,9 +269,7 @@ export class FormBuilderComponent
       survey.applyTheme({
         isPanelless: true,
       });
-      survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
-      );
+      this.formHelpersService.registerCustomSurveyHandlers(survey);
       this.formHelpersService.addUserVariables(survey);
       /** Apply all placeholder with limitation info to all file questions */
       survey
@@ -378,8 +376,8 @@ export class FormBuilderComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.injector)
     );
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+    this.formHelpersService.registerCustomSurveyHandlers(
+      this.surveyCreator.survey
     );
 
     this.surveyCreator.onPreviewSurveyCreated.add((sender: any, options: any) =>

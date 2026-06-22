@@ -47,7 +47,7 @@
     class="text-sm font-semibold leading-6"
   >
     <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
-    {{ item.name }}
+    {{ item.name | translate }}
     <ui-chip
       *ngIf="item.legacy"
       class="pointer-events-none flex items-center"

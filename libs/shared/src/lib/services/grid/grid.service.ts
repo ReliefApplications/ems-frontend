@@ -6,6 +6,7 @@ import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.const
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { isNil } from 'lodash';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 import {
   getListOfKeys,
   getWithExpiry,
@@ -117,7 +118,9 @@ export class GridService {
               metaData = Object.assign([], metaData);
               metaData.type = 'referenceData';
               const cachedField = get(layoutFields, fullName);
-              const title = f.label ? f.label : prettifyLabel(f.name);
+              const title =
+                resolveLocalizedString(f.label, this.translate.currentLang) ||
+                prettifyLabel(f.name);
               const subFields = this.getFields(
                 f.fields,
                 metaFields,
@@ -174,7 +177,9 @@ export class GridService {
               metaData.type = 'records';
             }
             const cachedField = get(layoutFields, fullName);
-            const title = f.label ? f.label : prettifyLabel(f.name);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             const subFields = this.getFields(
               f.fields,
               metaFields,
@@ -212,7 +217,9 @@ export class GridService {
           }
           default: {
             const cachedField = get(layoutFields, fullName);
-            const title = f.label ? f.label : prettifyLabel(f.name);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             return {
               name: fullName,
               title,

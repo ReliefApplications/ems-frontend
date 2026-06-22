@@ -29,6 +29,7 @@ export const environment: Environment = {
   /* cSpell:disable */
   ...sharedEnvironment,
   production: false,
+  serviceWorker: true,
   href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
@@ -59,5 +60,6 @@ export const environment: Environment = {
   admin0Url: 'https://hems-test.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems-test.who.int/csapi/api',
   csDocUrl: 'https://hems-test.who.int/csdocui',
+  hideDateFormatPicker: true,
   /* cSpell:enable */
 };

@@ -18,6 +18,7 @@ import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -47,6 +48,7 @@ import { PortalModule } from '@angular/cdk/portal';
     PortalModule,
     AlertModule,
     ToggleModule,
+    LocalizedInputComponent,
   ],
   exports: [MapPropertiesComponent],
 })

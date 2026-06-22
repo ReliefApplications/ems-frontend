@@ -4,12 +4,11 @@ import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
-  getFileIcon,
   getPropertyValue,
   getStyle,
   getUrl,
-  removeFileExtension,
 } from './grid-data-formatter.helper';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
 /**
  * Grid data formatter service

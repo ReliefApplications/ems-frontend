@@ -14,7 +14,10 @@ import {
   SpinnerModule,
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
-import { ResourceSelectComponent } from '../../../controls/public-api';
+import {
+  ResourceSelectComponent,
+  LocalizedInputComponent,
+} from '../../../controls/public-api';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -34,6 +37,7 @@ import { ResourceSelectComponent } from '../../../controls/public-api';
     AggregationTableModule,
     SelectMenuModule,
     ResourceSelectComponent,
+    LocalizedInputComponent,
     ButtonModule,
     SpinnerModule,
   ],

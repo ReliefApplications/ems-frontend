@@ -336,6 +336,28 @@ describe('HtmlParserService', () => {
         calcFormatElement.after.replace(new RegExp('\\n', 'g'), '')
       );
     });
+    it('renders file placeholders as clickable file buttons', () => {
+      const result = service.parseHtml('<p>{{data.documents}}</p>', {
+        data: {
+          documents: [
+            {
+              name: 'report.pdf',
+              type: 'application/pdf',
+              content: 'file-id',
+            },
+          ],
+        },
+        fields: [{ name: 'documents', type: 'file' }],
+      });
+
+      expect(result).toContain('button type="file"');
+      expect(result).toContain('field="documents"');
+      expect(result).toContain('index="0"');
+      expect(result).toContain('title="report.pdf"');
+      expect(result).toContain('k-button k-button-flat k-button-flat-base');
+      expect(result).toContain('k-icon k-i-file-pdf');
+      expect(result).toContain('report');
+    });
   });
   describe('Parse HTML with context data', () => {
     let replaceRecordFields!: any;
