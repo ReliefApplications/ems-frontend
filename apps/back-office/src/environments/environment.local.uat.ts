@@ -36,7 +36,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://hems-test.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en', 'fr', 'test'],
+  availableLanguages: ['en', 'fr', 'test', 'uk'],
   authConfig,
   theme,
   availableWidgets: [
@@ -60,5 +60,6 @@ export const environment: Environment = {
   admin0Url: 'https://hems-test.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems-test.who.int/csapi/api',
   csDocUrl: 'https://hems-test.who.int/csdocui',
+  hideDateFormatPicker: true,
   /* cSpell:enable */
 };

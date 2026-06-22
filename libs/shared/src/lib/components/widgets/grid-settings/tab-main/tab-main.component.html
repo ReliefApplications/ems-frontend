@@ -3,7 +3,7 @@
   <!-- Widget title -->
   <div uiFormFieldDirective>
     <label>{{ 'common.title' | translate }}</label>
-    <input formControlName="title" type="string" />
+    <shared-localized-input formControlName="title"></shared-localized-input>
   </div>
   <ng-container *ngIf="!loading; else loadingTmpl">
     <div class="flex gap-2 flex-wrap">

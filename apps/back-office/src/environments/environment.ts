@@ -29,7 +29,7 @@ export const environment: Environment = {
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  availableLanguages: ['en', 'fr', 'test'],
+  availableLanguages: ['en', 'fr', 'test', 'uk'],
   authConfig,
   theme,
   availableWidgets: [

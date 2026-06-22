@@ -78,6 +78,7 @@ export const EDIT_PAGE = gql`
   mutation editPage(
     $id: ID!
     $name: String
+    $nameTranslations: JSON
     $icon: String
     $permissions: JSON
     $visible: Boolean
@@ -87,6 +88,7 @@ export const EDIT_PAGE = gql`
     editPage(
       id: $id
       name: $name
+      nameTranslations: $nameTranslations
       icon: $icon
       showName: $showName
       navBar: $navBar
@@ -95,6 +97,7 @@ export const EDIT_PAGE = gql`
     ) {
       id
       name
+      nameTranslations
       icon
       showName
       navBar {
@@ -433,6 +436,7 @@ export const EDIT_APPLICATION = gql`
         icon
         showName
         name
+        nameTranslations
         visible
         createdAt
         type

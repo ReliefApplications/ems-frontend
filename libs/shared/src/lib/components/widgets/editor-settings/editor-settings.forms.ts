@@ -5,6 +5,7 @@ import isNil from 'lodash/isNil';
 import { v4 as uuidv4 } from 'uuid';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
 import { createAutomationForm } from '../../../forms/automation.forms';
+import { LocalizedString } from '../../../models/localized-string.model';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -59,8 +60,8 @@ export const createEditorForm = (id: string, value: any) => {
   const form = fb.group(
     {
       id,
-      title: get<string>(value, 'title', ''),
-      text: get<string>(value, 'text', ''),
+      title: get<LocalizedString>(value, 'title', ''),
+      text: get<LocalizedString>(value, 'text', ''),
       // for record selection
       resource: get<string | null>(value, 'resource', null),
       referenceData: get<string | null>(value, 'referenceData', null),

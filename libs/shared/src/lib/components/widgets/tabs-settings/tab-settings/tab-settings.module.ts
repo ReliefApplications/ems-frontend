@@ -12,6 +12,7 @@ import {
 } from '@oort-front/ui';
 import { IconPickerModule } from '../../../controls/icon-picker/icon-picker.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { LocalizedInputComponent } from '../../../controls/public-api';
 
 /**
  * Tab settings module, part of tabs widget settings.
@@ -30,6 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
     IconPickerModule,
     IconModule,
     TooltipModule,
+    LocalizedInputComponent,
   ],
   exports: [TabSettingsComponent],
 })

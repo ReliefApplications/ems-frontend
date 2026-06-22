@@ -8,6 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import {
   addNewField,
   createFilterGroup,
@@ -17,6 +19,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { ActionButton } from '../grid/action-button.type';
 import { Role } from '../../../models/user.model';
 import { Injector } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -39,6 +42,8 @@ export class GridSettingsFormFactory {
   private fb!: FormBuilder;
   /** Application Service */
   private applicationService!: ApplicationService;
+  /** Translate Service */
+  private translate!: TranslateService;
 
   /**
    * Grid settings form factory
@@ -49,6 +54,7 @@ export class GridSettingsFormFactory {
   constructor(private injector: Injector, public destroy$: Subject<boolean>) {
     this.fb = this.injector.get(FormBuilder);
     this.applicationService = this.injector.get(ApplicationService);
+    this.translate = this.injector.get(TranslateService);
     this.roles = this.applicationService.application.value?.roles || [];
   }
 
@@ -166,7 +172,10 @@ export class GridSettingsFormFactory {
     const formGroup = this.fb.group(
       {
         id,
-        title: [get(configuration, 'title', ''), Validators.required],
+        title: [
+          get(configuration, 'title', '') as LocalizedString,
+          localizedRequired,
+        ],
         resource: [get(configuration, 'resource', null), Validators.required],
         template: [get(configuration, 'template', null)],
         layouts: [get(configuration, 'layouts', []), Validators.required],
@@ -261,7 +270,13 @@ export class GridSettingsFormFactory {
         pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
         field: [get(configuration, 'actions.navigateSettings.field', '')],
         title: [
-          get(configuration, 'actions.navigateSettings.title', 'Details view'),
+          get(
+            configuration,
+            'actions.navigateSettings.title',
+            this.translate.instant(
+              'components.widget.settings.grid.actions.goTo.column.defaultTitle'
+            )
+          ) as LocalizedString,
         ],
       }),
     });
@@ -270,7 +285,7 @@ export class GridSettingsFormFactory {
       if (value) {
         formGroup
           .get('navigateSettings.title')
-          ?.setValidators(Validators.required);
+          ?.setValidators(localizedRequired);
       } else {
         formGroup.get('navigateSettings.title')?.clearValidators();
       }

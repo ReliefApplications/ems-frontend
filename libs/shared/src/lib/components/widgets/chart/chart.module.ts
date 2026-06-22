@@ -15,6 +15,7 @@ import {
 } from '@oort-front/ui';
 import { FormsModule } from '@angular/forms';
 import { EmptyModule } from '../../ui/empty/empty.module';
+import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
 
 /**
  * Module for the chart component
@@ -35,6 +36,7 @@ import { EmptyModule } from '../../ui/empty/empty.module';
     FormsModule,
     FormWrapperModule,
     EmptyModule,
+    LocalizePipe,
   ],
   exports: [ChartComponent],
 })

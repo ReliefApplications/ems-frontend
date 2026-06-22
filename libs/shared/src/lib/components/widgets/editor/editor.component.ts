@@ -34,6 +34,7 @@ import { GridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import {
@@ -101,6 +102,19 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** @returns available aggregations */
   get aggregations() {
     return this.settings.aggregations || [];
+  }
+
+  /**
+   * Resolve the localized `text` setting for the active UI language. Accepts
+   * both legacy plain-string values and per-locale maps.
+   *
+   * @returns HTML template string to feed into the data template renderer.
+   */
+  private resolveText(): string {
+    return resolveLocalizedString(
+      this.settings.text,
+      this.translate.currentLang
+    );
   }
 
   /** @returns Record id, manual selection or based on expression */
@@ -178,6 +192,14 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
     this.setHtml();
+
+    // Re-render when the user's UI language changes, so per-locale `text`
+    // values switch in place without requiring a full reload.
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.cancelRefresh$.next();
+      this.loading = true;
+      this.setHtml();
+    });
 
     // Gather all context filters in a single text value
     const allContextFilters = this.aggregations
@@ -350,7 +372,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.styles
           );
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -397,7 +419,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -412,7 +434,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -556,7 +578,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 this.styles
               );
               this.formattedHtml = this.dataTemplateService.renderHtml(
-                this.settings.text,
+                this.resolveText(),
                 {
                   data: this.fieldsValue,
                   aggregation: this.aggregationsData,

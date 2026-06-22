@@ -1185,6 +1185,8 @@
 		},
 		"header": {
 			"goToApp": "******",
+			"goToBackOffice": "******",
+			"goToFrontOffice": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -1834,6 +1836,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"details": "******",
 					"goTo": "******",
 					"history": "******"
 				},
@@ -2015,6 +2018,7 @@
 						"export": "******",
 						"goTo": {
 							"column": {
+								"defaultTitle": "******",
 								"label": "******",
 								"placeholder": "******"
 							},

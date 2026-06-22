@@ -30,4 +30,6 @@ export interface Environment {
   admin0Url?: string;
   csApiUrl?: string;
   csDocUrl?: string;
+  /** Hides the date & time format picker in the preferences modal */
+  hideDateFormatPicker?: boolean;
 }
