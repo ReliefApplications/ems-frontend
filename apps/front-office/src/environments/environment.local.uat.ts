@@ -22,7 +22,11 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
-  serviceWorker: true,
+  // Keep the service worker disabled for local serving: registering it under
+  // the live-reload dev server causes an infinite reload loop (every rebuild
+  // emits a VERSION_READY, which the app reacts to by reloading). Build a
+  // static bundle and serve it without live-reload to test the PWA locally.
+  serviceWorker: false,
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
