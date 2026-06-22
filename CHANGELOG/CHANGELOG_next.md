@@ -1,3 +1,11 @@
+# [2.23.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.10...v2.23.0-rc.11) (2026-06-22)
+
+
+### Bug Fixes
+
+* preview in html fields of forms now working with variables ([8c7e716](https://github.com/ReliefApplications/ems-frontend/commit/8c7e716cfe12718d360dde4bee7351048f6e6ca9))
+* settings always appearing on form builder ([91c5c53](https://github.com/ReliefApplications/ems-frontend/commit/91c5c538fec95e30033238604c62539f3ee4ce6a))
+
 # [2.23.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.9...v2.23.0-rc.10) (2026-06-22)
 
 
