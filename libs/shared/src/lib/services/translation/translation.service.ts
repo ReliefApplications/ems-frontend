@@ -11,8 +11,9 @@ import { TRANSLATE_TEXT_QUERY } from './graphql/queries';
 })
 export class TranslationService {
   /**
+   * Service to handle translation queries and field translation setup.
    *
-   * @param apollo
+   * @param apollo The apollo client service
    */
   constructor(private apollo: Apollo) {}
 
@@ -22,11 +23,14 @@ export class TranslationService {
    * @param text Source text to translate
    * @param from BCP-47 source language code (e.g. 'en'). Pass null/undefined for auto-detect.
    * @param to BCP-47 target language code (e.g. 'uk')
+   * @param format Explicit text format ('html' or 'plain')
+   * @returns Translated text promise
    */
   async translateText(
     text: string,
     from: string | null | undefined,
-    to: string
+    to: string,
+    format?: 'html' | 'plain'
   ): Promise<string> {
     if (!text || !text.trim()) {
       return '';
@@ -39,6 +43,7 @@ export class TranslationService {
           text,
           from: from || null,
           to,
+          format,
         },
         fetchPolicy: 'no-cache',
       });
@@ -122,10 +127,12 @@ export class TranslationService {
       // Set a new 800ms debounce timeout
       const timeout = setTimeout(async () => {
         try {
+          const format = target.getType() === 'editor' ? 'html' : 'plain';
           const translated = await this.translateText(
             sourceValue,
             null, // auto-detect source language
-            targetLang
+            targetLang,
+            format
           );
           const latestValue = latestTranslationSourceValues.get(targetName);
           if (translated && latestValue === sourceValue) {
