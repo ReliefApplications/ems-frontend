@@ -33,6 +33,7 @@ export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 export * from './lib/services/common-services/common-services.service';
+export * from './lib/services/translation/translation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/async-monaco-editor/public-api';

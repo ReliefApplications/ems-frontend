@@ -1,9 +1,10 @@
-import { ComponentCollection, SvgRegistry } from 'survey-core';
+import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
 import { isNil } from 'lodash';
-import { Injector } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
+import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
 
 /**
  * Inits the editor component.
@@ -17,6 +18,7 @@ export const init = (
 ): void => {
   // get services
   const domService = injector.get(DomService);
+  const ngZone = injector.get(NgZone);
 
   // Register icon
   SvgRegistry.registerIconFromSvg(
@@ -67,23 +69,59 @@ export const init = (
         if (!value) {
           return;
         }
-        // todo: check
-        if (!question.value && question.defaultValueExpression) {
-          question.value = question.defaultValueExpression;
-        }
-        if (question.value) {
-          instance.editor.editor.writeValue(question.value);
-        }
+        ngZone.run(() => {
+          // todo: check
+          if (!question.value && question.defaultValueExpression) {
+            question.value = question.defaultValueExpression;
+          }
+          if (question.value) {
+            instance.editor.editorContent = question.value;
+            instance.editor.editor.writeValue(question.value);
+          }
 
-        instance.html.subscribe((html) => {
-          if (isNil(html)) {
-            return;
-          }
-          if (question.survey?.isDesignMode) {
-            question.defaultValueExpression = html;
-          } else {
-            question.value = html;
-          }
+          instance.html.subscribe((html) => {
+            if (isNil(html)) {
+              return;
+            }
+            if (question.survey?.isDesignMode) {
+              question.defaultValueExpression = html;
+            } else {
+              const hasFocus = instance.editor?.editor?.editor?.hasFocus();
+              if (hasFocus || !question.value) {
+                if (question.value !== html) {
+                  question.value = html;
+                }
+              }
+            }
+          });
+
+          // Sync value updates from survey model to the editor
+          question.registerFunctionOnPropertyValueChanged(
+            'value',
+            (newValue: any) => {
+              ngZone.run(() => {
+                if (
+                  instance.editor &&
+                  instance.editor.editor &&
+                  instance.editor.editor.editor
+                ) {
+                  const hasFocus = instance.editor.editor.editor.hasFocus();
+                  // If the editor currently has focus, the user is typing, so do not overwrite content to avoid cursor jumps
+                  if (hasFocus) {
+                    return;
+                  }
+                  const currentEditorHtml =
+                    instance.editor.editor.editor.getContent() || '';
+                  const targetValue = newValue || '';
+                  if (currentEditorHtml !== targetValue) {
+                    instance.editor.editorContent = targetValue;
+                    instance.editor.editor.writeValue(targetValue);
+                  }
+                }
+              });
+            },
+            question.name + '_value_sync'
+          );
         });
       });
 
@@ -99,4 +137,44 @@ export const init = (
     },
   };
   componentCollectionInstance.add(component);
+
+  // Register translation properties for custom editor component
+  Serializer.addProperty('editor', {
+    name: 'translateFrom',
+    type: 'string',
+    category: 'translation',
+    visibleIndex: 1,
+    displayName: 'Translate from question',
+    choices: (obj: any) => {
+      if (!obj || !obj.survey) return [];
+      return (obj.survey as any)
+        .getAllQuestions()
+        .filter(
+          (q: any) =>
+            q !== obj &&
+            (q.getType() === 'text' ||
+              q.getType() === 'comment' ||
+              q.getType() === 'editor')
+        )
+        .map((q: any) => q.name);
+    },
+  });
+  Serializer.addProperty('editor', {
+    name: 'translateTo',
+    type: 'string',
+    category: 'translation',
+    visibleIndex: 2,
+    displayName: 'Language to translate to',
+    visibleIf: (obj: any) => !!obj?.getPropertyValue('translateFrom'),
+    choices: AZURE_SUPPORTED_LANGUAGES,
+  });
+  Serializer.addProperty('editor', {
+    name: 'translateIf:condition',
+    category: 'logic',
+    visibleIndex: 10,
+    displayName: 'Translate if',
+    visibleIf: (obj: any) =>
+      !!obj?.getPropertyValue('translateFrom') &&
+      !!obj?.getPropertyValue('translateTo'),
+  });
 };

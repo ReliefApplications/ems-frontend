@@ -18,6 +18,7 @@ import {
   getDateDisplay,
   setDateValue,
 } from '../components/utils/create-picker-instance';
+import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -94,6 +95,47 @@ export const init = (
         dependsOn: ['inputType'],
         visibleIf: (obj: QuestionText) =>
           ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
+      });
+      serializer.addProperty('text', {
+        name: 'translateFrom',
+        type: 'string',
+        category: 'translation',
+        visibleIndex: 1,
+        displayName: 'Translate from question',
+        visibleIf: (obj: QuestionText) =>
+          obj?.inputType === 'text' || obj?.getType() === 'editor',
+        choices: (obj: QuestionText) => {
+          if (!obj || !obj.survey) return [];
+          return (obj.survey as any)
+            .getAllQuestions()
+            .filter(
+              (q: any) =>
+                q !== obj &&
+                (q.getType() === 'text' ||
+                  q.getType() === 'comment' ||
+                  q.getType() === 'editor')
+            )
+            .map((q: any) => q.name);
+        },
+      });
+      serializer.addProperty('text', {
+        name: 'translateTo',
+        type: 'string',
+        category: 'translation',
+        visibleIndex: 2,
+        displayName: 'Language to translate to',
+        visibleIf: (obj: QuestionText) =>
+          !!obj?.getPropertyValue('translateFrom'),
+        choices: AZURE_SUPPORTED_LANGUAGES,
+      });
+      serializer.addProperty('text', {
+        name: 'translateIf:condition',
+        category: 'logic',
+        visibleIndex: 10,
+        displayName: 'Translate if',
+        visibleIf: (obj: QuestionText) =>
+          !!obj?.getPropertyValue('translateFrom') &&
+          !!obj?.getPropertyValue('translateTo'),
       });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(

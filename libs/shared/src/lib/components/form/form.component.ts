@@ -30,6 +30,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
+import { TranslationService } from '../../services/translation/translation.service';
 
 /**
  * This component is used to display forms
@@ -87,6 +88,10 @@ export class FormComponent
   // private storageId = '';
   /** Date of local storage */
   // public storageDate?: Date;
+  /** Map of translation timeouts for debouncing */
+  private translationTimeouts = new Map<string, any>();
+  /** Map of latest source values for translation to prevent race conditions */
+  private latestTranslationSourceValues = new Map<string, string>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -100,6 +105,7 @@ export class FormComponent
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
+   * @param translationService This is the service used to translate text using Azure Translator
    */
   constructor(
     public dialog: Dialog,
@@ -109,7 +115,8 @@ export class FormComponent
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private translationService: TranslationService
   ) {
     super();
   }
@@ -132,14 +139,21 @@ export class FormComponent
     );
 
     this.survey.showCompletedPage = false;
+    this.survey.textUpdateMode = 'onTyping';
     this.updateButtonLabels();
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(() => {
+    this.survey.onValueChanged.add((sender, options) => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
+      this.translationService.handleFieldTranslation(
+        sender,
+        options,
+        this.translationTimeouts,
+        this.latestTranslationSourceValues
+      );
     });
     this.survey.onComplete.add(() => {
       this.onComplete();
@@ -530,6 +544,9 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.translationTimeouts.clear();
+    this.latestTranslationSourceValues.clear();
     this.survey?.dispose();
   }
 }

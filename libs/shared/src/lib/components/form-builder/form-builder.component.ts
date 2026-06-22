@@ -31,6 +31,7 @@ import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
+import { TranslationService } from '../../services/translation/translation.service';
 
 /**
  * Array containing the different types of questions.
@@ -134,6 +135,10 @@ export class FormBuilderComponent
   private relatedNames!: string[];
   /** Timeout to survey creator */
   private timeoutListener!: NodeJS.Timeout;
+  /** Map of translation timeouts for debouncing */
+  private translationTimeouts = new Map<string, any>();
+  /** Map of latest source values for translation to prevent race conditions */
+  private latestTranslationSourceValues = new Map<string, string>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -145,6 +150,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
+   * @param translationService Translation service
    */
   constructor(
     public dialog: Dialog,
@@ -152,7 +158,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
-    private injector: Injector
+    private injector: Injector,
+    private translationService: TranslationService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -207,6 +214,9 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
+    this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.translationTimeouts.clear();
+    this.latestTranslationSourceValues.clear();
     this.surveyCreator.survey?.dispose();
   }
 
@@ -247,6 +257,17 @@ export class FormBuilderComponent
           )(question);
           question.dragAreaPlaceholder = text;
         });
+
+      // Enable textUpdateMode = 'onTyping' and register value changed handler for preview translation
+      survey.textUpdateMode = 'onTyping';
+      survey.onValueChanged.add((sender, options) => {
+        this.translationService.handleFieldTranslation(
+          sender,
+          options,
+          this.translationTimeouts,
+          this.latestTranslationSourceValues
+        );
+      });
     });
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
