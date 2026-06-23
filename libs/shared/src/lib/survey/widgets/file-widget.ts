@@ -83,9 +83,13 @@ const ensureFilePreviewStyles = (): void => {
   if (document.getElementById(FILE_PREVIEW_STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = FILE_PREVIEW_STYLE_ID;
+  // In display mode our custom preview fully replaces the default file UI, so
+  // hide the whole default file widget container to avoid an empty drop-zone
+  // element showing above the preview. Our preview wrapper is appended as a
+  // sibling of the file widget (on the question root), so it stays visible.
   style.textContent =
-    `.${FILE_PREVIEW_ACTIVE_CLASS} .sd-file__list,` +
-    `.${FILE_PREVIEW_ACTIVE_CLASS} .sv-file__list { display: none !important; }`;
+    `.${FILE_PREVIEW_ACTIVE_CLASS} .sd-file,` +
+    `.${FILE_PREVIEW_ACTIVE_CLASS} .sv-file { display: none !important; }`;
   document.head.appendChild(style);
 };
 
