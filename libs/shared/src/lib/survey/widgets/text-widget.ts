@@ -103,7 +103,9 @@ export const init = (
         visibleIndex: 1,
         displayName: 'Translate from question',
         visibleIf: (obj: QuestionText) =>
-          obj?.inputType === 'text' || obj?.getType() === 'editor',
+          !obj?.inputType ||
+          obj?.inputType === 'text' ||
+          obj?.getType() === 'editor',
         choices: (obj: QuestionText) => {
           if (!obj || !obj.survey) return [];
           return (obj.survey as any)
