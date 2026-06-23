@@ -1,3 +1,10 @@
+# [2.23.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.11...v2.23.0-rc.12) (2026-06-23)
+
+
+### Features
+
+* Enable preview of images / PDFs when single file in forms ([#2877](https://github.com/ReliefApplications/ems-frontend/issues/2877)) ([5db5b52](https://github.com/ReliefApplications/ems-frontend/commit/5db5b52d12e6be7a441eed763063ed11403da16d)), closes [AB#134011](https://github.com/AB/issues/134011)
+
 # [2.23.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.10...v2.23.0-rc.11) (2026-06-22)
 
 
