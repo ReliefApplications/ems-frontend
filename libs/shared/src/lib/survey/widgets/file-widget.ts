@@ -151,6 +151,7 @@ const buildPreviewWrapper = (
     img.src = src;
     img.alt = fileName;
     img.style.maxWidth = '100%';
+    img.style.maxHeight = '300px';
     img.style.display = 'block';
     wrapper.appendChild(img);
   } else {

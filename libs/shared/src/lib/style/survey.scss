@@ -261,6 +261,12 @@
     display: inline;
   }
 
+  // In form preview
+  .file-preview {
+    display: flex;
+    justify-content: center;
+  }
+
   // Checkbox
   .sd-checkbox {
     padding: 12px 0 !important;
