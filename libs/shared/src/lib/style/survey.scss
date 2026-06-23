@@ -256,6 +256,11 @@
     }
   }
 
+  // Fix position of file preview
+  .sd-file__preview .sd-file__default-image {
+    display: inline;
+  }
+
   // Checkbox
   .sd-checkbox {
     padding: 12px 0 !important;
