@@ -25,12 +25,10 @@
             [uiTooltip]="'models.widget.tooltip.tooltip' | translate"
           ></ui-icon>
         </label>
-        <ui-textarea
+        <shared-localized-input
           formControlName="tooltip"
-          [minRows]="2"
-          [maxRows]="5"
-          name="textarea"
-        />
+          type="textarea"
+        ></shared-localized-input>
       </div>
     </ng-container>
     <ui-toggle

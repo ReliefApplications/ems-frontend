@@ -1185,6 +1185,8 @@
 		},
 		"header": {
 			"goToApp": "Ouvrir l'application",
+			"goToBackOffice": "Naviguer vers le back office",
+			"goToFrontOffice": "Naviguer vers le front office",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -1837,6 +1839,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"details": "Détails",
 					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
@@ -2018,6 +2021,7 @@
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Détails",
 								"label": "Nom de la colonne",
 								"placeholder": "Entrez un nom pour la colonne..."
 							},
@@ -2164,7 +2168,7 @@
 						"fields": "Champs",
 						"filter": "Filtre",
 						"groupLayers": "Regrouper les calques",
-						"labels": "Étiquettes",
+						"labels": "Titres",
 						"layerDatasource": "Source de données de la couche",
 						"layerEdition": "Edition de couche",
 						"layerProperties": "Propriétés",
@@ -2858,7 +2862,7 @@
 			"create": "Créer un formulaire",
 			"edit": "Modifier le formulaire",
 			"field": {
-				"label": "Étiquette",
+				"label": "Titre",
 				"name": "Nom du champ",
 				"usedIn": "Utilisé par"
 			},
@@ -2970,7 +2974,7 @@
 				"delete": "Supprimer le champ de tri",
 				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
-				"label": "Étiquette",
+				"label": "Titre",
 				"management": "Gestion des champs de tri",
 				"order": "Ordre",
 				"select": "Sélectionnez un champ de tri...",

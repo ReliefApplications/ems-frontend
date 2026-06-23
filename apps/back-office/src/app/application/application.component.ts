@@ -14,7 +14,8 @@ import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 /** Navigation item type */
-type NavigationItem = {
+export type NavigationItem = {
+  /** Translation key, resolved in the template with the translate pipe */
   name: string;
   icon: string;
   path: string;
@@ -66,7 +67,7 @@ export class ApplicationComponent
     legacy?: boolean
   ) => {
     this.appSettingsNavItems.push({
-      name: this.translate.instant(nameKey),
+      name: nameKey,
       path: path,
       icon: icon,
       legacy: legacy,
@@ -108,6 +109,7 @@ export class ApplicationComponent
         .map((x: any) => ({
           id: x.id,
           name: x.name,
+          nameTranslations: x.nameTranslations,
           path:
             x.type === ContentType.form
               ? `./${x.type}/${x.id}`

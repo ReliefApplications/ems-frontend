@@ -1185,6 +1185,8 @@
 		},
 		"header": {
 			"goToApp": "Go to application",
+			"goToBackOffice": "Navigate to back office",
+			"goToFrontOffice": "Navigate to front office",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -1834,6 +1836,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
+					"details": "Details",
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
@@ -2015,6 +2018,7 @@
 						"export": "Export records",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Details",
 								"label": "Column name",
 								"placeholder": "Type a title for the column..."
 							},

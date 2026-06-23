@@ -22,6 +22,7 @@ import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
 import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
+  LocalizedInputComponent,
 } from '../../../controls/public-api';
 import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 import { AssetPipe } from '../../../../pipes/asset/asset.pipe';
@@ -52,6 +53,7 @@ import { AssetPipe } from '../../../../pipes/asset/asset.pipe';
     TooltipModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    LocalizedInputComponent,
     DividerModule,
     QueryParamsMappingComponent,
     SpinnerModule,

@@ -41,20 +41,26 @@ export class EditorService {
   }
 
   /**
-   * Compute the current language
+   * Compute the current language for TinyMCE.
    *
-   * @returns the current language
+   * Priority order:
+   *  1. localStorage['lang'] — set by the user preference, always synchronously
+   *     available on page load (before async translate.use() HTTP completes).
+   *  2. translate.currentLang — set after translate.use() resolves.
+   *  3. translate.defaultLang — the app's compile-time default.
+   *
+   * Returns undefined for English so TinyMCE uses its built-in default
+   * (avoids a 404 on a non-existent en.js language file).
+   *
+   * @returns the TinyMCE language key, or undefined for English (default)
    */
-  get language(): string {
-    const lang = this.translate.currentLang;
+  get language(): string | undefined {
+    const lang =
+      localStorage.getItem('lang') ??
+      this.translate.currentLang ??
+      this.translate.defaultLang;
     const editorLang = EDITOR_LANGUAGE_PAIRS.find((x) => x.key === lang);
-    let language: string;
-    if (editorLang) {
-      language = editorLang.tinymceKey;
-    } else {
-      language = 'en';
-    }
-    return language;
+    return editorLang?.tinymceKey;
   }
 
   /**

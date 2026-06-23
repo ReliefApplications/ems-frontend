@@ -83,7 +83,9 @@
                 class="group"
                 (click)="largeDevice ? null : nav?.toggle()"
                 [routerLink]="item.path"
-                [uiTooltip]="item.name"
+                [uiTooltip]="
+                  item.nameTranslations || item.name | sharedLocalize
+                "
               >
                 <ui-icon
                   *ngIf="item.showIcon !== false && item.icon"
@@ -94,7 +96,7 @@
                 >
                 </ui-icon>
                 <p *ngIf="item.showName !== false" class="truncate m-0">
-                  {{ item.name }}
+                  {{ item.nameTranslations || item.name | sharedLocalize }}
                 </p>
               </a>
               <!-- Item actions (edit, delete, visibility) -->
@@ -153,7 +155,7 @@
                   [fontFamily]="item.fontFamily"
                 ></ui-icon>
                 <div class="pl-2" *ngIf="item.showName !== false">
-                  {{ item.name }}
+                  {{ item.nameTranslations || item.name | sharedLocalize }}
                 </div>
               </a>
             </li>

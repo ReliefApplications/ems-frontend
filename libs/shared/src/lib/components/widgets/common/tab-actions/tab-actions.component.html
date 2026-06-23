@@ -44,18 +44,14 @@
         formGroupName="navigateSettings"
         class="flex flex-col ml-[55px]"
       >
-        <div uiFormFieldDirective class="w-80">
+        <div uiFormFieldDirective class="w-80" [defaultMargin]="false">
           <label>{{
             'components.widget.settings.grid.actions.goTo.column.label'
               | translate
           }}</label>
-          <input
+          <shared-localized-input
             formControlName="title"
-            [placeholder]="
-              'components.widget.settings.grid.actions.goTo.column.placeholder'
-                | translate
-            "
-          />
+          ></shared-localized-input>
         </div>
         <div uiFormFieldDirective class="w-80">
           <label>

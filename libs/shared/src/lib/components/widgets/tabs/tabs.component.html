@@ -19,7 +19,7 @@
                 [size]="18"
               ></ui-icon>
               <span *ngIf="tab.navBar?.showName !== false" class="truncate">
-                {{ tab.label }}
+                {{ tab.label | sharedLocalize }}
               </span>
             </div>
           </ng-container>

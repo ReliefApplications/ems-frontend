@@ -1,0 +1,44 @@
+<div class="flex items-center overflow-hidden">
+  <!-- Display projected content -->
+  <ng-container *ngIf="!editing">
+    <div
+      *ngIf="canEdit"
+      (click)="open()"
+      class="hover:bg-neutral-200 rounded-lg py-1 w-full cursor-pointer"
+    >
+      <ng-container *ngTemplateOutlet="content"></ng-container>
+    </div>
+    <div *ngIf="!canEdit">
+      <ng-container *ngTemplateOutlet="content"></ng-container>
+    </div>
+  </ng-container>
+
+  <!-- Localized edition -->
+  <ng-container *ngIf="editing">
+    <div class="flex items-end gap-2">
+      <shared-localized-input
+        class="flex-1"
+        [(ngModel)]="draft"
+      ></shared-localized-input>
+      <ui-button
+        [isIcon]="true"
+        icon="done"
+        variant="primary"
+        [disabled]="!hasContent"
+        (click)="save()"
+        [uiTooltip]="'common.save' | translate"
+      ></ui-button>
+      <ui-button
+        [isIcon]="true"
+        icon="close"
+        variant="danger"
+        (click)="cancel()"
+        [uiTooltip]="'common.cancel' | translate"
+      ></ui-button>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>
