@@ -582,7 +582,6 @@
     <ems-template
       (navigateToEms)="toggle(); getExistingTemplate()"
       [currentStep]="emailService.stepperStep"
-      [dlContextSettings]="dlDistributionContextSettings"
     ></ems-template>
   </ng-container>
 </ng-container>
@@ -627,7 +626,6 @@
     </div>
     <ems-create-distribution
       (navigateToEms)="showDLCreationWizard = false; getDistributionList()"
-      [dlContextSettings]="dlDistributionContextSettings"
     ></ems-create-distribution>
   </ng-container>
 </div>

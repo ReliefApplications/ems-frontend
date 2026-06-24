@@ -22,8 +22,6 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./create-distribution.component.scss'],
 })
 export class CreateDistributionComponent implements OnInit, AfterViewInit {
-  /** From widget */
-  @Input() dlContextSettings: any;
   /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
   /** Reference to actions template */

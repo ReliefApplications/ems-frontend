@@ -36,7 +36,6 @@ interface DialogData {
   resource: any;
   distributionListNames: string[];
   isEdit?: boolean;
-  dlContextSettings: any;
 }
 /**
  * Modal to edit distribution list
