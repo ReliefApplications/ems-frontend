@@ -4,6 +4,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SortingSettingsComponent } from './sorting-settings.component';
+import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
 import {
   ButtonModule,
   FormWrapperModule,
@@ -37,6 +38,7 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
     FormWrapperModule,
     SelectMenuModule,
     EmptyModule,
+    LocalizedInputComponent,
   ],
   exports: [SortingSettingsComponent],
 })

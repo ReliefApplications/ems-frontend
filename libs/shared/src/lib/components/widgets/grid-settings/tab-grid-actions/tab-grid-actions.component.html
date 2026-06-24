@@ -31,8 +31,8 @@
         <span
           class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
           >{{
-            action.value.name.length > 0
-              ? action.value.name
+            ((action.value.name | sharedLocalize) || '').length > 0
+              ? (action.value.name | sharedLocalize)
               : ('components.widget.settings.grid.buttons.defaultName'
                 | translate)
           }}

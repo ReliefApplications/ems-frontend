@@ -47,6 +47,8 @@ import { TabMainModule } from './tab-main/tab-main.module';
 import { TabGridActionsComponent } from './tab-grid-actions/tab-grid-actions.component';
 import { CustomRowActionsComponent } from './custom-row-actions/custom-row-actions.component';
 import { GridSettingsFormFactory } from './grid-settings.forms';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -241,7 +243,7 @@ export class GridSettingsComponent
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
-        label: [item.label, Validators.required],
+        label: [item.label as LocalizedString, localizedRequired],
       });
       (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });

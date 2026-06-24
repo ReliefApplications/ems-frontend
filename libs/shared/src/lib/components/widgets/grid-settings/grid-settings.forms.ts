@@ -68,8 +68,10 @@ export class GridSettingsFormFactory {
     const formGroup = this.fb.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [
-        value && value.name ? value.name : DEFAULT_ACTION_NAME,
-        Validators.required,
+        (value && value.name
+          ? value.name
+          : DEFAULT_ACTION_NAME) as LocalizedString,
+        localizedRequired,
       ],
       selectAll: [value && value.selectAll ? value.selectAll : false],
       selectPage: [value && value.selectPage ? value.selectPage : false],
@@ -308,8 +310,11 @@ export class GridSettingsFormFactory {
    */
   public createCustomRowActionFormGroup = (value: ActionButton) => {
     const form = this.fb.group({
-      columnLabel: [get(value, 'columnLabel', ''), Validators.required],
-      text: [get(value, 'text', ''), Validators.required],
+      columnLabel: [
+        get(value, 'columnLabel', '') as LocalizedString,
+        localizedRequired,
+      ],
+      text: [get(value, 'text', '') as LocalizedString, localizedRequired],
       hasRoleRestriction: [
         get(value, 'hasRoleRestriction', false),
         Validators.required,
@@ -403,8 +408,14 @@ export class GridSettingsFormFactory {
   public createCustomRowActionFormGroupForEdition = (value: ActionButton) => {
     const form = this.fb.group({
       general: this.fb.group({
-        columnLabel: [get(value, 'columnLabel', ''), Validators.required],
-        buttonText: [get(value, 'text', ''), Validators.required],
+        columnLabel: [
+          get(value, 'columnLabel', '') as LocalizedString,
+          localizedRequired,
+        ],
+        buttonText: [
+          get(value, 'text', '') as LocalizedString,
+          localizedRequired,
+        ],
         hasRoleRestriction: [
           get(value, 'hasRoleRestriction', false),
           Validators.required,
