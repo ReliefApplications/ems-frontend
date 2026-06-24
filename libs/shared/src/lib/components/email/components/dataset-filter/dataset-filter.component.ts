@@ -143,17 +143,25 @@ export class DatasetFilterComponent
     return this.emailService.computedCommonServiceFields;
   }
 
-  /** dlContextSettings for the per-row CS filter, enabling {{DatasetName.field}} token picker. */
-  get csFilterContextSettings(): any {
+  /**
+   * dlContextSettings for the per-row CS filter, enabling the {{DatasetName.field}} token picker.
+   * Memoised field (not a getter) recomputed only when its inputs change (fields load, dataset
+   * name change, resource reset, cache restore), so the bound [dlContextSettings] input does not
+   * change every change-detection cycle and tear down the open value picker.
+   */
+  public csFilterContextSettings: any = { enableContextEditor: true };
+
+  /** Recomputes csFilterContextSettings from the current dataset name + available fields. */
+  private computeCsFilterContextSettings(): void {
     const datasetName = this.query.get('name')?.value;
     const fields: string[] = [];
     (this.availableFields ?? []).forEach((field: any) => {
       this.emailService.appendFields(field, field.name, fields);
     });
-    if (datasetName && fields.length > 0) {
-      return { datasetBlocks: [{ name: datasetName, fields }] };
-    }
-    return { enableContextEditor: true };
+    this.csFilterContextSettings =
+      datasetName && fields.length > 0
+        ? { datasetBlocks: [{ name: datasetName, fields }] }
+        : { enableContextEditor: true };
   }
 
   /**
@@ -209,6 +217,7 @@ export class DatasetFilterComponent
           if (this.resource?.fields) {
             this.resource.fields = [];
           }
+          this.computeCsFilterContextSettings();
         }
       });
     this.query.controls.name.valueChanges
@@ -221,6 +230,7 @@ export class DatasetFilterComponent
           this.emailService.title.next(data);
         }
         this.emailService.index.next(this.activeTab.index);
+        this.computeCsFilterContextSettings();
       });
     this.query.controls?.navigateSettings?.controls?.field?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -269,6 +279,7 @@ export class DatasetFilterComponent
       this.emailService.allAvailableDatasetFields = availableFields ?? [];
       this.availableFieldsIndividualEmail = availableFieldsIndividualEmail;
       this.selectedResourceId = selectedResourceId;
+      this.computeCsFilterContextSettings();
     }
 
     this.setFieldsValidity();
@@ -406,6 +417,7 @@ export class DatasetFilterComponent
           this.loading = false;
           this.resourcePopulated = true;
           this.resource = data.resource;
+          this.computeCsFilterContextSettings();
         });
     } else {
       this.loading = false;

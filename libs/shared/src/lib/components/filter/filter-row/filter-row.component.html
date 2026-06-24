@@ -292,7 +292,7 @@
         "
       >
         <ui-select-option
-          *ngFor="let opt of datasetTokenOptions"
+          *ngFor="let opt of datasetTokenOptions; trackBy: trackByTokenValue"
           [value]="opt.value"
         >
           {{ opt.label | titlecase }}

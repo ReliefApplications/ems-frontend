@@ -157,12 +157,20 @@ export class FilterRowComponent
     return false;
   }
 
-  /** @returns dataset token options built from dlContextSettings.datasetBlocks or previewFields */
-  get datasetTokenOptions(): { value: string; label: string }[] {
+  /**
+   * Dataset token options built from dlContextSettings.datasetBlocks or previewFields.
+   * Memoised field (not a getter) recomputed only when dlContextSettings changes, so the
+   * bound *ngFor receives stable references and its option nodes are not recreated each
+   * change-detection cycle (which made the open value picker unclickable).
+   */
+  public datasetTokenOptions: { value: string; label: string }[] = [];
+
+  /** Recomputes datasetTokenOptions from the current dlContextSettings. */
+  private computeDatasetTokenOptions(): void {
     const blocks: { name: string; fields: string[] }[] =
       this.dlContextSettings?.datasetBlocks ?? [];
     if (blocks.length > 0) {
-      return blocks.flatMap((block) =>
+      this.datasetTokenOptions = blocks.flatMap((block) =>
         block.fields.map((field) => ({
           value: `{{${block.name}.${field}}}`,
           label: `${block.name} - ${this.emailService.replaceUnderscores(
@@ -170,12 +178,25 @@ export class FilterRowComponent
           )}`,
         }))
       );
+      return;
     }
     const previewFields: string[] = this.dlContextSettings?.previewFields ?? [];
-    return previewFields.map((field) => ({
+    this.datasetTokenOptions = previewFields.map((field) => ({
       value: `{{${field}}}`,
       label: this.emailService.replaceUnderscores(field),
     }));
+  }
+
+  /**
+   * trackBy for the dataset token options *ngFor (key on the stable token value).
+   *
+   * @param _index the *ngFor index (unused).
+   * @param opt the dataset token option.
+   * @param opt.value the token value used as the tracking key.
+   * @returns the token value.
+   */
+  public trackByTokenValue(_index: number, opt: { value: string }): string {
+    return opt.value;
   }
 
   /**
@@ -232,6 +253,7 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
+    this.computeDatasetTokenOptions();
     this.getContextFields();
     this.form
       .get('field')
@@ -360,8 +382,25 @@ export class FilterRowComponent
         changes.dlContextSettings?.previousValue,
         changes.dlContextSettings?.currentValue
       );
-    if (fieldsChanged || contextSettingsChanged) {
+
+    // Recompute the memoised token options only when the settings actually change.
+    if (
+      changes.dlContextSettings &&
+      !isEqual(
+        changes.dlContextSettings.previousValue,
+        changes.dlContextSettings.currentValue
+      )
+    ) {
+      this.computeDatasetTokenOptions();
+    }
+
+    if (fieldsChanged) {
       this.setField(initialField);
+    } else if (contextSettingsChanged && this.contextEditorIsActivated) {
+      // Settings-only change while an expression editor is shown: re-point the
+      // editor template without rebuilding the row, so an open value picker is
+      // not torn down mid-interaction.
+      this.setEditor(this.field);
     }
 
     if (
