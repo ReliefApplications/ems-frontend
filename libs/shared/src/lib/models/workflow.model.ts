@@ -1,3 +1,4 @@
+import { LocalizedString } from './localized-string.model';
 import { Page } from './page.model';
 import { Step } from './step.model';
 
@@ -7,6 +8,7 @@ import { Step } from './step.model';
 export interface Workflow {
   id?: string;
   name?: string;
+  nameTranslations?: LocalizedString;
   createdAt?: Date;
   modifiedAt?: Date;
   steps?: Step[];

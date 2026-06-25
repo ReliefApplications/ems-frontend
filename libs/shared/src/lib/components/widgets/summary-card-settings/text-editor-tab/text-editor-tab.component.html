@@ -8,11 +8,9 @@
       }}
     </ui-alert>
     <!-- Template editor -->
-    <editor
-      (onInit)="editorLoading = false"
+    <shared-localized-editor
       [init]="editor"
       formControlName="html"
-    ></editor>
-    <ui-spinner *ngIf="editorLoading"></ui-spinner>
+    ></shared-localized-editor>
   </ng-container>
 </form>

@@ -180,6 +180,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"download": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -375,6 +376,9 @@
 					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"upload": {
 					"error": "******",
@@ -1116,11 +1120,11 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
-				"confirmMessage": "****** {{action}} ******",
 				"confirmActionTitle": {
 					"create": "******",
 					"update": "******"
 				},
+				"confirmMessage": "****** {{action}} ******",
 				"confirmTitle": {
 					"few": "******",
 					"one": "******"
@@ -1181,6 +1185,8 @@
 		},
 		"header": {
 			"goToApp": "******",
+			"goToBackOffice": "******",
+			"goToFrontOffice": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -1377,13 +1383,13 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
-					"isBadge": "******",
-					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},
 					"criteria": "******",
 					"fields": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"name": "******",
 					"selectedColumns": "******",
 					"text": {
@@ -1830,6 +1836,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"details": "******",
 					"goTo": "******",
 					"history": "******"
 				},
@@ -1896,6 +1903,13 @@
 				},
 				"openEditor": "******",
 				"openSettings": "******",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "******"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "******",
 					"displayMap": "******",
@@ -2004,6 +2018,7 @@
 						"export": "******",
 						"goTo": {
 							"column": {
+								"defaultTitle": "******",
 								"label": "******",
 								"placeholder": "******"
 							},
@@ -2833,7 +2848,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "******",
-					"fields": "******",
+					"fields": "****** {{filter.<name>}} ****** {{user.username}} ****** {{user.firstName}} ****** {{user.lastName}} ****** {{user.country}} ******",
 					"position": "******"
 				},
 				"historicalDate": "****** {{filter.<name>}} ******"

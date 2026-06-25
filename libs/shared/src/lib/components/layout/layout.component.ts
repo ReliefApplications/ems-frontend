@@ -251,7 +251,11 @@ export class LayoutComponent
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
-    this.setCurrentLanguage(this.getLanguage());
+    const language = this.getLanguage();
+    this.setCurrentLanguage(language);
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -395,9 +399,14 @@ export class LayoutComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
-      if (form && form.touched) {
+      if (form && (form.touched || form.dirty)) {
         this.setLanguage(form.value.language);
-        this.dateTranslate.use(form.value.dateFormat);
+        if (form.value.language === form.value.dateFormat) {
+          localStorage.removeItem('date-lang');
+          this.dateTranslate.use(form.value.language, false);
+        } else {
+          this.dateTranslate.use(form.value.dateFormat, true);
+        }
       } else if (!form) {
         this.setLanguage(this.getLanguage());
       }
@@ -440,6 +449,9 @@ export class LayoutComponent
     this.translate.use(language);
     localStorage.setItem('lang', language);
     this.setCurrentLanguage(language);
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
   }
 
   /**
@@ -469,7 +481,11 @@ export class LayoutComponent
     // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
-      language = this.translate.defaultLang;
+      // fall back to browser language if supported, otherwise app default
+      const browserLang = this.translate.getBrowserLang() ?? '';
+      language = this.languages.includes(browserLang)
+        ? browserLang
+        : this.translate.defaultLang;
     }
     // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {

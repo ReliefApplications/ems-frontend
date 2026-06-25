@@ -21,6 +21,12 @@ export class DateTranslateService {
       localStorage.getItem('date-lang') ||
       this.translate.currentLang ||
       this.translate.defaultLang;
+
+    this.translate.onLangChange.subscribe((event) => {
+      if (!localStorage.getItem('date-lang')) {
+        this.lang = event.lang;
+      }
+    });
   }
 
   /** @returns Current language */
@@ -32,9 +38,12 @@ export class DateTranslateService {
    * Update date language
    *
    * @param lang language to use
+   * @param save whether to save preference to localStorage
    */
-  public use(lang: string): void {
+  public use(lang: string, save = true): void {
     this.lang = lang;
-    localStorage.setItem('date-lang', lang);
+    if (save) {
+      localStorage.setItem('date-lang', lang);
+    }
   }
 }

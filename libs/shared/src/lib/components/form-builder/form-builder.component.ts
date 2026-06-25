@@ -201,8 +201,8 @@ export class FormBuilderComponent
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.injector)
       );
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.registerCustomSurveyHandlers(
+        this.surveyCreator.survey
       );
     }
   }
@@ -269,9 +269,7 @@ export class FormBuilderComponent
       survey.applyTheme({
         isPanelless: true,
       });
-      survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
-      );
+      this.formHelpersService.registerCustomSurveyHandlers(survey);
       this.formHelpersService.addUserVariables(survey);
       /** Apply all placeholder with limitation info to all file questions */
       survey
@@ -317,6 +315,21 @@ export class FormBuilderComponent
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(this.cleanStructure(survey.text));
     });
+
+    // Always show the per-field "Settings" gear adorner.
+    // By default SurveyJS only shows it when the property-grid sidebar is
+    // collapsed (flyout mode), which depends on the creator panel width. On
+    // wide screens (e.g. Mac) the sidebar stays docked and the gear disappears.
+    // Forcing allowEdit makes the gear visible regardless of sidebar state.
+    this.surveyCreator.onElementAllowOperations.add(
+      (sender: any, options: any) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) {
+          return;
+        }
+        options.allowEdit = true;
+      }
+    );
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -378,8 +391,8 @@ export class FormBuilderComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.injector)
     );
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+    this.formHelpersService.registerCustomSurveyHandlers(
+      this.surveyCreator.survey
     );
 
     this.surveyCreator.onPreviewSurveyCreated.add((sender: any, options: any) =>

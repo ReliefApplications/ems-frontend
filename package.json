@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.23.0-rc.7",
+  "version": "2.23.0-rc.12",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -26,6 +26,7 @@
     "@angular/platform-browser": "15.2.9",
     "@angular/platform-browser-dynamic": "15.2.9",
     "@angular/router": "15.2.9",
+    "@angular/service-worker": "15.2.9",
     "@apollo/client": "3.7.17",
     "@casl/ability": "^6.3.3",
     "@casl/angular": "^8.2.0",

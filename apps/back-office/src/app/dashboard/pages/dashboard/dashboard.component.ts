@@ -37,6 +37,8 @@ import {
   Record,
   DashboardComponent as SharedDashboardComponent,
   WorkflowService,
+  LocalizedString,
+  resolveLocalizedString,
 } from '@oort-front/shared';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { GridsterConfig } from 'angular-gridster2';
@@ -615,39 +617,76 @@ export class DashboardComponent
   /**
    * Update the name of the dashboard and the step or page linked to it.
    *
-   * @param {string} dashboardName new dashboard name
+   * @param value new localized dashboard name, or null when the edit was cancelled.
    */
-  saveName(dashboardName: string): void {
-    if (dashboardName && dashboardName !== this.dashboard?.name) {
-      const callback = () => {
-        this.dashboard = { ...this.dashboard, name: dashboardName };
+  saveName(value: LocalizedString | null): void {
+    if (value == null || !this.dashboard) return;
+    const dashboard = this.dashboard;
+    const activeName = resolveLocalizedString(
+      value,
+      this.translate.currentLang
+    );
+    if (!activeName) return;
+
+    let isChanged = false;
+    if (typeof value === 'string') {
+      isChanged = value !== dashboard.name;
+    } else {
+      const oldTranslations = dashboard.nameTranslations || {
+        en: dashboard.name || '',
       };
-      if (this.contextId.value) {
-        // Seeing a template
-        this.dashboardService.editName(
-          this.dashboard?.id,
-          dashboardName,
+      const allKeys = new Set([
+        ...Object.keys(value),
+        ...Object.keys(oldTranslations),
+      ]);
+      for (const key of allKeys) {
+        const val1 = (value as any)[key] || '';
+        const val2 = (oldTranslations as any)[key] || '';
+        if (val1 !== val2) {
+          isChanged = true;
+          break;
+        }
+      }
+    }
+
+    if (!isChanged) return;
+
+    const nameTranslations = typeof value === 'string' ? undefined : value;
+    const callback = () => {
+      this.dashboard = {
+        ...dashboard,
+        name: activeName,
+        nameTranslations,
+      };
+    };
+    if (this.contextId.value) {
+      // Seeing a template
+      this.dashboardService.editName(
+        dashboard.id,
+        activeName,
+        nameTranslations,
+        callback
+      );
+    } else {
+      // Not part of contextual page
+      if (this.isStep) {
+        // Workflow steps are not yet localized; persist active-locale name only.
+        this.workflowService.updateStepName(
+          {
+            id: dashboard.step?.id,
+            name: activeName,
+          },
           callback
         );
       } else {
-        // Not part of contextual page
-        if (this.isStep) {
-          this.workflowService.updateStepName(
-            {
-              id: this.dashboard?.step?.id,
-              name: dashboardName,
-            },
-            callback
-          );
-        } else {
-          this.applicationService.updatePageName(
-            {
-              id: this.dashboard?.page?.id,
-              name: dashboardName,
-            },
-            callback
-          );
-        }
+        this.applicationService.updatePageName(
+          {
+            id: dashboard.page?.id,
+            name: activeName,
+            nameTranslations,
+          },
+          callback
+        );
       }
     }
   }

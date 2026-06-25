@@ -1,5 +1,6 @@
 import { ActionButton } from '../components/action-button/action-button.type';
 import { Application } from './application.model';
+import { LocalizedString } from './localized-string.model';
 
 /**
  * Enum of content types.
@@ -61,6 +62,7 @@ export const CONTENT_TYPES: IContentType[] = [
 export interface Page {
   id?: string;
   name?: string;
+  nameTranslations?: LocalizedString;
   createdAt?: Date;
   modifiedAt?: Date;
   type?: ContentType;

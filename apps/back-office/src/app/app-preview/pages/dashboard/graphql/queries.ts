@@ -7,6 +7,7 @@ export const GET_DASHBOARD_BY_ID = gql`
     dashboard(id: $id) {
       id
       name
+      nameTranslations
       createdAt
       structure
       permissions {

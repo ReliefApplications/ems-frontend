@@ -148,7 +148,12 @@
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
-        {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
+        {{
+          (environment.module === 'backoffice'
+            ? 'components.header.goToFrontOffice'
+            : 'components.header.goToBackOffice'
+          ) | translate
+        }}
       </a>
     </ng-container>
     <ui-divider class="py-1"></ui-divider>

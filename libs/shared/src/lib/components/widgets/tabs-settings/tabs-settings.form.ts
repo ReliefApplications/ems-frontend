@@ -2,6 +2,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { GridType } from 'angular-gridster2';
 import { v4 as uuidv4 } from 'uuid';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 
 /** Form builder */
 const fb = new FormBuilder();
@@ -25,7 +27,10 @@ export const createTabFormGroup = (value?: any) => {
   const formGroup = fb.group({
     id: [get(value, 'id') || uuidv4(), Validators.required],
     icon: fb.control<string | null>(value?.icon ?? null),
-    label: fb.nonNullable.control<string>(value?.label, Validators.required),
+    label: fb.nonNullable.control<LocalizedString>(
+      value?.label ?? '',
+      localizedRequired
+    ),
     hide: fb.control<boolean>(value?.hide ?? false),
     showName: fb.control<boolean>(value?.showName ?? true),
     showIcon: fb.control<boolean>(value?.showIcon ?? true),

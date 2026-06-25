@@ -1,7 +1,9 @@
 <form [formGroup]="formGroup" class="flex flex-col gap-3">
-  <div uiFormFieldDirective>
-    <label>{{ 'common.title' | translate }}</label>
-    <input formControlName="title" type="string" />
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <label>
+      {{ 'common.title' | translate }}
+    </label>
+    <shared-localized-input formControlName="title"></shared-localized-input>
   </div>
 
   <ng-container formGroupName="card" *ngIf="!loading; else loadingTmpl">

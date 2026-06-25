@@ -31,7 +31,7 @@
             [size]="18"
           ></ui-icon>
           <span *ngIf="tab.value.navBar?.showName !== false" class="truncate">
-            {{ tab.value.label }}
+            {{ tab.value.label | sharedLocalize }}
           </span>
         </span>
 

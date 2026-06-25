@@ -9,6 +9,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
+import { NavigationItem } from '../../application/application.component';
 
 /**
  * Header component visible when editing application.
@@ -26,7 +27,7 @@ export class ApplicationHeaderComponent
   /** Application title */
   @Input() title = '';
   /** Admin routes */
-  @Input() navItems: any[] = [];
+  @Input() navItems: NavigationItem[] = [];
   /** Can user update application */
   @Input() canUpdate = false;
   /** Current application */
