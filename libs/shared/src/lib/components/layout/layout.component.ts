@@ -429,7 +429,7 @@ export class LayoutComponent
    *
    * @param language id of the language.
    */
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translate.use(language);
     localStorage.setItem('lang', language);
     if (!localStorage.getItem('date-lang')) {
