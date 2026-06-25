@@ -128,28 +128,4 @@ describe('LayoutComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should only show other languages in the header switcher', () => {
-    expect(component.currentLanguage).toEqual('en');
-    expect(component.languageOptions.map((option) => option.code)).toEqual([
-      'fr',
-      'test',
-    ]);
-  });
-
-  it('should save selected language and reload the page', () => {
-    const reloadSpy = jest
-      .spyOn(component, 'reloadPage')
-      .mockImplementation(() => undefined);
-
-    component.onSelectLanguage('fr');
-
-    expect(localStorage.getItem('lang')).toEqual('fr');
-    expect(component.currentLanguage).toEqual('fr');
-    expect(component.languageOptions.map((option) => option.code)).toEqual([
-      'en',
-      'test',
-    ]);
-    expect(reloadSpy).toHaveBeenCalledTimes(1);
-  });
 });

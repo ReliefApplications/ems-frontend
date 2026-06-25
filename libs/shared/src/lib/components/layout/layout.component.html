@@ -97,20 +97,8 @@
         *ngIf="notifications.length > 0"
       ></kendo-badge>
     </kendo-badge-container>
-    <!-- Language switcher -->
-    <ui-button
-      *ngIf="languages.length > 1"
-      [size]="'medium'"
-      icon="language"
-      variant="light"
-      [uiMenuTriggerFor]="languageMenu"
-      [uiTooltip]="'components.preferences.language' | translate"
-    >
-      <span class="inline-flex items-center gap-1 text-white">
-        {{ currentLanguageName }}
-        <ui-icon icon="keyboard_arrow_down" variant="light"></ui-icon>
-      </span>
-    </ui-button>
+    <!-- Language switch -->
+    <shared-language-switch></shared-language-switch>
   </div>
   <!-- Account menu -->
   <ui-menu #accountMenu>
@@ -165,17 +153,6 @@
     >
       {{ environment.version }}
     </div>
-  </ui-menu>
-  <!-- Language menu -->
-  <ui-menu #languageMenu>
-    <button
-      uiMenuItem
-      type="button"
-      *ngFor="let language of languageOptions"
-      (click)="onSelectLanguage(language.code)"
-    >
-      {{ language.currentName }} / {{ language.nativeName }}
-    </button>
   </ui-menu>
   <!-- Notification menu -->
   <ui-menu #notificationMenu>
