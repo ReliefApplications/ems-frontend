@@ -4,7 +4,5 @@
   [init]="editorConfig"
   [(ngModel)]="editorContent"
   (ngModelChange)="onEditorContentChange()"
-  (onKeyUp)="onEditorContentChange()"
-  (onNodeChange)="onEditorContentChange()"
 ></editor>
 <ui-spinner *ngIf="editorLoading"></ui-spinner>

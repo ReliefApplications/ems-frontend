@@ -70,60 +70,50 @@ export const init = (
         if (!value) {
           return;
         }
-        ngZone.run(() => {
-          // todo: check
-          if (!question.value && question.defaultValueExpression) {
-            question.value = question.defaultValueExpression;
-          }
-          if (question.value) {
-            instance.editor.editorContent = question.value;
-            instance.editor.editor.writeValue(question.value);
-          }
+        // todo: check
+        if (!question.value && question.defaultValueExpression) {
+          question.value = question.defaultValueExpression;
+        }
+        if (question.value) {
+          instance.editor.editor.writeValue(question.value);
+        }
 
-          instance.html.subscribe((html) => {
-            if (isNil(html)) {
-              return;
-            }
-            if (question.survey?.isDesignMode) {
-              question.defaultValueExpression = html;
-            } else {
-              const hasFocus = instance.editor?.editor?.editor?.hasFocus();
-              if (hasFocus || !question.value) {
-                if (question.value !== html) {
-                  question.value = html;
-                }
-              }
-            }
-          });
-
-          // Sync value updates from survey model to the editor
-          question.registerFunctionOnPropertyValueChanged(
-            'value',
-            (newValue: any) => {
-              ngZone.run(() => {
-                if (
-                  instance.editor &&
-                  instance.editor.editor &&
-                  instance.editor.editor.editor
-                ) {
-                  const hasFocus = instance.editor.editor.editor.hasFocus();
-                  // If the editor currently has focus, the user is typing, so do not overwrite content to avoid cursor jumps
-                  if (hasFocus) {
-                    return;
-                  }
-                  const currentEditorHtml =
-                    instance.editor.editor.editor.getContent() || '';
-                  const targetValue = newValue || '';
-                  if (currentEditorHtml !== targetValue) {
-                    instance.editor.editorContent = targetValue;
-                    instance.editor.editor.writeValue(targetValue);
-                  }
-                }
-              });
-            },
-            question.name + '_value_sync'
-          );
+        instance.html.subscribe((html) => {
+          if (isNil(html)) {
+            return;
+          }
+          if (question.survey?.isDesignMode) {
+            question.defaultValueExpression = html;
+          } else {
+            question.value = html;
+          }
         });
+
+        // Sync value updates from the survey model back into the editor (e.g.
+        // values written by auto-translation). Without this, a translated
+        // value set via survey.setValue() never reaches the TinyMCE instance.
+        question.registerFunctionOnPropertyValueChanged(
+          'value',
+          (newValue: any) => {
+            ngZone.run(() => {
+              const tinyEditor = instance.editor?.editor?.editor;
+              if (!tinyEditor) {
+                return;
+              }
+              // If the editor has focus the user is typing, so do not
+              // overwrite content to avoid cursor jumps.
+              if (tinyEditor.hasFocus()) {
+                return;
+              }
+              const currentEditorHtml = tinyEditor.getContent() || '';
+              const targetValue = newValue || '';
+              if (currentEditorHtml !== targetValue) {
+                instance.editor.editor.writeValue(targetValue);
+              }
+            });
+          },
+          question.name + '_value_sync'
+        );
       });
 
       // Only activate listener on readonly if outside of form builder
