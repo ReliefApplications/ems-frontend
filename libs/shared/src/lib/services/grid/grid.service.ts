@@ -102,47 +102,14 @@ export class GridService {
       filter: true,
     }
   ): any[] {
-    const getFieldTitle = (field: any): string => {
-      let title =
-        resolveLocalizedString(field.label, this.translate.currentLang) ||
-        prettifyLabel(field.name);
-      if (this.translate.currentLang && metaFields) {
-        const currentLang = this.translate.currentLang.toLowerCase();
-        const siblingKey = Object.keys(metaFields).find((key) => {
-          const m = metaFields[key];
-          return (
-            m &&
-            m.translateField === field.name &&
-            m.translateTo &&
-            m.translateTo.toLowerCase() === currentLang
-          );
-        });
-        if (siblingKey) {
-          const siblingField = fields.find((sf) => sf.name === siblingKey);
-          if (siblingField) {
-            title =
-              resolveLocalizedString(
-                siblingField.label,
-                this.translate.currentLang
-              ) || prettifyLabel(siblingField.name);
-          }
-        }
-      }
-      return title;
-    };
-
     return flatDeep(
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
         const canSee = get(metaData, 'permissions.canSee', true);
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
-        const isTranslationTarget = metaData && metaData.translateTo;
         const hidden: boolean =
-          (!isNil(canSee) && !canSee) ||
-          options.hidden ||
-          isTranslationTarget ||
-          false;
+          (!isNil(canSee) && !canSee) || options.hidden || false;
         const disabled: boolean = options.disabled || !canUpdate;
 
         switch (f.kind) {
@@ -151,7 +118,9 @@ export class GridService {
               metaData = Object.assign([], metaData);
               metaData.type = 'referenceData';
               const cachedField = get(layoutFields, fullName);
-              const title = getFieldTitle(f);
+              const title =
+                resolveLocalizedString(f.label, this.translate.currentLang) ||
+                prettifyLabel(f.name);
               const subFields = this.getFields(
                 f.fields,
                 metaFields,
@@ -208,7 +177,9 @@ export class GridService {
               metaData.type = 'records';
             }
             const cachedField = get(layoutFields, fullName);
-            const title = getFieldTitle(f);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             const subFields = this.getFields(
               f.fields,
               metaFields,
@@ -246,7 +217,9 @@ export class GridService {
           }
           default: {
             const cachedField = get(layoutFields, fullName);
-            const title = getFieldTitle(f);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             return {
               name: fullName,
               title,
