@@ -34,12 +34,12 @@ describe('AutoTranslateService', () => {
       expect(restService.post).not.toHaveBeenCalled();
     });
 
-    it('posts to /translation and unwraps the translation', async () => {
+    it('posts to /translate and unwraps the translation', async () => {
       restService.post.mockReturnValue(of({ translation: 'Bonjour' }));
 
       const result = await service.translateText('Hello', 'en', 'fr', 'plain');
 
-      expect(restService.post).toHaveBeenCalledWith('/translation', {
+      expect(restService.post).toHaveBeenCalledWith('/translate', {
         text: 'Hello',
         from: 'en',
         to: 'fr',
@@ -53,7 +53,7 @@ describe('AutoTranslateService', () => {
 
       await service.translateText('Hello', null, 'fr');
 
-      expect(restService.post).toHaveBeenCalledWith('/translation', {
+      expect(restService.post).toHaveBeenCalledWith('/translate', {
         text: 'Hello',
         from: null,
         to: 'fr',

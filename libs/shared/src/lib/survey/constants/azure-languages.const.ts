@@ -1,5 +1,5 @@
 /**
- *
+ * Available languages from AZure API.
  */
 export const AZURE_SUPPORTED_LANGUAGES = [
   { value: 'en', text: 'English' },

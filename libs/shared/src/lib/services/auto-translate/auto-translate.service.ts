@@ -40,7 +40,7 @@ export class AutoTranslateService {
     }
 
     try {
-      const response$ = this.restService.post('/translation', {
+      const response$ = this.restService.post('/translate', {
         text,
         from: from || null,
         to,
