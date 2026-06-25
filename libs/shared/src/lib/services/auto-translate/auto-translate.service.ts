@@ -73,9 +73,9 @@ export class AutoTranslateService {
   ): void {
     const questions = sender.getAllQuestions();
 
-    // Find any question that has translateFrom matching the changed question's name (or valueName)
+    // Find any question that has translateField matching the changed question's name (or valueName)
     const targets = questions.filter((q: any) => {
-      const fromName = q.getPropertyValue('translateFrom');
+      const fromName = q.getPropertyValue('translateField');
       if (!fromName) return false;
       const sourceQ = sender.getQuestionByName(fromName);
       if (!sourceQ) return false;

@@ -106,7 +106,7 @@ export const initLocalization = () => {
     if (editorEn.pe) {
       if (!editorEn.pe.tabs) editorEn.pe.tabs = {};
       editorEn.pe.tabs.translation = 'Translation';
-      editorEn.pe.translateFrom = 'Translate from question';
+      editorEn.pe.translateField = 'Translate from question';
       editorEn.pe.translateTo = 'Language to translate to';
       editorEn.pe.translateIf = 'Translate if';
     }
@@ -117,7 +117,7 @@ export const initLocalization = () => {
     if (editorFr.pe) {
       if (!editorFr.pe.tabs) editorFr.pe.tabs = {};
       editorFr.pe.tabs.translation = 'Traduction';
-      editorFr.pe.translateFrom = 'Traduire à partir de la question';
+      editorFr.pe.translateField = 'Traduire à partir de la question';
       editorFr.pe.translateTo = 'Langue de traduction';
       editorFr.pe.translateIf = 'Traduire si';
     }
@@ -128,7 +128,7 @@ export const initLocalization = () => {
     if (editorUk.pe) {
       if (!editorUk.pe.tabs) editorUk.pe.tabs = {};
       editorUk.pe.tabs.translation = 'Переклад';
-      editorUk.pe.translateFrom = 'Перекласти з питання';
+      editorUk.pe.translateField = 'Перекласти з питання';
       editorUk.pe.translateTo = 'Мова для перекладу';
       editorUk.pe.translateIf = 'Перекласти якщо';
     }

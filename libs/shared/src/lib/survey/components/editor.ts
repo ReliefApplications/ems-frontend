@@ -140,7 +140,7 @@ export const init = (
 
   // Register translation properties for custom editor component
   Serializer.addProperty('editor', {
-    name: 'translateFrom',
+    name: 'translateField',
     type: 'string',
     category: 'translation',
     visibleIndex: 1,
@@ -165,7 +165,7 @@ export const init = (
     category: 'translation',
     visibleIndex: 2,
     displayName: 'Language to translate to',
-    visibleIf: (obj: any) => !!obj?.getPropertyValue('translateFrom'),
+    visibleIf: (obj: any) => !!obj?.getPropertyValue('translateField'),
     choices: AZURE_SUPPORTED_LANGUAGES,
   });
   Serializer.addProperty('editor', {
@@ -174,7 +174,7 @@ export const init = (
     visibleIndex: 10,
     displayName: 'Translate if',
     visibleIf: (obj: any) =>
-      !!obj?.getPropertyValue('translateFrom') &&
+      !!obj?.getPropertyValue('translateField') &&
       !!obj?.getPropertyValue('translateTo'),
   });
 };

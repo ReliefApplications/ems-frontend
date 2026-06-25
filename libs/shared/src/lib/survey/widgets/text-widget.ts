@@ -97,7 +97,7 @@ export const init = (
           ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
       });
       serializer.addProperty('text', {
-        name: 'translateFrom',
+        name: 'translateField',
         type: 'string',
         category: 'translation',
         visibleIndex: 1,
@@ -127,7 +127,7 @@ export const init = (
         visibleIndex: 2,
         displayName: 'Language to translate to',
         visibleIf: (obj: QuestionText) =>
-          !!obj?.getPropertyValue('translateFrom'),
+          !!obj?.getPropertyValue('translateField'),
         choices: AZURE_SUPPORTED_LANGUAGES,
       });
       serializer.addProperty('text', {
@@ -136,7 +136,7 @@ export const init = (
         visibleIndex: 10,
         displayName: 'Translate if',
         visibleIf: (obj: QuestionText) =>
-          !!obj?.getPropertyValue('translateFrom') &&
+          !!obj?.getPropertyValue('translateField') &&
           !!obj?.getPropertyValue('translateTo'),
       });
       // register the editor for type "date" with kendo date picker

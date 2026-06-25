@@ -82,8 +82,8 @@ describe('AutoTranslateService', () => {
      * Build a minimal SurveyJS question stub.
      *
      * @param name Question name
-     * @param props translateFrom/translateTo/translateIf property values
-     * @param props.translateFrom Source question name to translate from
+     * @param props translateField/translateTo/translateIf property values
+     * @param props.translateField Source question name to translate from
      * @param props.translateTo Target language code
      * @param props.translateIf Optional condition expression
      * @param type SurveyJS question type (defaults to 'text')
@@ -92,7 +92,7 @@ describe('AutoTranslateService', () => {
     const makeQuestion = (
       name: string,
       props: {
-        translateFrom?: string;
+        translateField?: string;
         translateTo?: string;
         translateIf?: string;
       } = {},
@@ -146,7 +146,7 @@ describe('AutoTranslateService', () => {
     it('translates the source value into the target field after the debounce', async () => {
       const source = makeQuestion('title');
       const target = makeQuestion('title_fr', {
-        translateFrom: 'title',
+        translateField: 'title',
         translateTo: 'fr',
       });
       const sender = makeSender([source, target]);
@@ -181,7 +181,7 @@ describe('AutoTranslateService', () => {
       const source = makeQuestion('body');
       const target = makeQuestion(
         'body_fr',
-        { translateFrom: 'body', translateTo: 'fr' },
+        { translateField: 'body', translateTo: 'fr' },
         'editor'
       );
       const sender = makeSender([source, target]);
@@ -210,7 +210,7 @@ describe('AutoTranslateService', () => {
     it('clears the target field when the source value is emptied', () => {
       const source = makeQuestion('title');
       const target = makeQuestion('title_fr', {
-        translateFrom: 'title',
+        translateField: 'title',
         translateTo: 'fr',
       });
       const sender = makeSender([source, target]);
@@ -233,7 +233,7 @@ describe('AutoTranslateService', () => {
     it('skips translation when the translateIf condition fails', () => {
       const source = makeQuestion('title');
       const target = makeQuestion('title_fr', {
-        translateFrom: 'title',
+        translateField: 'title',
         translateTo: 'fr',
         translateIf: '{shouldTranslate} = true',
       });
@@ -258,7 +258,7 @@ describe('AutoTranslateService', () => {
     it('debounces rapid changes so only the latest value is translated', async () => {
       const source = makeQuestion('title');
       const target = makeQuestion('title_fr', {
-        translateFrom: 'title',
+        translateField: 'title',
         translateTo: 'fr',
       });
       const sender = makeSender([source, target]);

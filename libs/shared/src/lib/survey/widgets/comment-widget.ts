@@ -30,7 +30,7 @@ export const init = (
         visibleIf: (obj: null | QuestionComment) => Boolean(obj?.readOnly),
       });
       Serializer.addProperty('comment', {
-        name: 'translateFrom',
+        name: 'translateField',
         type: 'string',
         category: 'translation',
         visibleIndex: 1,
@@ -55,7 +55,7 @@ export const init = (
         category: 'translation',
         visibleIndex: 2,
         displayName: 'Language to translate to',
-        visibleIf: (obj: QuestionComment) => !!obj?.translateFrom,
+        visibleIf: (obj: QuestionComment) => !!obj?.translateField,
         choices: AZURE_SUPPORTED_LANGUAGES,
       });
       Serializer.addProperty('comment', {
@@ -64,7 +64,7 @@ export const init = (
         visibleIndex: 10,
         displayName: 'Translate if',
         visibleIf: (obj: QuestionComment) =>
-          !!obj?.translateFrom && !!obj?.translateTo,
+          !!obj?.translateField && !!obj?.translateTo,
       });
     },
     isDefaultRender: true,

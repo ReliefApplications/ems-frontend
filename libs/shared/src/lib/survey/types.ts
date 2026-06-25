@@ -22,7 +22,7 @@ export interface Question extends SurveyCoreQuestion, GlobalProperties {}
 export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
-  translateFrom?: string;
+  translateField?: string;
   translateTo?: string;
   translateIf?: string;
 }
@@ -35,7 +35,7 @@ export interface QuestionComment
   extends QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
-  translateFrom?: string;
+  translateField?: string;
   translateTo?: string;
   translateIf?: string;
 }

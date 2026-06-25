@@ -112,7 +112,7 @@ export class GridService {
           const m = metaFields[key];
           return (
             m &&
-            m.translateFrom === field.name &&
+            m.translateField === field.name &&
             m.translateTo &&
             m.translateTo.toLowerCase() === currentLang
           );
