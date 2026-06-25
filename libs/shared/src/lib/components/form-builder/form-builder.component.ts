@@ -144,6 +144,13 @@ export class FormBuilderComponent
   private translationTimeouts = new Map<string, any>();
   /** Map of latest source values for translation to prevent race conditions */
   private latestTranslationSourceValues = new Map<string, string>();
+  /**
+   * Map of field name to the value last written by auto-translation. Used for
+   * echo cancellation so a two-way binding (A translates B and B translates A)
+   * does not loop: the change caused by writing a translation result is
+   * recognized as our own echo and skipped.
+   */
+  private autoTranslatedValues = new Map<string, string>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -222,6 +229,7 @@ export class FormBuilderComponent
     this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
     this.translationTimeouts.clear();
     this.latestTranslationSourceValues.clear();
+    this.autoTranslatedValues.clear();
     // Dispose the whole creator ( toolbox, property grid, plugins, survey and
     // all of their event handlers ), not only the survey, otherwise the creator
     // graph stays referenced and its memory is never released.
@@ -300,7 +308,8 @@ export class FormBuilderComponent
           sender,
           options,
           this.translationTimeouts,
-          this.latestTranslationSourceValues
+          this.latestTranslationSourceValues,
+          this.autoTranslatedValues
         );
       });
     });

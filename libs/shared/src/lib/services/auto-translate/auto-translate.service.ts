@@ -64,13 +64,26 @@ export class AutoTranslateService {
    * @param options.value The value of the field
    * @param translationTimeouts Map of translation timeouts for debouncing
    * @param latestTranslationSourceValues Map of latest source values for translation to prevent race conditions
+   * @param autoTranslatedValues Map of field name to the value last written by auto-translation, used for echo cancellation in two-way (A<->B) bindings
    */
   handleFieldTranslation(
     sender: any,
     options: { name: string; value: any },
     translationTimeouts: Map<string, any>,
-    latestTranslationSourceValues: Map<string, string>
+    latestTranslationSourceValues: Map<string, string>,
+    autoTranslatedValues: Map<string, string>
   ): void {
+    // Echo cancellation: when a translation completes we write the result back
+    // into the target field, which itself fires onValueChanged. If that target
+    // is also a translation source (two-way binding A<->B), the echo would
+    // trigger the reverse translation and loop. Skip a change whose value is
+    // exactly the one we just wrote programmatically, and consume the marker so
+    // a later genuine user edit to the same value still translates.
+    if (autoTranslatedValues.get(options.name) === options.value) {
+      autoTranslatedValues.delete(options.name);
+      return;
+    }
+
     const questions = sender.getAllQuestions();
 
     // Find any question that has translateField matching the changed question's name (or valueName)
@@ -135,6 +148,10 @@ export class AutoTranslateService {
           );
           const latestValue = latestTranslationSourceValues.get(targetName);
           if (translated && latestValue === sourceValue) {
+            // Mark this value as our own write so the resulting onValueChanged
+            // is recognized as an echo and does not trigger a reverse
+            // translation (see echo cancellation at the top of this method).
+            autoTranslatedValues.set(targetName, translated);
             sender.setValue(targetName, translated);
           }
         } catch (error) {

@@ -93,6 +93,13 @@ export class FormComponent
   /** Map of latest source values for translation to prevent race conditions */
   private latestTranslationSourceValues = new Map<string, string>();
   /**
+   * Map of field name to the value last written by auto-translation. Used for
+   * echo cancellation so a two-way binding (A translates B and B translates A)
+   * does not loop: the change caused by writing a translation result is
+   * recognized as our own echo and skipped.
+   */
+  private autoTranslatedValues = new Map<string, string>();
+  /**
    * When true, onValueChanged auto-translation is suppressed. Set while the
    * survey is being populated programmatically (existing record / unique
    * record) so that loading a record does not trigger translations the user
@@ -164,7 +171,8 @@ export class FormComponent
         sender,
         options,
         this.translationTimeouts,
-        this.latestTranslationSourceValues
+        this.latestTranslationSourceValues,
+        this.autoTranslatedValues
       );
     });
     this.survey.onComplete.add(() => {
@@ -563,6 +571,7 @@ export class FormComponent
     this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
     this.translationTimeouts.clear();
     this.latestTranslationSourceValues.clear();
+    this.autoTranslatedValues.clear();
     this.survey?.dispose();
   }
 }

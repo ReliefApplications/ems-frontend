@@ -136,6 +136,7 @@ describe('AutoTranslateService', () => {
         sender,
         { name: 'title', value: 'Hello' },
         new Map(),
+        new Map(),
         new Map()
       );
 
@@ -160,7 +161,8 @@ describe('AutoTranslateService', () => {
         sender,
         { name: 'title', value: 'Hello' },
         timeouts,
-        latest
+        latest,
+        new Map()
       );
 
       // Nothing happens before the debounce window elapses.
@@ -193,6 +195,7 @@ describe('AutoTranslateService', () => {
         sender,
         { name: 'body', value: '<p>Hello</p>' },
         new Map(),
+        new Map(),
         new Map()
       );
       jest.advanceTimersByTime(800);
@@ -221,7 +224,8 @@ describe('AutoTranslateService', () => {
         sender,
         { name: 'title', value: '   ' },
         new Map(),
-        latest
+        latest,
+        new Map()
       );
 
       expect(sender.clearValue).toHaveBeenCalledWith('title_fr');
@@ -244,6 +248,7 @@ describe('AutoTranslateService', () => {
       service.handleFieldTranslation(
         sender,
         { name: 'title', value: 'Hello' },
+        new Map(),
         new Map(),
         new Map()
       );
@@ -272,14 +277,16 @@ describe('AutoTranslateService', () => {
         sender,
         { name: 'title', value: 'Hi' },
         timeouts,
-        latest
+        latest,
+        new Map()
       );
       jest.advanceTimersByTime(400);
       service.handleFieldTranslation(
         sender,
         { name: 'title', value: 'Hello' },
         timeouts,
-        latest
+        latest,
+        new Map()
       );
       jest.advanceTimersByTime(800);
       await Promise.resolve();
@@ -288,6 +295,76 @@ describe('AutoTranslateService', () => {
       expect(translateSpy).toHaveBeenCalledTimes(1);
       expect(translateSpy).toHaveBeenCalledWith('Hello', null, 'fr', 'plain');
       expect(sender.setValue).toHaveBeenCalledWith('title_fr', 'Salut');
+    });
+
+    it('does not re-translate the echo of its own write in a two-way binding', async () => {
+      // Two-way binding: en translates from fr, fr translates from en.
+      const en = makeQuestion('title_en', {
+        translateField: 'title_fr',
+        translateTo: 'en',
+      });
+      const fr = makeQuestion('title_fr', {
+        translateField: 'title_en',
+        translateTo: 'fr',
+      });
+      const sender = makeSender([en, fr]);
+      const translateSpy = jest
+        .spyOn(service, 'translateText')
+        .mockResolvedValue('Bonjour');
+      const timeouts = new Map();
+      const latest = new Map();
+      const echo = new Map();
+
+      // Fire the debounce timer and drain the async translate continuation.
+      const flush = async () => {
+        jest.advanceTimersByTime(800);
+        await Promise.resolve();
+        await Promise.resolve();
+      };
+
+      // User edits the English field.
+      service.handleFieldTranslation(
+        sender,
+        { name: 'title_en', value: 'Hello' },
+        timeouts,
+        latest,
+        echo
+      );
+      await flush();
+
+      // The French field is written with the translation and marked as an echo.
+      expect(sender.setValue).toHaveBeenCalledWith('title_fr', 'Bonjour');
+      expect(echo.get('title_fr')).toBe('Bonjour');
+      expect(translateSpy).toHaveBeenCalledTimes(1);
+
+      // SurveyJS now fires onValueChanged for that programmatic write. The echo
+      // must be recognized and must NOT trigger the reverse (fr -> en) translation.
+      service.handleFieldTranslation(
+        sender,
+        { name: 'title_fr', value: 'Bonjour' },
+        timeouts,
+        latest,
+        echo
+      );
+      await flush();
+
+      expect(translateSpy).toHaveBeenCalledTimes(1);
+      // Marker is consumed, so a later genuine edit of the same value still translates.
+      expect(echo.has('title_fr')).toBe(false);
+
+      // A genuine user edit of the French field DOES trigger the reverse
+      // (fr -> en) translation: the echo only suppresses our own writes.
+      service.handleFieldTranslation(
+        sender,
+        { name: 'title_fr', value: 'Salut' },
+        timeouts,
+        latest,
+        echo
+      );
+      await flush();
+
+      expect(translateSpy).toHaveBeenCalledTimes(2);
+      expect(translateSpy).toHaveBeenLastCalledWith('Salut', null, 'en', 'plain');
     });
   });
 });
