@@ -35,18 +35,20 @@ export const init = (
         category: 'translation',
         visibleIndex: 1,
         displayName: 'Translate from question',
-        choices: (obj: QuestionComment) => {
-          if (!obj || !obj.survey) return [];
-          return (obj.survey as any)
-            .getAllQuestions()
-            .filter(
-              (q: any) =>
-                q !== obj &&
-                (q.getType() === 'text' ||
-                  q.getType() === 'comment' ||
-                  q.getType() === 'editor')
-            )
-            .map((q: any) => q.name);
+        choices: (obj: QuestionComment, choicesCallback: any) => {
+          const questions = obj?.survey
+            ? (obj.survey as any)
+                .getAllQuestions()
+                .filter(
+                  (q: any) =>
+                    q !== obj &&
+                    (q.getType() === 'text' ||
+                      q.getType() === 'comment' ||
+                      q.getType() === 'editor')
+                )
+                .map((q: any) => ({ value: q.name }))
+            : [];
+          choicesCallback([{ value: null }, ...questions]);
         },
       });
       Serializer.addProperty('comment', {
