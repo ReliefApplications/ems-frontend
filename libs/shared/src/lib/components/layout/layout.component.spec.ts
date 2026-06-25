@@ -40,6 +40,7 @@ describe('LayoutComponent', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
   let controller: ApolloTestingController;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -48,7 +49,7 @@ describe('LayoutComponent', () => {
           provide: 'environment',
           useValue: {
             theme: {},
-            availableLanguages: [],
+            availableLanguages: ['en', 'fr', 'test'],
           },
         },
         OAuthService,
@@ -83,9 +84,13 @@ describe('LayoutComponent', () => {
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
+    translate = TestBed.inject(TranslateService);
+    translate.addLangs(['en', 'fr', 'test']);
+    translate.setDefaultLang('en');
   });
 
   beforeEach(() => {
+    localStorage.clear();
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -93,19 +98,31 @@ describe('LayoutComponent', () => {
     const op1 = controller.expectOne(GET_NOTIFICATIONS);
 
     op1.flush({
-      data: {},
+      data: {
+        notifications: {
+          edges: [],
+          totalCount: 0,
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null,
+          },
+        },
+      },
     });
 
     const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
 
     op2.flush({
-      data: {},
+      data: {
+        notification: null,
+      },
     });
   });
 
   afterEach(() => {
     controller.verify();
     fixture.destroy();
+    localStorage.clear();
   });
 
   it('should create', () => {

@@ -23,6 +23,7 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
+import { AutoTranslateService } from '../auto-translate/auto-translate.service';
 
 /**
  * Shared form builder service.
@@ -43,6 +44,7 @@ export class FormBuilderService {
    * @param formHelpersService Shared form helper service.
    * @param injector Angular injector
    * @param documentManagementService Document management service
+   * @param autoTranslateService Field auto-translation service
    * @param environment Environment
    */
   constructor(
@@ -53,6 +55,7 @@ export class FormBuilderService {
     private formHelpersService: FormHelpersService,
     private injector: Injector,
     private documentManagementService: DocumentManagementService,
+    private autoTranslateService: AutoTranslateService,
     @Inject('environment') private environment: any
   ) {}
 
@@ -158,6 +161,11 @@ export class FormBuilderService {
     });
     // Add record to survey properties
     survey.setPropertyValue('record', record);
+    // Wire field auto-translation onto every survey instance (no-op unless some
+    // question is configured with translateField). Components load data with
+    // autoTranslateService.suppressAutoTranslationWhile(...) to avoid
+    // translating on load.
+    this.autoTranslateService.registerAutoTranslation(survey);
     return survey;
   }
 

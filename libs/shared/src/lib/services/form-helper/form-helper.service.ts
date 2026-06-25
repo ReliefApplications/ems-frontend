@@ -532,6 +532,21 @@ export class FormHelpersService {
   };
 
   /**
+   * Resolves a named value from the survey. A name may point either to a
+   * question value (in survey.data) or to a survey variable — e.g.
+   * `{resourceQuestion.fileField}` populated from a linked record by the
+   * resource component. survey.data takes precedence, falling back to the
+   * variable so file fields coming from resource context are handled too.
+   *
+   * @param survey current survey
+   * @param name name of the value / variable to resolve
+   * @returns the resolved value, or undefined when absent
+   */
+  private resolveValue(survey: SurveyModel, name: string): any {
+    return get(survey.data, name) ?? survey.getVariable(name);
+  }
+
+  /**
    * Substitutes the value of a file question in HTML questions with clickable
    * file links. Registered on the survey's onProcessTextValue event so that,
    * when SurveyJS resolves a `{field}` placeholder pointing to a file question,
@@ -550,13 +565,17 @@ export class FormHelpersService {
     const question =
       survey.getQuestionByValueName(options.name) ||
       survey.getQuestionByName(options.name);
+    const value = this.resolveValue(survey, options.name);
     if (!question || question.getType() !== 'file') {
+      // No file question resolved for this placeholder, but the value may still
+      // be compatible with the file links format (an array of file objects).
+      if (Array.isArray(value) && value.some((file) => this.isFile(file))) {
+        options.value = this.renderFileLinks(options.name, value);
+        options.isExists = true;
+      }
       return;
     }
-    options.value = this.renderFileLinks(
-      options.name,
-      get(survey.data, options.name)
-    );
+    options.value = this.renderFileLinks(options.name, value);
     options.isExists = true;
   };
 
@@ -613,7 +632,7 @@ export class FormHelpersService {
     // Bind the click handler once per rendered element.
     htmlQuestion.dataset['fileLinksBound'] = 'true';
     htmlQuestion.addEventListener('click', (event) =>
-      this.onFileClick(event, survey.data)
+      this.onFileClick(event, survey)
     );
   };
 
@@ -621,12 +640,13 @@ export class FormHelpersService {
    * Handle click event on a rendered HTML question.
    *
    * Detects clicks on file elements rendered in the question and triggers a
-   * download or preview of the matching file from the survey data.
+   * download or preview of the matching file. The file is resolved from the
+   * survey data or, for resource-context fields, from a survey variable.
    *
    * @param event click event
-   * @param data survey data
+   * @param survey current survey
    */
-  private onFileClick(event: Event, data: unknown): void {
+  private onFileClick(event: Event, survey: SurveyModel): void {
     const target = event?.target as HTMLElement | null;
     if (!target?.getAttribute) {
       return;
@@ -641,7 +661,8 @@ export class FormHelpersService {
     if (!fieldName || index === null) {
       return;
     }
-    const file = get(data, `${fieldName}[${index}]`, null);
+    const files = this.resolveValue(survey, fieldName);
+    const file = Array.isArray(files) ? files[Number(index)] : null;
     if (!this.isFile(file)) {
       return;
     }

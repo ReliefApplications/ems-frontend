@@ -36,6 +36,7 @@ import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Array containing the different types of questions.
@@ -150,6 +151,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
+   * @param autoTranslateService Auto-translate service
    */
   constructor(
     public dialog: Dialog,
@@ -157,7 +159,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
-    private injector: Injector
+    private injector: Injector,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -212,6 +215,8 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation when the preview survey is disposed.
     // Dispose the whole creator ( toolbox, property grid, plugins, survey and
     // all of their event handlers ), not only the survey, otherwise the creator
     // graph stays referenced and its memory is never released.
@@ -282,6 +287,8 @@ export class FormBuilderComponent
           )(question);
           question.dragAreaPlaceholder = text;
         });
+
+      this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
     // Strip any `pos` artifacts already stored in the form so the loaded model
@@ -315,6 +322,21 @@ export class FormBuilderComponent
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(this.cleanStructure(survey.text));
     });
+
+    // Always show the per-field "Settings" gear adorner.
+    // By default SurveyJS only shows it when the property-grid sidebar is
+    // collapsed (flyout mode), which depends on the creator panel width. On
+    // wide screens (e.g. Mac) the sidebar stays docked and the gear disappears.
+    // Forcing allowEdit makes the gear visible regardless of sidebar state.
+    this.surveyCreator.onElementAllowOperations.add(
+      (sender: any, options: any) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) {
+          return;
+        }
+        options.allowEdit = true;
+      }
+    );
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core

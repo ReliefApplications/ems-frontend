@@ -429,7 +429,7 @@ export class LayoutComponent
    *
    * @param language id of the language.
    */
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translate.use(language);
     localStorage.setItem('lang', language);
     if (!localStorage.getItem('date-lang')) {
@@ -447,7 +447,11 @@ export class LayoutComponent
     // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
-      language = this.translate.defaultLang;
+      // fall back to browser language if supported, otherwise app default
+      const browserLang = this.translate.getBrowserLang() ?? '';
+      language = this.languages.includes(browserLang)
+        ? browserLang
+        : this.translate.defaultLang;
     }
     // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {
