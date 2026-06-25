@@ -7,40 +7,17 @@
           <label>{{
             'components.widget.settings.map.layers.popup.title' | translate
           }}</label>
-          <shared-editor-control
-            formControlName="title"
-            [editorConfig]="editorConfig"
-          ></shared-editor-control>
-          <ui-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            uiSuffix
-            [uiTooltip]="
-              'components.widget.settings.map.layers.popup.tooltip.text'
-                | translate
-            "
-          ></ui-icon>
+          <shared-localized-input formControlName="title"></shared-localized-input>
         </div>
         <div uiFormFieldDirective>
           <label>{{
             'components.widget.settings.map.layers.popup.description'
               | translate
           }}</label>
-          <shared-editor-control
+          <shared-localized-input
             formControlName="description"
-            [editorConfig]="editorConfig"
-          ></shared-editor-control>
-          <ui-icon
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            uiSuffix
-            [uiTooltip]="
-              'components.widget.settings.map.layers.popup.tooltip.text'
-                | translate
-            "
-          ></ui-icon>
+            type="textarea"
+          ></shared-localized-input>
         </div>
       </div>
       <ui-divider class="my-1"></ui-divider>
@@ -79,7 +56,7 @@
                   <h4 class="!m-0">
                     {{ item.value.type }}
                   </h4>
-                  <h6 class="!m-0">{{ item.value.title }}</h6>
+                  <h6 class="!m-0">{{ item.value.title | sharedLocalize }}</h6>
                 </div>
               </div>
               <ui-button

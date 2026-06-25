@@ -8,6 +8,8 @@ import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
 import { PopupInfo } from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../../../models/localized-string.model';
 /**
  * Shared map control service.
  */
@@ -39,11 +41,13 @@ export class MapPopupService {
    * @param domService DomService
    * @param renderer Angular renderer
    * @param document document
+   * @param translate TranslateService
    */
   constructor(
     private domService: DomService,
     private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -341,6 +345,8 @@ export class MapPopupService {
    * @returns Popup content template
    */
   private generatePopupContentTemplate(popupInfo: PopupInfo): string {
+    const lang = this.translate.currentLang;
+
     const title = (title: string, popupTitle?: boolean) =>
       popupTitle
         ? `<h3 class="break-words !m-0 font-bold text-xl">${title}</h3>`
@@ -363,13 +369,17 @@ export class MapPopupService {
       '<div class="shared-popup-content px-2 my-4">';
     const containerEndTemplate = '</div>';
 
+    const resolvedPopupTitle = resolveLocalizedString(popupInfo.title, lang);
+    const resolvedPopupDesc = resolveLocalizedString(
+      popupInfo.description,
+      lang
+    );
+
     let template =
-      popupInfo.description || popupInfo.description
+      resolvedPopupTitle || resolvedPopupDesc
         ? `<div class="w-full flex flex-col px-2 py-1" >${
-            popupInfo.title && title(popupInfo.title, true)
-          }${
-            popupInfo.description && description(popupInfo.description, true)
-          }</div>`
+            resolvedPopupTitle && title(resolvedPopupTitle, true)
+          }${resolvedPopupDesc && description(resolvedPopupDesc, true)}</div>`
         : '';
 
     // We have a template per popup element
@@ -379,9 +389,11 @@ export class MapPopupService {
         let contentGridTemplate = '';
         for (const field of element.fields || []) {
           const dataField = popupInfo.fieldsInfo?.find((x) => x.name === field);
+          const labelStr =
+            resolveLocalizedString(dataField?.label, lang) || field;
           if (!field.toLowerCase().includes('img')) {
             contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
-              dataField?.label || field
+              labelStr
             )} ${propertyValueTemplate(field)}`;
           } else {
             imageElement = imageTemplate(field);
@@ -391,9 +403,11 @@ export class MapPopupService {
           template +
           '<div class="m-2 rounded-md border-gray-200 border shadow-md py-2 px-1">';
 
+        const elemTitle = resolveLocalizedString(element.title, lang);
+        const elemDesc = resolveLocalizedString(element.description, lang);
         const elementHeader = `<div class="w-full flex flex-col ml-2" >${
-          element.title && title(element.title)
-        }${element.description && description(element.description)}</div>`;
+          elemTitle && title(elemTitle)
+        }${elemDesc && description(elemDesc)}</div>`;
 
         template += `${elementHeader}${containerStartTemplate}${contentGridTemplate}${containerEndTemplate}${imageElement}</div>`;
       } else if (element.type === 'text') {
