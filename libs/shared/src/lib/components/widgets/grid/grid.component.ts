@@ -179,7 +179,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
-    let buildSortFields = false;
     if (this.settings.resource) {
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
@@ -224,7 +223,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 error: true,
               };
             } else {
-              buildSortFields = true;
+              this.widget.settings.sortFields?.forEach((sortField: any) => {
+                this.sortFields.push(sortField);
+              });
             }
             this.gridSettings = {
               ...this.settings,
@@ -255,17 +256,14 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               };
             }
             this.aggregation = this.aggregations[0] || null;
-            buildSortFields = true;
+            this.widget.settings.sortFields?.forEach((sortField: any) => {
+              this.sortFields.push(sortField);
+            });
           });
         return;
       }
     } else if (this.settings.referenceData) {
-      buildSortFields = true;
       this.useReferenceData = true;
-    }
-
-    if (buildSortFields) {
-      // Build list of available sort fields
       this.widget.settings.sortFields?.forEach((sortField: any) => {
         this.sortFields.push(sortField);
       });

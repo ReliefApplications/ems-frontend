@@ -18,6 +18,8 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Role } from '../../../../models/user.model';
 import { ActionButton } from '../../grid/action-button.type';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
+import { resolveLocalizedString } from '../../../../models/localized-string.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { Resource } from '../../../../models/resource.model';
 import { GridSettingsFormFactory } from '../grid-settings.forms';
@@ -41,6 +43,7 @@ import { GridSettingsFormFactory } from '../grid-settings.forms';
     IconModule,
     DragDropModule,
     EmptyModule,
+    LocalizePipe,
   ],
   templateUrl: './custom-row-actions.component.html',
   styleUrls: ['./custom-row-actions.component.scss'],
@@ -198,9 +201,26 @@ export class CustomRowActionsComponent
    */
   public async onDuplicateActionButton(actionButton: ActionButton) {
     const newActionButton = structuredClone(actionButton);
-    newActionButton.text = `${newActionButton.text} (${this.translate.instant(
-      'common.copy'
-    )})`;
+    if (typeof newActionButton.text === 'object' && newActionButton.text) {
+      for (const locale of Object.keys(newActionButton.text)) {
+        console.log('locale', locale);
+        const copySuffix = this.translate.instant('common.copy');
+        const val = (newActionButton.text as Record<string, string>)[locale];
+        if (val)
+          (newActionButton.text as Record<string, string>)[
+            locale
+          ] = `${val} (${copySuffix})`;
+      }
+    } else {
+      const resolvedText =
+        resolveLocalizedString(
+          newActionButton.text,
+          this.translate.currentLang
+        ) ?? '';
+      newActionButton.text = `${resolvedText} (${this.translate.instant(
+        'common.copy'
+      )})`;
+    }
     this.formGroup.controls.customRowActions.push(
       this.formFactory.createCustomRowActionFormGroup(newActionButton)
     );
@@ -244,12 +264,14 @@ export class CustomRowActionsComponent
     let actionButtons: any[];
 
     if (this.searchTerm !== '') {
+      const term = this.searchTerm.toLowerCase();
+      const lang = this.translate.currentLang;
       actionButtons = this.actionButtons.filter(
         (action) =>
-          action.columnLabel
+          resolveLocalizedString(action.columnLabel, lang)
             .toLowerCase()
-            .includes(this.searchTerm.toLowerCase()) ||
-          action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
+            .includes(term) ||
+          resolveLocalizedString(action.text, lang).toLowerCase().includes(term)
       );
     } else {
       actionButtons = this.actionButtons;

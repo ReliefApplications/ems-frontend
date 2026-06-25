@@ -31,7 +31,9 @@
                   'components.widget.grid.rowAction.fields.columnLabel.text'
                     | translate
                 }}</label>
-                <input formControlName="columnLabel" type="string" />
+                <shared-localized-input
+                  formControlName="columnLabel"
+                ></shared-localized-input>
               </div>
 
               <!-- Button text -->
@@ -39,7 +41,9 @@
                 <label>{{
                   'models.dashboard.actionButtons.text' | translate
                 }}</label>
-                <input formControlName="buttonText" type="string" />
+                <shared-localized-input
+                  formControlName="buttonText"
+                ></shared-localized-input>
               </div>
 
               <!-- Use role restriction -->
@@ -114,7 +118,7 @@
                   [variant]="form.value.general.variant || 'primary'"
                   (click)="preview()"
                 >
-                  {{ form.value.general.buttonText }}
+                  {{ form.value.general.buttonText | sharedLocalize }}
                 </ui-button>
               </div>
             </div>

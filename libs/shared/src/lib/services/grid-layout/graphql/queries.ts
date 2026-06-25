@@ -27,6 +27,7 @@ export const GET_GRID_RESOURCE_META = gql`
           node {
             id
             name
+            nameTranslations
             query
             createdAt
             display
@@ -55,6 +56,7 @@ export const GET_GRID_FORM_META = gql`
           node {
             id
             name
+            nameTranslations
             query
             createdAt
             display

@@ -15,6 +15,8 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
 import { BehaviorSubject, isObservable, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get, isArray, isNil } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../../../../models/localized-string.model';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   ActionType,
@@ -276,11 +278,13 @@ export class EditAutomationComponentComponent
    *
    * @param dashboardService Dashboard service
    * @param mapLayersService Map layers service
+   * @param translate
    * @param data Dialog data, automation component to edit
    */
   constructor(
     private dashboardService: DashboardService,
     private mapLayersService: MapLayersService,
+    private translate: TranslateService,
     @Inject(DIALOG_DATA) public data: any
   ) {
     super();
@@ -341,7 +345,10 @@ export class EditAutomationComponentComponent
             .subscribe((layers) => {
               property.choices = layers.map((layer) => ({
                 value: layer.id,
-                text: layer.name,
+                text: resolveLocalizedString(
+                  layer.name,
+                  this.translate.currentLang
+                ),
               }));
             });
           break;

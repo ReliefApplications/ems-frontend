@@ -9,7 +9,9 @@ import {
   ApplicationService,
   Dashboard,
   EmptyModule,
+  LocalizePipe,
   Page,
+  resolveLocalizedString,
   Role,
   Step,
   UnsubscribeComponent,
@@ -45,6 +47,7 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
     IconModule,
     DragDropModule,
     EmptyModule,
+    LocalizePipe,
   ],
   templateUrl: './edit-action-buttons-modal.component.html',
   styleUrls: ['./edit-action-buttons-modal.component.scss'],
@@ -204,9 +207,26 @@ export class EditActionButtonsModalComponent
    */
   public async onDuplicateActionButton(actionButton: ActionButton) {
     const newActionButton = structuredClone(actionButton);
-    newActionButton.text = `${newActionButton.text} (${this.translate.instant(
-      'common.copy'
-    )})`;
+    if (typeof newActionButton.text === 'object' && newActionButton.text) {
+      for (const locale of Object.keys(newActionButton.text)) {
+        console.log('locale', locale);
+        const copySuffix = this.translate.instant('common.copy');
+        const val = (newActionButton.text as Record<string, string>)[locale];
+        if (val)
+          (newActionButton.text as Record<string, string>)[
+            locale
+          ] = `${val} (${copySuffix})`;
+      }
+    } else {
+      const resolvedText =
+        resolveLocalizedString(
+          newActionButton.text,
+          this.translate.currentLang
+        ) ?? '';
+      newActionButton.text = `${resolvedText} (${this.translate.instant(
+        'common.copy'
+      )})`;
+    }
     this.actionButtons.push(newActionButton);
     this.searchTerm = '';
     this.updateTable();
@@ -253,7 +273,10 @@ export class EditActionButtonsModalComponent
 
     if (this.searchTerm !== '') {
       actionButtons = this.actionButtons.filter((action) =>
-        action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
+        resolveLocalizedString(
+          action.text,
+          this.translate.currentLang
+        )?.includes(this.searchTerm.toLowerCase())
       );
     } else {
       actionButtons = this.actionButtons;

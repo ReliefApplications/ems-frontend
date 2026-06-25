@@ -54,6 +54,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { ActionButton } from '../../../widgets/grid/action-button.type';
+import { resolveLocalizedString } from '../../../../models/localized-string.model';
 import { File, FileService } from '../../../../services/file/file.service';
 
 /** Minimum column width */
@@ -376,6 +377,8 @@ export class GridComponent
         // as dirty to re-render the re-translated cells.
         this.cdr.markForCheck();
       }
+      this.buildCustomRowActionGroups();
+      this.updateCustomActionColumnWidths();
     });
   }
 
@@ -399,19 +402,7 @@ export class GridComponent
     // cache snapshots the column list once and never re-includes columns
     // added later, which makes multiple action groups overlap.
     if (changes['widget']) {
-      const customRowActions: ActionButton[] = get(
-        this.widget,
-        'settings.customRowActions',
-        []
-      );
-      this.customRowActionGroups = map(
-        groupBy(customRowActions, 'columnLabel'),
-        (actions, label) => ({
-          label,
-          actions,
-          width: 0,
-        })
-      );
+      this.buildCustomRowActionGroups();
     }
     if (
       (changes['data']?.currentValue?.data.length || this.data.data.length) &&
@@ -484,6 +475,28 @@ export class GridComponent
   }
 
   /**
+   * Build customRowActionGroups from widget settings, resolving LocalizedString column labels.
+   * Called on widget changes and on language change so column titles stay in sync.
+   */
+  private buildCustomRowActionGroups(): void {
+    const customRowActions: ActionButton[] = get(
+      this.widget,
+      'settings.customRowActions',
+      []
+    );
+    this.customRowActionGroups = map(
+      groupBy(customRowActions, (action) =>
+        resolveLocalizedString(action.columnLabel, this.translate.currentLang)
+      ),
+      (actions, label) => ({
+        label,
+        actions,
+        width: 0,
+      })
+    );
+  }
+
+  /**
    * Get the custom row actions to display in a given group column for a given row.
    * Filters the full set of actions in the group using the per-row actions
    * populated by the backend on `dataItem.actions` (grouped by columnLabel).
@@ -530,22 +543,30 @@ export class GridComponent
     dataItem: any,
     group: { label: string; actions: ActionButton[] }
   ): ActionButton[] {
-    const rowGroups: { label: string; actions: ActionButton[] }[] =
-      dataItem?.actions ?? [];
-    if (!rowGroups.length) {
-      // return group.actions;
+    // Backend returns a flat ActionButton[] of the actions visible for this row.
+    const visibleActions: ActionButton[] = dataItem?._meta?.actions ?? [];
+    if (!visibleActions.length) {
       return [];
     }
-    const rowGroup = rowGroups.find((g) => g.label === group.label);
-    if (!rowGroup) {
-      return [];
-    }
-    // Intersect by text + columnLabel to preserve widget config order.
+    const lang = this.translate.currentLang;
+    // Build a key set from all visible actions so we can intersect with group.actions
+    // (which is already scoped to this column's columnLabel).
     const visibleKeys = new Set(
-      rowGroup.actions.map((a) => `${a.columnLabel}::${a.text}`)
+      visibleActions.map(
+        (a) =>
+          `${resolveLocalizedString(
+            a.columnLabel,
+            lang
+          )}::${resolveLocalizedString(a.text, lang)}`
+      )
     );
     return group.actions.filter((a) =>
-      visibleKeys.has(`${a.columnLabel}::${a.text}`)
+      visibleKeys.has(
+        `${resolveLocalizedString(
+          a.columnLabel,
+          lang
+        )}::${resolveLocalizedString(a.text, lang)}`
+      )
     );
   }
 
@@ -610,7 +631,10 @@ export class GridComponent
             (sum, action) =>
               sum +
               Math.max(
-                (action.text?.length ?? 0) * charWidth + buttonPadding,
+                resolveLocalizedString(action.text, this.translate.currentLang)
+                  .length *
+                  charWidth +
+                  buttonPadding,
                 minButtonWidth
               ),
             0
@@ -628,7 +652,10 @@ export class GridComponent
         (sum, action) =>
           sum +
           Math.max(
-            (action.text?.length ?? 0) * charWidth + buttonPadding,
+            resolveLocalizedString(action.text, this.translate.currentLang)
+              .length *
+              charWidth +
+              buttonPadding,
             minButtonWidth
           ),
         0
