@@ -10,6 +10,7 @@ export * from './lib/services/application/application.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/auth/auth.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
+export * from './lib/services/language-interceptor/language-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 export * from './lib/services/context/context.service';
 export * from './lib/services/dashboard-automation/dashboard-automation.service';

@@ -12,7 +12,6 @@ import { AuthService } from '../auth/auth.service';
 import { RestService } from '../rest/rest.service';
 import { ShadowDomService } from '@oort-front/ui';
 import { jwtDecode } from 'jwt-decode';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shared Authentication interceptor service
@@ -32,14 +31,12 @@ export class AuthInterceptorService implements HttpInterceptor {
    * @param authService Shared authentication service
    * @param restService Shared rest service
    * @param shadowDomService Shared shadow dom service
-   * @param translateService
    * @param environment Environment configuration
    */
   constructor(
     private authService: AuthService,
     private restService: RestService,
     private shadowDomService: ShadowDomService,
-    private translateService: TranslateService,
     @Inject('environment') private environment: any
   ) {}
 
@@ -113,15 +110,6 @@ export class AuthInterceptorService implements HttpInterceptor {
       request.url.startsWith(this.environment.csApiUrl)
     ) {
       request = this.addBearerTokenToRequest(request, true);
-    }
-
-    const currentLang = this.translateService.currentLang;
-    if (currentLang) {
-      request = request.clone({
-        setHeaders: {
-          Language: currentLang,
-        },
-      });
     }
 
     return request;
