@@ -1,6 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -75,6 +77,7 @@ const matches = (el: any, selector: any) =>
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
   providers: [PopupService, ResizeBatchService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -320,6 +323,7 @@ export class GridComponent
    * @param popupService Kendo popup service
    * @param gridDataFormatterService GridDataFormatterService
    * @param fileService File service
+   * @param cdr Change detector reference
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -331,7 +335,8 @@ export class GridComponent
     private snackBar: SnackbarService,
     private popupService: PopupService,
     private gridDataFormatterService: GridDataFormatterService,
-    private fileService: FileService
+    private fileService: FileService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -367,6 +372,9 @@ export class GridComponent
           this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
         });
         this.data = { ...this.data };
+        // OnPush: this runs outside an Angular template event, so flag the view
+        // as dirty to re-render the re-translated cells.
+        this.cdr.markForCheck();
       }
     });
   }
@@ -429,6 +437,9 @@ export class GridComponent
         this.grid?.columns.forEach((column) => {
           this.updateColumnShowFullScreenButton((column as any).field);
         });
+        // OnPush: mutating dataItem.showFullScreenButton inside a timeout does
+        // not trigger change detection on its own.
+        this.cdr.markForCheck();
       }, 0);
       this.updateCustomActionColumnWidths();
       this.preventColumnResize
@@ -451,7 +462,12 @@ export class GridComponent
     });
     new ResizeObservable(this.gridRef.nativeElement)
       .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe(() => this.setColumnsWidth());
+      .subscribe(() => {
+        this.setColumnsWidth();
+        // OnPush: column widths are mutated imperatively from a resize stream,
+        // outside any template event.
+        this.cdr.markForCheck();
+      });
   }
 
   override ngOnDestroy(): void {
@@ -482,6 +498,38 @@ export class GridComponent
     dataItem: any,
     group: { label: string; actions: ActionButton[] }
   ): ActionButton[] {
+    // This is called from the template inside an *ngFor, so it runs on every
+    // change-detection cycle for every row. Memoize the result on the data item
+    // (keyed by the group reference) so we avoid rebuilding the Set / filtered
+    // array each cycle and return a stable array reference, which also prevents
+    // the inner *ngFor from re-rendering when nothing changed. The cache lives on
+    // the row, so it is naturally invalidated when the data is reloaded (new row
+    // objects) or when the group definition changes (new group reference).
+    const cache: Record<string, { group: unknown; result: ActionButton[] }> =
+      (dataItem.__rowActionsCache ??= {});
+    const cached = cache[group.label];
+    if (cached && cached.group === group) {
+      return cached.result;
+    }
+
+    const result = this.computeRowActions(dataItem, group);
+    cache[group.label] = { group, result };
+    return result;
+  }
+
+  /**
+   * Computes the visible custom row actions for a given row / group.
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
+   * @returns The action buttons to render for this row / group.
+   */
+  private computeRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
     const rowGroups: { label: string; actions: ActionButton[] }[] =
       dataItem?.actions ?? [];
     if (!rowGroups.length) {
@@ -499,6 +547,30 @@ export class GridComponent
     return group.actions.filter((a) =>
       visibleKeys.has(`${a.columnLabel}::${a.text}`)
     );
+  }
+
+  /**
+   * Track-by for the fields *ngFor so Kendo does not tear down and recreate
+   * every column (and its templates) on each change-detection pass.
+   *
+   * @param _index Index in the loop.
+   * @param field The grid field.
+   * @returns A stable identity for the field.
+   */
+  public trackByFieldName(_index: number, field: any): string {
+    return field?.name ?? _index;
+  }
+
+  /**
+   * Track-by for the custom row action group columns.
+   *
+   * @param _index Index in the loop.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @returns A stable identity for the group.
+   */
+  public trackByGroupLabel(_index: number, group: { label: string }): string {
+    return group?.label ?? _index;
   }
 
   /**
@@ -872,6 +944,9 @@ export class GridComponent
     this.currentEditedItem = null;
     this.editing = false;
     this.formGroup = new UntypedFormGroup({});
+    // OnPush: closeEditor can be triggered by the document click listener, which
+    // is outside Angular's event bindings.
+    this.cdr.markForCheck();
   }
 
   /**
