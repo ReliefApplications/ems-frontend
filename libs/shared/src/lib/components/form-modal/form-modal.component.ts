@@ -862,6 +862,9 @@ export class FormModalComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.translationTimeouts.clear();
+    this.latestTranslationSourceValues.clear();
     this.survey?.dispose();
   }
 }
