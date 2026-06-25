@@ -494,7 +494,7 @@ export const createPopupElementForm = (value: PopupElement): FormGroup => {
     case 'text': {
       return fb.group({
         type: 'text',
-        text: get(value, 'text', ''),
+        text: new FormControl<LocalizedString>(get(value, 'text', '')),
       });
     }
     default:

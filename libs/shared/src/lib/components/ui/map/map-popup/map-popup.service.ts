@@ -411,10 +411,11 @@ export class MapPopupService {
 
         template += `${elementHeader}${containerStartTemplate}${contentGridTemplate}${containerEndTemplate}${imageElement}</div>`;
       } else if (element.type === 'text') {
-        if (element.text) {
+        const resolvedText = resolveLocalizedString(element.text, lang);
+        if (resolvedText) {
           const scriptRegex = /<script>(.*?)<\/script>/g;
           // remove all script tags
-          const sanitizedHtml = element.text?.replace(scriptRegex, '') ?? '';
+          const sanitizedHtml = resolvedText.replace(scriptRegex, '') ?? '';
           template =
             template +
             `<div class="m-2 break-all rounded-md border-gray-200 border shadow-md px-1">${sanitizedHtml}</div>`;

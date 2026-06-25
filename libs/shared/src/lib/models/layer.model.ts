@@ -94,7 +94,7 @@ export interface LayerDefinition {
  */
 export interface PopupElementText {
   type: 'text';
-  text?: string;
+  text?: LocalizedString;
 }
 
 /**
