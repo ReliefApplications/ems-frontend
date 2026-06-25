@@ -19,6 +19,7 @@ import {
   setDateValue,
 } from '../components/utils/create-picker-instance';
 import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
+import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -98,7 +99,7 @@ export const init = (
       });
       serializer.addProperty('text', {
         name: 'translateField',
-        type: 'string',
+        type: TRANSLATE_SOURCE_QUESTION_TYPE,
         category: 'translation',
         visibleIndex: 1,
         displayName: 'Translate from question',
@@ -106,21 +107,6 @@ export const init = (
           !obj?.inputType ||
           obj?.inputType === 'text' ||
           obj?.getType() === 'editor',
-        choices: (obj: QuestionText, choicesCallback: any) => {
-          const questions = obj?.survey
-            ? (obj.survey as any)
-                .getAllQuestions()
-                .filter(
-                  (q: any) =>
-                    q !== obj &&
-                    (q.getType() === 'text' ||
-                      q.getType() === 'comment' ||
-                      q.getType() === 'editor')
-                )
-                .map((q: any) => ({ value: q.name }))
-            : [];
-          choicesCallback([{ value: null }, ...questions]);
-        },
       });
       serializer.addProperty('text', {
         name: 'translateTo',

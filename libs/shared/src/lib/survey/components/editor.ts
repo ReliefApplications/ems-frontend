@@ -5,6 +5,7 @@ import { EditorQuestionComponent } from '../../components/editor-question/editor
 import { isNil } from 'lodash';
 import { Injector, NgZone } from '@angular/core';
 import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
+import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
 
 /**
  * Inits the editor component.
@@ -141,25 +142,10 @@ export const init = (
   // Register translation properties for custom editor component
   Serializer.addProperty('editor', {
     name: 'translateField',
-    type: 'string',
+    type: TRANSLATE_SOURCE_QUESTION_TYPE,
     category: 'translation',
     visibleIndex: 1,
     displayName: 'Translate from question',
-    choices: (obj: any, choicesCallback: any) => {
-      const questions = obj?.survey
-        ? (obj.survey as any)
-            .getAllQuestions()
-            .filter(
-              (q: any) =>
-                q !== obj &&
-                (q.getType() === 'text' ||
-                  q.getType() === 'comment' ||
-                  q.getType() === 'editor')
-            )
-            .map((q: any) => ({ value: q.name }))
-        : [];
-      choicesCallback([{ value: null }, ...questions]);
-    },
   });
   Serializer.addProperty('editor', {
     name: 'translateTo',
