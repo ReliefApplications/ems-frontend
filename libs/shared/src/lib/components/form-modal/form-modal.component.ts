@@ -134,6 +134,12 @@ export class FormModalComponent
   private translationTimeouts = new Map<string, any>();
   /** Map of latest source values for translation to prevent race conditions */
   private latestTranslationSourceValues = new Map<string, string>();
+  /**
+   * When true, onValueChanged auto-translation is suppressed. Set while the
+   * survey is being populated programmatically (prefill / existing record) so
+   * that loading a record does not trigger translations the user never asked for.
+   */
+  private suppressAutoTranslate = false;
 
   /**
    * Display a form instance in a modal.
@@ -300,6 +306,12 @@ export class FormModalComponent
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
+      // Skip auto-translation while the survey is being populated
+      // programmatically (prefill / existing record): only genuine user input
+      // should trigger a translation.
+      if (this.suppressAutoTranslate) {
+        return;
+      }
       this.autoTranslateService.handleFieldTranslation(
         sender,
         options,
@@ -308,6 +320,9 @@ export class FormModalComponent
       );
     });
     this.survey.onComplete.add(this.onComplete);
+
+    // Suppress auto-translation for the whole programmatic init below.
+    this.suppressAutoTranslate = true;
 
     if (this.prefillMergedData) {
       // Prefill with merged data from records
@@ -359,6 +374,9 @@ export class FormModalComponent
 
     // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
     this.updateButtonLabels();
+
+    // Programmatic init is done: re-enable auto-translation on user input.
+    this.suppressAutoTranslate = false;
 
     this.loading = false;
   }

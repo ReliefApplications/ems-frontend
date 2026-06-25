@@ -92,6 +92,13 @@ export class FormComponent
   private translationTimeouts = new Map<string, any>();
   /** Map of latest source values for translation to prevent race conditions */
   private latestTranslationSourceValues = new Map<string, string>();
+  /**
+   * When true, onValueChanged auto-translation is suppressed. Set while the
+   * survey is being populated programmatically (existing record / unique
+   * record) so that loading a record does not trigger translations the user
+   * never asked for.
+   */
+  private suppressAutoTranslate = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -148,6 +155,11 @@ export class FormComponent
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
+      // Skip auto-translation while the survey is being populated
+      // programmatically: only genuine user input should trigger a translation.
+      if (this.suppressAutoTranslate) {
+        return;
+      }
       this.autoTranslateService.handleFieldTranslation(
         sender,
         options,
@@ -195,6 +207,9 @@ export class FormComponent
       this.temporaryFilesStorage
     );
 
+    // Suppress auto-translation while loading existing data: only genuine user
+    // input should trigger a translation.
+    this.suppressAutoTranslate = true;
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -204,6 +219,7 @@ export class FormComponent
       this.modifiedAt = this.record.modifiedAt || null;
       fireOnRecordEditionTriggers(this.survey);
     }
+    this.suppressAutoTranslate = false;
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
