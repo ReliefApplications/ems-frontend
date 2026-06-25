@@ -140,17 +140,6 @@ export class FormBuilderComponent
   private relatedNames!: string[];
   /** Timeout to survey creator */
   private timeoutListener!: NodeJS.Timeout;
-  /** Map of translation timeouts for debouncing */
-  private translationTimeouts = new Map<string, any>();
-  /** Map of latest source values for translation to prevent race conditions */
-  private latestTranslationSourceValues = new Map<string, string>();
-  /**
-   * Map of field name to the value last written by auto-translation. Used for
-   * echo cancellation so a two-way binding (A translates B and B translates A)
-   * does not loop: the change caused by writing a translation result is
-   * recognized as our own echo and skipped.
-   */
-  private autoTranslatedValues = new Map<string, string>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -226,10 +215,8 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
-    this.translationTimeouts.clear();
-    this.latestTranslationSourceValues.clear();
-    this.autoTranslatedValues.clear();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation when the preview survey is disposed.
     // Dispose the whole creator ( toolbox, property grid, plugins, survey and
     // all of their event handlers ), not only the survey, otherwise the creator
     // graph stays referenced and its memory is never released.
@@ -301,17 +288,10 @@ export class FormBuilderComponent
           question.dragAreaPlaceholder = text;
         });
 
-      // Enable textUpdateMode = 'onTyping' and register value changed handler for preview translation
+      // Enable textUpdateMode = 'onTyping' and wire field auto-translation onto
+      // the preview survey. The service owns the per-survey state and cleanup.
       survey.textUpdateMode = 'onTyping';
-      survey.onValueChanged.add((sender, options) => {
-        this.autoTranslateService.handleFieldTranslation(
-          sender,
-          options,
-          this.translationTimeouts,
-          this.latestTranslationSourceValues,
-          this.autoTranslatedValues
-        );
-      });
+      this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
     // Strip any `pos` artifacts already stored in the form so the loaded model

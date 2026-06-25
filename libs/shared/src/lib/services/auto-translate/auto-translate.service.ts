@@ -1,6 +1,29 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { SurveyModel } from 'survey-core';
 import { RestService } from '../rest/rest.service';
+
+/**
+ * Handle returned by {@link AutoTranslateService.registerAutoTranslation},
+ * scoped to a single survey instance. Auto-translation wiring (the
+ * onValueChanged subscription, the per-survey debounce / echo state and the
+ * dispose cleanup) lives in the service; callers only keep this handle to
+ * suppress translation while they populate the survey programmatically.
+ */
+export interface AutoTranslationHandle {
+  /**
+   * Run a programmatic data-loading function with auto-translation suppressed
+   * so that prefilling / loading an existing record does not trigger
+   * translations the user never asked for. Suppression is restored even if the
+   * loader throws.
+   *
+   * @param load Synchronous function that writes values into the survey
+   */
+  suppressWhile(load: () => void): void;
+}
+
+/** Property key under which the per-survey handle is stored on the survey. */
+const AUTO_TRANSLATION_HANDLE_KEY = '__autoTranslationHandle';
 
 /**
  * Service to machine-translate user-entered text content and auto-fill
@@ -19,6 +42,97 @@ export class AutoTranslateService {
    * @param restService Shared REST service
    */
   constructor(private restService: RestService) {}
+
+  /**
+   * Wire field auto-translation onto a survey instance. Owns the per-survey
+   * debounce / echo / source-value state in a closure (the service is a
+   * singleton, so this state must not live on the service), registers the
+   * onValueChanged handler and patches the survey's dispose() to clear pending
+   * timeouts. Replaces the duplicated wiring that previously lived in each
+   * form component.
+   *
+   * Idempotent: calling it again for the same survey returns the existing
+   * handle instead of wiring a second handler.
+   *
+   * @param survey Survey instance to wire auto-translation onto
+   * @returns A handle used to suppress translation while loading data
+   */
+  registerAutoTranslation(survey: SurveyModel): AutoTranslationHandle {
+    const host = survey as SurveyModel & Record<string, any>;
+    const existing: AutoTranslationHandle | undefined =
+      host[AUTO_TRANSLATION_HANDLE_KEY];
+    if (existing) {
+      return existing;
+    }
+
+    /** Pending debounce timeout per target field. */
+    const translationTimeouts = new Map<string, any>();
+    /** Latest source value per target field, to drop stale translations. */
+    const latestTranslationSourceValues = new Map<string, string>();
+    /** Value last written by auto-translation per field, for echo cancellation. */
+    const autoTranslatedValues = new Map<string, string>();
+    /** When true, programmatic value changes do not trigger translation. */
+    let suppressed = false;
+
+    survey.onValueChanged.add((sender, options) => {
+      if (suppressed) {
+        return;
+      }
+      this.handleFieldTranslation(
+        sender,
+        options,
+        translationTimeouts,
+        latestTranslationSourceValues,
+        autoTranslatedValues
+      );
+    });
+
+    // Patch dispose() once so pending debounce timers are cleared with the
+    // survey (survey-core has no onDisposed event; this mirrors grid-cleanup).
+    if (typeof survey.dispose === 'function') {
+      const originalDispose = survey.dispose.bind(survey);
+      survey.dispose = (...args: any[]) => {
+        translationTimeouts.forEach((timeout) => clearTimeout(timeout));
+        translationTimeouts.clear();
+        latestTranslationSourceValues.clear();
+        autoTranslatedValues.clear();
+        return (originalDispose as (...a: any[]) => void)(...args);
+      };
+    }
+
+    const handle: AutoTranslationHandle = {
+      suppressWhile: (load: () => void) => {
+        suppressed = true;
+        try {
+          load();
+        } finally {
+          suppressed = false;
+        }
+      },
+    };
+    host[AUTO_TRANSLATION_HANDLE_KEY] = handle;
+    return handle;
+  }
+
+  /**
+   * Run a programmatic data-loading function with auto-translation suppressed
+   * for the given survey. Convenience wrapper so callers do not need to keep
+   * the handle returned by {@link registerAutoTranslation}; if the survey has
+   * no auto-translation wired, the loader simply runs without suppression.
+   *
+   * @param survey Survey whose auto-translation should be suppressed
+   * @param load Synchronous function that writes values into the survey
+   */
+  suppressAutoTranslationWhile(survey: SurveyModel, load: () => void): void {
+    const handle: AutoTranslationHandle | undefined = (
+      survey as SurveyModel & Record<string, any>
+    )[AUTO_TRANSLATION_HANDLE_KEY];
+    if (handle) {
+      handle.suppressWhile(load);
+    } else {
+      load();
+    }
+  }
 
   /**
    * Translate text using the backend translation REST endpoint.

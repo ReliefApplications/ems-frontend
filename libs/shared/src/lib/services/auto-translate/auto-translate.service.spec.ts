@@ -364,7 +364,12 @@ describe('AutoTranslateService', () => {
       await flush();
 
       expect(translateSpy).toHaveBeenCalledTimes(2);
-      expect(translateSpy).toHaveBeenLastCalledWith('Salut', null, 'en', 'plain');
+      expect(translateSpy).toHaveBeenLastCalledWith(
+        'Salut',
+        null,
+        'en',
+        'plain'
+      );
     });
   });
 });

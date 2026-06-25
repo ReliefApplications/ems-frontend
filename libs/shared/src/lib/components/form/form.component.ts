@@ -88,24 +88,6 @@ export class FormComponent
   // private storageId = '';
   /** Date of local storage */
   // public storageDate?: Date;
-  /** Map of translation timeouts for debouncing */
-  private translationTimeouts = new Map<string, any>();
-  /** Map of latest source values for translation to prevent race conditions */
-  private latestTranslationSourceValues = new Map<string, string>();
-  /**
-   * Map of field name to the value last written by auto-translation. Used for
-   * echo cancellation so a two-way binding (A translates B and B translates A)
-   * does not loop: the change caused by writing a translation result is
-   * recognized as our own echo and skipped.
-   */
-  private autoTranslatedValues = new Map<string, string>();
-  /**
-   * When true, onValueChanged auto-translation is suppressed. Set while the
-   * survey is being populated programmatically (existing record / unique
-   * record) so that loading a record does not trigger translations the user
-   * never asked for.
-   */
-  private suppressAutoTranslate = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -158,22 +140,12 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add((sender, options) => {
+    // Auto-translation is wired centrally in FormBuilderService.createSurvey;
+    // here we only handle component-specific reactions to value changes.
+    this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
-      // Skip auto-translation while the survey is being populated
-      // programmatically: only genuine user input should trigger a translation.
-      if (this.suppressAutoTranslate) {
-        return;
-      }
-      this.autoTranslateService.handleFieldTranslation(
-        sender,
-        options,
-        this.translationTimeouts,
-        this.latestTranslationSourceValues,
-        this.autoTranslatedValues
-      );
     });
     this.survey.onComplete.add(() => {
       this.onComplete();
@@ -215,19 +187,19 @@ export class FormComponent
       this.temporaryFilesStorage
     );
 
-    // Suppress auto-translation while loading existing data: only genuine user
-    // input should trigger a translation.
-    this.suppressAutoTranslate = true;
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-      fireOnRecordEditionTriggers(this.survey);
-    } else if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
-      this.modifiedAt = this.record.modifiedAt || null;
-      fireOnRecordEditionTriggers(this.survey);
-    }
-    this.suppressAutoTranslate = false;
+    // Load existing data with translation suppressed: only genuine user input
+    // should trigger a translation.
+    this.autoTranslateService.suppressAutoTranslationWhile(this.survey, () => {
+      if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+        this.survey.data = this.form.uniqueRecord.data;
+        this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+        fireOnRecordEditionTriggers(this.survey);
+      } else if (this.record && this.record.data) {
+        this.survey.data = this.record.data;
+        this.modifiedAt = this.record.modifiedAt || null;
+        fireOnRecordEditionTriggers(this.survey);
+      }
+    });
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -568,10 +540,8 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
-    this.translationTimeouts.forEach((timeout) => clearTimeout(timeout));
-    this.translationTimeouts.clear();
-    this.latestTranslationSourceValues.clear();
-    this.autoTranslatedValues.clear();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
   }
 }
