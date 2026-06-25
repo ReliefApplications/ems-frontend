@@ -127,10 +127,10 @@
       (selectionChange)="onLayoutChange($event)"
     >
       <ng-template kendoDropDownListItemTemplate let-dataItem>
-        {{ (dataItem.nameTranslations || dataItem.name) | sharedLocalize }}
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
       </ng-template>
       <ng-template kendoDropDownListValueTemplate let-dataItem>
-        {{ (dataItem.nameTranslations || dataItem.name) | sharedLocalize }}
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
       </ng-template>
     </kendo-dropdownlist>
   </ng-container>
