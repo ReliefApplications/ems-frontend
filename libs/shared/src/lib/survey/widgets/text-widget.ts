@@ -18,6 +18,8 @@ import {
   getDateDisplay,
   setDateValue,
 } from '../components/utils/create-picker-instance';
+import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
+import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -94,6 +96,36 @@ export const init = (
         dependsOn: ['inputType'],
         visibleIf: (obj: QuestionText) =>
           ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
+      });
+      serializer.addProperty('text', {
+        name: 'translateField',
+        type: TRANSLATE_SOURCE_QUESTION_TYPE,
+        category: 'translation',
+        visibleIndex: 1,
+        displayName: 'Translate from question',
+        visibleIf: (obj: QuestionText) =>
+          !obj?.inputType ||
+          obj?.inputType === 'text' ||
+          obj?.getType() === 'editor',
+      });
+      serializer.addProperty('text', {
+        name: 'translateTo',
+        type: 'string',
+        category: 'translation',
+        visibleIndex: 2,
+        displayName: 'Language to translate to',
+        visibleIf: (obj: QuestionText) =>
+          !!obj?.getPropertyValue('translateField'),
+        choices: AZURE_SUPPORTED_LANGUAGES,
+      });
+      serializer.addProperty('text', {
+        name: 'translateIf:condition',
+        category: 'logic',
+        visibleIndex: 10,
+        displayName: 'Translate if',
+        visibleIf: (obj: QuestionText) =>
+          !!obj?.getPropertyValue('translateField') &&
+          !!obj?.getPropertyValue('translateTo'),
       });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(

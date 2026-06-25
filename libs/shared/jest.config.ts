@@ -28,6 +28,7 @@ export default {
   },
   // Manually add valid tests there
   testMatch: [
+    '<rootDir>/src/lib/services/auto-translate/*.spec.ts',
     '<rootDir>/src/lib/services/context/*.spec.ts',
     '<rootDir>/src/lib/services/file/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',

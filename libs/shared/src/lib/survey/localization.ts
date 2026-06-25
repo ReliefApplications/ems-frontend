@@ -96,8 +96,41 @@ export const initLocalization = () => {
   }
   // Also add to survey creator localization
   const editorEn = editorLocalization.getLocale('en');
-  editorEn.pehelp.onSelect =
-    'Define the mapping to pre-fill form questions from selected record.\n\n' +
-    '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
-    '• **On the right (Value):** Expression running on selected *data record* (e.g., "{region}", "length({regions})").';
+  if (editorEn) {
+    if (editorEn.pehelp) {
+      editorEn.pehelp.onSelect =
+        'Define the mapping to pre-fill form questions from selected record.\n\n' +
+        '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
+        '• **On the right (Value):** Expression running on selected *data record* (e.g., "{region}", "length({regions})").';
+    }
+    if (editorEn.pe) {
+      if (!editorEn.pe.tabs) editorEn.pe.tabs = {};
+      editorEn.pe.tabs.translation = 'Translation';
+      editorEn.pe.translateField = 'Translate from question';
+      editorEn.pe.translateTo = 'Language to translate to';
+      editorEn.pe.translateIf = 'Translate if';
+    }
+  }
+
+  const editorFr = editorLocalization.getLocale('fr');
+  if (editorFr && editorFr !== editorEn) {
+    if (editorFr.pe) {
+      if (!editorFr.pe.tabs) editorFr.pe.tabs = {};
+      editorFr.pe.tabs.translation = 'Traduction';
+      editorFr.pe.translateField = 'Traduire à partir de la question';
+      editorFr.pe.translateTo = 'Langue de traduction';
+      editorFr.pe.translateIf = 'Traduire si';
+    }
+  }
+
+  const editorUk = editorLocalization.getLocale('uk');
+  if (editorUk && editorUk !== editorEn) {
+    if (editorUk.pe) {
+      if (!editorUk.pe.tabs) editorUk.pe.tabs = {};
+      editorUk.pe.tabs.translation = 'Переклад';
+      editorUk.pe.translateField = 'Перекласти з питання';
+      editorUk.pe.translateTo = 'Мова для перекладу';
+      editorUk.pe.translateIf = 'Перекласти якщо';
+    }
+  }
 };

@@ -10,6 +10,7 @@ export * from './lib/services/application/application.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/auth/auth.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
+export * from './lib/services/language-interceptor/language-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 export * from './lib/services/context/context.service';
 export * from './lib/services/dashboard-automation/dashboard-automation.service';
@@ -33,6 +34,7 @@ export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 export * from './lib/services/common-services/common-services.service';
+export * from './lib/services/auto-translate/auto-translate.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/async-monaco-editor/public-api';

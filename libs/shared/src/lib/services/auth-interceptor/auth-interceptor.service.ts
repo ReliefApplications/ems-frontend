@@ -111,6 +111,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     ) {
       request = this.addBearerTokenToRequest(request, true);
     }
+
     return request;
   }
 

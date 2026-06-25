@@ -36,6 +36,7 @@ import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Array containing the different types of questions.
@@ -150,6 +151,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
+   * @param autoTranslateService Auto-translate service
    */
   constructor(
     public dialog: Dialog,
@@ -157,7 +159,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
-    private injector: Injector
+    private injector: Injector,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -212,6 +215,8 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation when the preview survey is disposed.
     // Dispose the whole creator ( toolbox, property grid, plugins, survey and
     // all of their event handlers ), not only the survey, otherwise the creator
     // graph stays referenced and its memory is never released.
@@ -282,6 +287,8 @@ export class FormBuilderComponent
           )(question);
           question.dragAreaPlaceholder = text;
         });
+
+      this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
     // Strip any `pos` artifacts already stored in the form so the loaded model
