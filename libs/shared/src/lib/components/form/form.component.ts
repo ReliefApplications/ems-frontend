@@ -135,7 +135,6 @@ export class FormComponent
     );
 
     this.survey.showCompletedPage = false;
-    this.survey.textUpdateMode = 'onTyping';
     this.updateButtonLabels();
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';

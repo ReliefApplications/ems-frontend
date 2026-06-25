@@ -288,9 +288,6 @@ export class FormBuilderComponent
           question.dragAreaPlaceholder = text;
         });
 
-      // Enable textUpdateMode = 'onTyping' and wire field auto-translation onto
-      // the preview survey. The service owns the per-survey state and cleanup.
-      survey.textUpdateMode = 'onTyping';
       this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
