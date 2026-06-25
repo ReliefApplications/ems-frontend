@@ -30,7 +30,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
-import { TranslationService } from '../../services/translation/translation.service';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * This component is used to display forms
@@ -105,7 +105,7 @@ export class FormComponent
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
-   * @param translationService This is the service used to translate text using Azure Translator
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     public dialog: Dialog,
@@ -116,7 +116,7 @@ export class FormComponent
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
     private translate: TranslateService,
-    private translationService: TranslationService
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
   }
@@ -148,7 +148,7 @@ export class FormComponent
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
-      this.translationService.handleFieldTranslation(
+      this.autoTranslateService.handleFieldTranslation(
         sender,
         options,
         this.translationTimeouts,

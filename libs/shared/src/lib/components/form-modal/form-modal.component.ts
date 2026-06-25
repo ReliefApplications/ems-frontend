@@ -49,6 +49,7 @@ import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Interface of Dialog data.
@@ -129,6 +130,10 @@ export class FormModalComponent
   private prefillClonedData: any;
   /** Stored merged data */
   private prefillMergedData: any;
+  /** Map of translation timeouts for debouncing */
+  private translationTimeouts = new Map<string, any>();
+  /** Map of latest source values for translation to prevent race conditions */
+  private latestTranslationSourceValues = new Map<string, string>();
 
   /**
    * Display a form instance in a modal.
@@ -144,6 +149,7 @@ export class FormModalComponent
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -156,7 +162,8 @@ export class FormModalComponent
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
   }
@@ -289,10 +296,16 @@ export class FormModalComponent
     );
 
     this.updateButtonLabels();
-    this.survey.onValueChanged.add(() => {
+    this.survey.onValueChanged.add((sender, options) => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
       this.updateButtonLabels();
+      this.autoTranslateService.handleFieldTranslation(
+        sender,
+        options,
+        this.translationTimeouts,
+        this.latestTranslationSourceValues
+      );
     });
     this.survey.onComplete.add(this.onComplete);
 

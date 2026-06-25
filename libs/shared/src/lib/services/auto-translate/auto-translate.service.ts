@@ -1,24 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
-import { TRANSLATE_TEXT_QUERY } from './graphql/queries';
+import { RestService } from '../rest/rest.service';
 
 /**
- *
+ * Service to machine-translate user-entered text content and auto-fill
+ * SurveyJS form fields from a source field. This is distinct from the app's
+ * i18n/localization: it calls the backend translation endpoint (Azure
+ * Cognitive Translator) to translate content, not UI labels.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class TranslationService {
+export class AutoTranslateService {
   /**
-   * Service to handle translation queries and field translation setup.
+   * Service to machine-translate text content and handle SurveyJS field
+   * auto-translation setup.
    *
-   * @param apollo The apollo client service
+   * @param restService Shared REST service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private restService: RestService) {}
 
   /**
-   * Translate text using backend GraphQL query.
+   * Translate text using the backend translation REST endpoint.
    *
    * @param text Source text to translate
    * @param from BCP-47 source language code (e.g. 'en'). Pass null/undefined for auto-detect.
@@ -37,19 +40,15 @@ export class TranslationService {
     }
 
     try {
-      const response$ = this.apollo.query<{ translateText: string }>({
-        query: TRANSLATE_TEXT_QUERY,
-        variables: {
-          text,
-          from: from || null,
-          to,
-          format,
-        },
-        fetchPolicy: 'no-cache',
+      const response$ = this.restService.post('/translation', {
+        text,
+        from: from || null,
+        to,
+        format,
       });
 
       const result = await firstValueFrom(response$);
-      return result?.data?.translateText || '';
+      return result?.translation || '';
     } catch (error) {
       console.error('Error translating text:', error);
       throw error;

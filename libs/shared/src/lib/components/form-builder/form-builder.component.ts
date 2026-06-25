@@ -36,7 +36,7 @@ import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
-import { TranslationService } from '../../services/translation/translation.service';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Array containing the different types of questions.
@@ -155,7 +155,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
-   * @param translationService Translation service
+   * @param autoTranslateService Auto-translate service
    */
   constructor(
     public dialog: Dialog,
@@ -164,7 +164,7 @@ export class FormBuilderComponent
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
     private injector: Injector,
-    private translationService: TranslationService
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -296,7 +296,7 @@ export class FormBuilderComponent
       // Enable textUpdateMode = 'onTyping' and register value changed handler for preview translation
       survey.textUpdateMode = 'onTyping';
       survey.onValueChanged.add((sender, options) => {
-        this.translationService.handleFieldTranslation(
+        this.autoTranslateService.handleFieldTranslation(
           sender,
           options,
           this.translationTimeouts,
