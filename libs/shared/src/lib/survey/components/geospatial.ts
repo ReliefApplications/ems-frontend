@@ -73,8 +73,33 @@ export const init = (
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
 
+      // Reflect the question read-only/disabled/display state on the map.
+      // `isReadOnly` already accounts for the `readOnly` property, a disabling
+      // `enableIf` condition and a read-only parent panel.
+      const updateReadOnly = (): void => {
+        instance.readOnly =
+          question.isReadOnly ||
+          question.survey.isDisplayMode ||
+          question.survey.isDesignMode;
+      };
+      updateReadOnly();
+
       // Set geo fields
       instance.fields = getGeoFields(question);
+
+      // Keep the map in sync when the read-only/disabled state changes
+      // (outside the form builder). `isReadOnly` fires when the question gets
+      // enabled/disabled via conditions, `readOnly` when the property is toggled.
+      if (!question.survey.isDesignMode) {
+        question.registerFunctionOnPropertyValueChanged(
+          'readOnly',
+          updateReadOnly
+        );
+        question.registerFunctionOnPropertyValueChanged(
+          'isReadOnly',
+          updateReadOnly
+        );
+      }
 
       // Listen to change on geofields
       question.registerFunctionOnPropertyValueChanged('geoFields', () => {

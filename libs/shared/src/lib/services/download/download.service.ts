@@ -2,7 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
@@ -121,6 +121,29 @@ export class DownloadService {
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
+  }
+
+  /**
+   * Gets a file from the server as a blob.
+   *
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param options optional request options
+   * @returns file blob observable
+   */
+  getFileBlob(
+    path: string,
+    type: string,
+    options?: Record<string, unknown>
+  ): Observable<Blob> {
+    const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json',
+    });
+
+    return this.restService
+      .get(path, { ...options, responseType: 'blob', headers })
+      .pipe(map((res) => new Blob([res], { type })));
   }
 
   /**

@@ -29,12 +29,17 @@ export default {
   // Manually add valid tests there
   testMatch: [
     '<rootDir>/src/lib/services/context/*.spec.ts',
+    '<rootDir>/src/lib/services/file/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
+    '<rootDir>/src/lib/components/layout/layout.component.spec.ts',
+    '<rootDir>/src/lib/components/language-switch/language-switch.component.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
+    '<rootDir>/src/lib/survey/components/utils/*.spec.ts',
+    '<rootDir>/src/lib/survey/widgets/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/survey/triggers/*.spec.ts',
   ],

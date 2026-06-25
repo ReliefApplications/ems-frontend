@@ -28,7 +28,7 @@ describe('FormsTabComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

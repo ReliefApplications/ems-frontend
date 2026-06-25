@@ -1,7 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -38,7 +39,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
@@ -53,8 +53,8 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
 import { ActionButton } from '../../../widgets/grid/action-button.type';
+import { File, FileService } from '../../../../services/file/file.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -77,6 +77,7 @@ const matches = (el: any, selector: any) =>
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
   providers: [PopupService, ResizeBatchService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -317,14 +318,12 @@ export class GridComponent
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
-   * @param downloadService The download service
    * @param translate The translate service
    * @param snackBar The snackbar service
-   * @param el Ref to html element
-   * @param document document
    * @param popupService Kendo popup service
-   * @param documentManagementService Shared document management service
    * @param gridDataFormatterService GridDataFormatterService
+   * @param fileService File service
+   * @param cdr Change detector reference
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -332,14 +331,12 @@ export class GridComponent
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
-    private downloadService: DownloadService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document,
     private popupService: PopupService,
-    private documentManagementService: DocumentManagementService,
-    private gridDataFormatterService: GridDataFormatterService
+    private gridDataFormatterService: GridDataFormatterService,
+    private fileService: FileService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -375,6 +372,9 @@ export class GridComponent
           this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
         });
         this.data = { ...this.data };
+        // OnPush: this runs outside an Angular template event, so flag the view
+        // as dirty to re-render the re-translated cells.
+        this.cdr.markForCheck();
       }
     });
   }
@@ -409,7 +409,7 @@ export class GridComponent
         (actions, label) => ({
           label,
           actions,
-          width: this.getCustomActionColumnWidth({ label, actions }),
+          width: 0,
         })
       );
     }
@@ -420,6 +420,9 @@ export class GridComponent
       this.data.data.forEach((gridRow) => {
         this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
+    }
+    if (changes['widget'] || changes['data']) {
+      this.updateCustomActionColumnWidths();
     }
     // First load of records, or on page change
     if (
@@ -434,7 +437,11 @@ export class GridComponent
         this.grid?.columns.forEach((column) => {
           this.updateColumnShowFullScreenButton((column as any).field);
         });
+        // OnPush: mutating dataItem.showFullScreenButton inside a timeout does
+        // not trigger change detection on its own.
+        this.cdr.markForCheck();
       }, 0);
+      this.updateCustomActionColumnWidths();
       this.preventColumnResize
         ? (this.preventColumnResize = false)
         : this.setColumnsWidth();
@@ -455,7 +462,12 @@ export class GridComponent
     });
     new ResizeObservable(this.gridRef.nativeElement)
       .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe(() => this.setColumnsWidth());
+      .subscribe(() => {
+        this.setColumnsWidth();
+        // OnPush: column widths are mutated imperatively from a resize stream,
+        // outside any template event.
+        this.cdr.markForCheck();
+      });
   }
 
   override ngOnDestroy(): void {
@@ -486,6 +498,38 @@ export class GridComponent
     dataItem: any,
     group: { label: string; actions: ActionButton[] }
   ): ActionButton[] {
+    // This is called from the template inside an *ngFor, so it runs on every
+    // change-detection cycle for every row. Memoize the result on the data item
+    // (keyed by the group reference) so we avoid rebuilding the Set / filtered
+    // array each cycle and return a stable array reference, which also prevents
+    // the inner *ngFor from re-rendering when nothing changed. The cache lives on
+    // the row, so it is naturally invalidated when the data is reloaded (new row
+    // objects) or when the group definition changes (new group reference).
+    const cache: Record<string, { group: unknown; result: ActionButton[] }> =
+      (dataItem.__rowActionsCache ??= {});
+    const cached = cache[group.label];
+    if (cached && cached.group === group) {
+      return cached.result;
+    }
+
+    const result = this.computeRowActions(dataItem, group);
+    cache[group.label] = { group, result };
+    return result;
+  }
+
+  /**
+   * Computes the visible custom row actions for a given row / group.
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
+   * @returns The action buttons to render for this row / group.
+   */
+  private computeRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
     const rowGroups: { label: string; actions: ActionButton[] }[] =
       dataItem?.actions ?? [];
     if (!rowGroups.length) {
@@ -506,6 +550,30 @@ export class GridComponent
   }
 
   /**
+   * Track-by for the fields *ngFor so Kendo does not tear down and recreate
+   * every column (and its templates) on each change-detection pass.
+   *
+   * @param _index Index in the loop.
+   * @param field The grid field.
+   * @returns A stable identity for the field.
+   */
+  public trackByFieldName(_index: number, field: any): string {
+    return field?.name ?? _index;
+  }
+
+  /**
+   * Track-by for the custom row action group columns.
+   *
+   * @param _index Index in the loop.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @returns A stable identity for the group.
+   */
+  public trackByGroupLabel(_index: number, group: { label: string }): string {
+    return group?.label ?? _index;
+  }
+
+  /**
    * Compute the width of a custom row action column based on the rendered
    * width of each button's text and the length of the group label.
    *
@@ -521,31 +589,68 @@ export class GridComponent
     /** Gap between buttons */
     const gap = 8;
     /** Left / right cell padding */
-    const cellPadding = 16;
+    /** Left / right cell padding */
+    const cellPadding = 10;
     /** Approx pixel width per character */
     const charWidth = 8;
     /** Padding + border on a single button (left + right) */
-    const buttonPadding = 24;
+    const buttonPadding = 20;
     /** Minimum width of a button so icon-only / very short labels stay clickable */
-    const minButtonWidth = 60;
+    const minButtonWidth = 34;
     /** Additional space reserved for the kendo column header icons */
     const headerExtras = 32;
 
-    const actions = group.actions ?? [];
-    const buttonsWidth = actions.reduce(
-      (sum, action) =>
-        sum +
-        Math.max(
-          (action.text?.length ?? 0) * charWidth + buttonPadding,
-          minButtonWidth
-        ),
-      0
-    );
-    const count = Math.max(actions.length, 1);
-    const contentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    let maxContentWidth = 0;
+
+    if (this.data && this.data.data && this.data.data.length > 0) {
+      this.data.data.forEach((dataItem) => {
+        const visibleActions = this.getRowActions(dataItem, group);
+        if (visibleActions && visibleActions.length > 0) {
+          const rowButtonsWidth = visibleActions.reduce(
+            (sum, action) =>
+              sum +
+              Math.max(
+                (action.text?.length ?? 0) * charWidth + buttonPadding,
+                minButtonWidth
+              ),
+            0
+          );
+          const rowContentWidth =
+            rowButtonsWidth + (visibleActions.length - 1) * gap + cellPadding;
+          if (rowContentWidth > maxContentWidth) {
+            maxContentWidth = rowContentWidth;
+          }
+        }
+      });
+    } else {
+      const actions = group.actions ?? [];
+      const buttonsWidth = actions.reduce(
+        (sum, action) =>
+          sum +
+          Math.max(
+            (action.text?.length ?? 0) * charWidth + buttonPadding,
+            minButtonWidth
+          ),
+        0
+      );
+      const count = Math.max(actions.length, 1);
+      maxContentWidth = buttonsWidth + (count - 1) * gap + cellPadding;
+    }
+
     const titleWidth =
       (group.label?.length ?? 0) * charWidth + headerExtras + cellPadding;
-    return Math.max(contentWidth, titleWidth, 108);
+    return Math.max(maxContentWidth, titleWidth, 108);
+  }
+
+  /**
+   * Recalculates the width of all custom row action columns.
+   */
+  public updateCustomActionColumnWidths(): void {
+    if (this.customRowActionGroups) {
+      this.customRowActionGroups.forEach((group) => {
+        group.width = this.getCustomActionColumnWidth(group);
+      });
+    }
   }
 
   /**
@@ -839,6 +944,9 @@ export class GridComponent
     this.currentEditedItem = null;
     this.editing = false;
     this.formGroup = new UntypedFormGroup({});
+    // OnPush: closeEditor can be triggered by the document click listener, which
+    // is outside Angular's event bindings.
+    this.cdr.markForCheck();
   }
 
   /**
@@ -861,25 +969,15 @@ export class GridComponent
   }
 
   /**
-   * Downloads file of record.
+   * Opens a preview for PDF/images or downloads other files.
    *
-   * @param file File to download.
+   * @param file File to open.
    */
-  public onDownload(file: any): void {
-    if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
-        const downloadLink = this.document.createElement('a');
-        downloadLink.href = file.content;
-        downloadLink.download = file.name;
-        downloadLink.click();
-      } else {
-        const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
-      }
-    } else {
-      // Using document management
-      this.documentManagementService.getFile(file);
-    }
+  public onOpenFile(file: File): void {
+    this.fileService
+      .downloadOrPreview(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   /**
