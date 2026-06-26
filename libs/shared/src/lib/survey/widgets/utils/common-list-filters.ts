@@ -19,7 +19,7 @@ const DEFAULT_VISIBLE_OPTIONS = 100;
 function updateChoices(
   widget: ComboBoxComponent | MultiSelectComponent,
   surveyQuestion: any,
-  searchValue: string = ''
+  searchValue = ''
 ) {
   const choices: { text: string | undefined | null; value: any }[] = (
     surveyQuestion.visibleChoices || []

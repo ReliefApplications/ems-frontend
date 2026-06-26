@@ -1,7 +1,7 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { addons } from '@storybook/addons';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
+import { FORCE_RE_RENDER } from 'storybook/internal/core-events';
 import { RadioComponent } from './radio.component';
 import { RadioGroupDirective } from './radio-group.directive';
 import { variants } from '../types/variant';

@@ -49,7 +49,7 @@ const getRefPathPropertyFromItem = (
 export const updateQueryUniqueValues = <T>(
   previousDataContent: T[],
   currentDataContent: T[],
-  uniqueComparatorProperty: string = 'id'
+  uniqueComparatorProperty = 'id'
 ): T[] => {
   if (!currentDataContent || !currentDataContent?.length) {
     return previousDataContent;

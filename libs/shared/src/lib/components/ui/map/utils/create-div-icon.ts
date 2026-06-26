@@ -112,7 +112,7 @@ const markerHtmlStyles = (
 export const createCustomDivIcon = (
   iconProperties: MarkerIconOptions,
   htmlTemplate: HTMLElement | string = '',
-  className: string = 'custom-marker'
+  className = 'custom-marker'
 ) => {
   const { icon, color, opacity, size } = iconProperties;
   let sizeForIconType = size;

@@ -66,7 +66,7 @@ export class BreadcrumbService {
    */
   private createBreadcrumbs(
     route: ActivatedRoute,
-    uri: string = '',
+    uri = '',
     breadcrumbs: Breadcrumb[] = []
   ): any {
     const children: ActivatedRoute[] = route.children;
