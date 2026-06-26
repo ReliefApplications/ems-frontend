@@ -1152,6 +1152,16 @@
 					"editGeofield": "Редагувати геополя",
 					"label": "Мітка",
 					"value": "Значення"
+				},
+				"fields": {
+					"coordinates": "Координати",
+					"city": "Місто",
+					"countryName": "Назва країни",
+					"countryCode": "Код країни",
+					"district": "Район",
+					"region": "Регіон",
+					"subRegion": "Субрегіон",
+					"address": "Адреса"
 				}
 			}
 		},

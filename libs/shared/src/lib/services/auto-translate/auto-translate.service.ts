@@ -117,7 +117,7 @@ export class AutoTranslateService {
   /**
    * Run a programmatic data-loading function with auto-translation suppressed
    * for the given survey. Convenience wrapper so callers do not need to keep
-   * the handle returned by {@link registerAutoTranslation}; if the survey has
+   * the handle returned by registerAutoTranslation; if the survey has
    * no auto-translation wired, the loader simply runs without suppression.
    *
    * @param survey Survey whose auto-translation should be suppressed

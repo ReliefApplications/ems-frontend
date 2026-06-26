@@ -24,6 +24,7 @@ import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { AutoTranslateService } from '../auto-translate/auto-translate.service';
+import { toSurveyLocale } from '../../utils/languages';
 
 /**
  * Shared form builder service.
@@ -136,14 +137,19 @@ export class FormBuilderService {
       }
     }
     // set the lang of the survey
+    const usedLocales = survey.getUsedLocales();
     const surveyLang = localStorage.getItem('surveyLang');
-    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
+    // SurveyJS locale codes differ from Angular's for some languages
+    // (e.g. Ukrainian is 'uk' in Angular but 'ua' in SurveyJS).
+    const systemLang = toSurveyLocale(
+      this.translate.currentLang || this.translate.defaultLang
+    );
+    if (systemLang && usedLocales.includes(systemLang)) {
+      // The language the user sees the system in takes priority over their last
+      // manual form-language pick (if the form has a version for that language).
+      survey.locale = systemLang;
+    } else if (surveyLang && usedLocales.includes(surveyLang)) {
       survey.locale = surveyLang;
-    } else {
-      const lang = this.translate.currentLang || this.translate.defaultLang;
-      if (survey.getUsedLocales().includes(lang)) {
-        survey.locale = lang;
-      }
     }
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
