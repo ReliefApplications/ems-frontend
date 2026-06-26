@@ -156,7 +156,9 @@
   <!-- Notification menu -->
   <ui-menu #notificationMenu width="w-80">
     <!-- Header -->
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+    <div
+      class="flex items-center justify-between px-4 py-3 border-b border-gray-100"
+    >
       <h3 class="text-sm font-semibold text-gray-800">
         {{ 'components.notifications.title' | translate }}
       </h3>
@@ -170,7 +172,9 @@
       </ui-button>
     </div>
     <!-- Notification list -->
-    <div class="flex flex-col overflow-y-auto max-h-[50vh] divide-y divide-gray-50">
+    <div
+      class="flex flex-col overflow-y-auto max-h-[50vh] divide-y divide-gray-50"
+    >
       <ng-container *ngIf="notifications.length > 0; else emptyNotifications">
         <div
           *ngFor="let notification of notifications"
@@ -178,7 +182,9 @@
           (click)="onNotificationClick(notification)"
         >
           <div class="flex-shrink-0 mt-0.5">
-            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50">
+            <span
+              class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50"
+            >
               <ui-icon icon="mail" class="text-blue-500" [size]="18"></ui-icon>
             </span>
           </div>
@@ -203,14 +209,21 @@
         </div>
       </ng-container>
       <ng-template #emptyNotifications>
-        <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+        <div
+          class="flex flex-col items-center justify-center py-10 text-gray-400"
+        >
           <ui-icon icon="notifications_none" [size]="32"></ui-icon>
-          <p class="text-sm mt-2">{{ 'components.notifications.empty' | translate }}</p>
+          <p class="text-sm mt-2">
+            {{ 'components.notifications.empty' | translate }}
+          </p>
         </div>
       </ng-template>
     </div>
     <!-- Load more -->
-    <div *ngIf="hasMoreNotifications" class="px-4 py-2 border-t border-gray-100">
+    <div
+      *ngIf="hasMoreNotifications"
+      class="px-4 py-2 border-t border-gray-100"
+    >
       <ui-button
         category="tertiary"
         variant="primary"
