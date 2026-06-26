@@ -1,3 +1,17 @@
+# [2.23.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.14...v2.23.0-rc.15) (2026-06-26)
+
+
+### Bug Fixes
+
+* survey not automatically loading in user locale + missing translation for geo fields in survey ([1247e98](https://github.com/ReliefApplications/ems-frontend/commit/1247e98204c58dfee43cb38e114511215a3ec430))
+
+# [2.23.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.13...v2.23.0-rc.14) (2026-06-26)
+
+
+### Bug Fixes
+
+* data consumed by forms could have blank fields due to auto translate feature ([420f7d1](https://github.com/ReliefApplications/ems-frontend/commit/420f7d16c717cb4cfa4469e476416873208c9406))
+
 # [2.23.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.12...v2.23.0-rc.13) (2026-06-25)
 
 

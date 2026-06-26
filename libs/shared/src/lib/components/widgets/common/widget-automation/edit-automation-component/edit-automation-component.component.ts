@@ -278,7 +278,7 @@ export class EditAutomationComponentComponent
    *
    * @param dashboardService Dashboard service
    * @param mapLayersService Map layers service
-   * @param translate
+   * @param translate Translate service
    * @param data Dialog data, automation component to edit
    */
   constructor(

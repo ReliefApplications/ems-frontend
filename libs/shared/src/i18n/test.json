@@ -1164,6 +1164,16 @@
 					"editGeofield": "******",
 					"label": "******",
 					"value": "******"
+				},
+				"fields": {
+					"address": "******",
+					"city": "******",
+					"coordinates": "******",
+					"countryCode": "******",
+					"countryName": "******",
+					"district": "******",
+					"region": "******",
+					"subRegion": "******"
 				}
 			}
 		},
