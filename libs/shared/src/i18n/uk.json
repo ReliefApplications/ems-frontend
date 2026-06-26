@@ -1154,14 +1154,14 @@
 					"value": "Значення"
 				},
 				"fields": {
-					"coordinates": "Координати",
+					"address": "Адреса",
 					"city": "Місто",
-					"countryName": "Назва країни",
+					"coordinates": "Координати",
 					"countryCode": "Код країни",
+					"countryName": "Назва країни",
 					"district": "Район",
 					"region": "Регіон",
-					"subRegion": "Субрегіон",
-					"address": "Адреса"
+					"subRegion": "Субрегіон"
 				}
 			}
 		},
