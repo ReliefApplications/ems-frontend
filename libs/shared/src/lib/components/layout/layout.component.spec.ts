@@ -23,8 +23,8 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_NOTIFICATIONS } from './graphql/queries';
-import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
+import { GET_NOTIFICATIONS } from '../../services/notification/graphql/queries';
+import { NOTIFICATION_SUBSCRIPTION } from '../../services/notification/graphql/subscriptions';
 import { AppAbility } from '../../services/auth/auth.service';
 import {
   BreadcrumbsModule,
