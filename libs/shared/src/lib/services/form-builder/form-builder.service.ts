@@ -136,9 +136,8 @@ export class FormBuilderService {
         }
       }
     }
-    // set the lang of the survey
+    // Set the lang of the survey
     const usedLocales = survey.getUsedLocales();
-    const surveyLang = localStorage.getItem('surveyLang');
     // SurveyJS locale codes differ from Angular's for some languages
     // (e.g. Ukrainian is 'uk' in Angular but 'ua' in SurveyJS).
     const systemLang = toSurveyLocale(
@@ -148,8 +147,6 @@ export class FormBuilderService {
       // The language the user sees the system in takes priority over their last
       // manual form-language pick (if the form has a version for that language).
       survey.locale = systemLang;
-    } else if (surveyLang && usedLocales.includes(surveyLang)) {
-      survey.locale = surveyLang;
     }
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';

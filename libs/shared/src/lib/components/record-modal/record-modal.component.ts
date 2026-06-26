@@ -24,7 +24,6 @@ import { SnackbarService, TabsModule } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
@@ -54,7 +53,6 @@ interface DialogData {
     TabsModule,
     IconModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DateModule,
     ButtonModule,
