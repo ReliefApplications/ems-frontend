@@ -1,5 +1,5 @@
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import type { StorybookConfig } from '@storybook/angular';
 
 /**
@@ -7,7 +7,7 @@ import type { StorybookConfig } from '@storybook/angular';
  */
 const config: StorybookConfig = {
   stories: ['../**/*.stories.@(js|jsx|ts|tsx|mdx)'],
-  addons: [getAbsolutePath("@storybook/addon-docs")],
+  addons: [getAbsolutePath('@storybook/addon-docs')],
   staticDirs: [
     {
       from: '../../../assets',
@@ -19,7 +19,7 @@ const config: StorybookConfig = {
     },
   ],
   framework: {
-    name: getAbsolutePath("@storybook/angular"),
+    name: getAbsolutePath('@storybook/angular'),
     options: {},
   },
 };
@@ -30,6 +30,13 @@ export default config;
 // Check https://storybook.js.org/docs/react/builders/webpack#extending-storybooks-webpack-config
 // and https://nx.dev/packages/storybook/documents/custom-builder-configs
 
+/**
+ * Resolves the absolute path of a package so Storybook addons load reliably
+ * regardless of the workspace's module hoisting.
+ *
+ * @param value Package name to resolve.
+ * @returns Absolute path to the package directory.
+ */
 function getAbsolutePath(value: string): any {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }

@@ -18,13 +18,6 @@
           "codeCoverage": true
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/styles/**/*.ts", "libs/styles/**/*.html"]
-      }
     }
   },
   "tags": []

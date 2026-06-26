@@ -31,8 +31,11 @@ export default config;
 // and https://nx.dev/packages/storybook/documents/custom-builder-configs
 
 /**
+ * Resolves the absolute path of a package so Storybook addons load reliably
+ * regardless of the workspace's module hoisting.
  *
- * @param value
+ * @param value Package name to resolve.
+ * @returns Absolute path to the package directory.
  */
 function getAbsolutePath(value: string): any {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
