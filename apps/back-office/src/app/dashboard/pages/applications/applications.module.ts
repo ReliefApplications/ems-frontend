@@ -14,7 +14,7 @@ import {
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   DialogModule,
   GraphQLSelectModule,
@@ -54,7 +54,7 @@ import {
     SharedDateModule,
     GraphQLSelectModule,
     DividerModule,
-    AbilityModule,
+    AblePipe,
     DialogModule,
     ButtonModule,
     FormWrapperModule,

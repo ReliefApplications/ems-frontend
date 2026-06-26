@@ -33,7 +33,7 @@ import {
 } from '@oort-front/shared';
 import { debounceTime, takeUntil } from 'rxjs';
 import { get } from 'lodash';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 import { GridType } from 'angular-gridster2';
 
@@ -80,7 +80,7 @@ interface DialogData {
     OverlayModule,
     SearchMenuModule,
     AlertModule,
-    AbilityModule,
+    AblePipe,
     DashboardFilterSettingsComponent,
   ],
   templateUrl: './view-settings-modal.component.html',

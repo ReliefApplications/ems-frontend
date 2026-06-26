@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UserDetailsComponent } from './user-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   ButtonModule,
   FormWrapperModule,
@@ -21,7 +21,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     FormWrapperModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     FixedWrapperModule,
   ],

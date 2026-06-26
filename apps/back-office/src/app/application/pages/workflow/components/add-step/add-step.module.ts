@@ -5,7 +5,7 @@ import { AddStepComponent } from './add-step.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContentChoiceModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   DividerModule,
   ButtonModule,
@@ -26,7 +26,7 @@ import {
     ContentChoiceModule,
     TranslateModule,
     DividerModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     GraphQLSelectModule,
     FormWrapperModule,

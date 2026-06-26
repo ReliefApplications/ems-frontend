@@ -14,7 +14,7 @@ import {
   StatusOptionsComponent,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   ButtonModule,
   MenuModule,
@@ -47,7 +47,7 @@ import { FilterComponent } from './filter/filter.component';
     PaginatorModule,
     TranslateModule,
     SkeletonTableModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,

@@ -16,7 +16,7 @@ import {
   ErrorMessageModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 /**
  * Application settings module.
@@ -37,7 +37,7 @@ import { AbilityModule } from '@casl/angular';
     FixedWrapperModule,
     AccessModule,
     StatusOptionsComponent,
-    AbilityModule,
+    AblePipe,
     IconModule,
     TooltipModule,
     ErrorMessageModule,

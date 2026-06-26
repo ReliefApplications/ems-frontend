@@ -1,38 +1,14 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "oort-front",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e",
-          "build-storybook"
-        ],
-        "accessToken": "YThkMzZlZmYtNDU3My00YjdmLTkxM2QtOGZiZGNhNjg1MTljfHJlYWQtd3JpdGU="
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
-    },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "e2e": {
-      "inputs": ["default", "^production"]
-    },
-    "lint": {
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore"
-      ]
+      "inputs": ["default", "^production"],
+      "cache": true
     },
     "build-storybook": {
       "inputs": [
@@ -40,7 +16,29 @@
         "^production",
         "{projectRoot}/.storybook/**/*",
         "{projectRoot}/tsconfig.storybook.json"
-      ]
+      ],
+      "cache": true
+    },
+    "@nx/jest:jest": {
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true,
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "@nx/eslint:lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore"
+      ],
+      "cache": true
     }
   },
   "namedInputs": {
@@ -72,5 +70,6 @@
     "@nx/angular:component": {
       "style": "scss"
     }
-  }
+  },
+  "nxCloudAccessToken": "YThkMzZlZmYtNDU3My00YjdmLTkxM2QtOGZiZGNhNjg1MTljfHJlYWQtd3JpdGU="
 }

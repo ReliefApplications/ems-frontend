@@ -8,7 +8,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import { PureAbility } from '@casl/ability';
 import {
   ButtonModule,
@@ -42,7 +42,7 @@ describe('ApplicationsComponent', () => {
       imports: [
         ApolloTestingModule,
         DialogModule,
-        AbilityModule,
+        AblePipe,
         ButtonModule,
         MenuModule,
         DividerModule,
