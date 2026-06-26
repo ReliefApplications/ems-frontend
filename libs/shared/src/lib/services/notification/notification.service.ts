@@ -61,11 +61,12 @@ export class NotificationService {
   constructor(private apollo: Apollo) {}
 
   /**
-   * If notifications are empty, fetch all notifications and listen to new one.
-   * Else, only listen to new one.
+   * Initialize notification fetching and real-time subscription.
+   * Safe to call multiple times — only initializes once.
    */
   public init(): void {
     if (this.firstLoad) {
+      this.firstLoad = false;
       this.notificationsQuery =
         this.apollo.watchQuery<NotificationsQueryResponse>({
           query: GET_NOTIFICATIONS,
@@ -167,6 +168,5 @@ export class NotificationService {
     this.notifications.next(this.cachedNotifications);
     this.pageInfo.endCursor = data.notifications.pageInfo.endCursor;
     this.hasNextPage.next(data.notifications.pageInfo.hasNextPage);
-    this.firstLoad = false;
   }
 }

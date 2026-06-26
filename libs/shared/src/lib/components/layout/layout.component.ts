@@ -416,11 +416,29 @@ export class LayoutComponent
   }
 
   /**
-   * Marks notification as seen when clicking on it
+   * Opens the notification detail modal and marks the notification as seen.
    *
    * @param notification The notification that was clicked on
    */
-  onNotificationClick(notification: Notification): void {
+  async onNotificationClick(notification: Notification): Promise<void> {
+    this.notificationService.markAsSeen(notification);
+    const { NotificationDetailModalComponent } = await import(
+      './components/notification-detail-modal/notification-detail-modal.component'
+    );
+    this.dialog.open(NotificationDetailModalComponent, {
+      data: { notification },
+      autoFocus: false,
+    });
+  }
+
+  /**
+   * Marks a single notification as seen without opening the detail modal.
+   *
+   * @param event The click event (stopped to avoid triggering parent)
+   * @param notification The notification to mark as seen
+   */
+  onMarkSingleNotification(event: Event, notification: Notification): void {
+    event.stopPropagation();
     this.notificationService.markAsSeen(notification);
   }
 

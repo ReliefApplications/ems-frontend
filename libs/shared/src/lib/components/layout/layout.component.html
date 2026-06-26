@@ -83,7 +83,6 @@
         [size]="'large'"
         variant="light"
         [uiMenuTriggerFor]="notificationMenu"
-        [disabled]="notifications.length === 0"
         icon="notifications"
         [isIcon]="true"
         [uiTooltip]="'components.notifications.title' | translate"
@@ -155,36 +154,74 @@
     </div>
   </ui-menu>
   <!-- Notification menu -->
-  <ui-menu #notificationMenu>
-    <!-- Remove visible notifications -->
-    <ui-button
-      (click)="onMarkAllNotificationsAsRead()"
-      class="self-end"
-      icon="check_circle_outline"
-      >{{ 'components.notifications.readAll' | translate }}</ui-button
-    >
-    <!-- List of notifications -->
-    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
-      <button
-        uiMenuItem
-        (click)="onNotificationClick(notification)"
-        *ngFor="let notification of notifications"
+  <ui-menu #notificationMenu width="w-80">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      <h3 class="text-sm font-semibold text-gray-800">
+        {{ 'components.notifications.title' | translate }}
+      </h3>
+      <ui-button
+        *ngIf="notifications.length > 0"
+        category="tertiary"
+        size="small"
+        (click)="onMarkAllNotificationsAsRead()"
       >
-        {{ notification.action }} - {{ notification.createdAt | sharedDate }}
-      </button>
+        {{ 'components.notifications.readAll' | translate }}
+      </ui-button>
     </div>
-    <!-- Load more notifications -->
-    <ui-button
-      *ngIf="hasMoreNotifications"
-      category="primary"
-      variant="primary"
-      [isBlock]="true"
-      [disabled]="loadingNotifications"
-      [loading]="loadingNotifications"
-      (click)="onLoadMoreNotifications($event)"
-    >
-      {{ 'common.pagination.loadMore' | translate }}
-    </ui-button>
+    <!-- Notification list -->
+    <div class="flex flex-col overflow-y-auto max-h-[50vh] divide-y divide-gray-50">
+      <ng-container *ngIf="notifications.length > 0; else emptyNotifications">
+        <div
+          *ngFor="let notification of notifications"
+          class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors group"
+          (click)="onNotificationClick(notification)"
+        >
+          <div class="flex-shrink-0 mt-0.5">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50">
+              <ui-icon icon="mail" class="text-blue-500" [size]="18"></ui-icon>
+            </span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-800 line-clamp-2">
+              {{ notification.action }}
+            </p>
+            <p class="text-xs text-gray-500 mt-0.5">
+              {{ notification.createdAt | sharedDate }}
+            </p>
+          </div>
+          <div class="opacity-0 group-hover:opacity-100 flex-shrink-0">
+            <ui-button
+              [isIcon]="true"
+              icon="check"
+              size="small"
+              category="tertiary"
+              [uiTooltip]="'components.notifications.markAsSeen' | translate"
+              (click)="onMarkSingleNotification($event, notification)"
+            ></ui-button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #emptyNotifications>
+        <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+          <ui-icon icon="notifications_none" [size]="32"></ui-icon>
+          <p class="text-sm mt-2">{{ 'components.notifications.empty' | translate }}</p>
+        </div>
+      </ng-template>
+    </div>
+    <!-- Load more -->
+    <div *ngIf="hasMoreNotifications" class="px-4 py-2 border-t border-gray-100">
+      <ui-button
+        category="tertiary"
+        variant="primary"
+        [isBlock]="true"
+        [disabled]="loadingNotifications"
+        [loading]="loadingNotifications"
+        (click)="onLoadMoreNotifications($event)"
+      >
+        {{ 'common.pagination.loadMore' | translate }}
+      </ui-button>
+    </div>
   </ui-menu>
 </nav>
 <!-- Vertical navigation -->

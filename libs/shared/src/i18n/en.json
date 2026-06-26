@@ -1263,11 +1263,16 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "You received an email notification."
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "Email input"
 				}
 			},
+			"empty": "No new notifications",
+			"markAsSeen": "Mark as seen",
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
