@@ -1273,11 +1273,16 @@
 			"value": "******"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "******"
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "******"
 				}
 			},
+			"empty": "******",
+			"markAsSeen": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
