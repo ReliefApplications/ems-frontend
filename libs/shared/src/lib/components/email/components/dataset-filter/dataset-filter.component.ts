@@ -155,7 +155,11 @@ export class DatasetFilterComponent
   private computeCsFilterContextSettings(): void {
     const datasetName = this.query.get('name')?.value;
     const fields: string[] = [];
-    (this.availableFields ?? []).forEach((field: any) => {
+    // Source the selected dataset fields (children under `field.fields`) rather than
+    // availableFields (children under `field.type.fields`), so appendFields descends and
+    // emits nested dotted tokens like createdBy.username — matching the SSE-body dropdown.
+    const selectedFields = this.query.getRawValue()?.query?.fields ?? [];
+    selectedFields.forEach((field: any) => {
       this.emailService.appendFields(field, field.name, fields);
     });
     this.csFilterContextSettings =
@@ -232,6 +236,12 @@ export class DatasetFilterComponent
         this.emailService.index.next(this.activeTab.index);
         this.computeCsFilterContextSettings();
       });
+    // Keep the csFilter dataset-token options in sync with the selected fields, so newly
+    // selected nested fields appear in the value picker without leaving the dataset config.
+    this.query.controls.query
+      .get('fields')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.computeCsFilterContextSettings());
     this.query.controls?.navigateSettings?.controls?.field?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
