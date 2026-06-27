@@ -20,7 +20,6 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
-import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { EditorService } from '../../../services/editor/editor.service';
 import { SINGLE_INPUT_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
@@ -204,13 +203,11 @@ export class FilterRowComponent
    *
    * @param emailService email notifications helper functions
    * @param cs Common Services connection
-   * @param dataTemplateService data template helper functions
    * @param editorService editor helper functions
    */
   constructor(
     public emailService: EmailService,
     private cs: CommonServicesService,
-    private dataTemplateService: DataTemplateService,
     private editorService: EditorService
   ) {
     super();
@@ -220,41 +217,8 @@ export class FilterRowComponent
     this.contextTinyMCEConfig.language = editorService.language;
   }
 
-  /**
-   * Get context fields
-   */
-  public getContextFields() {
-    const fields: any = [];
-    if (this.dlContextSettings?.resource) {
-      get(this.dlContextSettings.resource, 'metadata', []).forEach(
-        (metaField: any) => {
-          get(this.dlContextSettings.layout, 'query.fields', []).forEach(
-            (field: any) => {
-              if (field.name === metaField.name) {
-                const type = metaField.type;
-                fields.push({ ...field, type });
-              }
-            }
-          );
-        }
-      );
-    }
-
-    const fieldNames = [
-      ...this.dataTemplateService.getAutoCompleterKeys(fields),
-    ];
-
-    console.log('FieldNames', fieldNames);
-
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.contextTinyMCEConfig,
-      fieldNames
-    );
-  }
-
   ngOnInit(): void {
     this.computeDatasetTokenOptions();
-    this.getContextFields();
     this.form
       .get('field')
       ?.valueChanges?.pipe(takeUntil(this.destroy$))
