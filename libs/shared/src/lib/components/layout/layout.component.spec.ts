@@ -23,8 +23,6 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_NOTIFICATIONS } from './graphql/queries';
-import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import { AppAbility } from '../../services/auth/auth.service';
 import {
   BreadcrumbsModule,
@@ -94,29 +92,6 @@ describe('LayoutComponent', () => {
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    const op1 = controller.expectOne(GET_NOTIFICATIONS);
-
-    op1.flush({
-      data: {
-        notifications: {
-          edges: [],
-          totalCount: 0,
-          pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
-          },
-        },
-      },
-    });
-
-    const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
-
-    op2.flush({
-      data: {
-        notification: null,
-      },
-    });
   });
 
   afterEach(() => {

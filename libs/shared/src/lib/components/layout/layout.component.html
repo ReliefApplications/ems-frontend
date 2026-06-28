@@ -77,26 +77,8 @@
       [uiTooltip]="'common.account' | translate"
     >
     </ui-button>
-    <!-- Notifications button -->
-    <kendo-badge-container>
-      <ui-button
-        [size]="'large'"
-        variant="light"
-        [uiMenuTriggerFor]="notificationMenu"
-        [disabled]="notifications.length === 0"
-        icon="notifications"
-        [isIcon]="true"
-        [uiTooltip]="'components.notifications.title' | translate"
-      >
-      </ui-button>
-      <kendo-badge
-        shape="dot"
-        themeColor="error"
-        size="small"
-        class="!-translate-x-1/4 !translate-y-full"
-        *ngIf="notifications.length > 0"
-      ></kendo-badge>
-    </kendo-badge-container>
+    <!-- Notifications -->
+    <shared-notification-icon></shared-notification-icon>
     <!-- Language switch -->
     <shared-language-switch></shared-language-switch>
   </div>
@@ -153,38 +135,6 @@
     >
       {{ environment.version }}
     </div>
-  </ui-menu>
-  <!-- Notification menu -->
-  <ui-menu #notificationMenu>
-    <!-- Remove visible notifications -->
-    <ui-button
-      (click)="onMarkAllNotificationsAsRead()"
-      class="self-end"
-      icon="check_circle_outline"
-      >{{ 'components.notifications.readAll' | translate }}</ui-button
-    >
-    <!-- List of notifications -->
-    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
-      <button
-        uiMenuItem
-        (click)="onNotificationClick(notification)"
-        *ngFor="let notification of notifications"
-      >
-        {{ notification.action }} - {{ notification.createdAt | sharedDate }}
-      </button>
-    </div>
-    <!-- Load more notifications -->
-    <ui-button
-      *ngIf="hasMoreNotifications"
-      category="primary"
-      variant="primary"
-      [isBlock]="true"
-      [disabled]="loadingNotifications"
-      [loading]="loadingNotifications"
-      (click)="onLoadMoreNotifications($event)"
-    >
-      {{ 'common.pagination.loadMore' | translate }}
-    </ui-button>
   </ui-menu>
 </nav>
 <!-- Vertical navigation -->

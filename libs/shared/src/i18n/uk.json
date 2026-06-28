@@ -1273,11 +1273,16 @@
 			"value": "Значення"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "Ви отримали сповіщення електронною поштою."
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "Введення email"
 				}
 			},
+			"empty": "Немає нових сповіщень",
+			"markAsSeen": "Позначити як переглянуте",
 			"paginator": {
 				"ariaLabel": "Виберіть сторінку сповіщень"
 			},

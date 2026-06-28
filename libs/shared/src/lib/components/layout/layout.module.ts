@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { LayoutComponent } from './layout.component';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SearchMenuModule } from '../search-menu/search-menu.module';
 import { LanguageSwitchComponent } from '../language-switch/language-switch.component';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { DateModule } from '../../pipes/date/date.module';
+import { NotificationIconComponent } from './components/notification-icon/notification-icon.component';
 import {
   BreadcrumbsModule,
   DividerModule,
@@ -34,14 +33,13 @@ import {
     DragDropModule,
     TooltipModule,
     DividerModule,
-    IndicatorsModule,
     TranslateModule,
     SearchMenuModule,
     LanguageSwitchComponent,
     OverlayModule,
-    DateModule,
     BreadcrumbsModule,
     ButtonModule,
+    NotificationIconComponent,
   ],
   exports: [LayoutComponent],
 })
