@@ -10,6 +10,7 @@
       *ngIf="notifications.length > 0"
       category="tertiary"
       size="small"
+      icon="check_circle_outline"
       (click)="markAllAsRead.emit()"
     >
       {{ 'components.notifications.readAll' | translate }}
