@@ -17,6 +17,7 @@ import {
   MenuModule,
   ButtonModule,
   SidenavContainerModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -42,6 +43,7 @@ import {
     DateModule,
     BreadcrumbsModule,
     ButtonModule,
+    IconModule,
   ],
   exports: [LayoutComponent],
 })

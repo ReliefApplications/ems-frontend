@@ -24,41 +24,8 @@ interface DialogData {
     DateModule,
   ],
   selector: 'shared-notification-detail-modal',
-  template: `
-    <ui-dialog size="medium">
-      <ng-container ngProjectAs="header">
-        <h1>{{ data.notification.action }}</h1>
-      </ng-container>
-      <ng-container ngProjectAs="content">
-        <p class="text-gray-500 text-sm mb-4">
-          {{ data.notification.createdAt | sharedDate }}
-        </p>
-        <ng-container *ngIf="data.notification.content?.html; else noHtml">
-          <div
-            class="notification-html-content border rounded p-4 bg-gray-50 overflow-auto max-h-[60vh]"
-            [innerHTML]="data.notification.content.html"
-          ></div>
-        </ng-container>
-        <ng-template #noHtml>
-          <p class="text-gray-700">
-            {{ 'components.notifications.detail.emailSent' | translate }}
-          </p>
-        </ng-template>
-      </ng-container>
-      <ng-container ngProjectAs="actions">
-        <ui-button (click)="close()" variant="primary">
-          {{ 'common.close' | translate }}
-        </ui-button>
-      </ng-container>
-    </ui-dialog>
-  `,
-  styles: [
-    `
-      .notification-html-content {
-        word-break: break-word;
-      }
-    `,
-  ],
+  templateUrl: './notification-detail-modal.component.html',
+  styleUrls: ['./notification-detail-modal.component.scss'],
 })
 export class NotificationDetailModalComponent {
   /**
