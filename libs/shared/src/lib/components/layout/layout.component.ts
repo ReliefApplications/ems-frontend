@@ -17,9 +17,7 @@ import { Account, AuthService } from '../../services/auth/auth.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
 import { Dialog } from '@angular/cdk/dialog';
-import { NotificationService } from '../../services/notification/notification.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -109,20 +107,6 @@ export class LayoutComponent
    */
   languages: string[] = [];
 
-  // === NOTIFICATIONS ===
-  /**
-   * Notifications
-   */
-  public notifications: Notification[] = [];
-  /**
-   * Boolean to check if there are more notifications
-   */
-  public hasMoreNotifications = false;
-  /**
-   * Boolean to check if notifications are loading
-   */
-  public loadingNotifications = false;
-
   /** Account information of logged user */
   public account: Account | null;
   /** Currently logged user */
@@ -209,7 +193,6 @@ export class LayoutComponent
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
-   * @param notificationService This is the service that handles the notifications.
    * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
@@ -222,7 +205,6 @@ export class LayoutComponent
     @Inject('environment') environment: any,
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService,
     private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
@@ -251,24 +233,6 @@ export class LayoutComponent
       this.otherOffice = 'back office';
     }
     this.loadUser();
-    this.notificationService.init();
-    this.notificationService.notifications$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((notifications: Notification[]) => {
-        if (notifications) {
-          this.notifications = notifications;
-        } else {
-          this.notifications = [];
-        }
-      });
-
-    this.notificationService.hasNextPage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.hasMoreNotifications = res;
-        this.loadingNotifications = false;
-      });
-
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view) => {
@@ -395,51 +359,6 @@ export class LayoutComponent
         this.setLanguage(this.getLanguage());
       }
     });
-  }
-
-  /**
-   * Load more notifications
-   *
-   * @param e Event
-   */
-  public onLoadMoreNotifications(e: any): void {
-    e.stopPropagation();
-    this.notificationService.fetchMore();
-    this.loadingNotifications = true;
-  }
-
-  /**
-   * Marks all the notifications as read
-   */
-  onMarkAllNotificationsAsRead(): void {
-    this.notificationService.markAllAsSeen();
-  }
-
-  /**
-   * Opens the notification detail modal and marks the notification as seen.
-   *
-   * @param notification The notification that was clicked on
-   */
-  async onNotificationClick(notification: Notification): Promise<void> {
-    this.notificationService.markAsSeen(notification);
-    const { NotificationDetailModalComponent } = await import(
-      './components/notification-detail-modal/notification-detail-modal.component'
-    );
-    this.dialog.open(NotificationDetailModalComponent, {
-      data: { notification },
-      autoFocus: false,
-    });
-  }
-
-  /**
-   * Marks a single notification as seen without opening the detail modal.
-   *
-   * @param event The click event (stopped to avoid triggering parent)
-   * @param notification The notification to mark as seen
-   */
-  onMarkSingleNotification(event: Event, notification: Notification): void {
-    event.stopPropagation();
-    this.notificationService.markAsSeen(notification);
   }
 
   /**

@@ -1,0 +1,43 @@
+<div class="flex flex-col overflow-y-auto max-h-[50vh] divide-y divide-gray-50">
+  <ng-container *ngIf="notifications.length > 0; else emptyNotifications">
+    <div
+      *ngFor="let notification of notifications"
+      class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors group"
+      (click)="notificationClick.emit(notification)"
+    >
+      <div class="flex-shrink-0 mt-0.5">
+        <span
+          class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50"
+        >
+          <ui-icon icon="mail" class="text-blue-500" [size]="18"></ui-icon>
+        </span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-800 line-clamp-2">
+          {{ notification.action }}
+        </p>
+        <p class="text-xs text-gray-500 mt-0.5">
+          {{ notification.createdAt | sharedDate }}
+        </p>
+      </div>
+      <div class="opacity-0 group-hover:opacity-100 flex-shrink-0">
+        <ui-button
+          [isIcon]="true"
+          icon="check"
+          size="small"
+          category="tertiary"
+          [uiTooltip]="'components.notifications.markAsSeen' | translate"
+          (click)="onMarkAsSeen($event, notification)"
+        ></ui-button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #emptyNotifications>
+    <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+      <ui-icon icon="notifications_none" [size]="32"></ui-icon>
+      <p class="text-sm mt-2">
+        {{ 'components.notifications.empty' | translate }}
+      </p>
+    </div>
+  </ng-template>
+</div>
