@@ -6,11 +6,13 @@
     <p class="text-gray-500 text-sm mb-4">
       {{ data.notification.createdAt | sharedDate }}
     </p>
-    <ng-container *ngIf="data.notification.content?.html; else noHtml">
-      <div
-        class="notification-html-content border rounded p-4 bg-gray-50 overflow-auto max-h-[60vh]"
-        [innerHTML]="data.notification.content.html"
-      ></div>
+    <ng-container *ngIf="safeHtml; else noHtml">
+      <iframe
+        class="notification-html-content w-full border rounded bg-white"
+        title="{{ data.notification.action }}"
+        sandbox=""
+        [srcdoc]="safeHtml"
+      ></iframe>
     </ng-container>
     <ng-template #noHtml>
       <p class="text-gray-700">
