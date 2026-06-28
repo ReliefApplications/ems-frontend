@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Dialog } from '@angular/cdk/dialog';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { ButtonModule, MenuModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +13,7 @@ import { NotificationMenuComponent } from '../notification-menu/notification-men
  * Header notification bell: badge, dropdown menu and notification interactions.
  *
  * Self-contained — subscribes to the notification service and handles loading,
- * marking as seen and opening the notification detail modal.
+ * marking notifications as seen.
  */
 @Component({
   standalone: true,
@@ -45,12 +44,8 @@ export class NotificationIconComponent
    * Header notification bell component.
    *
    * @param notificationService Service that handles the notifications
-   * @param dialog Dialog service provided by Angular CDK
    */
-  constructor(
-    private notificationService: NotificationService,
-    private dialog: Dialog
-  ) {
+  constructor(private notificationService: NotificationService) {
     super();
   }
 
@@ -86,22 +81,6 @@ export class NotificationIconComponent
    */
   onMarkAllNotificationsAsRead(): void {
     this.notificationService.markAllAsSeen();
-  }
-
-  /**
-   * Opens the notification detail modal and marks the notification as seen.
-   *
-   * @param notification The notification that was clicked on
-   */
-  async onNotificationClick(notification: Notification): Promise<void> {
-    this.notificationService.markAsSeen(notification);
-    const { NotificationDetailModalComponent } = await import(
-      '../notification-detail-modal/notification-detail-modal.component'
-    );
-    this.dialog.open(NotificationDetailModalComponent, {
-      data: { notification },
-      autoFocus: false,
-    });
   }
 
   /**

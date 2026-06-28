@@ -1,10 +1,10 @@
-<ui-dialog size="medium">
+<ui-dialog size="big">
   <ng-container ngProjectAs="header">
     <h1>{{ data.notification.action }}</h1>
   </ng-container>
   <ng-container ngProjectAs="content">
     <p class="text-gray-500 text-sm mb-4">
-      {{ data.notification.createdAt | sharedDate }}
+      {{ data.notification.createdAt | sharedDate : 'short' }}
     </p>
     <ng-container *ngIf="safeHtml; else noHtml">
       <iframe

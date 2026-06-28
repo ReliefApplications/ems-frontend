@@ -18,7 +18,7 @@
   <!-- Notification list -->
   <shared-notification-list
     [notifications]="notifications"
-    (notificationClick)="notificationClick.emit($event)"
+    (notificationClick)="onNotificationClick($event)"
     (markAsSeen)="markAsSeen.emit($event)"
   ></shared-notification-list>
   <!-- Load more -->
