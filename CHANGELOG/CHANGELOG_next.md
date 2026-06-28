@@ -1,3 +1,10 @@
+# [2.23.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.15...v2.23.0-rc.16) (2026-06-28)
+
+
+### Features
+
+* Email notifications now generate in-app messages ([#2888](https://github.com/ReliefApplications/ems-frontend/issues/2888)) ([9906e70](https://github.com/ReliefApplications/ems-frontend/commit/9906e709eaf2792d3af3ac2f5b3ce704e9d029b4)), closes [AB#133554](https://github.com/AB/issues/133554)
+
 # [2.23.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.14...v2.23.0-rc.15) (2026-06-26)
 
 
