@@ -147,7 +147,7 @@ export class GridSettingsFormFactory {
         value && value.navigateToPage ? value.navigateToPage : false,
       ],
     });
-    // Require an SSE grid action to have a recipient source (DL or fields)
+    // Require a separate-email grid action to have at least one per-row field.
     formGroup.addValidators(this.sendSeparateEmailRecipientValidator);
     formGroup.updateValueAndValidity();
     // Avoid goToNextStep & goToPreviousStep to coexist
@@ -170,11 +170,8 @@ export class GridSettingsFormFactory {
   };
 
   /**
-   * Cross-field validator for a grid action form group: a "Send separate email"
-   * action must have at least one separate-email field (the per-row recipient
-   * extraction source). The distribution list is hidden while SSE is on, so it
-   * is not an alternative; without a field the email reaches nobody, so it
-   * blocks save.
+   * Send-separate-email requires at least one separate-email field (the per-row
+   * recipient source). The distribution list is optional and does not replace it.
    *
    * @param group grid action form group
    * @returns validation errors

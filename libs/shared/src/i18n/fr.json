@@ -2147,7 +2147,7 @@
               "selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
               "selectDisplay": "Sélectionner les champs affichés",
               "sendMail": "Envoyer le mail",
-              "separateEmailRecipientRequired": "Ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, ou désactivez l'envoi séparé pour utiliser une liste de distribution, sinon l'e-mail n'a aucun destinataire.",
+              "separateEmailRecipientRequired": "Ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, sinon les e-mails séparés n'ont aucun destinataire. Une liste de distribution peut également être ajoutée, mais ne remplace pas le champ par ligne.",
               "workflow": {
                 "close": "Fermer le workflow",
                 "confirm": "Message de confirmation",

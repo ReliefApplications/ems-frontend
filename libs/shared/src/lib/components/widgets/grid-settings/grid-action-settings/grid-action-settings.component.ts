@@ -257,10 +257,8 @@ export class GridActionSettingsComponent
         if (value) {
           this.formGroup?.get('templates')?.setValidators(Validators.required);
         } else {
-          this.formGroup?.get('distributionList')?.clearValidators();
           this.formGroup?.get('templates')?.clearValidators();
         }
-        this.formGroup?.get('distributionList')?.updateValueAndValidity();
         this.formGroup?.get('templates')?.updateValueAndValidity();
       });
 
@@ -367,17 +365,11 @@ export class GridActionSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((sendSeparateEmail: boolean) => {
         if (!sendSeparateEmail) {
+          // Drop per-row recipient fields when separate email is off.
           const fields = this.separateEmailFieldsArray;
           while (fields?.length) {
             fields.removeAt(0);
           }
-        }
-        if (this.formGroup?.get('sendMail')?.value) {
-          if (sendSeparateEmail) {
-            this.formGroup?.get('distributionList')?.clearValidators();
-            this.formGroup?.get('distributionList')?.setValue(null);
-          }
-          this.formGroup?.get('distributionList')?.updateValueAndValidity();
         }
       });
   }

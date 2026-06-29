@@ -7,10 +7,7 @@
   <!-- 5th step Layout -->
   <div>
     <div
-      *ngIf="
-        isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
-      "
+      *ngIf="isPreviewTemplate"
       [uiErrorMessage]="
         showRecipientError
           ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSeparateEmailRecipients
@@ -54,10 +51,7 @@
     </div>
 
     <div
-      *ngIf="
-        isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
-      "
+      *ngIf="isPreviewTemplate"
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
         layoutForm.get('cc')?.errors && layoutForm.get('cc')?.touched
@@ -87,10 +81,7 @@
     </div>
 
     <div
-      *ngIf="
-        isPreviewTemplate &&
-        !(emailService.gridActionSendSeparateEmail && emailService.hasSeparateEmailRecipients)
-      "
+      *ngIf="isPreviewTemplate"
       [uiErrorMessage]="emailsError | translate"
       [uiErrorMessageIf]="
         layoutForm.get('bcc')?.errors && layoutForm.get('bcc')?.touched

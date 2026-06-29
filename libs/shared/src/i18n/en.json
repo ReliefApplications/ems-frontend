@@ -2144,7 +2144,7 @@
               "selectAllRecordsActivePage": "Select all records on the active page",
               "selectDisplay": "Select displayed fields",
               "sendMail": "Send mail",
-              "separateEmailRecipientRequired": "Add at least one separate email field containing email values, or turn off Send Separate Email to use a distribution list, otherwise the email has no recipients.",
+              "separateEmailRecipientRequired": "Add at least one separate email field containing email values, otherwise the separate emails have no recipients. A distribution list can be added as well, but does not replace the per-row field.",
               "workflow": {
                 "close": "Close workflow",
                 "confirm": "Confirmation message",
