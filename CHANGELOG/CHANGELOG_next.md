@@ -1,3 +1,10 @@
+# [2.23.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.16...v2.23.0-rc.17) (2026-06-29)
+
+
+### Bug Fixes
+
+* placeholders without associated value would stay in html ([1c23795](https://github.com/ReliefApplications/ems-frontend/commit/1c237951cb23dacfc0ceacb1d8e8784d82ca9d3a))
+
 # [2.23.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.15...v2.23.0-rc.16) (2026-06-28)
 
 
