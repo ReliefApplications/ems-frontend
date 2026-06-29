@@ -572,6 +572,11 @@ export class FormHelpersService {
       if (Array.isArray(value) && value.some((file) => this.isFile(file))) {
         options.value = this.renderFileLinks(options.name, value);
         options.isExists = true;
+      } else if (!options.isExists && value == null) {
+        // The placeholder points to no field/value at all: render nothing
+        // instead of leaving the raw `{field}` text in the output.
+        options.value = '';
+        options.isExists = true;
       }
       return;
     }
