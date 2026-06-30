@@ -205,7 +205,9 @@ export const init = (environment: any): void => {
     category: 'navigation',
     visibleIndex: 100,
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
   });
   serializer.addProperty('survey', {
     name: `${ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY}:boolean`,
@@ -230,7 +232,9 @@ export const init = (environment: any): void => {
     description:
       'Only used when the form is opened in a modal. Falls back to the regular save label if empty.',
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
     visibleIf: shouldShowAdvancedNavigationLabelOverrides,
   });
 };
