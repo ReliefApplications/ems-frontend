@@ -52,6 +52,7 @@ export interface QuestionSelectBase
   referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
+  referenceDataListenersWired?: boolean;
   referenceDataVariableMapping?: string;
 }
 
