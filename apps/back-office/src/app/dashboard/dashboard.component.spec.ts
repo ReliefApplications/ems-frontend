@@ -57,10 +57,10 @@ describe('DashboardComponent', () => {
           provide: 'environment',
           useValue: {
             theme: {},
-            availableLanguages: []
+            availableLanguages: [],
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

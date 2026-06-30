@@ -21,6 +21,7 @@ import { IconModule } from '@oort-front/ui';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionGeospatialListboxModel } from './geofields-listbox.model';
 import { getGeoFields } from '../utils/get-geospatial-fields';
+import { GeoFieldLabelPipe } from '../utils/geo-field-label.pipe';
 
 /** All available fields */
 export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
@@ -45,6 +46,7 @@ export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
     FormsModule,
     ReactiveFormsModule,
     IconModule,
+    GeoFieldLabelPipe,
   ],
   templateUrl: './geofields-listbox.component.html',
   styleUrls: ['./geofields-listbox.component.scss'],

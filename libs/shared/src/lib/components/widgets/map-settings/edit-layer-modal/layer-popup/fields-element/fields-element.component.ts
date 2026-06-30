@@ -10,21 +10,13 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
-import { EditorControlComponent } from '../../../../../controls/editor-control/editor-control.component';
-import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
-import { EditorService } from '../../../../../../services/editor/editor.service';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import {
   ListBoxModule,
   ListBoxToolbarConfig,
 } from '@progress/kendo-angular-listbox';
-import {
-  ButtonModule,
-  DividerModule,
-  FormWrapperModule,
-  IconModule,
-  TooltipModule,
-} from '@oort-front/ui';
+import { ButtonModule, DividerModule, FormWrapperModule } from '@oort-front/ui';
+import { LocalizedInputComponent } from '../../../../../controls/public-api';
 /**
  * Popup fields element component.
  */
@@ -39,9 +31,7 @@ import {
     FormWrapperModule,
     DividerModule,
     ButtonModule,
-    EditorControlComponent,
-    IconModule,
-    TooltipModule,
+    LocalizedInputComponent,
     ListBoxModule,
   ],
   templateUrl: './fields-element.component.html',
@@ -55,8 +45,6 @@ export class FieldsElementComponent
   @Input() formGroup!: FormGroup;
   /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
-  /** Tinymce editor configuration */
-  public editorConfig = INLINE_EDITOR_CONFIG;
   /** Available fields as array */
   public availableFields: string[] = [];
   /** Selected fields */
@@ -78,13 +66,6 @@ export class FieldsElementComponent
     // Listen to fields changes
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.availableFields = value.map((field) => field.name);
-      this.editorService.addCalcAndKeysAutoCompleter(
-        this.editorConfig,
-        this.availableFields.map((field) => ({
-          text: `{{${field}}}`,
-          value: `{{${field}}}`,
-        }))
-      );
     });
 
     // Get initial selected fields
@@ -93,15 +74,6 @@ export class FieldsElementComponent
       const index = this.availableFields.indexOf(field);
       if (index > -1) this.availableFields.splice(index, 1);
     });
-  }
-
-  /**
-   * Creates an instance of FieldsElementComponent.
-   *
-   * @param editorService Shared tinymce editor service.
-   */
-  constructor(private editorService: EditorService) {
-    super();
   }
 
   /** Updates the element selected fields form value */

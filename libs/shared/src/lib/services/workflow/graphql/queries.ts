@@ -8,6 +8,7 @@ export const GET_WORKFLOW_BY_ID = gql`
     workflow(id: $id, asRole: $asRole) {
       id
       name
+      nameTranslations
       createdAt
       modifiedAt
       canUpdate
@@ -48,6 +49,7 @@ export const GET_WORKFLOW_BY_ID = gql`
           showName
         }
         name
+        nameTranslations
         visible
         canUpdate
         permissions {

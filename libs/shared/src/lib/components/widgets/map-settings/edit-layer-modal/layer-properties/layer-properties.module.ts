@@ -12,6 +12,7 @@ import {
   ToggleModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import { LocalizedInputComponent } from '../../../../controls/public-api';
 
 /**
  * Map layer properties module.
@@ -30,6 +31,7 @@ import { PortalModule } from '@angular/cdk/portal';
     FilterModule,
     ButtonModule,
     PortalModule,
+    LocalizedInputComponent,
   ],
   exports: [LayerPropertiesComponent],
 })

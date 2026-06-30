@@ -8,6 +8,7 @@ export const ADD_LAYOUT = gql`
     addLayout(resource: $resource, form: $form, layout: $layout) {
       id
       name
+      nameTranslations
       createdAt
       query
       display
@@ -28,6 +29,7 @@ export const EDIT_LAYOUT = gql`
     editLayout(resource: $resource, form: $form, layout: $layout, id: $id) {
       id
       name
+      nameTranslations
       createdAt
       query
       display

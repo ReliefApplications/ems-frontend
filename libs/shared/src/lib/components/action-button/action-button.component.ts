@@ -11,6 +11,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { LocalizePipe } from '../../pipes/localize/localize.pipe';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Router } from '@angular/router';
@@ -44,7 +45,13 @@ import { EmailNotification } from '../../models/email-notifications.model';
 @Component({
   selector: 'shared-action-button',
   standalone: true,
-  imports: [CommonModule, ButtonModule, TooltipModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    TooltipModule,
+    TranslateModule,
+    LocalizePipe,
+  ],
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],
 })

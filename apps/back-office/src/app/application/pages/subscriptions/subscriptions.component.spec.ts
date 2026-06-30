@@ -50,7 +50,7 @@ describe('SubscriptionsComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

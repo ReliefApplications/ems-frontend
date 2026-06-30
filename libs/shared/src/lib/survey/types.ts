@@ -22,6 +22,9 @@ export interface Question extends SurveyCoreQuestion, GlobalProperties {}
 export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
+  translateField?: string;
+  translateTo?: string;
+  translateIf?: string;
 }
 
 /** File question interface */
@@ -32,6 +35,9 @@ export interface QuestionComment
   extends QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
+  translateField?: string;
+  translateTo?: string;
+  translateIf?: string;
 }
 
 /** Type for all select-based questions */

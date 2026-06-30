@@ -180,6 +180,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"download": "******",
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
@@ -375,6 +376,9 @@
 					"ongoing": "******",
 					"processing": "******",
 					"ready": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"upload": {
 					"error": "******",
@@ -1116,11 +1120,11 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
-				"confirmMessage": "****** {{action}} ******",
 				"confirmActionTitle": {
 					"create": "******",
 					"update": "******"
 				},
+				"confirmMessage": "****** {{action}} ******",
 				"confirmTitle": {
 					"few": "******",
 					"one": "******"
@@ -1160,6 +1164,16 @@
 					"editGeofield": "******",
 					"label": "******",
 					"value": "******"
+				},
+				"fields": {
+					"address": "******",
+					"city": "******",
+					"coordinates": "******",
+					"countryCode": "******",
+					"countryName": "******",
+					"district": "******",
+					"region": "******",
+					"subRegion": "******"
 				}
 			}
 		},
@@ -1181,6 +1195,8 @@
 		},
 		"header": {
 			"goToApp": "******",
+			"goToBackOffice": "******",
+			"goToFrontOffice": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -1257,11 +1273,16 @@
 			"value": "******"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "******"
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "******"
 				}
 			},
+			"empty": "******",
+			"markAsSeen": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1377,13 +1398,13 @@
 				"and": "******",
 				"edit": {
 					"appliesTo": "******",
-					"isBadge": "******",
-					"isBadgeTooltip": "******",
 					"background": {
 						"color": "******"
 					},
 					"criteria": "******",
 					"fields": "******",
+					"isBadge": "******",
+					"isBadgeTooltip": "******",
 					"name": "******",
 					"selectedColumns": "******",
 					"text": {
@@ -1830,6 +1851,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"details": "******",
 					"goTo": "******",
 					"history": "******"
 				},
@@ -1896,6 +1918,13 @@
 				},
 				"openEditor": "******",
 				"openSettings": "******",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "******"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "******",
 					"displayMap": "******",
@@ -2004,6 +2033,7 @@
 						"export": "******",
 						"goTo": {
 							"column": {
+								"defaultTitle": "******",
 								"label": "******",
 								"placeholder": "******"
 							},
@@ -2833,7 +2863,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "******",
-					"fields": "******",
+					"fields": "****** {{filter.<name>}} ****** {{user.username}} ****** {{user.firstName}} ****** {{user.lastName}} ****** {{user.country}} ******",
 					"position": "******"
 				},
 				"historicalDate": "****** {{filter.<name>}} ******"

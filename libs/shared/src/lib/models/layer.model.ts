@@ -3,6 +3,7 @@ import { Gradient } from '../components/controls/gradient-picker/gradient-picker
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
 import { HeatMapOptions as HeatMapOptionsWithoutOpacity } from 'leaflet';
 import { AdminIdentifier } from '../services/map/map-polygons.service';
+import { LocalizedString } from './localized-string.model';
 
 /**
  * Layer types for backend
@@ -93,7 +94,7 @@ export interface LayerDefinition {
  */
 export interface PopupElementText {
   type: 'text';
-  text?: string;
+  text?: LocalizedString;
 }
 
 /**
@@ -101,8 +102,8 @@ export interface PopupElementText {
  */
 export interface PopupElementFields {
   type: 'fields';
-  title?: string;
-  description?: string;
+  title?: LocalizedString;
+  description?: LocalizedString;
   fields?: string[];
 }
 
@@ -110,7 +111,7 @@ export interface PopupElementFields {
  * Layer Popup Fields type interface
  */
 export interface Fields {
-  label: string;
+  label: LocalizedString;
   name: string;
   type: string;
   text?: string;
@@ -133,8 +134,8 @@ export interface PopupElement
  * Layer Popup info interface
  */
 export interface PopupInfo {
-  title?: string;
-  description?: string;
+  title?: LocalizedString;
+  description?: LocalizedString;
   popupElements?: PopupElement[];
   fieldsInfo?: Fields[];
 }
@@ -162,7 +163,7 @@ export interface LayerDatasource {
  */
 export interface LayerModel {
   id: string;
-  name: string;
+  name: LocalizedString;
   type?: LayerType;
   sublayers?: string[];
   visibility: boolean;

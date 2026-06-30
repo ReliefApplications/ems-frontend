@@ -11,6 +11,7 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-data-grid.module';
+import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
 
 /** Module for grid widget component */
 @NgModule({
@@ -25,6 +26,7 @@ import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-
     SelectMenuModule,
     TranslateModule,
     ReferenceDataGridModule,
+    LocalizePipe,
   ],
   exports: [GridWidgetComponent],
 })

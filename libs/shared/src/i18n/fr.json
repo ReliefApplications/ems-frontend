@@ -180,6 +180,7 @@
 			"none": "Aucune liste de distribution",
 			"one": "Liste de distribution"
 		},
+		"download": "Télécharger",
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
@@ -375,6 +376,9 @@
 					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
 					"processing": "Téléchargement du fichier en cours...",
 					"ready": "Votre fichier est prêt"
+				},
+				"preview": {
+					"processing": "Ouverture de l'aperçu..."
 				},
 				"upload": {
 					"error": "Un problème est survenu lors de l'import",
@@ -1160,6 +1164,16 @@
 					"editGeofield": "Éditer les champs",
 					"label": "Label",
 					"value": "Valeur"
+				},
+				"fields": {
+					"address": "Adresse",
+					"city": "Ville",
+					"coordinates": "Coordonnées",
+					"countryCode": "Code du pays",
+					"countryName": "Nom du pays",
+					"district": "District",
+					"region": "Région",
+					"subRegion": "Sous-région"
 				}
 			}
 		},
@@ -1181,6 +1195,8 @@
 		},
 		"header": {
 			"goToApp": "Ouvrir l'application",
+			"goToBackOffice": "Naviguer vers le back office",
+			"goToFrontOffice": "Naviguer vers le front office",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -1257,11 +1273,16 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "Vous avez reçu une notification par e-mail."
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "Type de saisie d'e-mail"
 				}
 			},
+			"empty": "Aucune nouvelle notification",
+			"markAsSeen": "Marquer comme lu",
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de notifications"
 			},
@@ -1833,6 +1854,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"details": "Détails",
 					"goTo": "Aller à la page",
 					"history": "Voir l'historique"
 				},
@@ -1899,6 +1921,13 @@
 				},
 				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
+				"rowAction": {
+					"fields": {
+						"columnLabel": {
+							"text": "Titre de la colonne"
+						}
+					}
+				},
 				"tooltip": {
 					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",
@@ -2007,6 +2036,7 @@
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Détails",
 								"label": "Nom de la colonne",
 								"placeholder": "Entrez un nom pour la colonne..."
 							},
@@ -2153,7 +2183,7 @@
 						"fields": "Champs",
 						"filter": "Filtre",
 						"groupLayers": "Regrouper les calques",
-						"labels": "Étiquettes",
+						"labels": "Titres",
 						"layerDatasource": "Source de données de la couche",
 						"layerEdition": "Edition de couche",
 						"layerProperties": "Propriétés",
@@ -2847,7 +2877,7 @@
 			"create": "Créer un formulaire",
 			"edit": "Modifier le formulaire",
 			"field": {
-				"label": "Étiquette",
+				"label": "Titre",
 				"name": "Nom du champ",
 				"usedIn": "Utilisé par"
 			},
@@ -2959,7 +2989,7 @@
 				"delete": "Supprimer le champ de tri",
 				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
-				"label": "Étiquette",
+				"label": "Titre",
 				"management": "Gestion des champs de tri",
 				"order": "Ordre",
 				"select": "Sélectionnez un champ de tri...",

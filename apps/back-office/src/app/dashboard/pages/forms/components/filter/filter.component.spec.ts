@@ -28,9 +28,7 @@ describe('FilterComponent', () => {
           },
         }),
       ],
-      providers: [
-        TranslateService
-      ]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

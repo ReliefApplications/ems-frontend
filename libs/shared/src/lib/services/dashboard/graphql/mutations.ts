@@ -8,6 +8,7 @@ export const EDIT_DASHBOARD = gql`
     $id: ID!
     $structure: JSON
     $name: String
+    $nameTranslations: JSON
     $buttons: [ActionButtonInputType]
     $gridOptions: JSON
   ) {
@@ -15,11 +16,13 @@ export const EDIT_DASHBOARD = gql`
       id: $id
       structure: $structure
       name: $name
+      nameTranslations: $nameTranslations
       buttons: $buttons
       gridOptions: $gridOptions
     ) {
       id
       name
+      nameTranslations
       structure
       modifiedAt
       permissions {

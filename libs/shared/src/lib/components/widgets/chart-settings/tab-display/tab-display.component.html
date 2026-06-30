@@ -42,11 +42,13 @@
           </ng-container>
           <div class="flex flex-col gap-2">
             <!-- Text -->
-            <div uiFormFieldDirective class="flex-1">
+            <div uiFormFieldDirective class="flex-1" [defaultMargin]="false">
               <label>{{
                 'components.widget.settings.chart.text' | translate
               }}</label>
-              <input formControlName="text" />
+              <shared-localized-input
+                formControlName="text"
+              ></shared-localized-input>
             </div>
             <div class="flex gap-2 items-center">
               <!-- Font size -->

@@ -180,6 +180,7 @@
 			"none": "No distribution list",
 			"one": "Distribution list"
 		},
+		"download": "Download",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
@@ -375,6 +376,9 @@
 					"ongoing": "Your file export is ongoing. You will receive an email once ready.",
 					"processing": "Downloading file...",
 					"ready": "Your file is ready"
+				},
+				"preview": {
+					"processing": "Opening preview..."
 				},
 				"upload": {
 					"error": "Something went wrong during the upload",
@@ -1160,6 +1164,16 @@
 					"editGeofield": "Edit Geo fields",
 					"label": "Label",
 					"value": "Value"
+				},
+				"fields": {
+					"address": "Address",
+					"city": "City",
+					"coordinates": "Coordinates",
+					"countryCode": "Country Code",
+					"countryName": "Country Name",
+					"district": "District",
+					"region": "Region",
+					"subRegion": "Sub Region"
 				}
 			}
 		},
@@ -1181,6 +1195,8 @@
 		},
 		"header": {
 			"goToApp": "Go to application",
+			"goToBackOffice": "Navigate to back office",
+			"goToFrontOffice": "Navigate to front office",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -1257,11 +1273,16 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "You received an email notification."
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "Email input"
 				}
 			},
+			"empty": "No new notifications",
+			"markAsSeen": "Mark as seen",
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
@@ -1830,6 +1851,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
+					"details": "Details",
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
@@ -2011,6 +2033,7 @@
 						"export": "Export records",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Details",
 								"label": "Column name",
 								"placeholder": "Type a title for the column..."
 							},

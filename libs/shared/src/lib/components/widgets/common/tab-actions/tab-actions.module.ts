@@ -11,6 +11,7 @@ import {
   SelectMenuModule,
   CheckboxModule,
 } from '@oort-front/ui';
+import { LocalizedInputComponent } from '../../../controls/public-api';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -28,6 +29,7 @@ import {
     TooltipModule,
     SelectMenuModule,
     CheckboxModule,
+    LocalizedInputComponent,
   ],
   exports: [TabActionsComponent],
 })

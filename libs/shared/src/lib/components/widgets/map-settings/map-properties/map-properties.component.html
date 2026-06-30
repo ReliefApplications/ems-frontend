@@ -10,7 +10,9 @@
           <!-- Widget ( map ) name -->
           <div uiFormFieldDirective>
             <label>{{ 'common.name' | translate }}</label>
-            <input formControlName="title" type="string" />
+            <shared-localized-input
+              formControlName="title"
+            ></shared-localized-input>
           </div>
           <ui-divider></ui-divider>
           <!-- Basemap -->

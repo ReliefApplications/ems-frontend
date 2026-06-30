@@ -1,30 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === GET RECORD BY ID ===
-/** Graphql request for getting a record by its id */
-export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!, $display: Boolean) {
-    record(id: $id) {
-      id
-      incrementalId
-      createdAt
-      modifiedAt
-      createdBy {
-        name
-      }
-      modifiedBy {
-        name
-      }
-      data(display: $display)
-      form {
-        resource {
-          metadata
-        }
-      }
-    }
-  }
-`;
-
 /** Graphql request for getting resource metadata */
 export const GET_RESOURCE_METADATA = gql`
   query GetResourceMeta($id: ID!) {

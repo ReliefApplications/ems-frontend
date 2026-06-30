@@ -1,7 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -38,7 +39,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, groupBy, has, intersection, isEqual, isNil, map } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
@@ -53,8 +53,9 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
 import { ActionButton } from '../../../widgets/grid/action-button.type';
+import { resolveLocalizedString } from '../../../../models/localized-string.model';
+import { File, FileService } from '../../../../services/file/file.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -77,6 +78,7 @@ const matches = (el: any, selector: any) =>
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
   providers: [PopupService, ResizeBatchService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -317,14 +319,12 @@ export class GridComponent
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
-   * @param downloadService The download service
    * @param translate The translate service
    * @param snackBar The snackbar service
-   * @param el Ref to html element
-   * @param document document
    * @param popupService Kendo popup service
-   * @param documentManagementService Shared document management service
    * @param gridDataFormatterService GridDataFormatterService
+   * @param fileService File service
+   * @param cdr Change detector reference
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
@@ -332,14 +332,12 @@ export class GridComponent
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
-    private downloadService: DownloadService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private el: ElementRef,
-    @Inject(DOCUMENT) private document: Document,
     private popupService: PopupService,
-    private documentManagementService: DocumentManagementService,
-    private gridDataFormatterService: GridDataFormatterService
+    private gridDataFormatterService: GridDataFormatterService,
+    private fileService: FileService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -369,6 +367,19 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.data && this.data.data) {
+        this.data.data.forEach((gridRow) => {
+          this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
+        });
+        this.data = { ...this.data };
+        // OnPush: this runs outside an Angular template event, so flag the view
+        // as dirty to re-render the re-translated cells.
+        this.cdr.markForCheck();
+      }
+      this.buildCustomRowActionGroups();
+      this.updateCustomActionColumnWidths();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -391,19 +402,7 @@ export class GridComponent
     // cache snapshots the column list once and never re-includes columns
     // added later, which makes multiple action groups overlap.
     if (changes['widget']) {
-      const customRowActions: ActionButton[] = get(
-        this.widget,
-        'settings.customRowActions',
-        []
-      );
-      this.customRowActionGroups = map(
-        groupBy(customRowActions, 'columnLabel'),
-        (actions, label) => ({
-          label,
-          actions,
-          width: 0,
-        })
-      );
+      this.buildCustomRowActionGroups();
     }
     if (
       (changes['data']?.currentValue?.data.length || this.data.data.length) &&
@@ -429,6 +428,9 @@ export class GridComponent
         this.grid?.columns.forEach((column) => {
           this.updateColumnShowFullScreenButton((column as any).field);
         });
+        // OnPush: mutating dataItem.showFullScreenButton inside a timeout does
+        // not trigger change detection on its own.
+        this.cdr.markForCheck();
       }, 0);
       this.updateCustomActionColumnWidths();
       this.preventColumnResize
@@ -451,7 +453,12 @@ export class GridComponent
     });
     new ResizeObservable(this.gridRef.nativeElement)
       .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe(() => this.setColumnsWidth());
+      .subscribe(() => {
+        this.setColumnsWidth();
+        // OnPush: column widths are mutated imperatively from a resize stream,
+        // outside any template event.
+        this.cdr.markForCheck();
+      });
   }
 
   override ngOnDestroy(): void {
@@ -465,6 +472,28 @@ export class GridComponent
     if (this.closeEditorListener) {
       this.closeEditorListener();
     }
+  }
+
+  /**
+   * Build customRowActionGroups from widget settings, resolving LocalizedString column labels.
+   * Called on widget changes and on language change so column titles stay in sync.
+   */
+  private buildCustomRowActionGroups(): void {
+    const customRowActions: ActionButton[] = get(
+      this.widget,
+      'settings.customRowActions',
+      []
+    );
+    this.customRowActionGroups = map(
+      groupBy(customRowActions, (action) =>
+        resolveLocalizedString(action.columnLabel, this.translate.currentLang)
+      ),
+      (actions, label) => ({
+        label,
+        actions,
+        width: 0,
+      })
+    );
   }
 
   /**
@@ -482,23 +511,87 @@ export class GridComponent
     dataItem: any,
     group: { label: string; actions: ActionButton[] }
   ): ActionButton[] {
-    const rowGroups: { label: string; actions: ActionButton[] }[] =
-      dataItem?.actions ?? [];
-    if (!rowGroups.length) {
-      // return group.actions;
+    // This is called from the template inside an *ngFor, so it runs on every
+    // change-detection cycle for every row. Memoize the result on the data item
+    // (keyed by the group reference) so we avoid rebuilding the Set / filtered
+    // array each cycle and return a stable array reference, which also prevents
+    // the inner *ngFor from re-rendering when nothing changed. The cache lives on
+    // the row, so it is naturally invalidated when the data is reloaded (new row
+    // objects) or when the group definition changes (new group reference).
+    const cache: Record<string, { group: unknown; result: ActionButton[] }> =
+      (dataItem.__rowActionsCache ??= {});
+    const cached = cache[group.label];
+    if (cached && cached.group === group) {
+      return cached.result;
+    }
+
+    const result = this.computeRowActions(dataItem, group);
+    cache[group.label] = { group, result };
+    return result;
+  }
+
+  /**
+   * Computes the visible custom row actions for a given row / group.
+   *
+   * @param dataItem The current row data item.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @param group.actions Full set of actions configured for the group.
+   * @returns The action buttons to render for this row / group.
+   */
+  private computeRowActions(
+    dataItem: any,
+    group: { label: string; actions: ActionButton[] }
+  ): ActionButton[] {
+    // Backend returns a flat ActionButton[] of the actions visible for this row.
+    const visibleActions: ActionButton[] = dataItem?._meta?.actions ?? [];
+    if (!visibleActions.length) {
       return [];
     }
-    const rowGroup = rowGroups.find((g) => g.label === group.label);
-    if (!rowGroup) {
-      return [];
-    }
-    // Intersect by text + columnLabel to preserve widget config order.
+    const lang = this.translate.currentLang;
+    // Build a key set from all visible actions so we can intersect with group.actions
+    // (which is already scoped to this column's columnLabel).
     const visibleKeys = new Set(
-      rowGroup.actions.map((a) => `${a.columnLabel}::${a.text}`)
+      visibleActions.map(
+        (a) =>
+          `${resolveLocalizedString(
+            a.columnLabel,
+            lang
+          )}::${resolveLocalizedString(a.text, lang)}`
+      )
     );
     return group.actions.filter((a) =>
-      visibleKeys.has(`${a.columnLabel}::${a.text}`)
+      visibleKeys.has(
+        `${resolveLocalizedString(
+          a.columnLabel,
+          lang
+        )}::${resolveLocalizedString(a.text, lang)}`
+      )
     );
+  }
+
+  /**
+   * Track-by for the fields *ngFor so Kendo does not tear down and recreate
+   * every column (and its templates) on each change-detection pass.
+   *
+   * @param _index Index in the loop.
+   * @param field The grid field.
+   * @returns A stable identity for the field.
+   */
+  public trackByFieldName(_index: number, field: any): string {
+    return field?.name ?? _index;
+  }
+
+  /**
+   * Track-by for the custom row action group columns.
+   *
+   * @param _index Index in the loop.
+   * @param group The action group column definition.
+   * @param group.label Label of the action group column.
+   * @returns A stable identity for the group.
+   */
+  public trackByGroupLabel(_index: number, group: { label: string }): string {
+    return group?.label ?? _index;
   }
 
   /**
@@ -538,7 +631,10 @@ export class GridComponent
             (sum, action) =>
               sum +
               Math.max(
-                (action.text?.length ?? 0) * charWidth + buttonPadding,
+                resolveLocalizedString(action.text, this.translate.currentLang)
+                  .length *
+                  charWidth +
+                  buttonPadding,
                 minButtonWidth
               ),
             0
@@ -556,7 +652,10 @@ export class GridComponent
         (sum, action) =>
           sum +
           Math.max(
-            (action.text?.length ?? 0) * charWidth + buttonPadding,
+            resolveLocalizedString(action.text, this.translate.currentLang)
+              .length *
+              charWidth +
+              buttonPadding,
             minButtonWidth
           ),
         0
@@ -872,6 +971,9 @@ export class GridComponent
     this.currentEditedItem = null;
     this.editing = false;
     this.formGroup = new UntypedFormGroup({});
+    // OnPush: closeEditor can be triggered by the document click listener, which
+    // is outside Angular's event bindings.
+    this.cdr.markForCheck();
   }
 
   /**
@@ -894,25 +996,15 @@ export class GridComponent
   }
 
   /**
-   * Downloads file of record.
+   * Opens a preview for PDF/images or downloads other files.
    *
-   * @param file File to download.
+   * @param file File to open.
    */
-  public onDownload(file: any): void {
-    if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
-        const downloadLink = this.document.createElement('a');
-        downloadLink.href = file.content;
-        downloadLink.download = file.name;
-        downloadLink.click();
-      } else {
-        const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
-      }
-    } else {
-      // Using document management
-      this.documentManagementService.getFile(file);
-    }
+  public onOpenFile(file: File): void {
+    this.fileService
+      .downloadOrPreview(file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   /**

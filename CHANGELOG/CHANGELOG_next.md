@@ -1,3 +1,82 @@
+# [2.23.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.16...v2.23.0-rc.17) (2026-06-29)
+
+
+### Bug Fixes
+
+* placeholders without associated value would stay in html ([1c23795](https://github.com/ReliefApplications/ems-frontend/commit/1c237951cb23dacfc0ceacb1d8e8784d82ca9d3a))
+
+# [2.23.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.15...v2.23.0-rc.16) (2026-06-28)
+
+
+### Features
+
+* Email notifications now generate in-app messages ([#2888](https://github.com/ReliefApplications/ems-frontend/issues/2888)) ([9906e70](https://github.com/ReliefApplications/ems-frontend/commit/9906e709eaf2792d3af3ac2f5b3ce704e9d029b4)), closes [AB#133554](https://github.com/AB/issues/133554)
+
+# [2.23.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.14...v2.23.0-rc.15) (2026-06-26)
+
+
+### Bug Fixes
+
+* survey not automatically loading in user locale + missing translation for geo fields in survey ([1247e98](https://github.com/ReliefApplications/ems-frontend/commit/1247e98204c58dfee43cb38e114511215a3ec430))
+
+# [2.23.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.13...v2.23.0-rc.14) (2026-06-26)
+
+
+### Bug Fixes
+
+* data consumed by forms could have blank fields due to auto translate feature ([420f7d1](https://github.com/ReliefApplications/ems-frontend/commit/420f7d16c717cb4cfa4469e476416873208c9406))
+
+# [2.23.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.12...v2.23.0-rc.13) (2026-06-25)
+
+
+### Features
+
+* Auto translated text fields in forms ([#2886](https://github.com/ReliefApplications/ems-frontend/issues/2886)) ([ed9a984](https://github.com/ReliefApplications/ems-frontend/commit/ed9a984a4b30eaa3fda1a187ab8c8972103e8527)), closes [Ab#134348](https://github.com/Ab/issues/134348)
+
+# [2.23.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.11...v2.23.0-rc.12) (2026-06-23)
+
+
+### Features
+
+* Enable preview of images / PDFs when single file in forms ([#2877](https://github.com/ReliefApplications/ems-frontend/issues/2877)) ([5db5b52](https://github.com/ReliefApplications/ems-frontend/commit/5db5b52d12e6be7a441eed763063ed11403da16d)), closes [AB#134011](https://github.com/AB/issues/134011)
+
+# [2.23.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.10...v2.23.0-rc.11) (2026-06-22)
+
+
+### Bug Fixes
+
+* preview in html fields of forms now working with variables ([8c7e716](https://github.com/ReliefApplications/ems-frontend/commit/8c7e716cfe12718d360dde4bee7351048f6e6ca9))
+* settings always appearing on form builder ([91c5c53](https://github.com/ReliefApplications/ems-frontend/commit/91c5c538fec95e30033238604c62539f3ee4ce6a))
+
+# [2.23.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.9...v2.23.0-rc.10) (2026-06-22)
+
+
+### Features
+
+* Add Ukrainian language ([#2867](https://github.com/ReliefApplications/ems-frontend/issues/2867)) ([b4a79f3](https://github.com/ReliefApplications/ems-frontend/commit/b4a79f30e63d79fe9910abf45ee1415496e4dcdf)), closes [AB#133173](https://github.com/AB/issues/133173)
+* Enable translation on widgets / pages of applications ([#2868](https://github.com/ReliefApplications/ems-frontend/issues/2868)) ([848c0c1](https://github.com/ReliefApplications/ems-frontend/commit/848c0c181fecf24cde207a847a7d785e7596660a)), closes [AB#133293](https://github.com/AB/issues/133293)
+
+# [2.23.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.8...v2.23.0-rc.9) (2026-06-18)
+
+
+### Features
+
+* Enable image & PDF preview in HTML fields in forms ([#2881](https://github.com/ReliefApplications/ems-frontend/issues/2881)) ([3d0d48a](https://github.com/ReliefApplications/ems-frontend/commit/3d0d48ad77aa61948838fa92fbc58d5589179fd4)), closes [AB#134013](https://github.com/AB/issues/134013)
+
+# [2.23.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.7...v2.23.0-rc.8) (2026-06-18)
+
+
+### Features
+
+* Enable image & PDF previews in grids ([#2880](https://github.com/ReliefApplications/ems-frontend/issues/2880)) ([afb8a4b](https://github.com/ReliefApplications/ems-frontend/commit/afb8a4b02d5f93097474928d84fc6a4deb26a42b)), closes [AB#134012](https://github.com/AB/issues/134012)
+
+# [2.23.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.6...v2.23.0-rc.7) (2026-06-17)
+
+
+### Bug Fixes
+
+* Improve performance of form in general ([#2878](https://github.com/ReliefApplications/ems-frontend/issues/2878)) ([07c3e0e](https://github.com/ReliefApplications/ems-frontend/commit/07c3e0e7bf53eba0519d97092b486411cad8bb99)), closes [AB#133165](https://github.com/AB/issues/133165)
+
 # [2.23.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.5...v2.23.0-rc.6) (2026-06-17)
 
 

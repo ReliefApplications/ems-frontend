@@ -42,13 +42,13 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Interface of Dialog data.
@@ -80,7 +80,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     IconModule,
     TabsModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
@@ -144,6 +143,7 @@ export class FormModalComponent
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -156,7 +156,8 @@ export class FormModalComponent
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
   }
@@ -288,7 +289,8 @@ export class FormModalComponent
       this.record
     );
 
-    this.updateButtonLabels();
+    // Auto-translation is wired centrally in FormBuilderService.createSurvey;
+    // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
@@ -296,56 +298,62 @@ export class FormModalComponent
     });
     this.survey.onComplete.add(this.onComplete);
 
-    if (this.prefillMergedData) {
-      // Prefill with merged data from records
-      const cleanedData = omitBy(this.prefillMergedData, isNil);
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    } else if (this.prefillClonedData) {
-      // Prefill with cloned data
-      const resourcesFields = this.survey
-        .getAllQuestions()
-        .filter((q) => q.getType() === 'resources');
-      const resourceNames = new Set(resourcesFields.map((f) => f.name));
-      // Omit nil values and resources questions from prefill data
-      const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
-        return isNil(value) || resourceNames.has(key);
-      });
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    }
+    this.updateButtonLabels();
 
-    // After the survey is created, we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
-    if (this.isUpdate && this.record) {
-      if (this.isMultiEdition) {
-        this.survey.data = null;
-      } else {
-        const cleanedData = omitBy(this.record.data, isNil);
+    // Populate the survey programmatically with translation suppressed so that
+    // prefilling / loading an existing record does not trigger translations.
+    this.autoTranslateService.suppressAutoTranslationWhile(this.survey, () => {
+      if (this.prefillMergedData) {
+        // Prefill with merged data from records
+        const cleanedData = omitBy(this.prefillMergedData, isNil);
+        Object.keys(cleanedData).forEach((question) => {
+          this.survey.setValue(question, cleanedData[question]);
+        });
+      } else if (this.prefillClonedData) {
+        // Prefill with cloned data
+        const resourcesFields = this.survey
+          .getAllQuestions()
+          .filter((q) => q.getType() === 'resources');
+        const resourceNames = new Set(resourcesFields.map((f) => f.name));
+        // Omit nil values and resources questions from prefill data
+        const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
+          return isNil(value) || resourceNames.has(key);
+        });
         Object.keys(cleanedData).forEach((question) => {
           this.survey.setValue(question, cleanedData[question]);
         });
       }
-      addCustomFunctions(this.authService);
-      this.survey.showCompletedPage = false;
-      this.form?.fields?.forEach((field) => {
-        if (field.readOnly && this.survey.getQuestionByName(field.name))
-          this.survey.getQuestionByName(field.name).readOnly = true;
-      });
 
-      // Fire once now that the existing record's data is in the survey
-      fireOnRecordEditionTriggers(this.survey);
-    }
+      // After the survey is created, we add common callback to survey events
+      this.formBuilderService.addEventsCallBacksToSurvey(
+        this.survey,
+        this.selectedPageIndex,
+        this.temporaryFilesStorage
+      );
 
-    // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
-    this.updateButtonLabels();
+      if (this.isUpdate && this.record) {
+        if (this.isMultiEdition) {
+          this.survey.data = null;
+        } else {
+          const cleanedData = omitBy(this.record.data, isNil);
+          Object.keys(cleanedData).forEach((question) => {
+            this.survey.setValue(question, cleanedData[question]);
+          });
+        }
+        addCustomFunctions(this.authService);
+        this.survey.showCompletedPage = false;
+        this.form?.fields?.forEach((field) => {
+          if (field.readOnly && this.survey.getQuestionByName(field.name))
+            this.survey.getQuestionByName(field.name).readOnly = true;
+        });
+
+        // Fire once now that the existing record's data is in the survey
+        fireOnRecordEditionTriggers(this.survey);
+      }
+
+      // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
+      this.updateButtonLabels();
+    });
 
     this.loading = false;
   }
@@ -849,6 +857,8 @@ export class FormModalComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
   }
 }

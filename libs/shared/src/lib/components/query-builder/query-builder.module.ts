@@ -20,6 +20,7 @@ import { TabPaginationComponent } from './tab-pagination/tab-pagination.componen
 import { FilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
+import { LocalizedInputComponent } from '../controls/public-api';
 import {
   MenuModule,
   TooltipModule,
@@ -75,6 +76,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     FilterModule,
     AlertModule,
     EditorControlComponent,
+    LocalizedInputComponent,
     RadioModule,
     ButtonModule,
     TableModule,

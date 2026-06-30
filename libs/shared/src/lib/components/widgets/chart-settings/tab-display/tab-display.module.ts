@@ -12,6 +12,7 @@ import { GridModule } from '../../../ui/core-grid/grid/grid.module';
 import { ChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
+import { LocalizedInputComponent } from '../../../controls/public-api';
 import {
   ButtonModule,
   ToggleModule,
@@ -50,6 +51,7 @@ import {
     DividerModule,
     ButtonModule,
     SelectMenuModule,
+    LocalizedInputComponent,
   ],
   exports: [TabDisplayComponent],
 })

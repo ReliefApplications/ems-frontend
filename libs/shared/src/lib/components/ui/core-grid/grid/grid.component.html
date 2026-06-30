@@ -147,7 +147,7 @@
       [sticky]="true"
     ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
-    <ng-container *ngFor="let field of fields">
+    <ng-container *ngFor="let field of fields; trackBy: trackByFieldName">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
         *ngIf="
@@ -828,7 +828,7 @@
                 *ngFor="let file of dataItem[field.name]"
                 [look]="'flat'"
                 [uiTooltip]="file.name"
-                (click)="$event.stopPropagation(); onDownload(file)"
+                (click)="$event.stopPropagation(); onOpenFile(file)"
                 class="w-full !justify-start overflow-hidden text-ellipsis"
               >
                 <span [class]="dataItem.icon[file.name]"></span>
@@ -858,7 +858,7 @@
                   *ngFor="let file of dataItem[field.name]"
                   [look]="'flat'"
                   [uiTooltip]="file.name"
-                  (click)="onDownload(file)"
+                  (click)="$event.stopPropagation(); onOpenFile(file)"
                   class="w-full justify-start overflow-hidden text-overflow-ellipsis"
                 >
                   <p style="text-wrap: auto" class="max-w-full">
@@ -1162,7 +1162,7 @@
     </ng-container>
     <!-- CUSTOM ROW ACTIONS -->
     <kendo-grid-column
-      *ngFor="let group of customRowActionGroups"
+      *ngFor="let group of customRowActionGroups; trackBy: trackByGroupLabel"
       [columnMenu]="false"
       [width]="group.width"
       [resizable]="true"
@@ -1190,7 +1190,7 @@
       [columnMenu]="false"
       [width]="68"
       [resizable]="false"
-      title="Details"
+      [title]="'components.widget.grid.actions.details' | translate"
       [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
@@ -1210,7 +1210,7 @@
       [columnMenu]="false"
       [width]="54"
       [resizable]="true"
-      [title]="actions.navigateSettings?.title ?? ''"
+      [title]="(actions.navigateSettings?.title | sharedLocalize) ?? ''"
       [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">

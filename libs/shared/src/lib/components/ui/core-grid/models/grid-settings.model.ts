@@ -1,4 +1,5 @@
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { LocalizedString } from '../../../../models/localized-string.model';
 
 // TO-DO Finish it
 /**
@@ -36,7 +37,7 @@ export interface GridActions {
   navigateSettings?: {
     field: string;
     pageUrl: string;
-    title: string;
+    title: LocalizedString;
   };
   search?: boolean;
   inlineEdition?: boolean;

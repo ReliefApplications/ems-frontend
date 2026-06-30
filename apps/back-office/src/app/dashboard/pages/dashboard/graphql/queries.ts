@@ -7,6 +7,7 @@ export const GET_DASHBOARD_BY_ID = gql`
     dashboard(id: $id, contextEl: $contextEl) {
       id
       name
+      nameTranslations
       createdAt
       contextData
       structure
@@ -80,6 +81,7 @@ export const GET_DASHBOARDS_NAMES = gql`
     dashboards(ids: $ids) {
       id
       name
+      nameTranslations
     }
   }
 `;
@@ -108,16 +110,6 @@ export const GET_RESOURCE_RECORDS = gql`
           endCursor
         }
       }
-    }
-  }
-`;
-
-/** Graphql request for getting a record by its id */
-export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
-    record(id: $id) {
-      id
-      data
     }
   }
 `;

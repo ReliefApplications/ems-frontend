@@ -13,7 +13,7 @@
             class="sd-element__title sd-question__title"
             [class.sd-element__title--disabled]="geoForm.disabled"
           >
-            <span class="sv-string-viewer">{{ field.label }}</span>
+            <span class="sv-string-viewer">{{ field | geoFieldLabel }}</span>
           </span>
         </div>
         <div class="sd-question__content">

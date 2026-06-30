@@ -17,9 +17,7 @@ import { Account, AuthService } from '../../services/auth/auth.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
 import { Dialog } from '@angular/cdk/dialog';
-import { NotificationService } from '../../services/notification/notification.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -109,20 +107,6 @@ export class LayoutComponent
    */
   languages: string[] = [];
 
-  // === NOTIFICATIONS ===
-  /**
-   * Notifications
-   */
-  public notifications: Notification[] = [];
-  /**
-   * Boolean to check if there are more notifications
-   */
-  public hasMoreNotifications = false;
-  /**
-   * Boolean to check if notifications are loading
-   */
-  public loadingNotifications = false;
-
   /** Account information of logged user */
   public account: Account | null;
   /** Currently logged user */
@@ -209,7 +193,6 @@ export class LayoutComponent
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
-   * @param notificationService This is the service that handles the notifications.
    * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
@@ -222,7 +205,6 @@ export class LayoutComponent
     @Inject('environment') environment: any,
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService,
     private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
@@ -236,7 +218,10 @@ export class LayoutComponent
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
-    this.getLanguage();
+    const language = this.getLanguage();
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -248,24 +233,6 @@ export class LayoutComponent
       this.otherOffice = 'back office';
     }
     this.loadUser();
-    this.notificationService.init();
-    this.notificationService.notifications$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((notifications: Notification[]) => {
-        if (notifications) {
-          this.notifications = notifications;
-        } else {
-          this.notifications = [];
-        }
-      });
-
-    this.notificationService.hasNextPage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.hasMoreNotifications = res;
-        this.loadingNotifications = false;
-      });
-
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view) => {
@@ -380,9 +347,14 @@ export class LayoutComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
-      if (form && form.touched) {
+      if (form && (form.touched || form.dirty)) {
         this.setLanguage(form.value.language);
-        this.dateTranslate.use(form.value.dateFormat);
+        if (form.value.language === form.value.dateFormat) {
+          localStorage.removeItem('date-lang');
+          this.dateTranslate.use(form.value.language, false);
+        } else {
+          this.dateTranslate.use(form.value.dateFormat, true);
+        }
       } else if (!form) {
         this.setLanguage(this.getLanguage());
       }
@@ -390,40 +362,16 @@ export class LayoutComponent
   }
 
   /**
-   * Load more notifications
-   *
-   * @param e Event
-   */
-  public onLoadMoreNotifications(e: any): void {
-    e.stopPropagation();
-    this.notificationService.fetchMore();
-    this.loadingNotifications = true;
-  }
-
-  /**
-   * Marks all the notifications as read
-   */
-  onMarkAllNotificationsAsRead(): void {
-    this.notificationService.markAllAsSeen();
-  }
-
-  /**
-   * Marks notification as seen when clicking on it
-   *
-   * @param notification The notification that was clicked on
-   */
-  onNotificationClick(notification: Notification): void {
-    this.notificationService.markAsSeen(notification);
-  }
-
-  /**
    * Changes current active language.
    *
    * @param language id of the language.
    */
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translate.use(language);
     localStorage.setItem('lang', language);
+    if (!localStorage.getItem('date-lang')) {
+      this.dateTranslate.use(language, false);
+    }
   }
 
   /**
@@ -436,7 +384,11 @@ export class LayoutComponent
     // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
-      language = this.translate.defaultLang;
+      // fall back to browser language if supported, otherwise app default
+      const browserLang = this.translate.getBrowserLang() ?? '';
+      language = this.languages.includes(browserLang)
+        ? browserLang
+        : this.translate.defaultLang;
     }
     // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {

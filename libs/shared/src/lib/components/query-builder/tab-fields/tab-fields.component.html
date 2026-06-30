@@ -160,16 +160,20 @@
           (click)="onCloseField()"
           [uiTooltip]="'common.back' | translate"
         ></ui-button>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 items-end">
           <!-- Field name (static) -->
           <div uiFormFieldDirective [defaultMargin]="false">
             <label>{{ 'models.form.field.name' | translate }}</label>
             <input formControlName="name" type="text" [disabled]="true" />
           </div>
-          <!-- Displayed label -->
+          <!-- Displayed label (localized) -->
           <div uiFormFieldDirective [defaultMargin]="false">
-            <label>{{ 'models.form.field.label' | translate }}</label>
-            <input formControlName="label" type="text" />
+            <label>
+              {{ 'models.form.field.label' | translate }}
+            </label>
+            <shared-localized-input
+              formControlName="label"
+            ></shared-localized-input>
           </div>
           <!-- Column width -->
           <div

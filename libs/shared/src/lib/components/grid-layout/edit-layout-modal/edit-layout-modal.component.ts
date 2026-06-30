@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, Input } from '@angular/core';
-import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Layout } from '../../../models/layout.model';
 import {
   createDisplayForm,
@@ -13,6 +13,13 @@ import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { LocalizedInputComponent } from '../../controls/public-api';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -36,6 +43,8 @@ interface DialogData {
     CoreGridModule,
     DialogModule,
     ButtonModule,
+    LocalizedInputComponent,
+    TranslateModule,
   ],
   selector: 'shared-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
@@ -50,7 +59,12 @@ export class EditLayoutModalComponent implements AfterViewInit {
    * Form
    */
   public form = this.fb.group({
-    name: [this.data.layout?.name, Validators.required],
+    name: [
+      (this.data.layout?.nameTranslations ??
+        this.data.layout?.name ??
+        '') as LocalizedString,
+      localizedRequired,
+    ],
     query: createQueryForm(this.data.layout?.query),
     display: createDisplayForm(this.data.layout?.display),
   });
@@ -69,11 +83,13 @@ export class EditLayoutModalComponent implements AfterViewInit {
    * @param fb This is the service used to build forms.
    * @param dialogRef This is the reference of the dialog that will be opened.
    * @param data This is the data that is passed to the modal when it is opened.
+   * @param translate ngx-translate service, used to resolve the active locale on submit.
    */
   constructor(
     private fb: FormBuilder,
     public dialogRef: DialogRef<EditLayoutModalComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private translate: TranslateService
   ) {}
 
   ngAfterViewInit(): void {
@@ -99,9 +115,24 @@ export class EditLayoutModalComponent implements AfterViewInit {
 
   /**
    * Closes the modal sending form value.
+   * Splits the localized `name` form value into a plain string (active locale)
+   * for the GraphQL `name: String!` input and a per-locale map for `nameTranslations`.
    */
   onSubmit(): void {
-    this.dialogRef.close(this.form?.getRawValue() as any);
+    const raw = this.form?.getRawValue() as any;
+    const nameValue: LocalizedString = raw?.name ?? '';
+    const activeName =
+      typeof nameValue === 'string'
+        ? nameValue
+        : resolveLocalizedString(nameValue, this.translate.currentLang);
+    const nameTranslations =
+      typeof nameValue === 'string' ? undefined : nameValue;
+    this.dialogRef.close({
+      name: activeName,
+      nameTranslations,
+      query: raw.query,
+      display: raw.display,
+    } as any);
   }
 
   /**
