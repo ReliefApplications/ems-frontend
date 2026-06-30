@@ -1,3 +1,10 @@
+# [2.23.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.17...v2.23.0-rc.18) (2026-06-30)
+
+
+### Bug Fixes
+
+* Save buttons expressions of form can now be translated ([75b020c](https://github.com/ReliefApplications/ems-frontend/commit/75b020c47763507dc6fc5dab6cd601aab384ab24))
+
 # [2.23.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.16...v2.23.0-rc.17) (2026-06-29)
 
 
