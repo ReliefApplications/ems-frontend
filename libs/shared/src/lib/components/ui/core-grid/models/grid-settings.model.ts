@@ -32,6 +32,7 @@ export interface GridActions {
   remove: boolean;
   add?: boolean;
   export?: boolean;
+  import?: boolean;
   showDetails?: boolean;
   navigateToPage?: boolean;
   navigateSettings?: {

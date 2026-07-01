@@ -65,6 +65,11 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.export',
     },
     {
+      name: 'import',
+      text: 'components.widget.settings.grid.actions.import',
+      tooltip: 'components.widget.settings.grid.hint.actions.import',
+    },
+    {
       name: 'showDetails',
       text: 'components.widget.settings.grid.actions.showDetails',
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',

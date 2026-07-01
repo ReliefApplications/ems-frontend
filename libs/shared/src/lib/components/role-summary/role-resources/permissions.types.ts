@@ -5,6 +5,7 @@ export enum Permission {
   UPDATE = 'canUpdateRecords',
   DELETE = 'canDeleteRecords',
   DOWNLOAD = 'canDownloadRecords',
+  UPLOAD = 'canUploadRecords',
 }
 /** Role access interface */
 export interface Access {

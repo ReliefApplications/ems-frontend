@@ -129,6 +129,8 @@ export class CoreGridComponent
   @Input() canCreateRecords = false;
   /** Whether records can be downloaded */
   @Input() canDownloadRecords = false;
+  /** Whether records can be uploaded */
+  @Input() canUploadRecords = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -428,6 +430,7 @@ export class CoreGridComponent
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
+      import: get(this.settings, 'actions.import', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {

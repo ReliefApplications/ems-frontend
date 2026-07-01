@@ -266,6 +266,7 @@ export class GridSettingsFormFactory {
       inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],
+      import: [get(configuration, 'actions.import', false)],
       showDetails: [get(configuration, 'actions.showDetails', true)],
       navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
       navigateSettings: this.fb.group({

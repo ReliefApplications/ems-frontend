@@ -33,6 +33,7 @@ const BASE_PERMISSIONS = {
   canUpdateRecords: false,
   canDeleteRecords: false,
   canDownloadRecords: false,
+  canUploadRecords: false,
 };
 
 /** Modal for the definition of access/permissions for a given resource */
@@ -309,6 +310,8 @@ export class RoleResourceFiltersComponent implements OnInit {
         return 'delete';
       case Permission.DOWNLOAD:
         return hasPermission ? 'file_download' : 'file_download_off';
+      case Permission.UPLOAD:
+        return '';
     }
   }
 
