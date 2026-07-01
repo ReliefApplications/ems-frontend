@@ -148,7 +148,7 @@
           *ngFor="let option of field.options"
           [value]="option.value"
         >
-          {{ option.text }}
+          {{ option.text | sharedLocalize }}
         </ui-select-option>
       </ui-select-menu>
       <ui-select-menu
@@ -164,7 +164,7 @@
           *ngFor="let option of field.options"
           [value]="option.value"
         >
-          {{ option.text }}
+          {{ option.text | sharedLocalize }}
         </ui-select-option>
       </ui-select-menu>
     </div>

@@ -1,4 +1,5 @@
 import { Form } from './form.model';
+import { LocalizedString } from './localized-string.model';
 import { Resource } from './resource.model';
 
 /**
@@ -14,7 +15,7 @@ export interface Metadata {
   canUpdate?: boolean;
   multiSelect?: boolean;
   filterable?: boolean;
-  options?: { text: string; value: any }[];
+  options?: { text: LocalizedString; value: any }[];
   fields?: Metadata[];
   usedIn?: string[];
 }

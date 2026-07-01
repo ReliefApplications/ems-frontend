@@ -14,6 +14,8 @@ import {
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 
 type Shape = 'circle' | 'square';
 
@@ -115,6 +117,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Translate service, source of the active language. */
+  private translate = inject(TranslateService);
   /** Function for replacing aggregation data in html */
   replaceAggregationData = replaceAggregationData;
 
@@ -882,13 +886,22 @@ export class HtmlParserService {
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {
+      const lang = this.translate.currentLang;
       // replaces value for labels, if associated option(s) exist(s)
       if (Array.isArray(value)) {
         value = value.map(
-          (x) => options.find((o: any) => o.value == x)?.text || x
+          (x) =>
+            resolveLocalizedString(
+              options.find((o: any) => o.value == x)?.text,
+              lang
+            ) || x
         );
       } else {
-        value = options.find((o: any) => o.value == value)?.text || value;
+        value =
+          resolveLocalizedString(
+            options.find((o: any) => o.value == value)?.text,
+            lang
+          ) || value;
       }
     }
 

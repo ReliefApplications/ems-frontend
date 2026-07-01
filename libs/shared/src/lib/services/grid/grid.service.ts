@@ -438,10 +438,10 @@ export class GridService {
               ...meta,
               choices: meta.choices.map((choice: any) => ({
                 value: choice.value,
-                text:
-                  choice.text[this.translate.currentLang] ||
-                  choice.text.default ||
+                text: resolveLocalizedString(
                   choice.text,
+                  this.translate.currentLang
+                ),
               })),
             };
           } else if (typeof meta === 'object') {
