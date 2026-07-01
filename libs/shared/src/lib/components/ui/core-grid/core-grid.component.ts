@@ -56,6 +56,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Default file name when exporting grid data.
@@ -290,9 +291,11 @@ export class CoreGridComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
