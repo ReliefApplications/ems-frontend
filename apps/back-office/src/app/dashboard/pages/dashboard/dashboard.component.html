@@ -133,7 +133,7 @@
           </ui-button>
           <!-- Dashboard export -->
           <shared-dashboard-export-button
-            [title]="dashboard.name"
+            [title]="dashboard.nameTranslations || dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
           <!-- More options -->

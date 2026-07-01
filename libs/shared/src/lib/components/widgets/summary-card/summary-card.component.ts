@@ -21,6 +21,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -255,9 +256,11 @@ export class SummaryCardComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : 'Summary Card'
-    } ${formatDate}.pdf`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : 'Summary Card'} ${formatDate}.pdf`;
   }
 
   /** @returns whether or not we know how many items there are in total */
