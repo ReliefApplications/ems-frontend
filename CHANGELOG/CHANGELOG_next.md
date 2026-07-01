@@ -1,3 +1,10 @@
+# [2.23.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.18...v2.23.0-rc.19) (2026-07-01)
+
+
+### Features
+
+* Translate field choices ([#2890](https://github.com/ReliefApplications/ems-frontend/issues/2890)) ([9d5bf45](https://github.com/ReliefApplications/ems-frontend/commit/9d5bf45154559f8972b5838311572765bfae9f8e)), closes [AB#134288](https://github.com/AB/issues/134288)
+
 # [2.23.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.17...v2.23.0-rc.18) (2026-06-30)
 
 
