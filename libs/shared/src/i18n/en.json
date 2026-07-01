@@ -180,6 +180,7 @@
 			"none": "No distribution list",
 			"one": "Distribution list"
 		},
+		"download": "Download",
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
@@ -375,6 +376,9 @@
 					"ongoing": "Your file export is ongoing. You will receive an email once ready.",
 					"processing": "Downloading file...",
 					"ready": "Your file is ready"
+				},
+				"preview": {
+					"processing": "Opening preview..."
 				},
 				"upload": {
 					"error": "Something went wrong during the upload",
@@ -848,6 +852,15 @@
 			"expression": "Expression",
 			"hint": {
 				"name": "Enter an unique name only composed of letters, digits and underscores. This name should not override any field name of current resource."
+			},
+			"reference": {
+				"noResults": "No entries match your search.",
+				"open": "Open the calculated field reference",
+				"operations": "Operations",
+				"placeholders": "Placeholders",
+				"placeholdersHint": "Use these placeholders inside an expression to reference record data, the current user or the result of another calculation.",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Calculated field reference"
 			}
 		},
 		"channel": {
@@ -1107,7 +1120,15 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmActionTitle": {
+					"create": "Confirm Record Creation",
+					"update": "Confirm Record Update"
+				},
 				"confirmMessage": "Do you confirm the {{action}} of the current record?",
+				"confirmTitle": {
+					"few": "Confirm Rows Update",
+					"one": "Confirm Row Update"
+				},
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
@@ -1143,6 +1164,16 @@
 					"editGeofield": "Edit Geo fields",
 					"label": "Label",
 					"value": "Value"
+				},
+				"fields": {
+					"address": "Address",
+					"city": "City",
+					"coordinates": "Coordinates",
+					"countryCode": "Country Code",
+					"countryName": "Country Name",
+					"district": "District",
+					"region": "Region",
+					"subRegion": "Sub Region"
 				}
 			}
 		},
@@ -1164,6 +1195,8 @@
 		},
 		"header": {
 			"goToApp": "Go to application",
+			"goToBackOffice": "Navigate to back office",
+			"goToFrontOffice": "Navigate to front office",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -1240,11 +1273,16 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"detail": {
+				"emailSent": "You received an email notification."
+			},
 			"email": {
 				"dropdown": {
 					"emailInput": "Email input"
 				}
 			},
+			"empty": "No new notifications",
+			"markAsSeen": "Mark as seen",
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
@@ -1323,6 +1361,7 @@
 				"apply": "Apply filter",
 				"applyField": "Set Fields",
 				"field": "Field",
+				"loading": "Loading filters. This may take a moment, please wait.",
 				"logic": "Filter logic",
 				"new": "Add new filter",
 				"newGroup": "Add new filter group",
@@ -1364,6 +1403,8 @@
 					},
 					"criteria": "Rule criteria",
 					"fields": "Fields",
+					"isBadge": "Display as badge",
+					"isBadgeTooltip": "When enabled, the style will be applied as a badge, colors and styles will apply to the badge and not the cell.",
 					"name": "Rule name",
 					"selectedColumns": "Only selected columns",
 					"text": {
@@ -1810,6 +1851,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
+					"details": "Details",
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
@@ -1991,6 +2033,7 @@
 						"export": "Export records",
 						"goTo": {
 							"column": {
+								"defaultTitle": "Details",
 								"label": "Column name",
 								"placeholder": "Type a title for the column..."
 							},
@@ -2820,7 +2863,7 @@
 			"tooltip": {
 				"filter": {
 					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",
-					"fields": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+					"fields": "You can use dashboard filter values with {{filter.<name>}} and current user values with {{user.username}}, {{user.firstName}}, {{user.lastName}}, or WHO attributes such as {{user.country}}.",
 					"position": "Only applicable when default variant is active"
 				},
 				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}."
@@ -3075,6 +3118,16 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"functionReference": {
+				"builtin": "SurveyJS built-in functions",
+				"builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
+				"custom": "Custom functions",
+				"docs": "Open SurveyJS docs",
+				"noResults": "No functions match your search.",
+				"open": "Function reference",
+				"searchPlaceholder": "Filter by name or description...",
+				"title": "Function reference"
 			},
 			"move": {
 				"down": "Move down",

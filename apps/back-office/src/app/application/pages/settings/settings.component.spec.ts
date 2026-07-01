@@ -46,7 +46,7 @@ describe('SettingsComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

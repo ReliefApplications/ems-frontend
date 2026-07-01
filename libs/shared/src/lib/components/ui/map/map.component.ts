@@ -75,6 +75,7 @@ import { ShadowDomService } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { ActionComponent, ActionType } from '../../../models/automation.model';
 import { DashboardExportService } from '../../../services/dashboard-export/dashboard-export.service';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /** Component for the map widget */
 @Component({
@@ -798,7 +799,7 @@ export class MapComponent
 
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
-          label: layer.name,
+          label: resolveLocalizedString(layer.name, this.translate.currentLang),
           selectAllCheckbox: true,
           children:
             children.length > 0
@@ -818,7 +819,7 @@ export class MapComponent
         }
         // It is a node, it does not have any children but it displays a layer
         return {
-          label: layer.name,
+          label: resolveLocalizedString(layer.name, this.translate.currentLang),
           layer: featureLayer,
         };
       }
@@ -1134,6 +1135,16 @@ export class MapComponent
   }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
+  }
+
+  /**
+   * Reload all map layers, re-fetching their data from the server.
+   * Used to keep the map in sync after data is edited elsewhere on the dashboard.
+   */
+  public async reloadData(): Promise<void> {
+    // Force every layer to refetch, then redraw using the current filters
+    this.layers.forEach((layer: any) => (layer.shouldRefresh = true));
+    await this.filterLayers();
   }
 
   /** Set the new layers based on the filter value */

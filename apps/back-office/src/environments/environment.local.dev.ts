@@ -29,13 +29,16 @@ export const environment: Environment = {
   /* cSpell:disable */
   ...sharedEnvironment,
   production: false,
+  // Disabled for local serving: a SW under the live-reload dev server causes an
+  // infinite reload loop. Serve a static build without live-reload to test PWA.
+  serviceWorker: false,
   href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'https://hems-dev.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'uk'],
   authConfig,
   theme,
   availableWidgets: [

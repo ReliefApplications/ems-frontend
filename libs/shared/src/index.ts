@@ -10,6 +10,7 @@ export * from './lib/services/application/application.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/auth/auth.service';
 export * from './lib/services/breadcrumb/breadcrumb.service';
+export * from './lib/services/language-interceptor/language-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 export * from './lib/services/context/context.service';
 export * from './lib/services/dashboard-automation/dashboard-automation.service';
@@ -33,6 +34,7 @@ export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 export * from './lib/services/common-services/common-services.service';
+export * from './lib/services/auto-translate/auto-translate.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/async-monaco-editor/public-api';
@@ -65,6 +67,7 @@ export * from './lib/models/step.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/user.model';
 export * from './lib/models/workflow.model';
+export * from './lib/models/localized-string.model';
 
 // === COMPONENTS ===
 export * from './lib/components/access/public-api';
@@ -83,6 +86,7 @@ export * from './lib/components/error/error.module';
 export * from './lib/components/field-mapper/public-api';
 export * from './lib/components/form-builder/public-api';
 export * from './lib/components/form/public-api';
+export * from './lib/components/language-switch/public-api';
 export * from './lib/components/layout/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/navbar/public-api';
@@ -151,6 +155,7 @@ export * from '../.storybook/storybook-translate.module';
 export * from './lib/pipes/cron-parser/public-api';
 export * from './lib/pipes/date/public-api';
 export * from './lib/pipes/readable-cron/public-api';
+export * from './lib/pipes/localize/localize.pipe';
 
 // === UTILS ===
 export * from './lib/utils/public-api';

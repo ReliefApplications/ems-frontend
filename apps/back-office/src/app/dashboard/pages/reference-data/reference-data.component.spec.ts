@@ -36,16 +36,18 @@ describe('ReferenceDataComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => {return {}}
-              }
-            }
+                get: () => {
+                  return {};
+                },
+              },
+            },
           },
         },
         {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

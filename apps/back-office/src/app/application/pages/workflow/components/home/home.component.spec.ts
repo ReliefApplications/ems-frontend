@@ -22,7 +22,7 @@ describe('HomeComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

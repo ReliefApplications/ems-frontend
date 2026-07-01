@@ -15,6 +15,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { GridModule as KendoGridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { StripHtmlPipe } from '../../../../pipes/strip-html/strip-html.pipe';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 import { DateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 import { ExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { ExportModule } from '../export/export.module';
@@ -62,6 +63,7 @@ import { ActionButtonComponent } from '../../../action-button/action-button.comp
     uiButtonModule,
     // === Pipes ==
     StripHtmlPipe,
+    LocalizePipe,
     ActionButtonComponent,
   ],
   exports: [GridComponent],

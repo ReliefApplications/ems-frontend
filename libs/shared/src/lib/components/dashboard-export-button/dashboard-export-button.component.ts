@@ -30,6 +30,10 @@ import {
 } from 'rxjs';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { DashboardExportService } from '../../services/dashboard-export/dashboard-export.service';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../models/localized-string.model';
 
 /**
  * Shared dashboard export button.
@@ -52,10 +56,16 @@ import { DashboardExportService } from '../../services/dashboard-export/dashboar
 export class DashboardExportButtonComponent {
   /** Element to export */
   @Input() exporter!: ElementRef;
-  /** Document title */
-  @Input() title?: string;
+  /** Document title (plain string or per-locale map) */
+  @Input() title?: LocalizedString;
   /** Wrapper element where exporter will be put into */
   private wrapper: any;
+
+  /** @returns Document title resolved against the current UI language. */
+  private get resolvedTitle(): string {
+    console.log(this.title);
+    return resolveLocalizedString(this.title, this.translate.currentLang);
+  }
 
   /**
    * Shared dashboard export button.
@@ -144,7 +154,7 @@ export class DashboardExportButtonComponent {
     paperSize: string;
   }) {
     const pdfData = await this.pdfDrawer(resultValue);
-    saveAs(pdfData, `${this.title}.pdf`);
+    saveAs(pdfData, `${this.resolvedTitle}.pdf`);
     this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
@@ -250,7 +260,7 @@ export class DashboardExportButtonComponent {
     const { format, includeHeaderFooter } = resultValue;
     // Draws the Dashboard in its current state
     const pngData = await this.imageDrawer(includeHeaderFooter);
-    saveAs(pngData, `${this.title}.${format}`);
+    saveAs(pngData, `${this.resolvedTitle}.${format}`);
     this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
@@ -294,7 +304,7 @@ export class DashboardExportButtonComponent {
     const dateTime = new Date();
     const dateTimeText =
       dateTime.toLocaleDateString() + ' ' + dateTime.toLocaleTimeString();
-    const pageTitle = this.title;
+    const pageTitle = this.resolvedTitle;
     header.innerHTML = `<span class="float-left">${dateTimeText}</span><span class="block text-center">${pageTitle}</span>`;
 
     // Add URL to footer

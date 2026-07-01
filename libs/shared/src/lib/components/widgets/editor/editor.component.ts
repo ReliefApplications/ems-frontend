@@ -28,11 +28,13 @@ import { ReferenceData } from '../../../models/reference-data.model';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { ContextService } from '../../../services/context/context.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { GridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import {
@@ -102,6 +104,19 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     return this.settings.aggregations || [];
   }
 
+  /**
+   * Resolve the localized `text` setting for the active UI language. Accepts
+   * both legacy plain-string values and per-locale maps.
+   *
+   * @returns HTML template string to feed into the data template renderer.
+   */
+  private resolveText(): string {
+    return resolveLocalizedString(
+      this.settings.text,
+      this.translate.currentLang
+    );
+  }
+
   /** @returns Record id, manual selection or based on expression */
   get recordId() {
     return this.settings.record
@@ -149,6 +164,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param dashboardService Dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -167,7 +183,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -175,6 +192,14 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** Sanitizes the text. */
   async ngOnInit(): Promise<void> {
     this.setHtml();
+
+    // Re-render when the user's UI language changes, so per-locale `text`
+    // values switch in place without requiring a full reload.
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.cancelRefresh$.next();
+      this.loading = true;
+      this.setHtml();
+    });
 
     // Gather all context filters in a single text value
     const allContextFilters = this.aggregations
@@ -278,6 +303,16 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   };
 
   /**
+   * Reload the editor data from the server and re-render its content.
+   * Used to keep the widget in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.cancelRefresh$.next();
+    this.loading = true;
+    this.setHtml();
+  }
+
+  /**
    * Set widget html.
    */
   private setHtml() {
@@ -337,7 +372,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.styles
           );
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -384,7 +419,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -399,7 +434,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
+            this.resolveText(),
             {
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
@@ -532,6 +567,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
         if (value) {
           this.loading = true;
+          // Notify the dashboard so other widgets reload and reflect the edited record
+          this.dashboardService.triggerReloadWidgets();
           // Update the record, based on new configuration
           this.getRecord()
             .then(() => {
@@ -541,7 +578,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 this.styles
               );
               this.formattedHtml = this.dataTemplateService.renderHtml(
-                this.settings.text,
+                this.resolveText(),
                 {
                   data: this.fieldsValue,
                   aggregation: this.aggregationsData,
@@ -663,7 +700,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param event Click event
    */
   public onClick(event: any) {
-    this.dataTemplateService.onClick(event, this.fieldsValue);
+    this.dataTemplateService.onClick(event, this.fieldsValue, this.destroy$);
   }
 
   /**

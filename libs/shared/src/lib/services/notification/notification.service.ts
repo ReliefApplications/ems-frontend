@@ -61,11 +61,12 @@ export class NotificationService {
   constructor(private apollo: Apollo) {}
 
   /**
-   * If notifications are empty, fetch all notifications and listen to new one.
-   * Else, only listen to new one.
+   * Initialize notification fetching and real-time subscription.
+   * Safe to call multiple times — only initializes once.
    */
   public init(): void {
     if (this.firstLoad) {
+      this.firstLoad = false;
       this.notificationsQuery =
         this.apollo.watchQuery<NotificationsQueryResponse>({
           query: GET_NOTIFICATIONS,
@@ -105,7 +106,6 @@ export class NotificationService {
    * @param notification Notification to mark as seen.
    */
   public markAsSeen(notification: Notification): void {
-    const notifications = this.notifications.getValue();
     this.apollo
       .mutate<SeeNotificationMutationResponse>({
         mutation: SEE_NOTIFICATION,
@@ -115,10 +115,7 @@ export class NotificationService {
       })
       .subscribe(({ data }) => {
         if (data && data.seeNotification) {
-          const seeNotification = data.seeNotification;
-          this.notifications.next(
-            notifications.filter((x) => x.id !== seeNotification.id)
-          );
+          this.removeFromCache([data.seeNotification.id]);
         }
       });
   }
@@ -127,7 +124,7 @@ export class NotificationService {
    * Marks all notifications as seen and remove it from the array of notifications.
    */
   public markAllAsSeen(): void {
-    const notificationsIds = this.notifications.getValue().map((x) => x.id);
+    const notificationsIds = this.cachedNotifications.map((x) => x.id);
     this.apollo
       .mutate<SeeNotificationsMutationResponse>({
         mutation: SEE_NOTIFICATIONS,
@@ -135,9 +132,30 @@ export class NotificationService {
           ids: notificationsIds,
         },
       })
-      .subscribe(() => {
-        this.fetchMore();
+      .subscribe(({ data }) => {
+        if (data && data.seeNotifications) {
+          this.removeFromCache(notificationsIds);
+        }
       });
+  }
+
+  /**
+   * Removes the given notifications from the cache and emits the updated list.
+   * Keeping the cache in sync ensures seen notifications don't reappear when
+   * more notifications are loaded.
+   *
+   * @param ids Ids of the notifications to remove
+   */
+  private removeFromCache(ids: (string | undefined)[]): void {
+    this.cachedNotifications = this.cachedNotifications.filter(
+      (notification) => !ids.includes(notification.id)
+    );
+    this.notifications.next(this.cachedNotifications);
+    // Backfill the list when it becomes empty, so the menu isn't left empty
+    // while there are still more notifications to load.
+    if (this.cachedNotifications.length === 0 && this.hasNextPage.getValue()) {
+      this.fetchMore();
+    }
   }
 
   /**
@@ -167,6 +185,5 @@ export class NotificationService {
     this.notifications.next(this.cachedNotifications);
     this.pageInfo.endCursor = data.notifications.pageInfo.endCursor;
     this.hasNextPage.next(data.notifications.pageInfo.hasNextPage);
-    this.firstLoad = false;
   }
 }

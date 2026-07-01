@@ -1,0 +1,40 @@
+<div class="flex flex-col gap-1 w-full">
+  <div class="flex gap-1">
+    <button
+      *ngFor="let locale of locales"
+      type="button"
+      class="px-2 py-0.5 text-xs font-medium uppercase border rounded relative transition-colors"
+      [class.bg-primary-600]="activeLocale === locale"
+      [class.text-white]="activeLocale === locale"
+      [class.border-primary-600]="activeLocale === locale"
+      [class.bg-white]="activeLocale !== locale"
+      [class.text-gray-700]="activeLocale !== locale"
+      [class.border-gray-300]="activeLocale !== locale"
+      [class.opacity-50]="disabled"
+      [disabled]="disabled"
+      (click)="setLocale(locale)"
+    >
+      {{ locale }}
+      <span
+        *ngIf="hasContent(locale) && activeLocale !== locale"
+        class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-primary-500"
+      ></span>
+    </button>
+  </div>
+  <input
+    *ngIf="type === 'text'"
+    type="text"
+    class="border border-gray-300 rounded px-2 py-1 w-full"
+    [ngModel]="values[activeLocale] || ''"
+    (ngModelChange)="onInput($event)"
+    [disabled]="disabled"
+  />
+  <textarea
+    *ngIf="type === 'textarea'"
+    class="border border-gray-300 rounded px-2 py-1 w-full"
+    rows="3"
+    [ngModel]="values[activeLocale] || ''"
+    (ngModelChange)="onInput($event)"
+    [disabled]="disabled"
+  ></textarea>
+</div>

@@ -28,7 +28,7 @@ describe('LayoutsTabComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

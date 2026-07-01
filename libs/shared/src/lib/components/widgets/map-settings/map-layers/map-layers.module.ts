@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 import {
   ButtonModule,
   DividerModule,
@@ -40,6 +41,7 @@ import { PortalModule } from '@angular/cdk/portal';
     TooltipModule,
     PortalModule,
     AlertModule,
+    LocalizePipe,
   ],
   exports: [MapLayersComponent],
 })

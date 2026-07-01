@@ -1,9 +1,11 @@
-import { ComponentCollection, SvgRegistry } from 'survey-core';
+import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
 import { isNil } from 'lodash';
-import { Injector } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
+import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
+import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
 
 /**
  * Inits the editor component.
@@ -17,6 +19,7 @@ export const init = (
 ): void => {
   // get services
   const domService = injector.get(DomService);
+  const ngZone = injector.get(NgZone);
 
   // Register icon
   SvgRegistry.registerIconFromSvg(
@@ -85,6 +88,32 @@ export const init = (
             question.value = html;
           }
         });
+
+        // Sync value updates from the survey model back into the editor (e.g.
+        // values written by auto-translation). Without this, a translated
+        // value set via survey.setValue() never reaches the TinyMCE instance.
+        question.registerFunctionOnPropertyValueChanged(
+          'value',
+          (newValue: any) => {
+            ngZone.run(() => {
+              const tinyEditor = instance.editor?.editor?.editor;
+              if (!tinyEditor) {
+                return;
+              }
+              // If the editor has focus the user is typing, so do not
+              // overwrite content to avoid cursor jumps.
+              if (tinyEditor.hasFocus()) {
+                return;
+              }
+              const currentEditorHtml = tinyEditor.getContent() || '';
+              const targetValue = newValue || '';
+              if (currentEditorHtml !== targetValue) {
+                instance.editor.editor.writeValue(targetValue);
+              }
+            });
+          },
+          question.name + '_value_sync'
+        );
       });
 
       // Only activate listener on readonly if outside of form builder
@@ -99,4 +128,31 @@ export const init = (
     },
   };
   componentCollectionInstance.add(component);
+
+  // Register translation properties for custom editor component
+  Serializer.addProperty('editor', {
+    name: 'translateField',
+    type: TRANSLATE_SOURCE_QUESTION_TYPE,
+    category: 'translation',
+    visibleIndex: 1,
+    displayName: 'Translate from question',
+  });
+  Serializer.addProperty('editor', {
+    name: 'translateTo',
+    type: 'string',
+    category: 'translation',
+    visibleIndex: 2,
+    displayName: 'Language to translate to',
+    visibleIf: (obj: any) => !!obj?.getPropertyValue('translateField'),
+    choices: AZURE_SUPPORTED_LANGUAGES,
+  });
+  Serializer.addProperty('editor', {
+    name: 'translateIf:condition',
+    category: 'logic',
+    visibleIndex: 10,
+    displayName: 'Translate if',
+    visibleIf: (obj: any) =>
+      !!obj?.getPropertyValue('translateField') &&
+      !!obj?.getPropertyValue('translateTo'),
+  });
 };

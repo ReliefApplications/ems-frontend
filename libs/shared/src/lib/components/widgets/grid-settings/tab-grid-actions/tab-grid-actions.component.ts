@@ -33,6 +33,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { GridActionSettingsComponent } from '../grid-action-settings/grid-action-settings.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 
 /**
  * Grid Actions configuration tab.
@@ -54,6 +55,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
     ButtonModule,
     AlertModule,
     TooltipModule,
+    LocalizePipe,
   ],
 })
 export class TabGridActionsComponent extends UnsubscribeComponent {

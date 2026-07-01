@@ -5,6 +5,7 @@ import {
   ActionButtonsComponent,
   EditableTextModule,
   FormModule as SharedFormModule,
+  LocalizePipe,
 } from '@oort-front/shared';
 import {
   ButtonModule,
@@ -31,6 +32,7 @@ import { FormComponent } from './form.component';
     TooltipModule,
     ActionButtonsComponent,
     IconModule,
+    LocalizePipe,
   ],
   exports: [FormComponent],
 })

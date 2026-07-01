@@ -31,7 +31,7 @@
               </ui-select-menu>
             </div>
             <!-- DATE LANGUAGE SELECTION -->
-            <div uiFormFieldDirective>
+            <div *ngIf="showDateFormatPicker" uiFormFieldDirective>
               <label>{{
                 'components.preferences.dateFormat' | translate
               }}</label>

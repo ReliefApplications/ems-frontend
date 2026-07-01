@@ -45,17 +45,19 @@
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
           <!-- Dashboard name, always display during edition -->
-          <shared-editable-text
+          <shared-editable-localized-text
             *ngIf="showName || editionActive"
-            [text]="dashboard.name"
+            [value]="dashboard.nameTranslations || dashboard.name || ''"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
             (formActiveEvent)="formActive = $event"
           >
             <h1 class="!m-0 overflow-hidden text-ellipsis">
-              {{ dashboard.name }}
+              {{
+                dashboard.nameTranslations || dashboard.name | sharedLocalize
+              }}
             </h1>
-          </shared-editable-text>
+          </shared-editable-localized-text>
           <!-- Settings -->
           <ui-button
             *ngIf="!formActive"
@@ -131,7 +133,7 @@
           </ui-button>
           <!-- Dashboard export -->
           <shared-dashboard-export-button
-            [title]="dashboard.name"
+            [title]="dashboard.nameTranslations || dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
           <!-- More options -->

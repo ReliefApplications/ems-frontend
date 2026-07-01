@@ -18,9 +18,9 @@ import {
   FormWrapperModule,
   AutocompleteModule,
   GraphQLSelectModule,
-  IconModule
+  IconModule,
 } from '@oort-front/ui';
-import { 
+import {
   FormsModule,
   ReactiveFormsModule,
   UntypedFormBuilder,
@@ -65,9 +65,9 @@ describe('SubscriptionModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
-        }
-      ]
+          useValue: {},
+        },
+      ],
     }).compileComponents();
   });
 
@@ -77,14 +77,14 @@ describe('SubscriptionModalComponent', () => {
     component.data = {
       channels: [],
       subscription: {
-        routingKey: "",
-        title: "",
+        routingKey: '',
+        title: '',
         convertTo: {
-          name: ""
+          name: '',
         },
-        channel: {}
-      }
-    }
+        channel: {},
+      },
+    };
     fixture.detectChanges();
   });
 

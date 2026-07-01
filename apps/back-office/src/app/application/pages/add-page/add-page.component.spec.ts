@@ -51,7 +51,7 @@ describe('AddPageComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

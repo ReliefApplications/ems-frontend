@@ -64,6 +64,7 @@ export const GET_PAGE_BY_ID = gql`
         showIcon
       }
       name
+      nameTranslations
       visible
       createdAt
       modifiedAt
@@ -142,6 +143,7 @@ export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
     record(id: $id) {
       id
+      incrementalId
       data
       createdAt
       createdBy {
