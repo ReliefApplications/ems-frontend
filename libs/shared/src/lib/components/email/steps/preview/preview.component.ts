@@ -143,6 +143,28 @@ export class PreviewComponent
     }
   }
 
+  /**
+   * Whether a separate-email block also delivers to the distribution list.
+   * General flow: read the matching dataset's toggle. Grid action: true when a
+   * distribution list is present (the single grid dataset is always-on).
+   *
+   * @param blockName the separate-email block name (the dataset name).
+   * @returns true if the block's separate emails also go to the distribution list.
+   */
+  blockGoesToDistributionList(blockName: string): boolean {
+    if (this.emailService.isGridAction) {
+      return (
+        this.distributionListTo?.length > 0 ||
+        this.distributionListCc?.length > 0 ||
+        this.distributionListBcc?.length > 0
+      );
+    }
+    const datasets =
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? [];
+    const dataset = datasets.find((d: any) => d.name === blockName);
+    return !!dataset?.individualEmailToDistributionList;
+  }
+
   ngOnInit() {
     const datasets = this.emailService.datasetsForm.get(
       'datasets'

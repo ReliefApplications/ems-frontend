@@ -993,7 +993,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
+          "allSeparate": "Tous les ensembles de données sont configurés pour envoyer un e-mail séparé ; il n'y a donc aucune liste de distribution à configurer. Pour envoyer également les e-mails séparés à une liste de distribution, activez « envoyer chaque e-mail séparé à la liste de distribution » sur un ensemble de données.",
           "and": "et",
           "noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
           "partOne": "Pour continuer, veuillez saisir",
@@ -1673,9 +1673,12 @@
         "label": "Nom de la liste de distribution*",
         "noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
         "sendseparate": {
-          "list": "Envoyer des e-mails à des destinataires distincts"
+          "alsoToDistributionList": "Chacun de ces e-mails est également envoyé à la liste de distribution.",
+          "list": "Envoyer des e-mails à des destinataires distincts",
+          "ownRecipientOnly": "Chacun de ces e-mails est envoyé uniquement à son propre destinataire."
         },
         "separateEmail": "Envoyer un e-mail séparé",
+        "separateEmailToDistributionList": "Envoyer aussi à la liste de distribution",
         "subscriptionList": "Liste d'abonnement",
         "to": "À"
       }

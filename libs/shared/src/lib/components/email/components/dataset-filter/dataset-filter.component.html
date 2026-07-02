@@ -68,6 +68,16 @@
             'components.select.distribution.separateEmail' | translate
           }}</ng-container>
         </ui-checkbox>
+        <ui-checkbox
+          *ngIf="query.get('individualEmail').value"
+          class="mt-2"
+          formControlName="individualEmailToDistributionList"
+        >
+          <ng-container ngProjectAs="label">{{
+            'components.select.distribution.separateEmailToDistributionList'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
       </div>
     </div>
 

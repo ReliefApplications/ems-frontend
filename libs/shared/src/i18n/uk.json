@@ -1672,9 +1672,12 @@
         "label": "Назва списку розсилки*",
         "noPreviewData": "Вибраний набір даних не містить даних для попереднього перегляду",
         "sendseparate": {
-          "list": "Одержувачі окремих email"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Одержувачі окремих email",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Надіслати окремий email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Список підписок",
         "to": "Кому"
       }

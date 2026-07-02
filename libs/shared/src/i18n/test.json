@@ -1670,9 +1670,12 @@
         "label": "******",
         "noPreviewData": "******",
         "sendseparate": {
-          "list": "******"
+          "alsoToDistributionList": "******",
+          "list": "******",
+          "ownRecipientOnly": "******"
         },
         "separateEmail": "******",
+        "separateEmailToDistributionList": "******",
         "subscriptionList": "******",
         "to": "******"
       }

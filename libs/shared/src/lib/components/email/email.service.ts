@@ -227,6 +227,11 @@ export class EmailService {
   public selectedDistributionListName: any = '';
   /** Checks if separate emails is checked for all blocks */
   public isAllSeparateEmail = false;
+  /**
+   * Distribution list is optional when at least one dataset is send-separate.
+   * It is required only when no dataset is send-separate.
+   */
+  public isDistributionListOptional = false;
   /** For storing emails For CC from service response (In select with Filter option) */
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
@@ -300,6 +305,7 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
+      individualEmailToDistributionList: false,
       csFilter: this.formBuilder.group({
         logic: 'and',
         filters: new FormArray([]),
@@ -409,7 +415,7 @@ export class EmailService {
    */
   checkDLToValid(): Promise<boolean> {
     return new Promise((resolve) => {
-      if (this.isAllSeparateEmail) {
+      if (this.isAllSeparateEmail || this.isDistributionListOptional) {
         resolve(true);
       } else {
         if (
@@ -900,6 +906,8 @@ export class EmailService {
         sendAsAttachment: null,
       }),
     });
+    // New form ⇒ recompute distribution-list optionality from scratch.
+    this.isDistributionListOptional = false;
   }
 
   /**
@@ -1996,6 +2004,11 @@ export class EmailService {
    * validating next button by taking 3 conditions in consideration DistributionList name mandatory, check duplicate name validation and requires To email
    */
   async validateNextButton() {
+    // When the distribution list is optional, it never blocks proceeding.
+    if (this.isDistributionListOptional) {
+      this.disableSaveAndProceed.next(false);
+      return;
+    }
     const distributionListNameExists =
       this.distributionListName?.trim()?.length > 0;
     const distributionListDuplicateName = this.isDistributionListNameDuplicate;

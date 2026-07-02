@@ -148,6 +148,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.showFileUpload = false;
     this.emailService.isGridAction = false;
     this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;
@@ -501,6 +502,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.isDistributionListEdit = false;
     this.emailService.isGridAction = false;
     this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
@@ -901,6 +903,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: new FormControl(null),
       individualEmail: new FormControl(ele.individualEmail),
       individualEmailFields: individualEmailFieldsArray, // Attach individualEmailFields array
+      individualEmailToDistributionList: new FormControl(
+        ele.individualEmailToDistributionList ?? false
+      ),
       csFilter: this.formBuilder.group({
         logic: new FormControl(ele.csFilter?.logic || null),
         filters: this.formBuilder.array(
@@ -1451,6 +1456,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.selectedDistributionListName = '';
     this.emailService.isGridAction = false;
     this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
