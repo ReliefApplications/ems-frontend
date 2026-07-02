@@ -206,6 +206,9 @@
           [uiTooltip]="'components.queryBuilder.fields.format.info' | translate"
         ></ui-icon>
       </div>
+      <ui-toggle *ngIf="isEditedFileField" formControlName="showOutdatedFiles">
+        <ng-container ngProjectAs="label">Show outdated files</ng-container>
+      </ui-toggle>
     </form>
   </ng-container>
   <!-- If not scalar field, display child template -->

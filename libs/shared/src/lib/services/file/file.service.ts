@@ -36,6 +36,7 @@ export interface File {
   name: string;
   type?: string;
   content?: string | DocumentManagementFileContent;
+  outdated?: boolean;
 }
 
 /**

@@ -50,6 +50,7 @@ export const GET_GRID_RESOURCE_META = gql`
       id
       name
       queryName
+      fields
       forms {
         id
         name

@@ -905,6 +905,12 @@
                 class="w-full !justify-start overflow-hidden text-ellipsis"
               >
                 <span [class]="dataItem.icon[file.name]"></span>
+                <span
+                  *ngIf="file.outdated"
+                  class="k-icon k-i-warning"
+                  style="color: #b45309"
+                  title="Outdated file"
+                ></span>
                 <span class="textbox">{{
                   dataItem.text[field.name][file.name] || file.name
                 }}</span>
@@ -936,6 +942,12 @@
                 >
                   <p style="text-wrap: auto" class="max-w-full">
                     <span [class]="dataItem.icon[file.name]"></span>
+                    <span
+                      *ngIf="file.outdated"
+                      class="k-icon k-i-warning"
+                      style="color: #b45309"
+                      title="Outdated file"
+                    ></span>
                     <span class="textbox">{{
                       dataItem.text[field.name][file.name] || file.name
                     }}</span>

@@ -7,6 +7,8 @@ import {
 import { Question, QuestionFile } from '../types';
 import { Injector } from '@angular/core';
 import jsonpath from 'jsonpath';
+import { File as SurveyFile } from '../../services/file/file.service';
+import { isFileOutdated } from '../../services/file/file-outdated.utils';
 
 /**
  * Set document properties based on value expressions
@@ -61,6 +63,59 @@ const setDocumentProperties = (
 const PDF_PREVIEW_CLASS = 'file-pdf-preview';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
+
+/** Services needed to resolve and render an inline file preview. */
+interface FilePreviewDeps {
+  documentManagementService: DocumentManagementService;
+  restService: RestService;
+  environment: any;
+}
+
+/** CSS class of the custom preview wrapper we inject. */
+const FILE_PREVIEW_CLASS = 'file-preview';
+/** Class toggled on the question root to hide SurveyJS's default preview. */
+const FILE_PREVIEW_ACTIVE_CLASS = 'file-preview-active';
+/** Id of the stylesheet that hides the default preview when ours is active. */
+const FILE_PREVIEW_STYLE_ID = 'shared-file-preview-style';
+/** CSS class of the outdated controls injected for protected file fields. */
+const FILE_OUTDATED_CONTROLS_CLASS = 'file-outdated-controls';
+/** Class toggled on the question root when file removal should be blocked. */
+const FILE_OUTDATED_MODE_CLASS = 'file-outdated-mode';
+/** Class toggled when the configured file limit has already been reached. */
+const FILE_LIMIT_REACHED_CLASS = 'file-limit-reached';
+
+/**
+ * Injects (once) the stylesheet that hides SurveyJS's default file list while
+ * our custom preview is active. Hiding via a class on the stable question root
+ * (rather than inline styles on the list) survives SurveyJS re-rendering the
+ * list on every value change.
+ */
+const ensureFilePreviewStyles = (): void => {
+  if (document.getElementById(FILE_PREVIEW_STYLE_ID)) return;
+  const style = document.createElement('style');
+  style.id = FILE_PREVIEW_STYLE_ID;
+  // In display mode our custom preview fully replaces the default file UI, so
+  // hide the whole default file widget container to avoid an empty drop-zone
+  // element showing above the preview. Our preview wrapper is appended as a
+  // sibling of the file widget (on the question root), so it stays visible.
+  style.textContent =
+    `.${FILE_PREVIEW_ACTIVE_CLASS} .sd-file,` +
+    `.${FILE_PREVIEW_ACTIVE_CLASS} .sv-file { display: none !important; }` +
+    `.${FILE_OUTDATED_MODE_CLASS} .sd-file__remove-file-button,` +
+    `.${FILE_OUTDATED_MODE_CLASS} .sv-file__remove-file-button,` +
+    `.${FILE_OUTDATED_MODE_CLASS} .sd-file__clean-btn,` +
+    `.${FILE_OUTDATED_MODE_CLASS} .sv-file__clean-btn { display: none !important; }` +
+    `.${FILE_OUTDATED_MODE_CLASS}.${FILE_LIMIT_REACHED_CLASS} .sd-file__choose-btn,` +
+    `.${FILE_OUTDATED_MODE_CLASS}.${FILE_LIMIT_REACHED_CLASS} .sv-file__choose-btn { display: none !important; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} .file-outdated-row { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} .file-outdated-name { font-weight: 500; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} .file-outdated-status { align-items: center; color: #b45309; display: inline-flex; gap: 4px; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} .file-limit-message { color: #6b7280; font-size: 12px; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} button { align-items: center; border: none; cursor: pointer; display: inline-flex; gap: 4px; justify-content: flex-start; padding: 4px 6px; }` +
+    `.${FILE_OUTDATED_CONTROLS_CLASS} .file-outdated { color: #b45309; }`;
+  document.head.appendChild(style);
+};
 
 /**
  * Determines whether a file can be previewed inline and how.
@@ -183,6 +238,113 @@ const updatePdfPreview = (
 };
 
 /**
+ * Renders controls that let users mark/unmark files as outdated instead of removing them.
+ *
+ * @param question File question instance
+ * @param htmlElement The question's current rendered root HTML element
+ */
+const updateOutdatedControls = (
+  question: QuestionFile,
+  htmlElement: HTMLElement
+): void => {
+  ensureFilePreviewStyles();
+  htmlElement.classList.toggle(
+    FILE_OUTDATED_MODE_CLASS,
+    question.allowOutdatedFiles === true
+  );
+  htmlElement.querySelector(`.${FILE_OUTDATED_CONTROLS_CLASS}`)?.remove();
+  htmlElement.classList.remove(FILE_LIMIT_REACHED_CLASS);
+
+  if (question.allowOutdatedFiles !== true) {
+    return;
+  }
+
+  const files = Array.isArray(question.value)
+    ? (question.value as SurveyFile[])
+    : [];
+  const limit = question.allowMultiple
+    ? Number(question.getPropertyValue('allowedFileNumber'))
+    : 1;
+  const limitReached = files.length >= limit;
+  htmlElement.classList.toggle(FILE_LIMIT_REACHED_CLASS, limitReached);
+  if (files.length === 0) {
+    return;
+  }
+
+  const controls = document.createElement('div');
+  controls.classList.add(FILE_OUTDATED_CONTROLS_CLASS);
+  files.forEach((file, index) => {
+    const outdated = isFileOutdated(file);
+    if (question.isReadOnly && !outdated) {
+      return;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'file-outdated-row';
+
+    if (files.length > 1 || question.isReadOnly) {
+      const name = document.createElement('span');
+      name.className = 'file-outdated-name';
+      name.textContent = file.name;
+      row.appendChild(name);
+    }
+
+    if (outdated) {
+      const status = document.createElement('span');
+      status.className = 'file-outdated-status';
+      const statusIcon = document.createElement('span');
+      statusIcon.className = 'k-icon k-i-warning file-outdated';
+      const statusLabel = document.createElement('span');
+      statusLabel.textContent = 'Outdated';
+      status.appendChild(statusIcon);
+      status.appendChild(statusLabel);
+      row.appendChild(status);
+    }
+
+    if (question.isReadOnly) {
+      controls.appendChild(row);
+      return;
+    }
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'k-button k-button-flat k-button-flat-base';
+    button.title = outdated
+      ? 'Remove outdated status'
+      : 'Mark file as outdated';
+    const icon = document.createElement('span');
+    icon.className = `k-icon ${outdated ? 'k-i-undo' : 'k-i-warning'}`;
+    const label = document.createElement('span');
+    label.textContent = outdated ? 'Restore file' : 'Mark as outdated';
+    button.appendChild(icon);
+    button.appendChild(label);
+    button.addEventListener('click', () => {
+      const nextValue = files.map((currentFile, currentIndex) =>
+        currentIndex === index
+          ? { ...currentFile, outdated: !isFileOutdated(currentFile) }
+          : currentFile
+      );
+      question.value = nextValue;
+      (question.survey as SurveyModel)?.setValue(question.name, nextValue);
+      updateOutdatedControls(question, htmlElement);
+    });
+    row.appendChild(button);
+    controls.appendChild(row);
+  });
+
+  if (!question.isReadOnly && limitReached) {
+    const message = document.createElement('div');
+    message.className = 'file-limit-message';
+    message.textContent =
+      'File limit reached. Existing and outdated files count toward the limit.';
+    controls.appendChild(message);
+  }
+  if (controls.childNodes.length > 0) {
+    htmlElement.appendChild(controls);
+  }
+};
+
+/**
  * Update file widget in order to be able to update properties with value expressions
  *
  * @param injector Parent instance angular injector containing all needed services and directives
@@ -209,6 +371,32 @@ export const init = (
         question,
         question.survey as SurveyModel
       );
+
+      // Keep a live reference to the current element so the value-change
+      // handler always targets the latest rendered DOM.
+      (question as any).__filePreviewEl = htmlElement;
+
+      // Render the preview for the current value.
+      updateFilePreview(previewDeps, question, htmlElement);
+      updateOutdatedControls(question, htmlElement);
+
+      // Re-render the preview whenever this question's value changes. Subscribe
+      // once per question to avoid stacking handlers across re-renders.
+      if (!(question as any).__filePreviewSubscribed) {
+        (question as any).__filePreviewSubscribed = true;
+        (question.survey as SurveyModel)?.onValueChanged.add(
+          (_sender, options: any) => {
+            if (options?.name !== question.name) return;
+            const el = (question as any).__filePreviewEl as HTMLElement;
+            if (!el) return;
+            // Defer so SurveyJS finishes its own DOM update first.
+            setTimeout(() => {
+              updateFilePreview(previewDeps, question, el);
+              updateOutdatedControls(question, el);
+            }, 0);
+          }
+        );
+      }
 
       // Give stored images the same native in-area preview as freshly picked
       // ones: SurveyJS only recognizes images from string contents, but files

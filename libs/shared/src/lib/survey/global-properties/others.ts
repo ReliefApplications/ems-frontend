@@ -165,6 +165,26 @@ export const init = (environment: any): void => {
     minValue: 2,
   });
 
+  serializer.addProperty('file', {
+    name: 'allowOutdatedFiles:boolean',
+    category: 'general',
+    visibleIndex: 11,
+    displayName: 'Allow marking files as outdated',
+    description:
+      'When enabled, existing files cannot be removed. Users can mark or unmark them as outdated instead.',
+    default: false,
+  });
+
+  serializer.addProperty('html', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    visibleIndex: 20,
+    displayName: 'Show outdated files',
+    description:
+      'When disabled, file placeholders rendered in this HTML question hide files marked as outdated.',
+    default: true,
+  });
+
   // Add set value on complete expression to questions
   serializer.addProperty('question', {
     name: 'setValueOnComplete',

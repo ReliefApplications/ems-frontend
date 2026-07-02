@@ -10,6 +10,8 @@ import {
   getUrl,
 } from './grid-data-formatter.helper';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { File } from '../file/file.service';
+import { filterOutdatedFiles } from '../file/file-outdated.utils';
 
 /**
  * Grid data formatter service
@@ -175,23 +177,26 @@ export class GridDataFormatterService {
             });
           } else {
             // Format files name and icons for each field
-            (get(rowData, field.name) || {}).forEach(
-              (file: { name: string }) => {
-                const text = this.htmlParserService.applyLayoutFormat(
-                  removeFileExtension(file.name),
-                  field
-                );
-                Object.assign(this.textObj.text, {
-                  [field.name]: {
-                    [file.name]: text,
-                  },
-                });
-                const icon = 'k-icon ' + getFileIcon(file.name);
-                Object.assign(this.iconObj.icon, {
-                  [file.name]: icon,
-                });
-              }
+            const files = filterOutdatedFiles(
+              (get(rowData, field.name) || []) as File[],
+              field.showOutdatedFiles !== false
             );
+            rowData[field.name] = files;
+            files.forEach((file) => {
+              const text = this.htmlParserService.applyLayoutFormat(
+                removeFileExtension(file.name),
+                field
+              );
+              Object.assign(this.textObj.text, {
+                [field.name]: {
+                  [file.name]: text,
+                },
+              });
+              const icon = 'k-icon ' + getFileIcon(file.name);
+              Object.assign(this.iconObj.icon, {
+                [file.name]: icon,
+              });
+            });
           }
         }
       });

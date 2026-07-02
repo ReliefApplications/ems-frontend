@@ -230,7 +230,23 @@ export class FormBuilderService {
     let isValid = true;
     const allowMultiple = question.getPropertyValue('allowMultiple');
     const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
-    if (allowMultiple && files.length > allowedFileNumber) {
+    const allowOutdatedFiles = question.getPropertyValue('allowOutdatedFiles');
+    const maximumFiles = allowMultiple ? allowedFileNumber : 1;
+    if (allowOutdatedFiles && files.length > maximumFiles) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.formBuilder.errors.maximumAllowedFiles',
+          { number: maximumFiles }
+        ),
+        { error: true }
+      );
+      isValid = false;
+    }
+    if (
+      !allowOutdatedFiles &&
+      allowMultiple &&
+      files.length > allowedFileNumber
+    ) {
       this.snackBar.openSnackBar(
         this.translate.instant(
           'components.formBuilder.errors.maximumAllowedFiles',
@@ -250,6 +266,15 @@ export class FormBuilderService {
    * @param options Options regarding the files
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    const filesToClear = Array.isArray(options.value) ? options.value : [];
+    if (
+      options.question?.getPropertyValue('allowOutdatedFiles') &&
+      filesToClear.length > 0
+    ) {
+      options.question.value = options.value;
+      options.callback('error');
+      return;
+    }
     if (options.question.allowMultiple) {
       // Filtering the temp storage to remove the file based on filename
       if (temporaryFilesStorage[options.name]) {
@@ -279,6 +304,7 @@ export class FormBuilderService {
       ...(temporaryFilesStorage[options.name] ?? []),
     ]);
     if (!isUploadValid) {
+      options.callback('error');
       return;
     }
     if (!isNil(temporaryFilesStorage[options.name])) {
@@ -288,14 +314,15 @@ export class FormBuilderService {
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }
-    let content: any[] = [];
-    options.files.forEach((file: any) => {
+    let content: Array<{
+      file: File;
+      content: string | ArrayBuffer | null;
+    }> = [];
+    options.files.forEach((file: File) => {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         content = content.concat([
           {
-            name: file.name,
-            type: file.type,
             content: fileReader.result,
             file,
           },

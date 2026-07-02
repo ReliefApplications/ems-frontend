@@ -149,6 +149,7 @@ export class LayoutTableComponent
       data: {
         layout,
         queryName: this.resource?.queryName,
+        fileFieldNames: this.getFileFieldNames(),
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -189,5 +190,16 @@ export class LayoutTableComponent
     const layouts = [...this.selectedLayouts?.value];
     moveItemInArray(layouts, event.previousIndex, event.currentIndex);
     this.selectedLayouts?.setValue(layouts);
+  }
+
+  /**
+   * Gets file field names available in this layout context.
+   *
+   * @returns File field names
+   */
+  private getFileFieldNames(): string[] {
+    return (this.resource?.fields ?? this.form?.fields ?? [])
+      .filter((field: any) => field.type === 'file')
+      .map((field: any) => field.name);
   }
 }

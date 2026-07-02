@@ -28,7 +28,9 @@ export interface QuestionText extends QuestionTextModel, GlobalProperties {
 }
 
 /** File question interface */
-export interface QuestionFile extends QuestionFileModel, GlobalProperties {}
+export interface QuestionFile extends QuestionFileModel, GlobalProperties {
+  allowOutdatedFiles?: boolean;
+}
 
 /** Type for comment question */
 export interface QuestionComment
