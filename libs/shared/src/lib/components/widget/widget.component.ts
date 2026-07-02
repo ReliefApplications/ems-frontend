@@ -65,6 +65,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   public expanded = false;
   /** Loading state of the widget */
   public loading = true;
+  /** Original row count before auto-height expansion, used to restore in edit mode */
+  private autoHeightOriginalRows?: number;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
@@ -143,6 +145,18 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
       if (changes['canUpdate'].previousValue === false && this.expanded) {
         this.onResize();
       }
+      // Restore original rows if auto-height had expanded the widget
+      if (
+        changes['canUpdate'].currentValue === true &&
+        this.autoHeightOriginalRows !== undefined
+      ) {
+        this.widget.rows = this.autoHeightOriginalRows;
+        this.autoHeightOriginalRows = undefined;
+        this.gridItem?.updateOptions();
+        if (this.grid?.options?.api?.resize) {
+          this.grid.options.api.resize();
+        }
+      }
     }
   }
 
@@ -161,6 +175,45 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     const content = this.widgetContentComponent as { reload?: () => void };
     if (typeof content?.reload === 'function') {
       content.reload();
+    }
+  }
+
+  /**
+   * Auto-grows the widget's row count so its editor content fits without an
+   * inner scrollbar. Only active in view mode (canUpdate = false).
+   *
+   * @param contentHeight Natural pixel height of the rendered HTML content.
+   * @param overflowPx
+   */
+  onEditorHeightChange(overflowPx: number): void {
+    if (this.canUpdate || !this.grid || !this.gridItem) return;
+    if (this.grid.mobile) return;
+
+    // Only auto-resize the bottom-most widget to avoid overlapping items below it
+    const bottom = (this.widget.y ?? 0) + (this.widget.rows ?? 1);
+    const isBottomWidget = this.grid.grid.every(
+      (item) => item === this.gridItem || (item.item.y ?? 0) < bottom
+    );
+    if (!isBottomWidget) return;
+
+    if (this.autoHeightOriginalRows === undefined) {
+      this.autoHeightOriginalRows = this.widget.rows;
+    }
+
+    if (overflowPx <= 0) return;
+
+    const fixedRowHeight = (this.grid.options.fixedRowHeight as number) ?? 200;
+    const margin = (this.grid.options.margin as number) ?? 10;
+
+    const extraRows = Math.ceil(overflowPx / (fixedRowHeight + margin));
+    const newRows = (this.autoHeightOriginalRows as number) + extraRows;
+
+    if (newRows === this.widget.rows) return;
+
+    this.widget.rows = newRows;
+    this.gridItem.updateOptions();
+    if (this.grid.options.api?.resize) {
+      this.grid.options.api.resize();
     }
   }
 
