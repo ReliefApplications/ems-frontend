@@ -758,6 +758,14 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
+    } else if (
+      this.query.get('individualEmail').value === true &&
+      !(this.query.get('csFilter')?.value?.filters?.length > 0)
+    ) {
+      // Send-separate dataset with no recipient source (no email fields and no
+      // CS users filter) — block proceeding.
+      this.emailService.disableSaveAndProceed.next(true);
+      this.showFieldsWarning_SSE = true;
     }
 
     return formArray;
