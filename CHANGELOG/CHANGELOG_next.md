@@ -1,3 +1,10 @@
+# [2.23.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.19...v2.23.0-rc.20) (2026-07-03)
+
+
+### Features
+
+* Add text describing how labels can be translated in forms ([#2895](https://github.com/ReliefApplications/ems-frontend/issues/2895)) ([398675f](https://github.com/ReliefApplications/ems-frontend/commit/398675f8494f46d018b611f82258615f79616f52)), closes [AB#134831](https://github.com/AB/issues/134831)
+
 # [2.23.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.18...v2.23.0-rc.19) (2026-07-01)
 
 
