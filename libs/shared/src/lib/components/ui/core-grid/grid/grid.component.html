@@ -1249,6 +1249,7 @@
       [title]="group.label"
       [sticky]="true"
     >
+      <!-- Column header -->
       <ng-template kendoGridHeaderTemplate let-column>
         <ng-container
           *ngTemplateOutlet="
@@ -1257,6 +1258,7 @@
           "
         ></ng-container>
       </ng-template>
+      <!-- Column cell -->
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <div class="flex flex-row gap-2">
           <ng-container
