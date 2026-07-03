@@ -296,7 +296,7 @@
   // Radio
   .sd-question:has(> .sd-question__content sv-ng-radiogroup-question) {
     > .sd-question__header--location-top .sd-description {
-      margin-top: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px))) !important;
+      margin-top: calc(2.5 * var(--sjs-base-unit, var(--base-unit, 8px))) !important;
     }
   }
   .sd-item--checked .sd-item__decorator {
