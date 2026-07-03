@@ -82,6 +82,39 @@ const SURVEY_LOCALIZABLE_STRINGS = [
 ];
 
 /**
+ * Help text for the title, description & tooltip properties in the survey
+ * creator property grid, explaining dynamic text support, per creator locale.
+ */
+const DYNAMIC_TEXT_HELP: Record<string, string> = {
+  en:
+    'Supports dynamic text: any {placeholder} is replaced at runtime by the value of a question, a variable ({user.name}, {user.roles}…) or a calculated value.\n\n' +
+    "• For a conditional label, define a calculated value, e.g. myLabel = iif(id() = 'unknown id', 'New record', 'Existing record'), and write {myLabel} here.\n" +
+    '• To translate a conditional label, create one calculated value per language and reference the matching one in each translated title.',
+  fr:
+    "Supporte le texte dynamique : tout {placeholder} est remplacé à l'exécution par la valeur d'une question, d'une variable ({user.name}, {user.roles}…) ou d'une valeur calculée.\n\n" +
+    "• Pour un libellé conditionnel, définissez une valeur calculée, ex. monLibelle = iif(id() = 'unknown id', 'Nouvel enregistrement', 'Enregistrement existant'), et écrivez {monLibelle} ici.\n" +
+    '• Pour traduire un libellé conditionnel, créez une valeur calculée par langue et référencez la bonne dans chaque titre traduit.',
+  uk:
+    'Підтримує динамічний текст: будь-який {placeholder} під час виконання замінюється значенням питання, змінної ({user.name}, {user.roles}…) або обчислюваного значення.\n\n' +
+    "• Для умовного підпису визначте обчислюване значення, напр. myLabel = iif(id() = 'unknown id', 'Новий запис', 'Наявний запис'), і напишіть тут {myLabel}.\n" +
+    '• Щоб перекласти умовний підпис, створіть окреме обчислюване значення для кожної мови та посилайтеся на відповідне в кожному перекладеному заголовку.',
+};
+
+/**
+ * Assign the dynamic text help to the title, description & tooltip properties
+ * of the given creator locale.
+ *
+ * @param editorLocale Survey creator locale strings object
+ * @param locale Locale code, to pick the help text
+ */
+const addDynamicTextHelp = (editorLocale: any, locale: string) => {
+  if (!editorLocale.pehelp) editorLocale.pehelp = {};
+  editorLocale.pehelp.title = DYNAMIC_TEXT_HELP[locale];
+  editorLocale.pehelp.description = DYNAMIC_TEXT_HELP[locale];
+  editorLocale.pehelp.tooltip = DYNAMIC_TEXT_HELP[locale];
+};
+
+/**
  * Add localizable strings to surveyjs
  *
  */
@@ -103,6 +136,7 @@ export const initLocalization = () => {
         '• **On the left (Key):** The name of the question in *this* form (e.g., "country").\n' +
         '• **On the right (Value):** Expression running on selected *data record* (e.g., "{region}", "length({regions})").';
     }
+    addDynamicTextHelp(editorEn, 'en');
     if (editorEn.pe) {
       if (!editorEn.pe.tabs) editorEn.pe.tabs = {};
       editorEn.pe.tabs.translation = 'Translation';
@@ -114,6 +148,7 @@ export const initLocalization = () => {
 
   const editorFr = editorLocalization.getLocale('fr');
   if (editorFr && editorFr !== editorEn) {
+    addDynamicTextHelp(editorFr, 'fr');
     if (editorFr.pe) {
       if (!editorFr.pe.tabs) editorFr.pe.tabs = {};
       editorFr.pe.tabs.translation = 'Traduction';
@@ -125,6 +160,7 @@ export const initLocalization = () => {
 
   const editorUk = editorLocalization.getLocale('uk');
   if (editorUk && editorUk !== editorEn) {
+    addDynamicTextHelp(editorUk, 'uk');
     if (editorUk.pe) {
       if (!editorUk.pe.tabs) editorUk.pe.tabs = {};
       editorUk.pe.tabs.translation = 'Переклад';
