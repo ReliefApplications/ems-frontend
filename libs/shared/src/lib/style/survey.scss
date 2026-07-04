@@ -261,6 +261,71 @@
     display: inline;
   }
 
+  // Place the circular preview eye button in the top-left corner of the answered file decorator container
+  .sd-question--answered .sd-file__decorator,
+  .sv-question--answered .sv-file__decorator {
+    &::after {
+      content: '👁';
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 28px;
+      height: 28px;
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      color: var(--primary, #3b82f6); // Primary blue color
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease-in-out;
+      pointer-events: auto !important; // Directly captures preview clicks
+      z-index: 8;
+    }
+
+    &:hover::after {
+      background-color: var(--primary, #3b82f6);
+      color: white;
+      border-color: var(--primary, #3b82f6);
+      transform: scale(1.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // Explicitly prevent eye pseudo-elements on any nested/internal file preview elements
+  .sd-file__preview::after,
+  .sv-file__preview::after,
+  .sd-file__preview > div::after,
+  .sv-file__preview > div::after,
+  .sd-file__image-wrapper::after,
+  .sv-file__image-wrapper::after,
+  .sd-file__sign::after,
+  .sv-file__sign::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  // Ensure the remove button has proper visual behavior and stays on top of the preview overlay
+  .sd-file__remove-btn,
+  .sv-file__remove-btn,
+  .sd-file__remove-button,
+  .sv-file__remove-button,
+  .sd-file__remove-file-button,
+  .sv-file__remove-file-button {
+    cursor: pointer !important;
+    transition: transform 0.2s ease;
+    z-index: 10 !important;
+    position: relative;
+
+    &:hover {
+      transform: scale(1.1);
+      color: #ef4444 !important; // Red
+    }
+  }
+
   // In form preview
   .file-preview {
     display: flex;

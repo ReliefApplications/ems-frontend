@@ -211,8 +211,9 @@ export class FileService {
    * @returns file MIME type
    */
   private getFileType(file: File): string {
-    if (file.type) {
-      return file.type;
+    const type = file.type || '';
+    if (type && type !== 'application/octet-stream') {
+      return type;
     }
 
     const extension = this.getFileExtension(file.name);
@@ -220,7 +221,7 @@ export class FileService {
       return PDF_MIME_TYPE;
     }
 
-    return IMAGE_EXTENSIONS.includes(extension) ? `image/${extension}` : '';
+    return IMAGE_EXTENSIONS.includes(extension) ? `image/${extension}` : type;
   }
 
   /**

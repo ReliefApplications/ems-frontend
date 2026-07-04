@@ -19,6 +19,7 @@ export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/date-translate/date-translate.service';
 export * from './lib/services/document-management/document-management.service';
 export * from './lib/services/download/download.service';
+export * from './lib/services/file/file.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/form-builder/form-builder.service';
 export * from './lib/services/form/form.service';

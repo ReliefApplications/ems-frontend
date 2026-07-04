@@ -324,12 +324,24 @@ export class FormBuilderService {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-      xhr.onloadstart = () => {
-        xhr.responseType = 'blob';
-      };
+      xhr.responseType = 'blob';
       xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, {
-          type: options.fileValue.type,
+        const name = options.fileValue?.name || 'file';
+        let type =
+          options.fileValue?.type ||
+          xhr.response?.type ||
+          'application/octet-stream';
+        if (type === 'application/octet-stream' && name) {
+          const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|bmp|svg)$/i;
+          if (IMAGE_EXTENSIONS.test(name)) {
+            const ext = name.split('.').pop()?.toLowerCase();
+            type = ext === 'svg' ? 'image/svg+xml' : `image/${ext}`;
+          } else if (/\.pdf$/i.test(name)) {
+            type = 'application/pdf';
+          }
+        }
+        const file = new File([xhr.response], name, {
+          type: type,
         });
         const reader = new FileReader();
         reader.onload = (e) => {

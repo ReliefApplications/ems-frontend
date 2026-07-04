@@ -12,6 +12,7 @@ import {
   RestoreRecordMutationResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  FileService,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -105,13 +106,15 @@ export class RecordsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
+   * @param fileService File service
    */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private fileService: FileService
   ) {
     super();
   }
@@ -411,6 +414,59 @@ export class RecordsTabComponent
         .join(', ');
     }
     return value;
+  }
+
+  /**
+   * Get the field schema definition by name
+   *
+   * @param name Field name
+   * @returns Field schema object or undefined
+   */
+  public getFieldByName(name: string): any {
+    return this.resource?.fields?.find((f: any) => f.name === name);
+  }
+
+  /**
+   * Check if the given column corresponds to a file question
+   *
+   * @param columnName Column name
+   * @param element Optional grid row element containing cell data
+   * @returns True if column is a file field
+   */
+  public isFileField(columnName: string, element?: any): boolean {
+    const val = element?.data?.[columnName];
+    if (
+      Array.isArray(val) &&
+      val.length > 0 &&
+      val[0] &&
+      typeof val[0] === 'object' &&
+      'name' in val[0]
+    ) {
+      return true;
+    }
+    const field = this.getFieldByName(columnName);
+    return field?.type === 'JSON' && field?.meta?.type === 'file';
+  }
+
+  /**
+   * Click-to-preview callback for file buttons in the grid
+   *
+   * @param file File object to preview/download
+   */
+  public onOpenFile(file: any): void {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|bmp|svg)$/i;
+    let resolvedType = file.type;
+    if (IMAGE_EXTENSIONS.test(file.name)) {
+      resolvedType = ext === 'svg' ? 'image/svg+xml' : `image/${ext}`;
+    } else if (file.name.endsWith('.pdf')) {
+      resolvedType = 'application/pdf';
+    }
+    const normalizedFile = {
+      ...file,
+      type: resolvedType,
+    };
+    this.fileService.downloadOrPreview(normalizedFile).subscribe();
   }
 
   /**
