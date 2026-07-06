@@ -925,7 +925,13 @@ export class GridComponent
    */
   private updateColumnShowFullScreenButton(columnField: string) {
     const updatableTooltips = this.tooltips.filter(
-      (tooltip) => tooltip.enableBy !== 'default'
+      (tooltip) =>
+        tooltip.enableBy !== 'default' &&
+        Boolean(
+          (tooltip.elementRef.nativeElement as HTMLElement).closest(
+            '.textbox-container'
+          )
+        )
     );
     this.data.data.forEach((element) => {
       const relatedTooltipElement = updatableTooltips.find(

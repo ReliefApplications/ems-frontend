@@ -67,12 +67,12 @@ export class NotificationMenuComponent implements MenuPanel {
    */
   constructor(private dialog: Dialog) {}
 
-  /** Template of the inner menu (read lazily by the trigger directive) */
+  /** @returns Template of the inner menu (read lazily by the trigger directive) */
   get templateRef(): TemplateRef<any> {
     return this.menu.templateRef;
   }
 
-  /** Closed emitter of the inner menu (read lazily by the trigger directive) */
+  /** @returns Closed emitter of the inner menu (read lazily by the trigger directive) */
   get closed(): EventEmitter<void> {
     return this.menu.closed;
   }

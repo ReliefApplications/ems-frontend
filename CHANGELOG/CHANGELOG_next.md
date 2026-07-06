@@ -1,3 +1,27 @@
+# [2.23.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.20...v2.23.0-rc.21) (2026-07-06)
+
+### Bug Fixes
+
+- Radio display issue in forms ([#2896](https://github.com/ReliefApplications/ems-frontend/issues/2896)) ([aebd005](https://github.com/ReliefApplications/ems-frontend/commit/aebd005372338b9f931bce9ba8e90d84397c8e94)), closes [AB#134665](https://github.com/AB/issues/134665)
+
+# [2.23.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.19...v2.23.0-rc.20) (2026-07-03)
+
+### Features
+
+- Add text describing how labels can be translated in forms ([#2895](https://github.com/ReliefApplications/ems-frontend/issues/2895)) ([398675f](https://github.com/ReliefApplications/ems-frontend/commit/398675f8494f46d018b611f82258615f79616f52)), closes [AB#134831](https://github.com/AB/issues/134831)
+
+# [2.23.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.18...v2.23.0-rc.19) (2026-07-01)
+
+### Features
+
+- Translate field choices ([#2890](https://github.com/ReliefApplications/ems-frontend/issues/2890)) ([9d5bf45](https://github.com/ReliefApplications/ems-frontend/commit/9d5bf45154559f8972b5838311572765bfae9f8e)), closes [AB#134288](https://github.com/AB/issues/134288)
+
+# [2.23.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.17...v2.23.0-rc.18) (2026-06-30)
+
+### Bug Fixes
+
+- Save buttons expressions of form can now be translated ([75b020c](https://github.com/ReliefApplications/ems-frontend/commit/75b020c47763507dc6fc5dab6cd601aab384ab24))
+
 # [2.23.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.16...v2.23.0-rc.17) (2026-06-29)
 
 ### Bug Fixes

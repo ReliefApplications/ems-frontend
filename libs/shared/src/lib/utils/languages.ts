@@ -39,6 +39,14 @@ const I18N_TO_SURVEY_LOCALE: Record<string, string> = {
   te: 'tel',
 };
 
+/** Reverse of {@link I18N_TO_SURVEY_LOCALE}: SurveyJS locale to i18n/Angular code. */
+const SURVEY_TO_I18N_LOCALE: Record<string, string> = Object.keys(
+  I18N_TO_SURVEY_LOCALE
+).reduce((acc, i18n) => {
+  acc[I18N_TO_SURVEY_LOCALE[i18n]] = i18n;
+  return acc;
+}, {} as Record<string, string>);
+
 /**
  * Convert an i18n/Angular language code to the matching SurveyJS locale code.
  *
@@ -47,6 +55,30 @@ const I18N_TO_SURVEY_LOCALE: Record<string, string> = {
  */
 export const toSurveyLocale = (lang: string): string =>
   I18N_TO_SURVEY_LOCALE[lang] ?? lang;
+
+/**
+ * Convert a SurveyJS locale code to the matching i18n/Angular language code.
+ *
+ * @param locale The SurveyJS locale code
+ * @returns The equivalent i18n/Angular code (unchanged when there is no mismatch)
+ */
+export const toI18nLocale = (locale: string): string =>
+  SURVEY_TO_I18N_LOCALE[locale] ?? locale;
+
+/**
+ * Candidate locale codes to try when resolving localized content, accounting
+ * for the cases where i18n/Angular and SurveyJS disagree on the code (e.g.
+ * Angular 'uk' vs SurveyJS 'ua'). Returns the given code first, then its
+ * cross-library alias, de-duplicated and ignoring empty values.
+ *
+ * @param locale The active locale code, in either convention
+ * @returns Ordered, de-duplicated list of codes to look up
+ */
+export const localeAliases = (locale: string | null | undefined): string[] => {
+  if (!locale) return [];
+  const candidates = [locale, toSurveyLocale(locale), toI18nLocale(locale)];
+  return candidates.filter((code, i) => code && candidates.indexOf(code) === i);
+};
 
 /**
  * Get the full native name of a language from its code

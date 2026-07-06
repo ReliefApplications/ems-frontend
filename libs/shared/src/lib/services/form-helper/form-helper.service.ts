@@ -479,7 +479,8 @@ export class FormHelpersService {
     );
     const createTooltip = (htmlElement: Element) => {
       const tooltip = document.createElement('span');
-      tooltip.title = options.question.tooltip || '';
+      // Tooltips support dynamic text ({placeholders}), like titles do
+      tooltip.title = survey.processText(options.question.tooltip || '', true);
       tooltip.innerHTML = '?';
       tooltip.classList.add('survey-title__tooltip');
       htmlElement.appendChild(tooltip);

@@ -1,42 +1,43 @@
-OORT Front-end
-=======
+# OORT Front-end
+
 [![Github Pages](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml)
 [![Storybook](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml)
 
 # Versions
 
-Branch | Version | CI
---- | --- | ---
-main | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/main) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
-next | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
-beta | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml)
+| Branch | Version                                                                                                                                 | CI                                                                                                                                                                                           |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| main   | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/main)              | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml) |
+| next   | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml) |
+| beta   | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/ems-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/ci.yml) |
 
 # Introduction
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
-*   [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards
-*   [SurveyJS](https://surveyjs.io/), for the form builder
-*   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
+- [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards
+- [SurveyJS](https://surveyjs.io/), for the form builder
+- [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
 
 It was made for a Proof of Concept of a UI Builder for WHO.
 
 To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
 
-*   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
-*   [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
+- [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
+- [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
 
 In top of Angular, [Nx](https://nx.dev/) was installed, to better split projects and libs.
-
 
 # General
 
 The project is seperated into three sub-projects:
+
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - web-widgets, an application to genereate the web components
 
 One library exists:
+
 - shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
@@ -44,6 +45,7 @@ Library changes should automatically be detected when serving the other projects
 # Azure configuration
 
 If you want to deploy on Azure, build back-office and front-office:
+
 ```
 npx nx run back-office:build:azure-dev
 npx nx run front-office:build:azure-dev
@@ -59,11 +61,13 @@ The compiled applications can be found there in ./dist/apps/ folder.
 These steps describe how to do a deployment from your machine to target static web app.
 
 Get a deployment token:
+
 ```
 az staticwebapp secrets list --name <static-webapp-name> --query "properties.apiKey"
 ```
 
 Deploy code:
+
 ```
 npm i -g @azure/static-web-apps-cli
 npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-token> --env production
@@ -74,9 +78,11 @@ npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-toke
 ## Development server
 
 To serve a project, run:
+
 ```
 npx nx run <project>:server:<config>
 ```
+
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
 
 For example:
@@ -96,17 +102,18 @@ will serve back-office, connecting to the deployed back-end for development.
 ## Code scaffolding
 
 Generate a component:
+
 ```
 npx nx g component <component-name>
 ```
 
 Generate a module:
+
 ```
 npx nx g module <module-name>
 ```
 
 You can also use `npx nx generate directive|pipe|service|class|guard|interface|enum|module`.
-
 
 ## Build
 
@@ -139,6 +146,7 @@ npx nx run ui:storybook
 ```
 
 To build it, you can run:
+
 ```
 npx nx run ui:build-storybook
 ```
@@ -148,19 +156,22 @@ Pushing the code on the repo should automatically deploy storybook on a public e
 ## Web components
 
 To test web components, you can:
+
 - go to this repo: https://github.com/ReliefApplications/app-builder-widgets-poc
 - Switch to the branch: https://github.com/ReliefApplications/app-builder-widgets-poc/tree/fix/68747_add_forms_and_missing_styles_file
 - execute: `npm i && npm run start`
-You should find under the form widget dropdown some form types in order to test the form web component.
+  You should find under the form widget dropdown some form types in order to test the form web component.
 
 ### Build the web components
 
 You can use the makefile command:
+
 ```
 make bundle-widgets
 ```
 
 By default, the target is azure-dev project, but you can change it like that:
+
 ```
 make bundle-widgets project=azure-prod
 ```
