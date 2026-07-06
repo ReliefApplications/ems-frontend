@@ -11,7 +11,7 @@ import {
   replaceAggregationData,
   replacePages,
 } from './html-parser-helper';
-import { DatePipe } from '../../pipes/date/date.pipe';
+import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
 import { TranslateService } from '@ngx-translate/core';
@@ -270,27 +270,50 @@ export class HtmlParserService {
       },
     },
     date: {
-      signature: 'date( value ; format )',
-      call: (value, format) => {
-        try {
-          const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
-          const spanContent = spanRegex.exec(value)?.[1]?.trim();
-          const valueToFormat = !isNil(spanContent) ? spanContent : value;
-          const formattedDate = this.datePipe.transform(
-            new Date(valueToFormat),
-            format
-          ) as string;
-          // Replace original value inside the span tag with the formatted value
-          if (!isNil(spanContent)) {
-            value = value.replace(spanContent, formattedDate || '');
-          }
-          return (!isNil(spanContent) ? value : formattedDate) || '';
-        } catch {
-          return '';
-        }
+      signature: 'date( value ; format ; timezone )',
+      call: (value, format, timezone) => {
+        return this.formatDate(value, format, timezone);
+      },
+    },
+    formatDate: {
+      signature: 'formatDate( value ; format ; timezone )',
+      call: (value, format, timezone) => {
+        return this.formatDate(value, format, timezone);
       },
     },
   };
+
+  /**
+   * Formats a date value using the shared Angular DatePipe wrapper.
+   *
+   * @param value Date value to format
+   * @param format Angular date format
+   * @param timezone Optional timezone. Defaults to UTC.
+   * @returns Formatted date or an empty string when invalid
+   */
+  private formatDate(
+    value = '',
+    format = 'mediumDate',
+    timezone = DEFAULT_DATE_TIMEZONE
+  ): string {
+    try {
+      const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
+      const spanContent = spanRegex.exec(value)?.[1]?.trim();
+      const valueToFormat = !isNil(spanContent) ? spanContent : value;
+      const formattedDate = this.datePipe.transform(
+        new Date(valueToFormat),
+        format,
+        timezone || DEFAULT_DATE_TIMEZONE
+      ) as string;
+      // Replace original value inside the span tag with the formatted value.
+      if (!isNil(spanContent)) {
+        value = value.replace(spanContent, formattedDate || '');
+      }
+      return (!isNil(spanContent) ? value : formattedDate) || '';
+    } catch {
+      return '';
+    }
+  }
 
   /**
    * Apply the calc functions on the html body.
@@ -301,7 +324,7 @@ export class HtmlParserService {
    */
   private applyOperations(html: string, data?: any): string {
     const regex = new RegExp(
-      `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
+      `(?:${CALC_PREFIX}|{{)(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
     );
     let parsedHtml = html;
@@ -330,7 +353,7 @@ export class HtmlParserService {
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
-              if (result?.[1] === 'date') {
+              if (result?.[1] === 'date' || result?.[1] === 'formatDate') {
                 const trimmedArg = arg.trim();
                 // Strip optional surrounding quotes from format/value while preserving inner quotes
                 return trimmedArg.replace(/^['"](.*)['"]$/, '$1');
