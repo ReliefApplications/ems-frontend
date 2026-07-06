@@ -1,3 +1,10 @@
+# [2.23.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.20...v2.23.0-rc.21) (2026-07-06)
+
+
+### Bug Fixes
+
+* Radio display issue in forms ([#2896](https://github.com/ReliefApplications/ems-frontend/issues/2896)) ([aebd005](https://github.com/ReliefApplications/ems-frontend/commit/aebd005372338b9f931bce9ba8e90d84397c8e94)), closes [AB#134665](https://github.com/AB/issues/134665)
+
 # [2.23.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.19...v2.23.0-rc.20) (2026-07-03)
 
 
