@@ -1,28 +1,38 @@
+import { TestBed } from '@angular/core/testing';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
 import { SurveyModel } from 'survey-core';
 import { DatePipe } from '../../pipes/date/date.pipe';
+import { AuthService } from '../auth/auth.service';
+import { ConfirmService } from '../confirm/confirm.service';
 import { DateTranslateService } from '../date-translate/date-translate.service';
+import { DocumentManagementService } from '../document-management/document-management.service';
+import { DownloadService } from '../download/download.service';
+import { FileService } from '../file/file.service';
+import { TranslateService } from '@ngx-translate/core';
 import { FormHelpersService } from './form-helper.service';
 
 describe('FormHelpersService', () => {
   let service: FormHelpersService;
 
   beforeEach(() => {
-    const dateTranslateService = {
-      currentLang: 'en',
-    } as unknown as DateTranslateService;
-
-    service = new FormHelpersService(
-      {},
-      {} as never,
-      {} as never,
-      {} as never,
-      {} as never,
-      {} as never,
-      {} as never,
-      {} as never,
-      {} as never,
-      new DatePipe(dateTranslateService)
-    );
+    TestBed.configureTestingModule({
+      providers: [
+        FormHelpersService,
+        DatePipe,
+        { provide: 'environment', useValue: {} },
+        { provide: Apollo, useValue: {} },
+        { provide: SnackbarService, useValue: {} },
+        { provide: ConfirmService, useValue: {} },
+        { provide: TranslateService, useValue: {} },
+        { provide: AuthService, useValue: {} },
+        { provide: DownloadService, useValue: {} },
+        { provide: DocumentManagementService, useValue: {} },
+        { provide: FileService, useValue: {} },
+        { provide: DateTranslateService, useValue: { currentLang: 'en' } },
+      ],
+    });
+    service = TestBed.inject(FormHelpersService);
   });
 
   it('formats formatDate placeholders in HTML question dynamic text', () => {

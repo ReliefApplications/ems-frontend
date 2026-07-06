@@ -1,9 +1,7 @@
-import { DatePipe as AngularDatePipe } from '@angular/common';
 import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
-import { DEFAULT_DATE_TIMEZONE } from '../pipes/date/date.pipe';
+import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../pipes/date/date.pipe';
 import { AuthService } from '../services/auth/auth.service';
-import { DateTranslateService } from '../services/date-translate/date-translate.service';
 import {
   FunctionFactory,
   QuestionMatrixDropdownModel,
@@ -171,11 +169,11 @@ export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
  * Custom functions can be used in the logic fields.
  *
  * @param authService Shared auth service
- * @param dateTranslateService Shared date translation service
+ * @param datePipe Shared date pipe
  */
 const addCustomFunctions = (
   authService: AuthService,
-  dateTranslateService: DateTranslateService
+  datePipe: DatePipe
 ): void => {
   const formatDateValue = (params: unknown[]): string => {
     const [value, format = 'mediumDate', timezone = DEFAULT_DATE_TIMEZONE] =
@@ -185,14 +183,11 @@ const addCustomFunctions = (
     }
 
     try {
-      const locale = dateTranslateService.currentLang || 'en';
-      const datePipe = new AngularDatePipe(locale);
       return (
         datePipe.transform(
           value as string | number | Date,
           `${format}`,
-          `${timezone || DEFAULT_DATE_TIMEZONE}`,
-          locale
+          `${timezone || DEFAULT_DATE_TIMEZONE}`
         ) || ''
       );
     } catch {

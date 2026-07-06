@@ -324,17 +324,18 @@ export class HtmlParserService {
    */
   private applyOperations(html: string, data?: any): string {
     const regex = new RegExp(
-      `(?:${CALC_PREFIX}|{{)(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
+      `(?:${CALC_PREFIX}(\\w+)|{{(formatDate))\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
     );
     let parsedHtml = html;
     let result = regex.exec(html);
     while (result !== null) {
+      const functionName = result[1] || result[2];
       // get the function
-      const calcFunc = get(this.calcFunctions, result[1]);
+      const calcFunc = get(this.calcFunctions, functionName);
       if (calcFunc) {
         // Pre-process arguments for any nested placeholders
-        let processedArgs = result[2];
+        let processedArgs = result[3];
         if (data) {
           const placeholderRegex = /\{\{([^}]+)\}\}/g;
           processedArgs = processedArgs.replace(
@@ -353,7 +354,7 @@ export class HtmlParserService {
             .match(/(?:<[^>]+>|[^<;]+)+/g)
             ?.map((arg) => {
               /** Make sure that the new date case does not break any previous clean up */
-              if (result?.[1] === 'date' || result?.[1] === 'formatDate') {
+              if (functionName === 'date' || functionName === 'formatDate') {
                 const trimmedArg = arg.trim();
                 // Strip optional surrounding quotes from format/value while preserving inner quotes
                 return trimmedArg.replace(/^['"](.*)['"]$/, '$1');

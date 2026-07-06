@@ -1,4 +1,5 @@
 import { FunctionFactory, SurveyModel } from 'survey-core';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { AuthService } from '../services/auth/auth.service';
 import { DateTranslateService } from '../services/date-translate/date-translate.service';
 import addCustomFunctions from './custom-functions';
@@ -43,9 +44,10 @@ describe('addCustomFunctions', () => {
   const dateTranslateServiceMock = {
     currentLang: 'en',
   } as unknown as DateTranslateService;
+  const datePipe = new DatePipe(dateTranslateServiceMock);
 
   beforeEach(() => {
-    addCustomFunctions(authServiceMock, dateTranslateServiceMock);
+    addCustomFunctions(authServiceMock, datePipe);
   });
 
   it('registers all expected functions', () => {
@@ -74,9 +76,7 @@ describe('addCustomFunctions', () => {
   });
 
   it('re-registering replaces existing functions without throwing', () => {
-    expect(() =>
-      addCustomFunctions(authServiceMock, dateTranslateServiceMock)
-    ).not.toThrow();
+    expect(() => addCustomFunctions(authServiceMock, datePipe)).not.toThrow();
   });
 
   describe('createdAt', () => {

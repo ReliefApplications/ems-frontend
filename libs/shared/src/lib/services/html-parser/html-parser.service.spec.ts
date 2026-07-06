@@ -301,6 +301,10 @@ describe('HtmlParserService', () => {
       );
       expect(result).toBe('<p>27/11/2024 04:00</p>');
     });
+    it('keeps unprefixed non-formatDate functions unchanged', () => {
+      const result = service.parseHtml('<p>{{round( 9.5 ; 0 )}}</p>', {});
+      expect(result).toBe('<p>{{round( 9.5 ; 0 )}}</p>');
+    });
     it('executes html element parse with calcs correctly', () => {
       const result = service.parseHtml(calcFormatElement.before, {});
       expect(result).toEqual(calcFormatElement.after);

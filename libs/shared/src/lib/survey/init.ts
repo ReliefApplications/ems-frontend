@@ -4,8 +4,8 @@
 
 import { Apollo } from 'apollo-angular';
 import { AuthService } from '../services/auth/auth.service';
-import { DateTranslateService } from '../services/date-translate/date-translate.service';
 import { DomService } from '../services/dom/dom.service';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
 import * as EditorComponent from './components/editor';
@@ -75,7 +75,7 @@ export const initCustomSurvey = (
   const domService = injector.get(DomService);
   const apollo = injector.get(Apollo);
   const authService = injector.get(AuthService);
-  const dateTranslateService = injector.get(DateTranslateService);
+  const datePipe = injector.get(DatePipe);
   const referenceDataService = injector.get(ReferenceDataService);
 
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
@@ -160,5 +160,5 @@ export const initCustomSurvey = (
   // register custom triggers
   registerOnRecordEditionTrigger();
   // load internal functions
-  addCustomFunctions(authService, dateTranslateService);
+  addCustomFunctions(authService, datePipe);
 };
