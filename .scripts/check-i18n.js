@@ -72,7 +72,7 @@ const updateFile = (lang, json) => {
     JSON.stringify(json, null, '\t'),
     (err) => {
       if (err) {
-        throw(err);
+        throw err;
       }
       // else success
     }
