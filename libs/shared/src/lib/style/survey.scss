@@ -58,10 +58,6 @@
   }
 }
 
-::ng-deep survey .sv-title-actions {
-  display: block !important;
-}
-
 ::ng-deep .survey-title__tooltip {
   background-color: var(--primary);
   padding: 0 0.35rem;
@@ -294,11 +290,6 @@
   }
 
   // Radio
-  .sd-question:has(> .sd-question__content sv-ng-radiogroup-question) {
-    > .sd-question__header--location-top .sd-description {
-      margin-top: calc(2.5 * var(--sjs-base-unit, var(--base-unit, 8px))) !important;
-    }
-  }
   .sd-item--checked .sd-item__decorator {
     @apply bg-primary-400;
   }
