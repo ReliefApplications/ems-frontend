@@ -330,6 +330,7 @@ export class GridComponent
    * @param popupService Kendo popup service
    * @param gridDataFormatterService GridDataFormatterService
    * @param fileService File service
+   * @param downloadService Download service
    * @param cdr Change detector reference
    */
   constructor(
