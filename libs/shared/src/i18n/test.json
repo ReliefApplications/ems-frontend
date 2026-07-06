@@ -2836,6 +2836,8 @@
 				"selectDisplayField": "******",
 				"selectOrigin": "******",
 				"title": "******",
+				"titleTemplateHint": "****** {{ fields }}",
+				"titleTemplateNoRecord": "******",
 				"tooltip": {
 					"useContextEditor": "******",
 					"useDefaultEditor": "******"

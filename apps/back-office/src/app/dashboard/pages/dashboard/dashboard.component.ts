@@ -35,6 +35,8 @@ import {
   DeleteDashboardTemplatesMutationResponse,
   EditDashboardMutationResponse,
   Record,
+  ReferenceDataQueryResponse,
+  ResourceQueryResponse,
   DashboardComponent as SharedDashboardComponent,
   WorkflowService,
   LocalizedString,
@@ -58,7 +60,11 @@ import {
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
-import { GET_DASHBOARD_BY_ID } from './graphql/queries';
+import {
+  GET_DASHBOARD_BY_ID,
+  GET_REFERENCE_DATA_FIELDS,
+  GET_RESOURCE_FIELDS,
+} from './graphql/queries';
 
 /**
  * Back-office Dashboard page.
@@ -121,6 +127,24 @@ export class DashboardComponent
   public gridOptions: GridsterConfig = {};
   /** Should show dashboard name */
   public showName? = true;
+  /** Dashboard name, with any {{context.field}} placeholders resolved */
+  public resolvedName?: LocalizedString;
+  /** Field names of the contextual page's Resource / Reference Data, for the title editor hint */
+  public resourceFields: string[] = [];
+  /** Resource / Reference Data id `resourceFields` was last fetched for, to avoid refetching per record */
+  private fetchedContextSourceId?: string;
+
+  /** @returns available {{context.field}} placeholders, for the title editor hint */
+  get availableContextFields(): string[] {
+    return this.resourceFields;
+  }
+
+  /** @returns available {{context.field}} placeholders, formatted as ready-to-copy tokens */
+  get availableContextFieldsHint(): string {
+    return this.availableContextFields
+      .map((field) => `{{context.${field}}}`)
+      .join(', ');
+  }
 
   /** @returns type of context element */
   get contextType() {
@@ -269,17 +293,13 @@ export class DashboardComponent
    * Sets up the widgets from the dashboard structure
    *
    * @param dashboard Dashboard
-   * @param contextID context ID
    */
-  private setWidgets(dashboard: Dashboard, contextID?: string | number) {
+  private setWidgets(dashboard: Dashboard) {
     this.widgets = cloneDeep(
       dashboard.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context = contextID
-            ? { id: contextID, ...contextData }
-            : null;
           if (!contextData) {
             return widget;
           }
@@ -293,6 +313,55 @@ export class DashboardComponent
           return widget;
         }) || []
     );
+  }
+
+  /**
+   * Fetches the field names of the contextual page's Resource / Reference Data,
+   * for the title template hint. Every record of a Resource shares the same fields,
+   * so this only needs to be fetched once per resource / reference data, not per record.
+   *
+   * @param dashboard Dashboard
+   */
+  private loadContextFieldNames(dashboard: Dashboard): void {
+    const context = dashboard.page?.context;
+    if (!context) {
+      this.resourceFields = [];
+      this.fetchedContextSourceId = undefined;
+      return;
+    }
+    const sourceId =
+      'resource' in context && context.resource
+        ? context.resource
+        : 'refData' in context && context.refData
+        ? context.refData
+        : undefined;
+    if (!sourceId || sourceId === this.fetchedContextSourceId) {
+      return;
+    }
+    this.fetchedContextSourceId = sourceId;
+    if ('resource' in context && context.resource) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_FIELDS,
+          variables: { id: sourceId },
+        })
+        .subscribe(({ data }) => {
+          this.resourceFields = (data.resource?.fields || [])
+            .map((field: any) => field.name)
+            .sort((a: string, b: string) => a.localeCompare(b));
+        });
+    } else if ('refData' in context && context.refData) {
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA_FIELDS,
+          variables: { id: sourceId },
+        })
+        .subscribe(({ data }) => {
+          this.resourceFields = (data.referenceData?.fields || [])
+            .map((field: any) => field.name)
+            .sort((a: string, b: string) => a.localeCompare(b));
+        });
+    }
   }
 
   /**
@@ -332,9 +401,18 @@ export class DashboardComponent
         if (dashboard) {
           this.id = dashboard.id || id;
           this.dashboard = dashboard;
+          this.contextService.context = contextID
+            ? { id: contextID, ...dashboard.contextData }
+            : null;
+          this.resolvedName =
+            this.contextService.resolveDashboardName(dashboard).name;
+          this.loadContextFieldNames(dashboard);
           this.breadcrumbService.setBreadcrumb(
             this.isStep ? '@workflow' : '@dashboard',
-            this.dashboard.name as string,
+            resolveLocalizedString(
+              this.resolvedName,
+              this.translate.currentLang
+            ),
             this.isStep ? this.dashboard.step?.workflow?.name : ''
           );
           this.gridOptions = {
@@ -349,7 +427,7 @@ export class DashboardComponent
           this.templateMode = !!dashboard.defaultTemplate;
           this.editionActive = this.canUpdate && !this.templateMode;
           this.initContext();
-          this.setWidgets(dashboard, contextID);
+          this.setWidgets(dashboard);
           this.dashboardService.widgets.next(this.widgets);
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
@@ -658,6 +736,9 @@ export class DashboardComponent
         name: activeName,
         nameTranslations,
       };
+      this.resolvedName = this.contextService.resolveDashboardName(
+        this.dashboard
+      ).name;
     };
     if (this.contextId.value) {
       // Seeing a template

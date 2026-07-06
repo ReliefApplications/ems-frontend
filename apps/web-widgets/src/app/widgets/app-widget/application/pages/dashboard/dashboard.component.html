@@ -40,7 +40,7 @@
         >
           <ng-container *ngIf="showName">
             <h1 class="!m-0 overflow-hidden text-ellipsis">
-              {{ dashboard.name }}
+              {{ resolvedName | sharedLocalize }}
             </h1>
           </ng-container>
           <div class="flex items-center gap-1">

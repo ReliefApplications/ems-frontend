@@ -2839,6 +2839,8 @@
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
 				"selectOrigin": "Sélectionnez la source de données",
 				"title": "Contexte",
+				"titleTemplateHint": "Champs disponibles : {{ fields }}",
+				"titleTemplateNoRecord": "Chargement des champs disponibles…",
 				"tooltip": {
 					"useContextEditor": "Utiliser l'éditeur de contexte",
 					"useDefaultEditor": "Utiliser l'éditeur par défaut"

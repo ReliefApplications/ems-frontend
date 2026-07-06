@@ -26,6 +26,7 @@ import {
   Dashboard,
   EditDashboardMutationResponse,
 } from '../../models/dashboard.model';
+import { LocalizedString } from '../../models/localized-string.model';
 import { FilterPosition } from '../../components/dashboard-filter/enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
 import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
@@ -541,6 +542,27 @@ export class ContextService {
     }
     // else return settings as given
     return { settings };
+  }
+
+  /**
+   * If context data exists, returns the dashboard name/nameTranslations with
+   * {{context.field}} placeholders replaced by their resolved values, alongside
+   * the original (untouched) value so an inline editor can keep editing the raw template.
+   *
+   * Requires `this.context` to already be populated (see `dashboard.contextData`).
+   *
+   * @param dashboard Current dashboard
+   * @returns resolved name and, when a substitution happened, the original name
+   */
+  public resolveDashboardName(dashboard?: Dashboard): {
+    name?: LocalizedString;
+    originalName?: LocalizedString;
+  } {
+    const raw = dashboard?.nameTranslations || dashboard?.name;
+    if (dashboard?.contextData) {
+      return { name: this.replaceContext(raw), originalName: raw };
+    }
+    return { name: raw };
   }
 
   /**

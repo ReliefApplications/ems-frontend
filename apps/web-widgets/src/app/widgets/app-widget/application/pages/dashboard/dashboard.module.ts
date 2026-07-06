@@ -6,6 +6,7 @@ import {
   ActionButtonsComponent,
   DashboardFilterModule,
   FullScreenModule,
+  LocalizePipe,
   SkeletonModule,
   WidgetGridModule,
 } from '@oort-front/shared';
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     TranslateModule,
     ActionButtonsComponent,
+    LocalizePipe,
   ],
   exports: [DashboardComponent],
 })

@@ -20,8 +20,10 @@ import {
   Dashboard,
   DashboardAutomationService,
   DashboardQueryResponse,
+  LocalizedString,
   MapWidgetComponent,
   Record,
+  resolveLocalizedString,
   DashboardComponent as SharedDashboardComponent,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
@@ -67,6 +69,8 @@ export class DashboardComponent
   public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
+  /** Dashboard name, with any {{context.field}} placeholders resolved */
+  public resolvedName?: LocalizedString;
   /** Action buttons */
   public actionButtons: ActionButton[] = [];
   /** Tells if the dashboard is within a workflow */
@@ -149,7 +153,7 @@ export class DashboardComponent
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
-          if (!this.contextService.context) {
+          if (!this.dashboard?.contextData) {
             return widget;
           }
           const { settings, originalSettings } =
@@ -198,13 +202,20 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.contextService.context = contextId
+            ? { id: contextId, ...this.dashboard.contextData }
+            : null;
+          this.resolvedName = this.contextService.resolveDashboardName(
+            this.dashboard
+          ).name;
           this.breadcrumbService.setBreadcrumb(
             this.isStep ? '@workflow' : '@dashboard',
-            this.dashboard.name as string,
+            resolveLocalizedString(
+              this.resolvedName,
+              this.translate.currentLang
+            ),
             this.isStep ? this.dashboard.step?.workflow?.name : ''
           );
-          this.contextService.context =
-            { id: contextId, ...this.dashboard.contextData } || null;
           this.initContext();
           this.setWidgets();
           this.actionButtons = this.dashboard.buttons || [];

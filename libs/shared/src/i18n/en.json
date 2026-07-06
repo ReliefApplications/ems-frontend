@@ -2836,6 +2836,8 @@
 				"selectDisplayField": "Select display field",
 				"selectOrigin": "Select context origin",
 				"title": "Context",
+				"titleTemplateHint": "Available placeholders: {{ fields }}",
+				"titleTemplateNoRecord": "Loading available placeholders…",
 				"tooltip": {
 					"useContextEditor": "Use context editor",
 					"useDefaultEditor": "Use default editor"

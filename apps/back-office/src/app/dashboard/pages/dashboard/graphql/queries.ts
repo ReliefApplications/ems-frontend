@@ -86,6 +86,26 @@ export const GET_DASHBOARDS_NAMES = gql`
   }
 `;
 
+/** Graphql query for getting the field names of a resource, used for the title template hint */
+export const GET_RESOURCE_FIELDS = gql`
+  query GetResourceFields($id: ID!) {
+    resource(id: $id) {
+      id
+      fields
+    }
+  }
+`;
+
+/** Graphql query for getting the field names of a reference data, used for the title template hint */
+export const GET_REFERENCE_DATA_FIELDS = gql`
+  query GetReferenceDataFields($id: ID!) {
+    referenceData(id: $id) {
+      id
+      fields
+    }
+  }
+`;
+
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`
   query GetResourceRecords(

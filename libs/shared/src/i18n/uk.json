@@ -2836,6 +2836,8 @@
 				"selectDisplayField": "Виберіть відображуване поле",
 				"selectOrigin": "Виберіть джерело контексту",
 				"title": "Контекст",
+				"titleTemplateHint": "Доступні поля: {{ fields }}",
+				"titleTemplateNoRecord": "Завантаження доступних полів…",
 				"tooltip": {
 					"useContextEditor": "Використовувати контекстний редактор",
 					"useDefaultEditor": "Використовувати редактор за замовчуванням"

@@ -17,7 +17,9 @@ import {
   ActionButton,
   ContextService,
   DashboardQueryResponse,
+  LocalizedString,
   Record,
+  resolveLocalizedString,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
   BreadcrumbService,
@@ -72,6 +74,8 @@ export class DashboardComponent
   public showName? = true;
   /** If dashboard is displayed under workflow  */
   public isStep = false;
+  /** Dashboard name, with any {{context.field}} placeholders resolved */
+  public resolvedName?: LocalizedString;
 
   /**
    * Dashboard page.
@@ -153,9 +157,6 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context = this.contextId
-            ? { id: this.contextId, ...contextData }
-            : null;
           if (!contextData) {
             return widget;
           }
@@ -201,9 +202,18 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.contextService.context = this.contextId
+            ? { id: this.contextId, ...this.dashboard.contextData }
+            : null;
+          this.resolvedName = this.contextService.resolveDashboardName(
+            this.dashboard
+          ).name;
           this.breadcrumbService.setBreadcrumb(
             this.isStep ? '@workflow' : '@dashboard',
-            this.dashboard.name as string,
+            resolveLocalizedString(
+              this.resolvedName,
+              this.translate.currentLang
+            ),
             this.isStep ? this.dashboard?.step?.workflow?.name : ''
           );
           this.initContext();

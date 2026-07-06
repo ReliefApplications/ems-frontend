@@ -43,7 +43,7 @@
         class="flex flex-wrap items-center justify-between mb-6 gap-4"
       >
         <!-- Dashboard title -->
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 flex-wrap">
           <!-- Dashboard name, always display during edition -->
           <shared-editable-localized-text
             *ngIf="showName || editionActive"
@@ -53,9 +53,7 @@
             (formActiveEvent)="formActive = $event"
           >
             <h1 class="!m-0 overflow-hidden text-ellipsis">
-              {{
-                dashboard.nameTranslations || dashboard.name | sharedLocalize
-              }}
+              {{ resolvedName | sharedLocalize }}
             </h1>
           </shared-editable-localized-text>
           <!-- Settings -->
@@ -87,6 +85,21 @@
             class="export-hide"
             >{{ 'models.dashboard.context.addTemplate' | translate }}</ui-button
           >
+          <!-- Hint: available {{context.field}} placeholders for the title template -->
+          <div
+            *ngIf="formActive && dashboard.page?.context"
+            class="w-full text-xs opacity-60 export-hide"
+          >
+            <ng-container *ngIf="availableContextFields.length; else noContextRecord">
+              {{
+                'models.dashboard.context.titleTemplateHint'
+                  | translate : { fields: availableContextFieldsHint }
+              }}
+            </ng-container>
+            <ng-template #noContextRecord>{{
+              'models.dashboard.context.titleTemplateNoRecord' | translate
+            }}</ng-template>
+          </div>
         </div>
         <!-- Other dashboard settings -->
         <div
@@ -133,7 +146,7 @@
           </ui-button>
           <!-- Dashboard export -->
           <shared-dashboard-export-button
-            [title]="dashboard.nameTranslations || dashboard.name"
+            [title]="resolvedName"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
           <!-- More options -->
