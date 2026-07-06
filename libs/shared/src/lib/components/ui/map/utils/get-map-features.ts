@@ -50,7 +50,7 @@ export const updateGeoManLayerPosition = (
   map: L.Map | undefined,
   data: any,
   previousLayer?: L.Layer,
-  layerType: string = 'Marker'
+  layerType = 'Marker'
 ) => {
   if (previousLayer) {
     map?.removeLayer(previousLayer);

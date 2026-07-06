@@ -173,7 +173,7 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "development": {
-          "browserTarget": "web-widgets:build:development"
+          "buildTarget": "web-widgets:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -181,31 +181,18 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "web-widgets:build"
+        "buildTarget": "web-widgets:build"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/web-widgets/**/*.ts",
-          "apps/web-widgets/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/web-widgets/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/web-widgets/jest.config.ts"
       }
     },
     "bundle": {

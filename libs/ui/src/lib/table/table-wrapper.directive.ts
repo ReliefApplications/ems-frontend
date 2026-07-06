@@ -72,10 +72,6 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     for (const cl of this.tableClasses) {
       this.renderer.addClass(this.el.nativeElement, cl);
     }
-    const body = this.el.nativeElement.querySelector('tbody');
-    for (const cl of this.tbodyClasses) {
-      this.renderer.addClass(body, cl);
-    }
     // Render default classes for the host table parent
     this.tableWrapperElement = this.renderer.createElement('div');
     this.tableWrapperClasses.forEach((twClass) => {
@@ -90,6 +86,15 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    // Apply tbody classes here: with Angular 17 the CDK table only renders the
+    // <tbody> section after the host directive's ngOnInit, so query it once the
+    // view has been initialized.
+    const body = this.el.nativeElement.querySelector('tbody');
+    if (body) {
+      for (const cl of this.tbodyClasses) {
+        this.renderer.addClass(body, cl);
+      }
+    }
     // Initialize sortable column listeners
     this.sortableColumns.changes
       .pipe(startWith(this.sortableColumns), takeUntil(this.destroy$))

@@ -14,7 +14,7 @@ import {
 } from '@angular/forms';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   DividerModule,
   MenuModule,
@@ -45,7 +45,7 @@ import {
     TranslateModule,
     SkeletonTableModule,
     SharedDateModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     FormWrapperModule,
     IconModule,

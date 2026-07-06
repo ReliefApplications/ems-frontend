@@ -1,1 +1,3 @@
 node_modules
+# Vendored TinyMCE i18n language packs (third-party source, not linted)
+libs/shared/src/i18n/tinymce

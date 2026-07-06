@@ -15,7 +15,7 @@ import {
   SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import { EmptyModule } from '../../../ui/empty/empty.module';
 import { ListFilterComponent } from '../../../list-filter/list-filter.component';
 import { FilterComponent } from './filter/filter.component';
@@ -36,7 +36,7 @@ import { FilterComponent } from './filter/filter.component';
     DividerModule,
     TranslateModule,
     SkeletonTableModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     TableModule,
     FormWrapperModule,

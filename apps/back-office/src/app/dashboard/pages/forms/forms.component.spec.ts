@@ -15,7 +15,7 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import { AppAbility } from '@oort-front/shared';
 import { FilterComponent } from './components/filter/filter.component';
 import { PureAbility } from '@casl/ability';
@@ -34,7 +34,7 @@ describe('FormsComponent', () => {
         ApolloTestingModule,
         DialogModule,
         HttpClientTestingModule,
-        AbilityModule,
+        AblePipe,
         ButtonModule,
         IconModule,
         PaginatorModule,

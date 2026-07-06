@@ -19,7 +19,7 @@ import { AppAbility } from '@oort-front/shared';
 import { PureAbility } from '@casl/ability';
 import { FilterComponent } from './components/filter/filter.component';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   MenuModule,
   ButtonModule,
@@ -46,7 +46,7 @@ describe('ReferenceDatasComponent', () => {
         ApolloTestingModule,
         DialogModule,
         HttpClientTestingModule,
-        AbilityModule,
+        AblePipe,
         MenuModule,
         ButtonModule,
         FormWrapperModule,

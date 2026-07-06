@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 import { AuthService } from '@oort-front/shared';
 import { Observable, firstValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
   /**
    * Auth Guard. Checks that the user is authenticated.
    *

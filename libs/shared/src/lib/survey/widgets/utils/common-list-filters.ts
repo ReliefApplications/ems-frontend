@@ -20,7 +20,7 @@ const DEFAULT_VISIBLE_OPTIONS = 100;
 function updateChoices(
   widget: ComboBoxComponent | MultiSelectComponent,
   surveyQuestion: any,
-  searchValue: string = ''
+  searchValue = ''
 ) {
   // Survey locale ('' for the default locale), used to resolve choice text
   // when it is stored as a per-locale map rather than a plain string.

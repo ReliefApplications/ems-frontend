@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PaginatorComponent } from './paginator.component';
 import { PaginatorModule } from './paginator.module';
 import { TranslateTestingModule } from 'ngx-translate-testing';
@@ -17,6 +18,7 @@ describe('PaginatorComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [PaginatorComponent],
       imports: [
+        NoopAnimationsModule,
         PaginatorModule,
         TranslateTestingModule.withTranslations('en', {
           components: {

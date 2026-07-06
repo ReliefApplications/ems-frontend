@@ -9,7 +9,7 @@ import {
 import { DateModule, SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 import {
   MenuModule,
   ButtonModule,
@@ -39,7 +39,7 @@ import { FilterComponent } from './filter/filter.component';
     SkeletonTableModule,
     DateModule,
     DialogModule,
-    AbilityModule,
+    AblePipe,
     ButtonModule,
     FormWrapperModule,
     TableModule,

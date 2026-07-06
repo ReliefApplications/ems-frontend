@@ -244,16 +244,16 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "local-prod": {
-          "browserTarget": "front-office:build:local-prod"
+          "buildTarget": "front-office:build:local-prod"
         },
         "local-uat": {
-          "browserTarget": "front-office:build:local-uat"
+          "buildTarget": "front-office:build:local-uat"
         },
         "local-dev": {
-          "browserTarget": "front-office:build:local-dev"
+          "buildTarget": "front-office:build:local-dev"
         },
         "development": {
-          "browserTarget": "front-office:build:development"
+          "buildTarget": "front-office:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -261,31 +261,18 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "front-office:build"
+        "buildTarget": "front-office:build"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "apps/front-office/**/*.ts",
-          "apps/front-office/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/front-office/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/front-office/jest.config.ts"
       }
     },
     "storybook": {
