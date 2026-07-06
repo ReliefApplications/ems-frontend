@@ -114,6 +114,18 @@
       <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
         <ng-container *ngTemplateOutlet="tableTmpl"></ng-container>
       </ng-container>
+      <!-- LOAD MORE -->
+      <div class="text-center mt-4" *ngIf="hasMoreHistory">
+        <ui-button
+          category="tertiary"
+          variant="primary"
+          [disabled]="loadingMore"
+          [loading]="loadingMore"
+          (click)="loadMoreHistory()"
+        >
+          {{ 'common.pagination.loadMore' | translate }}
+        </ui-button>
+      </div>
     </ng-container>
     <ng-template #emptyTmpl>
       <shared-empty
@@ -213,7 +225,14 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ toReadableObjectValue(element.old) }}
+          <span
+            *ngIf="element.renderError; else originalValueTmpl"
+            class="italic text-gray-400"
+            >{{ 'components.history.renderError' | translate }}</span
+          >
+          <ng-template #originalValueTmpl>{{
+            toReadableObjectValue(element.old)
+          }}</ng-template>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="modifiedValue">
@@ -225,7 +244,14 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ toReadableObjectValue(element.new) }}
+          <span
+            *ngIf="element.renderError; else modifiedValueTmpl"
+            class="italic text-gray-400"
+            >{{ 'components.history.renderError' | translate }}</span
+          >
+          <ng-template #modifiedValueTmpl>{{
+            toReadableObjectValue(element.new)
+          }}</ng-template>
         </td>
       </ng-container>
 

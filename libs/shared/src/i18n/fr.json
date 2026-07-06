@@ -1232,6 +1232,7 @@
 			"range": {
 				"clear": "Effacer la plage de données"
 			},
+			"renderError": "Impossible d'afficher ce changement",
 			"useTableMode": "Afficher en table"
 		},
 		"icon": {

@@ -36,6 +36,7 @@ export default {
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
     '<rootDir>/src/lib/components/layout/layout.component.spec.ts',
     '<rootDir>/src/lib/components/language-switch/language-switch.component.spec.ts',
+    '<rootDir>/src/lib/components/record-history/*.spec.ts',
     '<rootDir>/src/lib/models/*.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',

@@ -31,6 +31,9 @@ import { startCase, isNil } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
 
+/** Number of history entries fetched per page */
+const HISTORY_PAGE_SIZE = 20;
+
 /**
  * Return the type of the old value if existing, else the type of the new value.
  *
@@ -42,7 +45,7 @@ const getValueType = (
   oldVal: any,
   newVal: any
 ): 'primitive' | 'object' | 'array' => {
-  if (oldVal) {
+  if (!isNil(oldVal)) {
     if (Array.isArray(oldVal)) return 'array';
     if (oldVal instanceof Object) return 'object';
     return 'primitive';
@@ -87,6 +90,12 @@ export class RecordHistoryComponent
   public filterHistory: RecordHistory = [];
   /** Loading state */
   public loading = true;
+  /** Loading state for the "load more" pagination action */
+  public loadingMore = false;
+  /** Current page of history entries loaded */
+  private page = 1;
+  /** Whether more history entries can be loaded */
+  public hasMoreHistory = false;
   /** Show more state */
   public showMore = false;
   /** Displayed columns array */
@@ -173,38 +182,22 @@ export class RecordHistoryComponent
           this.sortedFields = this.sortFields(this.getFields());
         });
 
-      this.apollo
-        .query<RecordHistoryResponse>({
-          query: GET_RECORD_HISTORY_BY_ID,
-          variables: {
-            id: this.id,
-            lang: this.translate.currentLang,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.history.error', {
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-            this.cancel.emit(true);
-          } else {
-            this.history = data.recordHistory.filter(
-              (item) => item.changes.length
-            );
-            this.filterHistory = this.history;
-            this.historyForTable = [];
-            this.history.map((elt) => {
-              elt.changes.map((change) => {
-                this.setHistoryForTableFromChange(change, elt);
-              });
-            });
-            this.loading = false;
-          }
-        });
+      this.page = 1;
+      this.history = [];
+      this.queryHistoryPage(this.page).subscribe(({ errors, data }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.history.error', {
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+          this.cancel.emit(true);
+        } else {
+          this.appendHistoryPage(data.recordHistory);
+          this.loading = false;
+        }
+      });
     };
     if (this.refresh$) {
       // Set subscription to load records
@@ -218,43 +211,108 @@ export class RecordHistoryComponent
     }
 
     this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const startDate = this.filters.get('startDate')?.value
-        ? new Date(this.filters.get('startDate')?.value as any)
-        : undefined;
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      const endDate = this.filters.get('endDate')?.value
-        ? new Date(this.filters.get('endDate')?.value as any)
-        : undefined;
-      if (endDate) endDate.setHours(23, 59, 59, 99);
-      this.filterHistory = this.history.filter((item) => {
-        const createdAt = new Date(item.createdAt);
-        return (
-          !startDate ||
-          !endDate ||
-          (createdAt >= startDate && createdAt <= endDate)
-        );
-      });
+      this.applyFilters();
+    });
+  }
 
-      const fields: any = this.filters.get('fields')?.value;
-      if (fields.length > 0) {
-        this.filterHistory = this.filterHistory
-          .filter(
-            (item) =>
-              !!item.changes.find((change) => fields.includes(change.field))
-          )
-          .map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.changes = item.changes.filter((change) =>
-              fields.includes(change.field)
-            );
-            return newItem;
-          });
+  /**
+   * Queries a single page of the record's history.
+   *
+   * @param page Page to fetch, 1-indexed
+   * @returns Observable of the GraphQL response for that page
+   */
+  private queryHistoryPage(page: number) {
+    return this.apollo
+      .query<RecordHistoryResponse>({
+        query: GET_RECORD_HISTORY_BY_ID,
+        variables: {
+          id: this.id,
+          lang: this.translate.currentLang,
+          page,
+          limit: HISTORY_PAGE_SIZE,
+        },
+      })
+      .pipe(takeUntil(this.destroy$));
+  }
+
+  /**
+   * Appends a freshly fetched page of history entries to the current history,
+   * and recomputes the filtered / table views.
+   *
+   * @param recordHistory Page of history entries returned by the API
+   */
+  private appendHistoryPage(recordHistory: RecordHistory): void {
+    const entries = recordHistory.filter((item) => item.changes.length);
+    this.history = this.history.concat(entries);
+    this.hasMoreHistory = recordHistory.length === HISTORY_PAGE_SIZE;
+    this.applyFilters();
+  }
+
+  /**
+   * Loads the next page of history entries, if any, and appends them.
+   */
+  loadMoreHistory(): void {
+    if (this.loadingMore || !this.hasMoreHistory) {
+      return;
+    }
+    this.loadingMore = true;
+    this.page += 1;
+    this.queryHistoryPage(this.page).subscribe(({ errors, data }) => {
+      this.loadingMore = false;
+      if (errors) {
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.history.error', {
+            error: errors[0].message,
+          }),
+          { error: true }
+        );
+      } else {
+        this.appendHistoryPage(data.recordHistory);
       }
-      this.historyForTable = [];
-      this.filterHistory.map((elt) => {
-        elt.changes.map((change) => {
-          this.setHistoryForTableFromChange(change, elt);
+    });
+  }
+
+  /**
+   * Recomputes filterHistory / historyForTable from the currently loaded
+   * history and the active date / field filters.
+   */
+  private applyFilters(): void {
+    const startDate = this.filters.get('startDate')?.value
+      ? new Date(this.filters.get('startDate')?.value as any)
+      : undefined;
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    const endDate = this.filters.get('endDate')?.value
+      ? new Date(this.filters.get('endDate')?.value as any)
+      : undefined;
+    if (endDate) endDate.setHours(23, 59, 59, 99);
+    this.filterHistory = this.history.filter((item) => {
+      const createdAt = new Date(item.createdAt);
+      return (
+        !startDate ||
+        !endDate ||
+        (createdAt >= startDate && createdAt <= endDate)
+      );
+    });
+
+    const fields: any = this.filters.get('fields')?.value;
+    if (fields?.length > 0) {
+      this.filterHistory = this.filterHistory
+        .filter(
+          (item) =>
+            !!item.changes.find((change) => fields.includes(change.field))
+        )
+        .map((item) => {
+          const newItem = Object.assign({}, item);
+          newItem.changes = item.changes.filter((change) =>
+            fields.includes(change.field)
+          );
+          return newItem;
         });
+    }
+    this.historyForTable = [];
+    this.filterHistory.map((elt) => {
+      elt.changes.map((change) => {
+        this.setHistoryForTableFromChange(change, elt);
       });
     });
   }
@@ -321,14 +379,24 @@ export class RecordHistoryComponent
    * @param filterHistoryElement Filter history element (used for createdAt and createdBy)
    */
   setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
-    this.historyForTable.push({
-      displayName: change.displayName,
-      new: change.new ? JSON.parse(change.new) : undefined,
-      old: change.old ? JSON.parse(change.old) : undefined,
-      type: change.type,
-      createdAt: filterHistoryElement.createdAt,
-      createdBy: filterHistoryElement.createdBy,
-    });
+    try {
+      this.historyForTable.push({
+        displayName: change.displayName,
+        new: change.new ? JSON.parse(change.new) : undefined,
+        old: change.old ? JSON.parse(change.old) : undefined,
+        type: change.type,
+        createdAt: filterHistoryElement.createdAt,
+        createdBy: filterHistoryElement.createdBy,
+      });
+    } catch {
+      this.historyForTable.push({
+        displayName: change.displayName,
+        renderError: true,
+        type: change.type,
+        createdAt: filterHistoryElement.createdAt,
+        createdBy: filterHistoryElement.createdBy,
+      });
+    }
   }
 
   /**
@@ -362,27 +430,30 @@ export class RecordHistoryComponent
    * @returns the innerHTML for the listing
    */
   getHTMLFromChange(change: Change) {
-    let oldVal = change.old ? JSON.parse(change.old) : undefined;
-    let newVal = change.new ? JSON.parse(change.new) : undefined;
+    try {
+      let oldVal = change.old ? JSON.parse(change.old) : undefined;
+      let newVal = change.new ? JSON.parse(change.new) : undefined;
 
-    const valueType = getValueType(oldVal, newVal);
+      const valueType = getValueType(oldVal, newVal);
 
-    if (valueType === 'object') {
-      if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
-      if (newVal) newVal = this.toReadableObjectValue(newVal);
-    }
+      if (valueType === 'object') {
+        if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+        if (newVal) newVal = this.toReadableObjectValue(newVal);
+      }
 
-    if (valueType === 'array') {
-      if (oldVal && !(oldVal[0] instanceof Object)) oldVal = oldVal.join(', ');
-      else if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
-      if (newVal && !(newVal[0] instanceof Object)) newVal = newVal.join(', ');
-      else if (newVal) newVal = this.toReadableObjectValue(newVal);
-    }
+      if (valueType === 'array') {
+        if (oldVal && !(oldVal[0] instanceof Object))
+          oldVal = oldVal.join(', ');
+        else if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
+        if (newVal && !(newVal[0] instanceof Object))
+          newVal = newVal.join(', ');
+        else if (newVal) newVal = this.toReadableObjectValue(newVal);
+      }
 
-    switch (change.type) {
-      case 'remove':
-      case 'add':
-        return `
+      switch (change.type) {
+        case 'remove':
+        case 'add':
+          return `
           <p>
             ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
@@ -390,8 +461,8 @@ export class RecordHistoryComponent
             <b> ${change.type === 'add' ? newVal : oldVal}</b>
           <p>
           `;
-      case 'modify':
-        return `
+        case 'modify':
+          return `
           <p>
           ${this.getChipFromChange(change)}
             <b> ${change.displayName} </b>
@@ -401,6 +472,11 @@ export class RecordHistoryComponent
             <b> ${newVal}</b>
           <p>
           `;
+      }
+    } catch {
+      return `<p class="italic text-gray-400">${this.translate.instant(
+        'components.history.renderError'
+      )}</p>`;
     }
   }
 
@@ -411,26 +487,30 @@ export class RecordHistoryComponent
    * @returns A 'readable' version of that object, in which the the format key (value1, value2)
    */
   toReadableObjectValue(object: any): any {
-    // base case
-    if (typeof object !== 'object') return object;
+    try {
+      // base case
+      if (typeof object !== 'object') return object;
 
-    // arrays
-    if (Array.isArray(object)) {
-      return object.map((elem) => this.toReadableObjectValue(elem));
-    }
+      // arrays
+      if (Array.isArray(object)) {
+        return object.map((elem) => this.toReadableObjectValue(elem));
+      }
 
-    // objects - non arrays
-    const res: any[] = [];
-    // Prevent errors to be thrown on null objects
-    if (!isNil(object)) {
-      const keys = Object.keys(object);
-      keys.forEach((key, i) => {
-        res.push(
-          `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
-        );
-      });
+      // objects - non arrays
+      const res: any[] = [];
+      // Prevent errors to be thrown on null objects
+      if (!isNil(object)) {
+        const keys = Object.keys(object);
+        keys.forEach((key, i) => {
+          res.push(
+            `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
+          );
+        });
+      }
+      return res;
+    } catch {
+      return this.translate.instant('components.history.renderError');
     }
-    return res;
   }
 
   /**
