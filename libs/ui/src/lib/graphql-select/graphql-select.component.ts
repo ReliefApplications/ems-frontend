@@ -29,6 +29,9 @@ import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
 
+/** Matches an ISO 8601 date-time string (e.g. from a calculated date field) */
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
+
 /**
  * Component for a dropdown with pagination.
  * Extended by:
@@ -561,6 +564,11 @@ export class GraphQLSelectComponent
    * @returns the display value
    */
   public getDisplayValue(element: any) {
-    return get(element, this.textField);
+    const value = get(element, this.textField);
+    // Format raw date values (e.g. from a calculated field) the same way the
+    // text widget does, instead of showing the raw ISO string
+    return typeof value === 'string' && ISO_DATE_REGEX.test(value)
+      ? new Date(value).toLocaleDateString('en-US')
+      : value;
   }
 }

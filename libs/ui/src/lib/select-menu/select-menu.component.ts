@@ -261,6 +261,17 @@ export class SelectMenuComponent
     } else if (!isNil(value)) {
       this.selectedValues = [value];
     }
+    // Resync option highlighting / trigger text: options may have already
+    // been rendered (and their selection synced) before this value arrives.
+    // Skip if options aren't rendered yet (e.g. before ngAfterContentInit) —
+    // the initial handleOptionsQueryChange pass covers that case already.
+    if (this.optionList) {
+      this.optionList.forEach(
+        (option) =>
+          (option.selected = this.selectedValues.some((v) => v == option.value))
+      );
+      this.setDisplayTriggerText();
+    }
   }
 
   /**
