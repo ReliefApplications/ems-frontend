@@ -26,6 +26,8 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
     $first: Int
     $skip: Int
     $fields: [String]
+    $fromDate: DateTime
+    $toDate: DateTime
   ) {
     recordHistory(
       id: $id
@@ -33,6 +35,8 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
       first: $first
       skip: $skip
       fields: $fields
+      fromDate: $fromDate
+      toDate: $toDate
     ) {
       createdAt
       createdBy

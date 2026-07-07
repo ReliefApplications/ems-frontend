@@ -235,16 +235,10 @@ export class RecordHistoryComponent
       setSubscription();
     }
 
-    // Field filters are applied by the API, so the history must be fetched
-    // again from the first page whenever they change
-    this.filters
-      .get('fields')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.reloadHistory();
-      });
+    // Field and date filters are applied by the API, so the history must be
+    // fetched again from the first page whenever they change
     this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.applyFilters();
+      this.reloadHistory();
     });
   }
 
@@ -266,6 +260,12 @@ export class RecordHistoryComponent
    * @returns Observable of the GraphQL response for that page
    */
   private queryHistoryPage(page: number) {
+    const startDate = this.filters.get('startDate')?.value;
+    const fromDate = startDate ? new Date(startDate) : null;
+    if (fromDate) fromDate.setHours(0, 0, 0, 0);
+    const endDate = this.filters.get('endDate')?.value;
+    const toDate = endDate ? new Date(endDate) : null;
+    if (toDate) toDate.setHours(23, 59, 59, 999);
     return this.apollo.query<RecordHistoryResponse>({
       query: GET_RECORD_HISTORY_BY_ID,
       variables: {
@@ -274,6 +274,8 @@ export class RecordHistoryComponent
         first: HISTORY_PAGE_SIZE,
         skip: (page - 1) * HISTORY_PAGE_SIZE,
         fields: this.filters.get('fields')?.value ?? [],
+        fromDate,
+        toDate,
       },
     });
   }
