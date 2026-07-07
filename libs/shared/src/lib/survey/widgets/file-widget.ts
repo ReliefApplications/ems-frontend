@@ -1,11 +1,9 @@
 import { isNil } from 'lodash';
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
-import { firstValueFrom } from 'rxjs';
 import {
   CS_DOCUMENTS_PROPERTIES,
   DocumentManagementService,
 } from '../../services/document-management/document-management.service';
-import { RestService } from '../../services/rest/rest.service';
 import { Question, QuestionFile } from '../types';
 import { Injector } from '@angular/core';
 import jsonpath from 'jsonpath';
@@ -59,39 +57,10 @@ const setDocumentProperties = (
   }
 };
 
-/** Services needed to resolve and render an inline file preview. */
-interface FilePreviewDeps {
-  documentManagementService: DocumentManagementService;
-  restService: RestService;
-  environment: any;
-}
-
-/** CSS class of the custom preview wrapper we inject. */
-const FILE_PREVIEW_CLASS = 'file-preview';
-/** Class toggled on the question root to hide SurveyJS's default preview. */
-const FILE_PREVIEW_ACTIVE_CLASS = 'file-preview-active';
-/** Id of the stylesheet that hides the default preview when ours is active. */
-const FILE_PREVIEW_STYLE_ID = 'shared-file-preview-style';
-
-/**
- * Injects (once) the stylesheet that hides SurveyJS's default file list while
- * our custom preview is active. Hiding via a class on the stable question root
- * (rather than inline styles on the list) survives SurveyJS re-rendering the
- * list on every value change.
- */
-const ensureFilePreviewStyles = (): void => {
-  if (document.getElementById(FILE_PREVIEW_STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = FILE_PREVIEW_STYLE_ID;
-  // In display mode our custom preview fully replaces the default file UI, so
-  // hide the whole default file widget container to avoid an empty drop-zone
-  // element showing above the preview. Our preview wrapper is appended as a
-  // sibling of the file widget (on the question root), so it stays visible.
-  style.textContent =
-    `.${FILE_PREVIEW_ACTIVE_CLASS} .sd-file,` +
-    `.${FILE_PREVIEW_ACTIVE_CLASS} .sv-file { display: none !important; }`;
-  document.head.appendChild(style);
-};
+/** Class toggled on the question root while the inline PDF preview is active. */
+const PDF_PREVIEW_CLASS = 'file-pdf-preview';
+/** CSS class of the iframe injected inside the upload area for PDFs. */
+const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
 
 /**
  * Determines whether a file can be previewed inline and how.
@@ -111,159 +80,105 @@ const getPreviewKind = (name: string, type: string): 'image' | 'pdf' | null => {
 };
 
 /**
- * Removes the custom preview previously injected in the question element,
- * revoking any blob URL it held to avoid memory leaks.
+ * Removes the inline PDF preview from the question element, revoking the blob
+ * URL it held to avoid memory leaks.
  *
+ * @param question File question instance
  * @param htmlElement The question's rendered root HTML element
  */
-const removeCustomPreview = (htmlElement: HTMLElement): void => {
-  const existing = htmlElement.querySelector(`.${FILE_PREVIEW_CLASS}`);
-  if (!existing) return;
-  const media = existing.querySelector('img, iframe') as
-    | HTMLImageElement
-    | HTMLIFrameElement
-    | null;
-  if (media && media.src.indexOf('blob:') === 0) {
-    URL.revokeObjectURL(media.src);
-  }
-  existing.remove();
-};
-
-/**
- * Builds the preview wrapper holding an <img> (image) or <iframe> (PDF).
- *
- * @param src Blob URL or direct URL of the file to preview
- * @param fileName File name used as alt text / title
- * @param isImage True renders an img; false renders an iframe for PDF
- * @returns The preview wrapper element
- */
-const buildPreviewWrapper = (
-  src: string,
-  fileName: string,
-  isImage: boolean
-): HTMLElement => {
-  const wrapper = document.createElement('div');
-  wrapper.classList.add(FILE_PREVIEW_CLASS);
-  wrapper.style.marginTop = '8px';
-
-  if (isImage) {
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = fileName;
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '300px';
-    img.style.display = 'block';
-    wrapper.appendChild(img);
-  } else {
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.title = fileName;
-    iframe.style.width = '100%';
-    iframe.style.height = '600px';
-    iframe.style.border = 'none';
-    wrapper.appendChild(iframe);
-  }
-  return wrapper;
-};
-
-/**
- * Re-evaluates the current question value and (re)renders the inline preview in
- * place of SurveyJS's default file preview. Safe to call repeatedly: it clears
- * the previous custom preview first and restores the default preview whenever
- * the value is no longer a single previewable image / PDF.
- *
- * A monotonic sequence number stored on the question discards stale async
- * results, so rapid value changes always settle on the latest file.
- *
- * @param deps Services needed to resolve the file source
- * @param question File question instance
- * @param htmlElement The question's current rendered root HTML element
- */
-const updateFilePreview = (
-  deps: FilePreviewDeps,
+const removePdfPreview = (
   question: QuestionFile,
   htmlElement: HTMLElement
 ): void => {
-  const survey = question.survey as SurveyModel;
+  htmlElement.classList.remove(PDF_PREVIEW_CLASS);
+  const wrapper = htmlElement.querySelector(
+    '.sd-file__image-wrapper'
+  ) as HTMLElement | null;
+  if (wrapper) delete wrapper.dataset['pdfPreviewKey'];
+  htmlElement.querySelector(`iframe.${PDF_PREVIEW_FRAME_CLASS}`)?.remove();
+  // Revoke through the question-held reference rather than the iframe src, so
+  // the blob is also released when SurveyJS already tore down the iframe.
+  const url = (question as any).__pdfPreviewUrl;
+  if (url && url.indexOf('blob:') === 0) URL.revokeObjectURL(url);
+  (question as any).__pdfPreviewUrl = undefined;
+};
 
-  // Bump the sequence so any in-flight async resolution becomes stale.
-  const seq = ((question as any).__filePreviewSeq || 0) + 1;
-  (question as any).__filePreviewSeq = seq;
-
-  // Start from a clean slate.
-  removeCustomPreview(htmlElement);
-
-  const hasRecord = !!survey?.getPropertyValue('record');
-  const isDisplayMode = survey?.mode === 'display';
-  const value: Array<{ name: string; type: string; content: any }> =
-    question.value;
+/**
+ * Renders a PDF preview inside SurveyJS's upload area, in the slot where the
+ * default file icon normally sits, so single PDFs get the same in-place
+ * preview experience as images. Images need no custom rendering: SurveyJS
+ * already previews them natively inside the upload area (fed by the survey's
+ * onDownloadFile handler through `previewValue`).
+ *
+ * Safe to call repeatedly (it is driven by a MutationObserver): a key stored
+ * on the preview wrapper makes re-renders of the same file a no-op, and the
+ * preview is removed whenever the value is no longer a single PDF.
+ *
+ * @param question File question instance
+ * @param htmlElement The question's current rendered root HTML element
+ */
+const updatePdfPreview = (
+  question: QuestionFile,
+  htmlElement: HTMLElement
+): void => {
+  const value: Array<{ name: string; type: string }> = question.value;
   const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
   const kind = file ? getPreviewKind(file.name, file.type) : null;
+  // previewValue holds the downloaded file content (data / http URL), already
+  // resolved by the survey's onDownloadFile handler for stored files.
+  const preview = question.previewValue?.[0];
+  const content =
+    preview && typeof preview.content === 'string' ? preview.content : null;
 
-  // Not previewable -> show SurveyJS's default preview again and stop.
-  if (!survey || (!hasRecord && !isDisplayMode) || !file || !kind) {
-    htmlElement.classList.remove(FILE_PREVIEW_ACTIVE_CLASS);
+  if (!file || kind !== 'pdf' || !content) {
+    removePdfPreview(question, htmlElement);
     return;
   }
 
-  // In display mode the preview fully replaces the default file list. In edit
-  // mode (updating a record) we keep the default list visible so users can
-  // still remove / download the file, and render the preview below it.
-  if (isDisplayMode) {
-    ensureFilePreviewStyles();
-    htmlElement.classList.add(FILE_PREVIEW_ACTIVE_CLASS);
-  } else {
-    htmlElement.classList.remove(FILE_PREVIEW_ACTIVE_CLASS);
-  }
+  const wrapper = htmlElement.querySelector(
+    '.sd-file__image-wrapper'
+  ) as HTMLElement | null;
+  // Preview slot not rendered yet; the observer will call us again once it is.
+  if (!wrapper) return;
 
-  const { name, content } = file;
-  const isImage = kind === 'image';
+  // Same file already rendered (or currently being resolved) -> no-op.
+  const key = `${file.name}:${content.length}`;
+  if (wrapper.dataset['pdfPreviewKey'] === key) return;
+  wrapper.dataset['pdfPreviewKey'] = key;
+  htmlElement.classList.add(PDF_PREVIEW_CLASS);
 
   const inject = (src: string): void => {
-    // Discard if a newer change superseded us or the element was detached.
-    if (
-      (question as any).__filePreviewSeq !== seq ||
-      !htmlElement.isConnected
-    ) {
+    // Discard if a newer file superseded us or the slot was re-rendered.
+    if (!wrapper.isConnected || wrapper.dataset['pdfPreviewKey'] !== key) {
+      if (src.indexOf('blob:') === 0) URL.revokeObjectURL(src);
       return;
     }
-    removeCustomPreview(htmlElement);
-    htmlElement.appendChild(buildPreviewWrapper(src, name, isImage));
-  };
-
-  const fetchAndInject = (token: string, url: string): void => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.responseType = 'blob';
-    xhr.onload = () => {
-      if ((question as any).__filePreviewSeq !== seq) return;
-      if (xhr.status < 200 || xhr.status >= 300) return;
-      inject(URL.createObjectURL(xhr.response));
-    };
-    xhr.send();
-  };
-
-  if (typeof content === 'string') {
-    // data: (just selected, not yet uploaded) and http(s) URLs are usable as-is.
-    if (content.indexOf('data:') === 0 || content.indexOf('http') === 0) {
-      inject(content);
-    } else {
-      const token = localStorage.getItem('idtoken') as string;
-      fetchAndInject(
-        token,
-        `${deps.restService.apiUrl}/download/file/${content}`
-      );
+    wrapper.querySelector(`iframe.${PDF_PREVIEW_FRAME_CLASS}`)?.remove();
+    const previous = (question as any).__pdfPreviewUrl;
+    if (previous && previous !== src && previous.indexOf('blob:') === 0) {
+      URL.revokeObjectURL(previous);
     }
+    (question as any).__pdfPreviewUrl = src;
+    const iframe = document.createElement('iframe');
+    iframe.classList.add(PDF_PREVIEW_FRAME_CLASS);
+    iframe.title = file.name;
+    iframe.src = src;
+    wrapper.appendChild(iframe);
+  };
+
+  if (content.indexOf('data:') === 0) {
+    // Convert to a blob URL: browsers handle large PDFs better than data:
+    // iframes. Force the PDF MIME type — stored files may lack one, and an
+    // octet-stream src makes the browser download the file instead of
+    // rendering it inline.
+    fetch(content)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        const blob = new Blob([buffer], { type: 'application/pdf' });
+        inject(URL.createObjectURL(blob));
+      });
   } else {
-    firstValueFrom(
-      deps.documentManagementService.getDocumentDriveId(content.itemId)
-    ).then((driveId) => {
-      if ((question as any).__filePreviewSeq !== seq) return;
-      const token = localStorage.getItem('access_token') as string;
-      const url = `${deps.environment.csApiUrl}/documents/drives/${driveId}/items/${content.itemId}/content`;
-      fetchAndInject(token, url);
-    });
+    inject(content);
   }
 };
 
@@ -278,11 +193,6 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection
 ): void => {
   const documentManagementService = injector.get(DocumentManagementService);
-  const previewDeps: FilePreviewDeps = {
-    documentManagementService,
-    restService: injector.get(RestService),
-    environment: injector.get('environment'),
-  };
   const widget = {
     name: 'file-widget',
     widgetIsLoaded: (): boolean => true,
@@ -300,27 +210,28 @@ export const init = (
         question.survey as SurveyModel
       );
 
-      // Keep a live reference to the current element so the value-change
-      // handler always targets the latest rendered DOM.
-      (question as any).__filePreviewEl = htmlElement;
-
-      // Render the preview for the current value.
-      updateFilePreview(previewDeps, question, htmlElement);
-
-      // Re-render the preview whenever this question's value changes. Subscribe
-      // once per question to avoid stacking handlers across re-renders.
-      if (!(question as any).__filePreviewSubscribed) {
-        (question as any).__filePreviewSubscribed = true;
-        (question.survey as SurveyModel)?.onValueChanged.add(
-          (_sender, options: any) => {
-            if (options?.name !== question.name) return;
-            const el = (question as any).__filePreviewEl as HTMLElement;
-            if (!el) return;
-            // Defer so SurveyJS finishes its own DOM update first.
-            setTimeout(() => updateFilePreview(previewDeps, question, el), 0);
-          }
-        );
+      // Give stored images the same native in-area preview as freshly picked
+      // ones: SurveyJS only recognizes images from string contents, but files
+      // stored through document management hold an object reference.
+      if (!(question as any).__canPreviewImagePatched) {
+        (question as any).__canPreviewImagePatched = true;
+        const canPreviewImage = question.canPreviewImage.bind(question);
+        question.canPreviewImage = (fileItem: any): boolean =>
+          canPreviewImage(fileItem) ||
+          (question.allowImagesPreview &&
+            !!fileItem &&
+            getPreviewKind(fileItem.name, fileItem.type) === 'image');
       }
+
+      // Render the PDF preview inside the upload area, and keep it in sync
+      // with SurveyJS re-renders (value changes, async preview loading).
+      (question as any).__pdfPreviewObserver?.disconnect();
+      const observer = new MutationObserver(() =>
+        updatePdfPreview(question, htmlElement)
+      );
+      observer.observe(htmlElement, { childList: true, subtree: true });
+      (question as any).__pdfPreviewObserver = observer;
+      updatePdfPreview(question, htmlElement);
     },
   };
 
