@@ -228,8 +228,8 @@ export class RecordHistoryComponent
         variables: {
           id: this.id,
           lang: this.translate.currentLang,
-          page,
-          limit: HISTORY_PAGE_SIZE,
+          first: HISTORY_PAGE_SIZE,
+          skip: (page - 1) * HISTORY_PAGE_SIZE,
         },
       })
       .pipe(takeUntil(this.destroy$));
