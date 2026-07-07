@@ -260,12 +260,7 @@ export class RecordHistoryComponent
    * @returns Observable of the GraphQL response for that page
    */
   private queryHistoryPage(page: number) {
-    const startDate = this.filters.get('startDate')?.value;
-    const fromDate = startDate ? new Date(startDate) : null;
-    if (fromDate) fromDate.setHours(0, 0, 0, 0);
-    const endDate = this.filters.get('endDate')?.value;
-    const toDate = endDate ? new Date(endDate) : null;
-    if (toDate) toDate.setHours(23, 59, 59, 999);
+    const { fromDate, toDate } = this.getDateRange();
     return this.apollo.query<RecordHistoryResponse>({
       query: GET_RECORD_HISTORY_BY_ID,
       variables: {
@@ -278,6 +273,22 @@ export class RecordHistoryComponent
         toDate,
       },
     });
+  }
+
+  /**
+   * Gets the current date range filter, normalized to whole days.
+   * Dates left unset by the user are returned as null.
+   *
+   * @returns The start and end dates of the current filter
+   */
+  private getDateRange(): { fromDate: Date | null; toDate: Date | null } {
+    const startDate = this.filters.get('startDate')?.value;
+    const fromDate = startDate ? new Date(startDate) : null;
+    if (fromDate) fromDate.setHours(0, 0, 0, 0);
+    const endDate = this.filters.get('endDate')?.value;
+    const toDate = endDate ? new Date(endDate) : null;
+    if (toDate) toDate.setHours(23, 59, 59, 999);
+    return { fromDate, toDate };
   }
 
   /**
@@ -567,14 +578,15 @@ export class RecordHistoryComponent
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}/history`;
     const fields: any = this.filters.get('fields')?.value;
+    const { fromDate, toDate } = this.getDateRange();
     const queryString = new URLSearchParams({
       type,
-      from: `${new Date(
-        this.filters.get('startDate')?.value as any
-      ).getTime()}`,
-      to: `${new Date(this.filters.get('endDate')?.value as any).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
+      // Only send the date range when set, so the API does not receive
+      // 0 / NaN timestamps
+      ...(fromDate && { from: `${fromDate.getTime()}` }),
+      ...(toDate && { to: `${toDate.getTime()}` }),
       ...(fields && { fields: fields.join(',') }),
     }).toString();
     this.downloadService.getFile(
