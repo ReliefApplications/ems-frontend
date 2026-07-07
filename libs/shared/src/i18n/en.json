@@ -1232,6 +1232,7 @@
       "range": {
         "clear": "Clear range"
       },
+      "renderError": "Unable to display this change",
       "useTableMode": "Use table mode"
     },
     "icon": {

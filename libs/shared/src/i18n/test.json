@@ -1232,6 +1232,7 @@
       "range": {
         "clear": "******"
       },
+      "renderError": "******",
       "useTableMode": "******"
     },
     "icon": {

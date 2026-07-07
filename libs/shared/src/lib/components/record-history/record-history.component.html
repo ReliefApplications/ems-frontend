@@ -114,6 +114,18 @@
       <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
         <ng-container *ngTemplateOutlet="tableTmpl"></ng-container>
       </ng-container>
+      <!-- LOAD MORE -->
+      <div class="text-center mt-4" *ngIf="hasMoreHistory">
+        <ui-button
+          category="tertiary"
+          variant="primary"
+          [disabled]="loadingMore"
+          [loading]="loadingMore"
+          (click)="loadMoreHistory()"
+        >
+          {{ 'common.pagination.loadMore' | translate }}
+        </ui-button>
+      </div>
     </ng-container>
     <ng-template #emptyTmpl>
       <shared-empty
@@ -143,7 +155,12 @@
 <!-- Display as table -->
 <ng-template #tableTmpl>
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="historyForTable">
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="historyForTable"
+      [trackBy]="trackByIndex"
+    >
       <ng-container cdkColumnDef="variable">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.history.columns.variable' | translate }}
@@ -201,7 +218,7 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          <div [innerHTML]="getChipFromChange(element)"></div>
+          <div [innerHTML]="element.chip"></div>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="originalValue">
@@ -213,7 +230,14 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ toReadableObjectValue(element.old) }}
+          <span
+            *ngIf="element.renderError; else originalValueTmpl"
+            class="italic text-gray-400"
+            >{{ 'components.history.renderError' | translate }}</span
+          >
+          <ng-template #originalValueTmpl>{{
+            element.old | sharedReadableHistoryValue
+          }}</ng-template>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="modifiedValue">
@@ -225,7 +249,14 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          {{ toReadableObjectValue(element.new) }}
+          <span
+            *ngIf="element.renderError; else modifiedValueTmpl"
+            class="italic text-gray-400"
+            >{{ 'components.history.renderError' | translate }}</span
+          >
+          <ng-template #modifiedValueTmpl>{{
+            element.new | sharedReadableHistoryValue
+          }}</ng-template>
         </td>
       </ng-container>
 
@@ -238,7 +269,9 @@
 <!-- Display as cards -->
 <ng-template #cardsTmpl>
   <div>
-    <ng-container *ngFor="let item of filterHistory; let i = index">
+    <ng-container
+      *ngFor="let item of filterHistory; let i = index; trackBy: trackByIndex"
+    >
       <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
         <ng-container ngProjectAs="title">
           <span class="font-bold mr-2">{{
@@ -256,7 +289,7 @@
             *ngFor="
               let value of showMore ? item.changes : item.changes.slice(0, 4)
             "
-            [innerHTML]="getHTMLFromChange(value)"
+            [innerHTML]="value.html"
           ></div>
           <div class="text-center mt-4 mb-3">
             <ui-button
