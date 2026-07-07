@@ -33,6 +33,7 @@
       reorderable ||
       actions.add ||
       actions.export ||
+      actions.import ||
       editable ||
       filterable ||
       hasEnabledActions
@@ -86,6 +87,30 @@
     >
       {{ 'common.export' | translate }}
     </button>
+    <button
+      [hidden]="!(actions.import && canUpload)"
+      kendoButton
+      (click)="showUpload = !showUpload"
+      cdkOverlayOrigin
+      #uploadTrigger="cdkOverlayOrigin"
+      class="export-hide"
+    >
+      {{
+        'common.uploadObject'
+          | translate : { name: 'common.record.few' | translate }
+      }}
+    </button>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="uploadTrigger"
+      [cdkConnectedOverlayOpen]="showUpload"
+    >
+      <app-upload-menu
+        (close)="showUpload = false"
+        (upload)="uploadFileData($event)"
+        (download)="onDownloadTemplate()"
+      ></app-upload-menu>
+    </ng-template>
     <ng-container *ngIf="editable">
       <button
         kendoButton

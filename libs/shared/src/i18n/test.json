@@ -1583,6 +1583,7 @@
         "grantFilterUpdateRecordsPermission": "******",
         "grantReadRecordsPermission": "******",
         "grantUpdateRecordsPermission": "******",
+        "grantUploadRecordsPermission": "******",
         "hideFeature": "****** {{page}} ******",
         "limitedDeleteRecordsPermission": "******",
         "limitedReadRecordsPermission": "******",
@@ -1595,6 +1596,7 @@
         "notGrantFilterUpdateRecordsPermission": "******",
         "notGrantReadRecordsPermission": "******",
         "notGrantUpdateRecordsPermission": "******",
+        "notGrantUploadRecordsPermission": "******",
         "showFeature": "****** {{page}} ******"
       },
       "update": {
@@ -2048,6 +2050,7 @@
                 "placeholder": "******"
               }
             },
+            "import": "******",
             "inline": "******",
             "remove": "******",
             "show": "******",
@@ -2113,6 +2116,7 @@
               "delete": "******",
               "export": "******",
               "goTo": "******",
+              "import": "******",
               "inline": "******",
               "show": "******",
               "showDetails": "******",

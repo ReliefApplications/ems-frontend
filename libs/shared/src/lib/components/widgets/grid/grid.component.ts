@@ -78,6 +78,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   public canCreateRecords = false;
   /** Permission to download records */
   public canDownloadRecords = false;
+  /** Permission to upload records */
+  public canUploadRecords = false;
 
   /** Cached configuration */
   public layout: Layout | null = null;
@@ -202,6 +204,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             this.canDownloadRecords = get(
               data,
               'resource.canDownloadRecords',
+              false
+            );
+            this.canUploadRecords = get(
+              data,
+              'resource.canUploadRecords',
               false
             );
           }

@@ -1583,6 +1583,7 @@
         "grantFilterUpdateRecordsPermission": "Grant permission to update records that satisfies filter",
         "grantReadRecordsPermission": "Grant permission to see records",
         "grantUpdateRecordsPermission": "Grant permission to update records",
+        "grantUploadRecordsPermission": "Grant permission to upload records",
         "hideFeature": "Hide {{page}} from this role",
         "limitedDeleteRecordsPermission": "Provide limited permission to delete records, based on filters",
         "limitedReadRecordsPermission": "Provide limited permission to see records, based on filters",
@@ -1595,6 +1596,7 @@
         "notGrantFilterUpdateRecordsPermission": "Does not grant permission to update records that satisfies filter",
         "notGrantReadRecordsPermission": "Does not grant permission to see records",
         "notGrantUpdateRecordsPermission": "Does not grant permission to update records",
+        "notGrantUploadRecordsPermission": "Does not grant permission to upload records",
         "showFeature": "Show {{page}} to this role"
       },
       "update": {
@@ -2048,6 +2050,7 @@
                 "placeholder": "Select a page"
               }
             },
+            "import": "Import records",
             "inline": "Inline edition",
             "remove": "Remove",
             "show": "Show history",
@@ -2113,6 +2116,7 @@
               "delete": "If authorized, user can delete visible records",
               "export": "User can export selected columns of visible records",
               "goTo": "User can go to specified page on click",
+              "import": "If authorized, user can import/upload records using template",
               "inline": "If authorized, user can edit records in the grid",
               "show": "User can see full history of visible records",
               "showDetails": "User can see full details of visible records",
