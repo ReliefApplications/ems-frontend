@@ -69,10 +69,11 @@ const setDefaultValue = (json, defaultValue) => {
 const updateFile = (lang, json) => {
   fs.writeFileSync(
     I18N_FOLDER_PATH + lang + '.json',
-    JSON.stringify(json, null, '\t'),
+    // 2-space indent + trailing newline, to match prettier ("format" script)
+    JSON.stringify(json, null, 2) + '\n',
     (err) => {
       if (err) {
-        throw(err);
+        throw err;
       }
       // else success
     }
