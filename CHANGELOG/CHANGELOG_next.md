@@ -1,9 +1,8 @@
 # [2.23.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.21...v2.23.0-rc.22) (2026-07-06)
 
-
 ### Bug Fixes
 
-* Improve PDF & image preview in forms ([#2901](https://github.com/ReliefApplications/ems-frontend/issues/2901)) ([98d2944](https://github.com/ReliefApplications/ems-frontend/commit/98d2944bce02a907e28a1be4e3f499967db0a068)), closes [AB#134011](https://github.com/AB/issues/134011)
+- Improve PDF & image preview in forms ([#2901](https://github.com/ReliefApplications/ems-frontend/issues/2901)) ([98d2944](https://github.com/ReliefApplications/ems-frontend/commit/98d2944bce02a907e28a1be4e3f499967db0a068)), closes [AB#134011](https://github.com/AB/issues/134011)
 
 # [2.23.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.20...v2.23.0-rc.21) (2026-07-06)
 
