@@ -20,8 +20,20 @@ export const GET_RECORD_BY_ID_FOR_HISTORY = gql`
 
 /** GraphQL query definition to get record history by id */
 export const GET_RECORD_HISTORY_BY_ID = gql`
-  query GetRecordHistoryByID($id: ID!, $lang: String, $first: Int, $skip: Int) {
-    recordHistory(id: $id, lang: $lang, first: $first, skip: $skip) {
+  query GetRecordHistoryByID(
+    $id: ID!
+    $lang: String
+    $first: Int
+    $skip: Int
+    $fields: [String]
+  ) {
+    recordHistory(
+      id: $id
+      lang: $lang
+      first: $first
+      skip: $skip
+      fields: $fields
+    ) {
       createdAt
       createdBy
       changes {

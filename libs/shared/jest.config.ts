@@ -34,6 +34,7 @@ export default {
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
+    '<rootDir>/src/lib/pipes/readable-history-value/*.spec.ts',
     '<rootDir>/src/lib/components/layout/layout.component.spec.ts',
     '<rootDir>/src/lib/components/language-switch/language-switch.component.spec.ts',
     '<rootDir>/src/lib/components/record-history/*.spec.ts',

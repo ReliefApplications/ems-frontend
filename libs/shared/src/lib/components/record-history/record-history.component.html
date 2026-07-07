@@ -213,7 +213,7 @@
           *cdkCellDef="let element"
           class="!text-gray-900 !font-medium max-w-[30vw]"
         >
-          <div [innerHTML]="getChipFromChange(element)"></div>
+          <div [innerHTML]="element.chip"></div>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="originalValue">
@@ -231,7 +231,7 @@
             >{{ 'components.history.renderError' | translate }}</span
           >
           <ng-template #originalValueTmpl>{{
-            toReadableObjectValue(element.old)
+            element.old | sharedReadableHistoryValue
           }}</ng-template>
         </td>
       </ng-container>
@@ -250,7 +250,7 @@
             >{{ 'components.history.renderError' | translate }}</span
           >
           <ng-template #modifiedValueTmpl>{{
-            toReadableObjectValue(element.new)
+            element.new | sharedReadableHistoryValue
           }}</ng-template>
         </td>
       </ng-container>
@@ -282,7 +282,7 @@
             *ngFor="
               let value of showMore ? item.changes : item.changes.slice(0, 4)
             "
-            [innerHTML]="getHTMLFromChange(value)"
+            [innerHTML]="value.html"
           ></div>
           <div class="text-center mt-4 mb-3">
             <ui-button
