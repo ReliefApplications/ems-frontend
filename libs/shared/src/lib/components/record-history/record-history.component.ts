@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, scan, switchMap, takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { DownloadService } from '../../services/download/download.service';
@@ -102,10 +102,8 @@ export class RecordHistoryComponent
   public loading = true;
   /** Loading state for the "load more" pagination action */
   public loadingMore = false;
-  /** Current page of history entries loaded */
-  private page = 1;
-  /** Identifier of the current history load, to discard stale responses */
-  private historyRequestId = 0;
+  /** Emits history page load requests; 'reload' restarts from the first page */
+  private page$ = new Subject<'reload' | 'next'>();
   /** Whether more history entries can be loaded */
   public hasMoreHistory = false;
   /** Show more state */
@@ -182,6 +180,34 @@ export class RecordHistoryComponent
   }
 
   ngOnInit(): void {
+    // Load history pages through a single stream: switchMap cancels any
+    // in-flight request whenever a new page load is triggered
+    this.page$
+      .pipe(
+        scan((page, action) => (action === 'reload' ? 1 : page + 1), 0),
+        switchMap((page) =>
+          this.queryHistoryPage(page).pipe(map((result) => ({ page, result })))
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ page, result: { errors, data } }) => {
+        this.loadingMore = false;
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.history.error', {
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+          if (page === 1) {
+            this.cancel.emit(true);
+          }
+        } else {
+          this.appendHistoryPage(data.recordHistory);
+          this.loading = false;
+        }
+      });
+
     const setSubscription = () => {
       this.apollo
         .query<RecordQueryResponse>({
@@ -227,27 +253,10 @@ export class RecordHistoryComponent
    */
   private reloadHistory(): void {
     this.loading = true;
-    this.page = 1;
+    // A reload cancels any in-flight "load more" request
+    this.loadingMore = false;
     this.history = [];
-    const requestId = ++this.historyRequestId;
-    this.queryHistoryPage(this.page).subscribe(({ errors, data }) => {
-      if (requestId !== this.historyRequestId) {
-        // A newer reload was triggered in the meantime
-        return;
-      }
-      if (errors) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.history.error', {
-            error: errors[0].message,
-          }),
-          { error: true }
-        );
-        this.cancel.emit(true);
-      } else {
-        this.appendHistoryPage(data.recordHistory);
-        this.loading = false;
-      }
-    });
+    this.page$.next('reload');
   }
 
   /**
@@ -257,18 +266,16 @@ export class RecordHistoryComponent
    * @returns Observable of the GraphQL response for that page
    */
   private queryHistoryPage(page: number) {
-    return this.apollo
-      .query<RecordHistoryResponse>({
-        query: GET_RECORD_HISTORY_BY_ID,
-        variables: {
-          id: this.id,
-          lang: this.translate.currentLang,
-          first: HISTORY_PAGE_SIZE,
-          skip: (page - 1) * HISTORY_PAGE_SIZE,
-          fields: this.filters.get('fields')?.value ?? [],
-        },
-      })
-      .pipe(takeUntil(this.destroy$));
+    return this.apollo.query<RecordHistoryResponse>({
+      query: GET_RECORD_HISTORY_BY_ID,
+      variables: {
+        id: this.id,
+        lang: this.translate.currentLang,
+        first: HISTORY_PAGE_SIZE,
+        skip: (page - 1) * HISTORY_PAGE_SIZE,
+        fields: this.filters.get('fields')?.value ?? [],
+      },
+    });
   }
 
   /**
@@ -292,25 +299,18 @@ export class RecordHistoryComponent
       return;
     }
     this.loadingMore = true;
-    this.page += 1;
-    const requestId = this.historyRequestId;
-    this.queryHistoryPage(this.page).subscribe(({ errors, data }) => {
-      this.loadingMore = false;
-      if (requestId !== this.historyRequestId) {
-        // The history was reloaded in the meantime
-        return;
-      }
-      if (errors) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.history.error', {
-            error: errors[0].message,
-          }),
-          { error: true }
-        );
-      } else {
-        this.appendHistoryPage(data.recordHistory);
-      }
-    });
+    this.page$.next('next');
+  }
+
+  /**
+   * TrackBy function keeping DOM elements stable when the history is rebuilt,
+   * so loading more entries only appends new elements.
+   *
+   * @param index Index of the item
+   * @returns The index, as identity
+   */
+  trackByIndex(index: number): number {
+    return index;
   }
 
   /**

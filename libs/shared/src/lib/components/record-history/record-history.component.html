@@ -155,7 +155,12 @@
 <!-- Display as table -->
 <ng-template #tableTmpl>
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="historyForTable">
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="historyForTable"
+      [trackBy]="trackByIndex"
+    >
       <ng-container cdkColumnDef="variable">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.history.columns.variable' | translate }}
@@ -264,7 +269,9 @@
 <!-- Display as cards -->
 <ng-template #cardsTmpl>
   <div>
-    <ng-container *ngFor="let item of filterHistory; let i = index">
+    <ng-container
+      *ngFor="let item of filterHistory; let i = index; trackBy: trackByIndex"
+    >
       <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
         <ng-container ngProjectAs="title">
           <span class="font-bold mr-2">{{
