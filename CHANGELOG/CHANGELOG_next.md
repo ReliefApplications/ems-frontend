@@ -1,3 +1,10 @@
+# [2.23.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.22...v2.23.0-rc.23) (2026-07-07)
+
+
+### Features
+
+* Add Excel import support in Front-Office Grid widget ([#2892](https://github.com/ReliefApplications/ems-frontend/issues/2892)) ([81732e7](https://github.com/ReliefApplications/ems-frontend/commit/81732e709e76015837d3aff51d4a6b4546b1a757)), closes [AB#134543](https://github.com/AB/issues/134543)
+
 # [2.23.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.21...v2.23.0-rc.22) (2026-07-06)
 
 ### Bug Fixes

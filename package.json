@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.23.0-rc.22",
+  "version": "2.23.0-rc.23",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
