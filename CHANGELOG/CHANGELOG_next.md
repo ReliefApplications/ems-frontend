@@ -1,3 +1,10 @@
+# [2.23.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.24...v2.23.0-rc.25) (2026-07-08)
+
+
+### Bug Fixes
+
+* summary card infinite scrolling could block when using resource layout ([19c46e9](https://github.com/ReliefApplications/ems-frontend/commit/19c46e973b63a331354defca124465ceee6fb186))
+
 # [2.23.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.23...v2.23.0-rc.24) (2026-07-08)
 
 
