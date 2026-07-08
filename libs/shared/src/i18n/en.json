@@ -2052,6 +2052,12 @@
             },
             "import": "Import records",
             "inline": "Inline edition",
+            "readOnlyFields": {
+              "available": "Available fields",
+              "readOnly": "Read-only fields",
+              "title": "Read-only fields",
+              "tooltip": "Choose which fields should stay read-only during inline edition, even for users who could otherwise edit them"
+            },
             "remove": "Remove",
             "show": "Show history",
             "showDetails": "Show record details",

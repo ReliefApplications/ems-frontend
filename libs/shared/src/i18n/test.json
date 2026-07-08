@@ -2052,6 +2052,12 @@
             },
             "import": "******",
             "inline": "******",
+            "readOnlyFields": {
+              "available": "******",
+              "readOnly": "******",
+              "title": "******",
+              "tooltip": "******"
+            },
             "remove": "******",
             "show": "******",
             "showDetails": "******",

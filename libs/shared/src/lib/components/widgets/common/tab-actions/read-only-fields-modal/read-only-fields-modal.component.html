@@ -1,0 +1,71 @@
+<ui-dialog size="medium">
+  <!-- Header -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        'components.widget.settings.grid.actions.readOnlyFields.title'
+          | translate
+      }}
+    </h3>
+  </ng-container>
+  <!-- Content -->
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-row flex-nowrap gap-4">
+      <div class="flex-1 min-w-0 flex flex-col gap-1">
+        <label class="font-medium">
+          {{
+            'components.widget.settings.grid.actions.readOnlyFields.available'
+              | translate
+          }}
+        </label>
+        <kendo-listbox
+          class="!h-72 !w-full min-w-0"
+          kendoListBoxDataBinding
+          [data]="availableFields"
+          textField="label"
+          valueField="name"
+          [connectedWith]="selected"
+          [toolbar]="toolbarSettings"
+        >
+          <ng-template kendoListBoxItemTemplate let-dataItem>
+            <div class="px-2 truncate">{{ dataItem.label }}</div>
+          </ng-template>
+        </kendo-listbox>
+      </div>
+      <div class="flex-1 min-w-0 flex flex-col gap-1">
+        <label class="font-medium">
+          {{
+            'components.widget.settings.grid.actions.readOnlyFields.readOnly'
+              | translate
+          }}
+        </label>
+        <kendo-listbox
+          class="!h-72 !w-full min-w-0"
+          #selected
+          [data]="selectedFields"
+          textField="label"
+          valueField="name"
+          [toolbar]="false"
+        >
+          <ng-template kendoListBoxItemTemplate let-dataItem>
+            <div class="px-2 truncate">{{ dataItem.label }}</div>
+          </ng-template>
+        </kendo-listbox>
+      </div>
+    </div>
+  </ng-container>
+  <!-- Actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()" variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

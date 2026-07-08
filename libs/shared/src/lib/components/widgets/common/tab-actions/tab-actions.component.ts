@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -85,8 +86,14 @@ export class TabActionsComponent
    * Constructor of the grid component
    *
    * @param applicationService Application service
+   * @param dialog Angular CDK dialog service
+   * @param ngZone Angular NgZone, used to run code impacting the UI within Angular's zone
    */
-  constructor(public applicationService: ApplicationService) {
+  constructor(
+    public applicationService: ApplicationService,
+    private dialog: Dialog,
+    private ngZone: NgZone
+  ) {
     super();
   }
 
@@ -134,5 +141,37 @@ export class TabActionsComponent
     return page.type === ContentType.form
       ? `${applicationPath}/${page.type}/${page.id}`
       : `${applicationPath}/${page.type}/${page.content}`;
+  }
+
+  /**
+   * Open the modal allowing the admin to select which fields should
+   * stay read-only during inline edition.
+   */
+  async openReadOnlyFieldsModal(): Promise<void> {
+    const { ReadOnlyFieldsModalComponent } = await import(
+      './read-only-fields-modal/read-only-fields-modal.component'
+    );
+    this.ngZone.run(() => {
+      const dialogRef = this.dialog.open<string[]>(
+        ReadOnlyFieldsModalComponent,
+        {
+          data: {
+            fields: this.fields,
+            readOnlyFields:
+              this.formGroup.get('actions')?.get('readOnlyFields')?.value || [],
+          },
+        }
+      );
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((readOnlyFields: string[] | undefined) => {
+          if (readOnlyFields) {
+            this.formGroup
+              .get('actions')
+              ?.get('readOnlyFields')
+              ?.setValue(readOnlyFields);
+          }
+        });
+    });
   }
 }
