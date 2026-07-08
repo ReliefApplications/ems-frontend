@@ -3,6 +3,7 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
+import 'survey-core/survey.i18n';
 import { AuthService } from '../services/auth/auth.service';
 import { DomService } from '../services/dom/dom.service';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';

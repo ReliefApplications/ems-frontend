@@ -8,6 +8,7 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'Add new record',
       fr: 'Ajouter un enregistrement',
+      ua: 'Додати новий запис',
     },
   },
   {
@@ -15,6 +16,7 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'Display only',
       fr: 'Affichage seul',
+      ua: 'Тільки перегляд',
     },
   },
   {
@@ -22,6 +24,7 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'On select',
       fr: 'A la sélection',
+      ua: 'При виборі',
     },
   },
   {
@@ -63,6 +66,24 @@ const SURVEY_LOCALIZABLE_STRINGS = [
         }
       `;
       },
+      ua: (question: any) => {
+        const allowMultiple = question.getPropertyValue('allowMultiple');
+        const maxSize = question.getPropertyValue('maxSize');
+        const maxFiles = allowMultiple
+          ? question.getPropertyValue('allowedFileNumber')
+          : null;
+        const sizeOnKB = Math.floor(maxSize / 1024);
+        const isMB = Math.floor(sizeOnKB / 1024) >= 1;
+        return `Перетягніть файл сюди або натисніть кнопку нижче, щоб вибрати файл для завантаження.
+      ${maxFiles ? 'Додайте до ' + maxFiles + ' файлів. ' : ''}${
+          maxSize
+            ? 'Максимум ' +
+              (isMB ? Math.floor(sizeOnKB / 1024) : sizeOnKB) +
+              (isMB ? ' МБ' : ' КБ')
+            : ''
+        }
+      `;
+      },
     },
   },
   {
@@ -70,6 +91,7 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'Search',
       fr: 'Rechercher',
+      ua: 'Пошук',
     },
   },
   {
@@ -77,6 +99,7 @@ const SURVEY_LOCALIZABLE_STRINGS = [
     locales: {
       en: 'Edit',
       fr: 'Éditer',
+      ua: 'Редагувати',
     },
   },
 ];
