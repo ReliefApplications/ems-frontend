@@ -617,7 +617,12 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
-    this.cards = newCards;
+    if (this.scrolling) {
+      // Loading next page on infinite scroll, append new cards to the list
+      this.cards = [...this.cards, ...newCards];
+    } else {
+      this.cards = newCards;
+    }
     if (this.widget.settings.widgetDisplay.hideEmpty) {
       // Listen to cards data changes to know when widget is empty and will be hidden
       this.isEmpty = this.cards.length ? false : true;
@@ -1042,7 +1047,6 @@ export class SummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
     if (isScrollNearBottom) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
-        this.cards.length;
         this.scrolling = true;
         if (this.useReferenceData) {
           if (!this.refData?.pageInfo?.strategy) {
@@ -1068,7 +1072,7 @@ export class SummaryCardComponent
             })
           )
             .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-            .subscribe(() => this.updateRecordCards.bind(this));
+            .subscribe((results) => this.updateRecordCards(results));
         }
       }
     }
