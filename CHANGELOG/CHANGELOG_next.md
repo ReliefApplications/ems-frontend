@@ -1,3 +1,10 @@
+# [2.23.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.23...v2.23.0-rc.24) (2026-07-08)
+
+
+### Bug Fixes
+
+* Multiple issues with full dual language experience ([#2903](https://github.com/ReliefApplications/ems-frontend/issues/2903)) ([081847c](https://github.com/ReliefApplications/ems-frontend/commit/081847c225697b2e6c3ae6f1c3abfcce53cc72fe)), closes [Ab#134863](https://github.com/Ab/issues/134863)
+
 # [2.23.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.22...v2.23.0-rc.23) (2026-07-07)
 
 
