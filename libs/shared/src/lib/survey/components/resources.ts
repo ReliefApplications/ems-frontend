@@ -30,6 +30,7 @@ import { QuestionResource } from '../types';
 import {
   buildAddButton,
   buildSearchButton,
+  canShowSearchButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
@@ -576,14 +577,20 @@ export const init = (
       );
       searchBtn.style.display = 'none';
       if (question.resource) {
-        searchBtn.style.display = question.displayOnly ? 'none' : 'block';
+        searchBtn.style.display =
+          canShowSearchButton(question) && !question.displayOnly
+            ? 'block'
+            : 'none';
         if (parentElement) {
           if (question.displayAsGrid) {
             gridComponentRef = buildGridDisplay(question, parentElement);
           }
 
           if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = question.displayOnly ? 'none' : 'block';
+            searchBtn.style.display =
+              canShowSearchButton(question) && !question.displayOnly
+                ? 'block'
+                : 'none';
             const addBtn = buildAddButton(
               question,
               true,
@@ -615,7 +622,11 @@ export const init = (
       actionsButtons.appendChild(searchBtn);
       parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       question.registerFunctionOnPropertyValueChanged('resource', () => {
-        if (question.resource && question.canSearch && !question.displayOnly) {
+        if (
+          question.resource &&
+          canShowSearchButton(question) &&
+          !question.displayOnly
+        ) {
           searchBtn.style.display = 'block';
         }
       });
@@ -624,7 +635,9 @@ export const init = (
           setGridInputs(gridComponentRef.instance, question);
         } else {
           searchBtn.style.display =
-            question.canSearch && !question.displayOnly ? 'block' : 'none';
+            canShowSearchButton(question) && !question.displayOnly
+              ? 'block'
+              : 'none';
         }
       });
       question.registerFunctionOnPropertyValueChanged(
@@ -639,6 +652,14 @@ export const init = (
             );
             gridComponentRef = buildGridDisplay(question, parentElement);
             searchBtn.style.display = 'none';
+          } else {
+            // Fields were added/removed: re-evaluate whether the search
+            // button should be visible (it needs at least one configured
+            // field to be functional).
+            searchBtn.style.display =
+              canShowSearchButton(question) && !question.displayOnly
+                ? 'block'
+                : 'none';
           }
         }
       );

@@ -5,6 +5,7 @@ import {
   EmbeddedViewRef,
   Injectable,
   Injector,
+  StaticProvider,
 } from '@angular/core';
 
 /**
@@ -35,13 +36,22 @@ export class DomService {
    *
    * @param component Component to inject
    * @param parent parent element
+   * @param providers Optional providers, scoped to this component instance only
+   * (e.g. to override a service like Kendo's IntlService for a single date picker)
    * @returns Ref of the new component
    */
-  appendComponentToBody(component: any, parent: any): ComponentRef<any> {
+  appendComponentToBody(
+    component: any,
+    parent: any,
+    providers?: StaticProvider[]
+  ): ComponentRef<any> {
+    const injector = providers?.length
+      ? Injector.create({ providers, parent: this.injector })
+      : this.injector;
     // create a component reference
     const componentRef = this.componentFactoryResolver
       .resolveComponentFactory(component)
-      .create(this.injector);
+      .create(injector);
 
     // attach component to the appRef so that so that it will be dirty checked.
     this.applicationRef.attachView(componentRef.hostView);
