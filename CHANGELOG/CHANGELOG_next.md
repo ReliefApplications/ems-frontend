@@ -7,17 +7,15 @@
 
 # [2.23.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.23...v2.23.0-rc.24) (2026-07-08)
 
-
 ### Bug Fixes
 
-* Multiple issues with full dual language experience ([#2903](https://github.com/ReliefApplications/ems-frontend/issues/2903)) ([081847c](https://github.com/ReliefApplications/ems-frontend/commit/081847c225697b2e6c3ae6f1c3abfcce53cc72fe)), closes [Ab#134863](https://github.com/Ab/issues/134863)
+- Multiple issues with full dual language experience ([#2903](https://github.com/ReliefApplications/ems-frontend/issues/2903)) ([081847c](https://github.com/ReliefApplications/ems-frontend/commit/081847c225697b2e6c3ae6f1c3abfcce53cc72fe)), closes [Ab#134863](https://github.com/Ab/issues/134863)
 
 # [2.23.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.22...v2.23.0-rc.23) (2026-07-07)
 
-
 ### Features
 
-* Add Excel import support in Front-Office Grid widget ([#2892](https://github.com/ReliefApplications/ems-frontend/issues/2892)) ([81732e7](https://github.com/ReliefApplications/ems-frontend/commit/81732e709e76015837d3aff51d4a6b4546b1a757)), closes [AB#134543](https://github.com/AB/issues/134543)
+- Add Excel import support in Front-Office Grid widget ([#2892](https://github.com/ReliefApplications/ems-frontend/issues/2892)) ([81732e7](https://github.com/ReliefApplications/ems-frontend/commit/81732e709e76015837d3aff51d4a6b4546b1a757)), closes [AB#134543](https://github.com/AB/issues/134543)
 
 # [2.23.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.21...v2.23.0-rc.22) (2026-07-06)
 

@@ -6,6 +6,7 @@ export const GET_RESOURCE = gql`
     resource(id: $id) {
       id
       name
+      queryName
       fields
     }
   }
