@@ -137,18 +137,15 @@ export class FormBuilderService {
       }
     }
     // Set the lang of the survey
+    const usedLocales = survey.getUsedLocales();
     // SurveyJS locale codes differ from Angular's for some languages
     // (e.g. Ukrainian is 'uk' in Angular but 'ua' in SurveyJS).
     const systemLang = toSurveyLocale(
       this.translate.currentLang || this.translate.defaultLang
     );
-    if (systemLang) {
-      // The language the user sees the system in always takes priority. This
-      // must not be gated on whether the form's own content (question
-      // titles, etc.) was translated into that language: SurveyJS falls back
-      // to the default-locale text for any untranslated string, but it only
-      // localizes its own built-in UI strings (file upload placeholder,
-      // date/time pickers, buttons...) when `survey.locale` is actually set.
+    if (systemLang && usedLocales.includes(systemLang)) {
+      // The language the user sees the system in takes priority over their last
+      // manual form-language pick (if the form has a version for that language).
       survey.locale = systemLang;
     }
     survey.showNavigationButtons = 'none';
