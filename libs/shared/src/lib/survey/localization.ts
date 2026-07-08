@@ -1,6 +1,43 @@
 import { surveyLocalization } from 'survey-core';
 import { editorLocalization } from 'survey-creator-core';
 
+/**
+ * Build the localized file limitations text for a file question, from the
+ * locale-specific strings.
+ *
+ * @param strings Locale-specific strings
+ * @param strings.intro Drag and drop instruction
+ * @param strings.maxFiles Max number of files sentence, built from the limit
+ * @param strings.max 'Max' word
+ * @param strings.mb Megabytes unit
+ * @param strings.kb Kilobytes unit
+ * @returns Function building the text from the question
+ */
+const fileLimitations =
+  (strings: {
+    intro: string;
+    maxFiles: (count: number) => string;
+    max: string;
+    mb: string;
+    kb: string;
+  }) =>
+  (question: any) => {
+    const allowMultiple = question.getPropertyValue('allowMultiple');
+    const maxSize = question.getPropertyValue('maxSize');
+    const maxFiles = allowMultiple
+      ? question.getPropertyValue('allowedFileNumber')
+      : null;
+    const sizeOnKB = Math.floor(maxSize / 1024);
+    const sizeOnMB = Math.floor(sizeOnKB / 1024);
+    const size =
+      sizeOnMB >= 1 ? `${sizeOnMB} ${strings.mb}` : `${sizeOnKB} ${strings.kb}`;
+    return `${strings.intro}
+      ${maxFiles ? strings.maxFiles(maxFiles) : ''}${
+      maxSize ? `${strings.max} ${size}` : ''
+    }
+      `;
+  };
+
 /** Available localizable strings, for survey */
 const SURVEY_LOCALIZABLE_STRINGS = [
   {
@@ -30,60 +67,30 @@ const SURVEY_LOCALIZABLE_STRINGS = [
   {
     key: 'fileLimitations',
     locales: {
-      en: (question: any) => {
-        const allowMultiple = question.getPropertyValue('allowMultiple');
-        const maxSize = question.getPropertyValue('maxSize');
-        const maxFiles = allowMultiple
-          ? question.getPropertyValue('allowedFileNumber')
-          : null;
-        const sizeOnKB = Math.floor(maxSize / 1024);
-        const isMB = Math.floor(sizeOnKB / 1024) >= 1;
-        return `Drag and drop a file here or click the button below and choose a file to upload.
-      ${maxFiles ? 'Attach up to ' + maxFiles + ' files. ' : ''}${
-          maxSize
-            ? 'Max ' +
-              (isMB ? Math.floor(sizeOnKB / 1024) : sizeOnKB) +
-              (isMB ? ' MB' : ' KB')
-            : ''
-        }
-      `;
-      },
-      fr: (question: any) => {
-        const allowMultiple = question.getPropertyValue('allowMultiple');
-        const maxSize = question.getPropertyValue('maxSize');
-        const maxFiles = allowMultiple
-          ? question.getPropertyValue('allowedFileNumber')
-          : null;
-        const sizeOnKB = Math.floor(maxSize / 1024);
-        const isMB = Math.floor(sizeOnKB / 1024) >= 1;
-        return `Faites glisser et déposez un fichier ici ou cliquez sur le bouton ci-dessous et choisissez un fichier à télécharger.
-      ${maxFiles ? "Joindre jusqu'à " + maxFiles + ' fichiers. ' : ''}${
-          maxSize
-            ? 'Max ' +
-              (isMB ? Math.floor(sizeOnKB / 1024) : sizeOnKB) +
-              (isMB ? ' MB' : ' KB')
-            : ''
-        }
-      `;
-      },
-      ua: (question: any) => {
-        const allowMultiple = question.getPropertyValue('allowMultiple');
-        const maxSize = question.getPropertyValue('maxSize');
-        const maxFiles = allowMultiple
-          ? question.getPropertyValue('allowedFileNumber')
-          : null;
-        const sizeOnKB = Math.floor(maxSize / 1024);
-        const isMB = Math.floor(sizeOnKB / 1024) >= 1;
-        return `Перетягніть файл сюди або натисніть кнопку нижче, щоб вибрати файл для завантаження.
-      ${maxFiles ? 'Додайте до ' + maxFiles + ' файлів. ' : ''}${
-          maxSize
-            ? 'Максимум ' +
-              (isMB ? Math.floor(sizeOnKB / 1024) : sizeOnKB) +
-              (isMB ? ' МБ' : ' КБ')
-            : ''
-        }
-      `;
-      },
+      en: fileLimitations({
+        intro:
+          'Drag and drop a file here or click the button below and choose a file to upload.',
+        maxFiles: (count) => `Attach up to ${count} files. `,
+        max: 'Max',
+        mb: 'MB',
+        kb: 'KB',
+      }),
+      fr: fileLimitations({
+        intro:
+          'Faites glisser et déposez un fichier ici ou cliquez sur le bouton ci-dessous et choisissez un fichier à télécharger.',
+        maxFiles: (count) => `Joindre jusqu'à ${count} fichiers. `,
+        max: 'Max',
+        mb: 'MB',
+        kb: 'KB',
+      }),
+      ua: fileLimitations({
+        intro:
+          'Перетягніть файл сюди або натисніть кнопку нижче, щоб вибрати файл для завантаження.',
+        maxFiles: (count) => `Додайте до ${count} файлів. `,
+        max: 'Максимум',
+        mb: 'МБ',
+        kb: 'КБ',
+      }),
     },
   },
   {
