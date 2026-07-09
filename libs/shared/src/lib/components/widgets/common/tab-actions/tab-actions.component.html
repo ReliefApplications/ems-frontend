@@ -36,6 +36,18 @@
               uiTooltipPosition="right"
               (click)="openReadOnlyFieldsModal()"
             ></ui-icon>
+            <!-- Number of fields currently marked as read-only -->
+            <span
+              *ngIf="action.name === 'inlineEdition' && readOnlyFieldsCount"
+              class="ml-1 self-center text-sm text-gray-500"
+            >
+              {{
+                (readOnlyFieldsCount === 1
+                  ? 'components.widget.settings.grid.actions.readOnlyFields.count.one'
+                  : 'components.widget.settings.grid.actions.readOnlyFields.count.few'
+                ) | translate : { count: readOnlyFieldsCount }
+              }}
+            </span>
             <!-- Icon with warning if any -->
             <ui-icon
               *ngIf="

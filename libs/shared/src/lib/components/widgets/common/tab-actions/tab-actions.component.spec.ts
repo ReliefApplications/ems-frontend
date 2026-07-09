@@ -76,6 +76,30 @@ describe('TabActionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should display the number of read-only fields next to the inline edition action', () => {
+    // With the fake loader, translations resolve to their key
+    const countKey =
+      'components.widget.settings.grid.actions.readOnlyFields.count';
+    const element: HTMLElement = fixture.nativeElement;
+
+    // No read-only fields: no indicator
+    expect(element.textContent).not.toContain(countKey);
+
+    component.formGroup
+      .get('actions')
+      ?.get('readOnlyFields')
+      ?.setValue(['firstName', 'lastName']);
+    fixture.detectChanges();
+    expect(element.textContent).toContain(`${countKey}.few`);
+
+    component.formGroup
+      .get('actions')
+      ?.get('readOnlyFields')
+      ?.setValue(['firstName']);
+    fixture.detectChanges();
+    expect(element.textContent).toContain(`${countKey}.one`);
+  });
+
   it('should open the read-only fields modal with the layout fields when layouts are used', async () => {
     component.layouts = [
       {

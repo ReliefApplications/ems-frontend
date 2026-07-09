@@ -2055,6 +2055,10 @@
             "readOnlyFields": {
               "alert": "******",
               "available": "******",
+              "count": {
+                "few": "{{count}} ******",
+                "one": "{{count}} ******"
+              },
               "readOnly": "******",
               "title": "******",
               "tooltip": "******"

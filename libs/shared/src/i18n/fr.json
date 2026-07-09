@@ -2058,6 +2058,10 @@
             "readOnlyFields": {
               "alert": "Certains champs utilisent leur propre logique de lecture seule et peuvent donc ne pas être modifiables même s'ils ne sont pas marqués comme en lecture seule ici.",
               "available": "Champs disponibles",
+              "count": {
+                "few": "{{count}} champs ont été marqués en lecture seule",
+                "one": "{{count}} champ a été marqué en lecture seule"
+              },
               "readOnly": "Champs en lecture seule",
               "title": "Champs en lecture seule",
               "tooltip": "Choisissez les champs qui doivent rester en lecture seule pendant l'édition en ligne, même pour les utilisateurs qui pourraient sinon les modifier"

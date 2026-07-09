@@ -29,6 +29,8 @@ export class TabActionsComponent
   @Input() layouts: Layout[] = [];
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
+  /** Number of fields currently marked as read-only for inline edition */
+  public readOnlyFieldsCount = 0;
   /** Available pages from the application */
   public pages: any[] = [];
   /** Grid actions */
@@ -112,6 +114,15 @@ export class TabActionsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
+      });
+    // Track the number of fields marked as read-only for inline edition
+    const readOnlyFields =
+      this.formGroup.controls.actions.get('readOnlyFields');
+    this.readOnlyFieldsCount = readOnlyFields?.value?.length || 0;
+    readOnlyFields?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string[] | null) => {
+        this.readOnlyFieldsCount = value?.length || 0;
       });
   }
 
