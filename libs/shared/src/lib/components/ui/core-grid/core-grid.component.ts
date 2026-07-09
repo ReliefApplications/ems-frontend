@@ -769,7 +769,7 @@ export class CoreGridComponent
       const data = Object.assign({}, item);
       delete data.id;
       for (const field of this.fields) {
-        if (field.type === 'Time') {
+        if (field.type === 'Time' && data[field.name] instanceof Date) {
           data[field.name] = data[field.name].toLocaleTimeString('en', {
             hour: '2-digit',
             minute: '2-digit',
