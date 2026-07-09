@@ -76,6 +76,36 @@ describe('TabActionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should open the read-only fields modal with the layout fields when layouts are used', async () => {
+    component.layouts = [
+      {
+        id: '1',
+        query: {
+          fields: [
+            { name: 'firstName', kind: 'SCALAR' },
+            { name: 'email', kind: 'SCALAR' },
+          ],
+        },
+      },
+      {
+        id: '2',
+        query: {
+          // 'email' is duplicated across layouts, it should only appear once
+          fields: [{ name: 'email', kind: 'SCALAR' }],
+        },
+      },
+    ];
+
+    await component.openReadOnlyFieldsModal();
+
+    expect(dialogOpenSpy).toHaveBeenCalledTimes(1);
+    const [, config] = dialogOpenSpy.mock.calls[0];
+    expect(config.data.fields.map((f: any) => f.name)).toEqual([
+      'firstName',
+      'email',
+    ]);
+  });
+
   it('should open the read-only fields modal with the current fields and readOnlyFields', async () => {
     component.formGroup
       .get('actions')

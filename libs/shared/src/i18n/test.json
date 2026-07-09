@@ -2053,6 +2053,7 @@
             "import": "******",
             "inline": "******",
             "readOnlyFields": {
+              "alert": "******",
               "available": "******",
               "readOnly": "******",
               "title": "******",

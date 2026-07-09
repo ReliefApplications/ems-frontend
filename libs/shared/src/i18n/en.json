@@ -2053,6 +2053,7 @@
             "import": "Import records",
             "inline": "Inline edition",
             "readOnlyFields": {
+              "alert": "Some fields use their own read-only logic, so they may not be available for edition even if they are not marked as read-only here.",
               "available": "Available fields",
               "readOnly": "Read-only fields",
               "title": "Read-only fields",

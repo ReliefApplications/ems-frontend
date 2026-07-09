@@ -15,8 +15,13 @@ describe('ReadOnlyFieldsModalComponent', () => {
   /** Query fields, mixing scalar / structural / object fields, as returned by the query builder service */
   const fields = [
     { name: 'id', type: { kind: 'SCALAR' } },
-    { name: 'firstName', type: { kind: 'SCALAR' } },
-    { name: 'lastName', type: { kind: 'SCALAR' } },
+    // Layout fields carry a label, plain or localized per language
+    {
+      name: 'firstName',
+      type: { kind: 'SCALAR' },
+      label: { en: 'First name EN', fr: 'Prénom' },
+    },
+    { name: 'lastName', type: { kind: 'SCALAR' }, label: 'Last name custom' },
     { name: 'createdBy', type: { kind: 'OBJECT', fields: [] } },
   ];
 
@@ -68,6 +73,16 @@ describe('ReadOnlyFieldsModalComponent', () => {
     ].map((f) => f.name);
     expect(allListedFields).not.toContain('id');
     expect(allListedFields).not.toContain('createdBy');
+  });
+
+  it('should display field labels, resolving localized ones against the current language', () => {
+    // 'firstName' has a localized label, 'lastName' a plain string one
+    expect(component.availableFields).toEqual([
+      { name: 'firstName', label: 'First name EN' },
+    ]);
+    expect(component.selectedFields).toEqual([
+      { name: 'lastName', label: 'Last name custom' },
+    ]);
   });
 
   it('should close the dialog without a value when cancelled', () => {

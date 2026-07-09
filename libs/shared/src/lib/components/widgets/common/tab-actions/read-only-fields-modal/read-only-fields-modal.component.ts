@@ -5,11 +5,12 @@ import {
   ListBoxToolbarConfig,
 } from '@progress/kendo-angular-listbox';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
 import get from 'lodash/get';
 import { prettifyLabel } from '../../../../../utils/prettify';
 import { DISABLED_FIELDS } from '../../../../../services/grid/grid.service';
+import { resolveLocalizedString } from '../../../../../models/localized-string.model';
 
 /** Field displayed in one of the two listboxes */
 interface ListBoxField {
@@ -32,6 +33,7 @@ interface ListBoxField {
     TranslateModule,
     DialogModule,
     ButtonModule,
+    AlertModule,
   ],
   selector: 'shared-read-only-fields-modal',
   templateUrl: './read-only-fields-modal.component.html',
@@ -45,14 +47,7 @@ export class ReadOnlyFieldsModalComponent implements OnInit {
   /** Listbox toolbar settings */
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
-    tools: [
-      'moveUp',
-      'moveDown',
-      'transferFrom',
-      'transferTo',
-      'transferAllFrom',
-      'transferAllTo',
-    ],
+    tools: ['transferFrom', 'transferTo', 'transferAllFrom', 'transferAllTo'],
   };
 
   /**
@@ -63,6 +58,7 @@ export class ReadOnlyFieldsModalComponent implements OnInit {
    * @param data Injected dialog data
    * @param data.fields Raw list of query fields ( as exposed by the query builder service )
    * @param data.readOnlyFields Names of fields currently marked as read-only
+   * @param translate ngx-translate service, used to resolve localized field labels
    */
   constructor(
     public dialogRef: DialogRef<string[]>,
@@ -70,7 +66,8 @@ export class ReadOnlyFieldsModalComponent implements OnInit {
     public data: {
       fields: any[];
       readOnlyFields: string[];
-    }
+    },
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -86,7 +83,11 @@ export class ReadOnlyFieldsModalComponent implements OnInit {
       )
       .map((f) => ({
         name: f.name,
-        label: prettifyLabel(f.name),
+        // Layout fields carry a custom label, either as a plain string or
+        // localized per language; fall back to the prettified name without it
+        label:
+          resolveLocalizedString(f.label, this.translate.currentLang) ||
+          prettifyLabel(f.name),
       }));
     this.selectedFields = scalarFields.filter((f) =>
       readOnlyFields.includes(f.name)

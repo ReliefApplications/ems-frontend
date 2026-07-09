@@ -2056,6 +2056,7 @@
             "import": "Importer les enregistrements",
             "inline": "Modifier par ligne",
             "readOnlyFields": {
+              "alert": "Certains champs utilisent leur propre logique de lecture seule et peuvent donc ne pas être modifiables même s'ils ne sont pas marqués comme en lecture seule ici.",
               "available": "Champs disponibles",
               "readOnly": "Champs en lecture seule",
               "title": "Champs en lecture seule",

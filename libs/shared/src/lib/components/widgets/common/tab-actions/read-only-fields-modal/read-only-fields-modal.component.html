@@ -10,6 +10,12 @@
   </ng-container>
   <!-- Content -->
   <ng-container ngProjectAs="content">
+    <ui-alert class="block mb-4">
+      {{
+        'components.widget.settings.grid.actions.readOnlyFields.alert'
+          | translate
+      }}
+    </ui-alert>
     <div class="flex flex-row flex-nowrap gap-4">
       <div class="flex-1 min-w-0 flex flex-col gap-1">
         <label class="font-medium">

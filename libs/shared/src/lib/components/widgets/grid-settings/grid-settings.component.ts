@@ -22,6 +22,7 @@ import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
+import { Layout } from '../../../models/layout.model';
 import {
   Resource,
   ResourceQueryResponse,
@@ -115,6 +116,15 @@ export class GridSettingsComponent
   public selectedTab = 0;
   /** Available distribution lists */
   public distributionLists: any[] = [];
+
+  /** Layouts currently selected in the widget */
+  get selectedLayouts(): Layout[] {
+    const layoutIds: string[] =
+      this.widgetFormGroup?.get('layouts')?.value || [];
+    return (this.resource?.layouts?.edges || [])
+      .map((edge) => edge.node)
+      .filter((layout) => layoutIds.includes(layout.id as string));
+  }
   /** Available email templates */
   public emailTemplates: any[] = [];
 
