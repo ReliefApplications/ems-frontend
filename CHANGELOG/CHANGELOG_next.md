@@ -1,16 +1,14 @@
 # [2.23.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.25...v2.23.0-rc.26) (2026-07-08)
 
-
 ### Features
 
-* Can now use calculated fields in contextual dashboard title ([#2904](https://github.com/ReliefApplications/ems-frontend/issues/2904)) ([1a8a2fb](https://github.com/ReliefApplications/ems-frontend/commit/1a8a2fb5c8e124a4a78d387174f25b2ab83fecf3)), closes [AB#134728](https://github.com/AB/issues/134728)
+- Can now use calculated fields in contextual dashboard title ([#2904](https://github.com/ReliefApplications/ems-frontend/issues/2904)) ([1a8a2fb](https://github.com/ReliefApplications/ems-frontend/commit/1a8a2fb5c8e124a4a78d387174f25b2ab83fecf3)), closes [AB#134728](https://github.com/AB/issues/134728)
 
 # [2.23.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.24...v2.23.0-rc.25) (2026-07-08)
 
-
 ### Bug Fixes
 
-* summary card infinite scrolling could block when using resource layout ([19c46e9](https://github.com/ReliefApplications/ems-frontend/commit/19c46e973b63a331354defca124465ceee6fb186))
+- summary card infinite scrolling could block when using resource layout ([19c46e9](https://github.com/ReliefApplications/ems-frontend/commit/19c46e973b63a331354defca124465ceee6fb186))
 
 # [2.23.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.23...v2.23.0-rc.24) (2026-07-08)
 
