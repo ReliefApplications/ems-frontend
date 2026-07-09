@@ -147,14 +147,18 @@ export class RelatedValueBuilderModalComponent implements OnInit, OnDestroy {
     return this.form.value.aggregation === 'relatedValue';
   }
 
-  /** @returns Fields of the related resource usable as value field */
+  /** @returns Fields of the related resource usable as value field, sorted by name */
   get valueFieldOptions(): string[] {
-    return (this.selected?.fields || []).map((x: any) => x.name);
+    return (this.selected?.fields || [])
+      .map((x: any) => x.name)
+      .sort((a: string, b: string) => a.localeCompare(b));
   }
 
-  /** @returns Fields usable to sort the related records */
+  /** @returns Fields usable to sort the related records, sorted by name */
   get sortFieldOptions(): string[] {
-    return [...this.valueFieldOptions, ...INFO_SORT_FIELDS];
+    return [...this.valueFieldOptions, ...INFO_SORT_FIELDS].sort((a, b) =>
+      a.localeCompare(b)
+    );
   }
 
   /**

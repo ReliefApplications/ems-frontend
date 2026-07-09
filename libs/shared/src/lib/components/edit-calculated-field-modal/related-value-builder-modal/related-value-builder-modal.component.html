@@ -52,7 +52,7 @@
         <label>{{
           'components.calculatedFields.relatedBuilder.valueField' | translate
         }}</label>
-        <ui-select-menu formControlName="valueField">
+        <ui-select-menu formControlName="valueField" [filterable]="true">
           <ui-select-option
             *ngFor="let field of valueFieldOptions"
             [value]="field"
@@ -67,7 +67,7 @@
           <label>{{
             'components.calculatedFields.relatedBuilder.sortField' | translate
           }}</label>
-          <ui-select-menu formControlName="sortField">
+          <ui-select-menu formControlName="sortField" [filterable]="true">
             <ui-select-option
               *ngFor="let field of sortFieldOptions"
               [value]="field"
