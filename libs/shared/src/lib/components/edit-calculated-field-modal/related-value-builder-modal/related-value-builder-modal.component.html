@@ -1,0 +1,144 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.calculatedFields.relatedBuilder.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <!-- Loading reverse links -->
+    <ui-spinner *ngIf="loading" class="flex justify-center p-8"></ui-spinner>
+    <!-- No reverse link points at this resource -->
+    <p *ngIf="!loading && relatedFields.length === 0" class="text-gray-500">
+      {{ 'components.calculatedFields.relatedBuilder.empty' | translate }}
+    </p>
+    <form
+      *ngIf="!loading && relatedFields.length > 0"
+      [formGroup]="form"
+      class="flex flex-col"
+    >
+      <!-- Reverse link -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.calculatedFields.relatedBuilder.relatedField' | translate
+        }}</label>
+        <ui-select-menu formControlName="relatedName">
+          <ui-select-option
+            *ngFor="let related of relatedFields"
+            [value]="related.relatedName"
+          >
+            {{ related.relatedName }} ({{ related.resourceName }})
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Aggregation -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.calculatedFields.relatedBuilder.aggregation' | translate
+        }}</label>
+        <ui-select-menu formControlName="aggregation">
+          <ui-select-option
+            *ngFor="let aggregation of aggregations"
+            [value]="aggregation"
+          >
+            {{
+              'components.calculatedFields.relatedBuilder.aggregations.' +
+                aggregation | translate
+            }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Value field -->
+      <div uiFormFieldDirective *ngIf="needsValueField">
+        <label>{{
+          'components.calculatedFields.relatedBuilder.valueField' | translate
+        }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let field of valueFieldOptions"
+            [value]="field"
+          >
+            {{ field }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Sort field & order -->
+      <div class="flex gap-2" *ngIf="needsSort">
+        <div uiFormFieldDirective class="grow">
+          <label>{{
+            'components.calculatedFields.relatedBuilder.sortField' | translate
+          }}</label>
+          <ui-select-menu formControlName="sortField">
+            <ui-select-option
+              *ngFor="let field of sortFieldOptions"
+              [value]="field"
+            >
+              {{ field }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="grow">
+          <label>{{
+            'components.calculatedFields.relatedBuilder.sortOrder' | translate
+          }}</label>
+          <ui-select-menu formControlName="sortOrder">
+            <ui-select-option value="desc">
+              {{
+                'components.calculatedFields.relatedBuilder.descending'
+                  | translate
+              }}
+            </ui-select-option>
+            <ui-select-option value="asc">
+              {{
+                'components.calculatedFields.relatedBuilder.ascending'
+                  | translate
+              }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+      <!-- Filter on the related records -->
+      <ng-container *ngIf="selected">
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{
+          'components.calculatedFields.relatedBuilder.filter' | translate
+        }}</label>
+        <ui-spinner
+          *ngIf="filterLoading"
+          class="flex justify-center p-4"
+        ></ui-spinner>
+        <shared-filter
+          *ngIf="!filterLoading"
+          [form]="filterGroup"
+          [fields]="filterFields"
+        ></shared-filter>
+        <p *ngIf="hasQuoteIssue" class="text-red-500 text-sm mt-1">
+          {{
+            'components.calculatedFields.relatedBuilder.quoteError' | translate
+          }}
+        </p>
+      </ng-container>
+      <!-- Expression preview -->
+      <ng-container *ngIf="expression">
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">{{
+          'components.calculatedFields.relatedBuilder.preview' | translate
+        }}</label>
+        <code
+          class="block bg-gray-100 rounded p-2 text-sm break-all select-all"
+          >{{ expression }}</code
+        >
+      </ng-container>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      [disabled]="!expression"
+    >
+      {{ 'components.calculatedFields.relatedBuilder.insert' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

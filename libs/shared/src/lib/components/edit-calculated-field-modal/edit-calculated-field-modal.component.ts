@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
@@ -27,6 +27,8 @@ interface DialogData {
   /** TODO: Add type to fields */
   calculatedField?: any;
   resourceFields: any[];
+  /** Id of the resource, enables the related-record value builder */
+  resourceId?: string;
 }
 
 /**
@@ -76,6 +78,10 @@ export class EditCalculatedFieldModalComponent implements OnInit {
 
   /** tinymce editor */
   public editor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+
+  /** Expression editor control, used to insert built expressions at the cursor */
+  @ViewChild(EditorControlComponent)
+  private editorControl?: EditorControlComponent;
 
   /**
    * Modal to edit Calculated field.
@@ -134,6 +140,31 @@ export class EditCalculatedFieldModalComponent implements OnInit {
     this.dialog.open(CalculatedFieldReferenceModalComponent, {
       width: '720px',
       autoFocus: false,
+    });
+  }
+
+  /**
+   * Opens the related-record value builder, and inserts the built
+   * {{calc.related*(...)}} expression at the editor cursor on close.
+   */
+  async openRelatedValueBuilder(): Promise<void> {
+    const { RelatedValueBuilderModalComponent } = await import(
+      './related-value-builder-modal/related-value-builder-modal.component'
+    );
+    const dialogRef = this.dialog.open<string | undefined>(
+      RelatedValueBuilderModalComponent,
+      {
+        width: '720px',
+        autoFocus: false,
+        data: { resourceId: this.data.resourceId },
+      }
+    );
+    dialogRef.closed.subscribe((expression) => {
+      if (expression && this.editorControl) {
+        this.editorControl.editor.editor.insertContent(expression);
+        // Sync the expression form control with the editor content
+        this.editorControl.onEditorContentChange();
+      }
     });
   }
 }

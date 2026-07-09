@@ -861,6 +861,32 @@
         "placeholdersHint": "******",
         "searchPlaceholder": "******",
         "title": "******"
+      },
+      "relatedBuilder": {
+        "aggregation": "******",
+        "aggregations": {
+          "relatedAvg": "******",
+          "relatedCount": "******",
+          "relatedExists": "******",
+          "relatedMax": "******",
+          "relatedMin": "******",
+          "relatedSum": "******",
+          "relatedValue": "******"
+        },
+        "ascending": "******",
+        "descending": "******",
+        "empty": "******",
+        "filter": "******",
+        "insert": "******",
+        "open": "******",
+        "preview": "******",
+        "quoteError": "******",
+        "relatedField": "******",
+        "sortField": "******",
+        "sortOrder": "******",
+        "title": "******",
+        "tooltip": "******",
+        "valueField": "******"
       }
     },
     "channel": {

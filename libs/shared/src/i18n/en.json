@@ -861,6 +861,32 @@
         "placeholdersHint": "Use these placeholders inside an expression to reference record data, the current user or the result of another calculation.",
         "searchPlaceholder": "Filter by name or description...",
         "title": "Calculated field reference"
+      },
+      "relatedBuilder": {
+        "aggregation": "Aggregation",
+        "aggregations": {
+          "relatedAvg": "Average of a field",
+          "relatedCount": "Count of related records",
+          "relatedExists": "At least one related record exists",
+          "relatedMax": "Largest value of a field",
+          "relatedMin": "Smallest value of a field",
+          "relatedSum": "Sum of a field",
+          "relatedValue": "Single value (latest, earliest...)"
+        },
+        "ascending": "Ascending (earliest / smallest first)",
+        "descending": "Descending (latest / largest first)",
+        "empty": "No other resource points at this resource with a related name. Add a resource question with a related name on another resource first.",
+        "filter": "Only include related records matching (optional)",
+        "insert": "Insert in expression",
+        "open": "Insert a related record value",
+        "preview": "Expression preview",
+        "quoteError": "Filter values cannot contain single quotes (').",
+        "relatedField": "Related records",
+        "sortField": "Pick the record with the",
+        "sortOrder": "Sort order",
+        "title": "Related record value",
+        "tooltip": "Build a value aggregated from records of another resource linking to this one (latest value, count, sum...) and insert it in the expression.",
+        "valueField": "Value field"
       }
     },
     "channel": {
