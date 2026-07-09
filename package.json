@@ -142,6 +142,7 @@
     "@nrwl/workspace": "15.7.2",
     "@schematics/angular": "~15.1.1",
     "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^11.0.1",
     "@semantic-release/release-notes-generator": "^12.1.0",
