@@ -2052,6 +2052,17 @@
             },
             "import": "Import records",
             "inline": "Inline edition",
+            "readOnlyFields": {
+              "alert": "Some fields use their own read-only logic, so they may not be available for edition even if they are not marked as read-only here.",
+              "available": "Available fields",
+              "count": {
+                "few": "{{count}} fields were marked as read-only",
+                "one": "{{count}} field was marked as read-only"
+              },
+              "readOnly": "Read-only fields",
+              "title": "Read-only fields",
+              "tooltip": "Choose which fields should stay read-only during inline edition, even for users who could otherwise edit them"
+            },
             "remove": "Remove",
             "show": "Show history",
             "showDetails": "Show record details",

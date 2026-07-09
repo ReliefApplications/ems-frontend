@@ -42,4 +42,6 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  /** List of field names that should stay read-only during inline edition */
+  readOnlyFields?: string[];
 }

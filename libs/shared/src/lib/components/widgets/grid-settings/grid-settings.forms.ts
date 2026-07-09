@@ -264,6 +264,7 @@ export class GridSettingsFormFactory {
       convert: [get(configuration, 'actions.convert', true)],
       update: [get(configuration, 'actions.update', true)],
       inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+      readOnlyFields: [get(configuration, 'actions.readOnlyFields', [])],
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],
       import: [get(configuration, 'actions.import', false)],

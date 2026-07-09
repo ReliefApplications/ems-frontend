@@ -514,7 +514,14 @@ export class CoreGridComponent
                   fields,
                   this.metaFields,
                   defaultLayoutFields,
-                  ''
+                  '',
+                  {
+                    disabled: false,
+                    hidden: false,
+                    filter: true,
+                    readOnlyFields:
+                      this.settings?.actions?.readOnlyFields || [],
+                  }
                 );
                 // Scroll to left
                 if (this.grid) {
