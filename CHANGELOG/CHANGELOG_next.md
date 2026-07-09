@@ -1,3 +1,10 @@
+# [2.23.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.26...v2.23.0-rc.27) (2026-07-09)
+
+
+### Bug Fixes
+
+* Time could break validation during inline edition ([4ec8298](https://github.com/ReliefApplications/ems-frontend/commit/4ec8298561f8ad3aaac4e9b3ab4181d11db91463))
+
 # [2.23.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.25...v2.23.0-rc.26) (2026-07-08)
 
 
