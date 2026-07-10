@@ -246,7 +246,10 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      // `id` is the Mongo ObjectId — not a useful regex search target.
+      // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+      // so it must remain searchable.
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [
@@ -257,7 +260,20 @@ export class CoreGridComponent
             operator: 'contains',
             value: searchFilters(
               this.search,
-              this.fields.map((field) => field.meta),
+              this.fields
+                // Search visible columns only; composite columns (records
+                // lists, reference data) and related record ids are out of
+                // the search scope
+                .filter(
+                  (field) =>
+                    !field.hidden &&
+                    !field.subFields?.length &&
+                    !field.name.endsWith('.id')
+                )
+                // The grid field name (dotted for related-resource subfields,
+                // e.g. `emergency.name`) must win over the bare meta name, so
+                // that the backend can resolve the record lookup
+                .map((field) => ({ ...field.meta, name: field.name })),
               skippedFields
             ),
           },

@@ -345,13 +345,13 @@ export class GridService {
     /**
      * Fetches choices, cache them and set meta.
      *
-     * @param fieldName Field name to update meta.
-     * @param meta Meta to expand. Corresponding to fieldName.
+     * @param path Path of the field in metaFields (dotted for nested fields).
+     * @param meta Meta to expand. Corresponding to path.
      * @param key cache key
      * @returns A promise to execute everything.
      */
     const fetchChoicesAndSetMeta = async (
-      fieldName: string,
+      path: string,
       meta: IMeta,
       key: string
     ): Promise<void> => {
@@ -378,7 +378,7 @@ export class GridService {
 
         const choices = this.extractChoices(value, meta);
         setWithExpiry(key, choices);
-        metaFields[fieldName] = {
+        metaFields[path] = {
           ...meta,
           choices,
         };
@@ -389,7 +389,7 @@ export class GridService {
         );
         const choices = this.extractChoices(value, meta);
         setWithExpiry(key, choices);
-        metaFields[fieldName] = {
+        metaFields[path] = {
           ...meta,
           choices,
         };
@@ -429,7 +429,7 @@ export class GridService {
                 getWithExpiry(key).then(
                   (choices: { value: string; text: string }[] | null) => {
                     if (choices === null) {
-                      return fetchChoicesAndSetMeta(fieldName, meta, key);
+                      return fetchChoicesAndSetMeta(path, meta, key);
                     } else {
                       metaFields[path] = {
                         ...meta,
@@ -441,9 +441,8 @@ export class GridService {
                 )
               );
             } else {
-              promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
+              promises.push(fetchChoicesAndSetMeta(path, meta, key));
             }
-            promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
           } else if (meta.choices) {
             metaFields[path] = {
               ...meta,

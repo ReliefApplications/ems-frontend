@@ -44,6 +44,7 @@ export default {
     '<rootDir>/src/lib/models/*.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
+    '<rootDir>/src/lib/utils/filter/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
     '<rootDir>/src/lib/survey/components/utils/*.spec.ts',
     '<rootDir>/src/lib/survey/widgets/*.spec.ts',
