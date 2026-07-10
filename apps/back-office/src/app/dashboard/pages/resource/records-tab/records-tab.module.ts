@@ -5,8 +5,11 @@ import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SkeletonTableModule, EmptyModule } from '@oort-front/shared';
-import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
+import {
+  SkeletonTableModule,
+  EmptyModule,
+  UploadMenuModule,
+} from '@oort-front/shared';
 import {
   TooltipModule,
   MenuModule,

@@ -15,6 +15,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { GridModule as KendoGridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { StripHtmlPipe } from '../../../../pipes/strip-html/strip-html.pipe';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 import { DateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 import { ExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { ExportModule } from '../export/export.module';
@@ -25,6 +26,8 @@ import { GridRowActionsModule } from '../row-actions/row-actions.module';
 import { GridToolbarModule } from '../toolbar/toolbar.module';
 import { GridComponent } from './grid.component';
 import { ActionButtonComponent } from '../../../action-button/action-button.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { UploadMenuModule } from '../../../upload-menu/upload-menu.module';
 
 /** Module for the grid component */
 @NgModule({
@@ -62,7 +65,10 @@ import { ActionButtonComponent } from '../../../action-button/action-button.comp
     uiButtonModule,
     // === Pipes ==
     StripHtmlPipe,
+    LocalizePipe,
     ActionButtonComponent,
+    OverlayModule,
+    UploadMenuModule,
   ],
   exports: [GridComponent],
 })

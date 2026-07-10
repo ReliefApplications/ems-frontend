@@ -53,7 +53,7 @@
           <!-- Dashboard export -->
           <shared-dashboard-export-button
             *ngIf="showName || actionButtons.length > 0"
-            [title]="dashboard.name"
+            [title]="dashboard.nameTranslations || dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
 

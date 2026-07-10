@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
@@ -7,9 +7,7 @@ import {
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../../../../../models/layer.model';
-import { Observable, takeUntil } from 'rxjs';
-import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
-import { EditorService } from '../../../../../services/editor/editor.service';
+import { Observable } from 'rxjs';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { DomPortal } from '@angular/cdk/portal';
 
@@ -21,47 +19,17 @@ import { DomPortal } from '@angular/cdk/portal';
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class LayerPopupComponent extends UnsubscribeComponent {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Map dom portal */
   @Input() mapPortal?: DomPortal;
   /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
-  /** Keys for editor */
-  public keys: { text: string; value: string }[] = [];
-  /** Editor configuration */
-  public editorConfig = INLINE_EDITOR_CONFIG;
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
     return this.formGroup.get('popupElements') as FormArray;
-  }
-
-  /**
-   * Creates an instance of LayerPopupComponent.
-   *
-   * @param editorService Shared tinymce editor service.
-   */
-  constructor(private editorService: EditorService) {
-    super();
-  }
-
-  ngOnInit(): void {
-    // Listen to fields changes
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.keys = value.map((field) => ({
-        text: `{{${field.name}}}`,
-        value: `{{${field.name}}}`,
-      }));
-      this.editorService.addCalcAndKeysAutoCompleter(
-        this.editorConfig,
-        this.keys
-      );
-    });
   }
 
   /**

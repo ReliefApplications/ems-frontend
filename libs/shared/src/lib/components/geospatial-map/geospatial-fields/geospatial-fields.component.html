@@ -1,21 +1,78 @@
 <div class="flex flex-col w-full">
-  <div class="flex flex-col flex-1 gap-2" [formGroup]="geoForm">
+  <div class="flex flex-col flex-1 gap-4" [formGroup]="geoForm">
     <ng-container *ngFor="let field of fields">
-      <ng-container *ngIf="field.value !== 'coordinates'">
-        <kendo-label [text]="field.label">
-          <kendo-textbox [formControlName]="field.value"> </kendo-textbox>
-        </kendo-label>
-      </ng-container>
-      <ng-container *ngIf="field.value === 'coordinates'">
-        <div class="flex gap-2" formGroupName="coordinates">
-          <kendo-label text="Latitude">
-            <kendo-numerictextbox formControlName="lat"> </kendo-numerictextbox>
-          </kendo-label>
-          <kendo-label text="Longitude">
-            <kendo-numerictextbox formControlName="lng"> </kendo-numerictextbox>
-          </kendo-label>
+      <!-- Text fields -->
+      <div
+        *ngIf="field.value !== 'coordinates'"
+        class="sd-question sd-row__question"
+      >
+        <div
+          class="sd-question__header sd-element__header sd-question__header--location-top"
+        >
+          <span
+            class="sd-element__title sd-question__title"
+            [class.sd-element__title--disabled]="geoForm.disabled"
+          >
+            <span class="sv-string-viewer">{{ field | geoFieldLabel }}</span>
+          </span>
         </div>
-      </ng-container>
+        <div class="sd-question__content">
+          <input
+            type="text"
+            class="sd-input sd-text"
+            [class.sd-input--disabled]="geoForm.disabled"
+            [formControlName]="field.value"
+          />
+        </div>
+      </div>
+
+      <!-- Coordinates -->
+      <div
+        *ngIf="field.value === 'coordinates'"
+        class="flex gap-4"
+        formGroupName="coordinates"
+      >
+        <div class="sd-question sd-row__question flex-1">
+          <div
+            class="sd-question__header sd-element__header sd-question__header--location-top"
+          >
+            <span
+              class="sd-element__title sd-question__title"
+              [class.sd-element__title--disabled]="geoForm.disabled"
+            >
+              <span class="sv-string-viewer">Latitude</span>
+            </span>
+          </div>
+          <div class="sd-question__content">
+            <input
+              type="number"
+              class="sd-input sd-text"
+              [class.sd-input--disabled]="geoForm.disabled"
+              formControlName="lat"
+            />
+          </div>
+        </div>
+        <div class="sd-question sd-row__question flex-1">
+          <div
+            class="sd-question__header sd-element__header sd-question__header--location-top"
+          >
+            <span
+              class="sd-element__title sd-question__title"
+              [class.sd-element__title--disabled]="geoForm.disabled"
+            >
+              <span class="sv-string-viewer">Longitude</span>
+            </span>
+          </div>
+          <div class="sd-question__content">
+            <input
+              type="number"
+              class="sd-input sd-text"
+              [class.sd-input--disabled]="geoForm.disabled"
+              formControlName="lng"
+            />
+          </div>
+        </div>
+      </div>
     </ng-container>
   </div>
 </div>

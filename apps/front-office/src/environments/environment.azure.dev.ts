@@ -27,7 +27,7 @@ export const environment: Environment = {
   subscriptionApiUrl: 'wss://hems-dev.who.int/api',
   frontOfficeUri: 'https://hems-dev.who.int/apps/',
   backOfficeUri: 'https://hems-dev.who.int/backoffice/',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'uk'],
   authConfig,
   theme,
   sentry: {

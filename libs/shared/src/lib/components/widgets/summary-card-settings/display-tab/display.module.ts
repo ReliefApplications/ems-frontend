@@ -10,6 +10,7 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DisplayTabComponent } from './display-tab.component';
+import { LocalizedInputComponent } from '../../../controls/public-api';
 
 /** Display tab Module for summary card edition */
 @NgModule({
@@ -25,6 +26,7 @@ import { DisplayTabComponent } from './display-tab.component';
     ToggleModule,
     IconModule,
     DividerModule,
+    LocalizedInputComponent,
   ],
   exports: [DisplayTabComponent],
 })

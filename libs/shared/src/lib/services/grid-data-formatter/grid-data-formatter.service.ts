@@ -1,15 +1,15 @@
 import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { get, groupBy, isNil, map } from 'lodash';
 import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
-  getFileIcon,
   getPropertyValue,
   getStyle,
   getUrl,
-  removeFileExtension,
 } from './grid-data-formatter.helper';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
 /**
  * Grid data formatter service
@@ -62,6 +62,8 @@ export class GridDataFormatterService {
   };
   /** Shared date pipe */
   datePipe = inject(DatePipe);
+  /** Translate service, source of the active language. */
+  private translate = inject(TranslateService);
 
   /**
    * Grid data formatter service
@@ -275,7 +277,7 @@ export class GridDataFormatterService {
       }
       default: {
         finalText = this.htmlParserService.applyLayoutFormat(
-          getPropertyValue(rowData, field, parent),
+          getPropertyValue(rowData, field, parent, this.translate.currentLang),
           field
         );
       }

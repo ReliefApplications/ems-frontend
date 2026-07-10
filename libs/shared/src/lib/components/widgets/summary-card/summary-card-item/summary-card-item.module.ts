@@ -4,6 +4,7 @@ import { SummaryCardItemComponent } from './summary-card-item.component';
 import { SummaryCardItemContentModule } from '../summary-card-item-content/summary-card-item-content.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 
 /**
  * Single item of summary card.
@@ -15,6 +16,7 @@ import { ButtonModule } from '@oort-front/ui';
     SummaryCardItemContentModule,
     TranslateModule,
     ButtonModule,
+    LocalizePipe,
   ],
   exports: [SummaryCardItemComponent],
 })

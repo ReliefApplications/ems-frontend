@@ -17,7 +17,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { environment } from '../../../back-office/src/environments/environment'
+import { environment } from '../../../back-office/src/environments/environment';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -48,7 +48,7 @@ describe('AppComponent', () => {
           provide: 'environment',
           useValue: environment,
         },
-      ]
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -61,5 +61,4 @@ describe('AppComponent', () => {
   it(`should have as title 'back-office'`, () => {
     expect(component.title).toEqual('back-office');
   });
-  
 });

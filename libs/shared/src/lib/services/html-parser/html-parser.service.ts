@@ -13,7 +13,9 @@ import {
 } from './html-parser-helper';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
-import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 
 type Shape = 'circle' | 'square';
 
@@ -115,6 +117,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Translate service, source of the active language. */
+  private translate = inject(TranslateService);
   /** Function for replacing aggregation data in html */
   replaceAggregationData = replaceAggregationData;
 
@@ -882,13 +886,22 @@ export class HtmlParserService {
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {
+      const lang = this.translate.currentLang;
       // replaces value for labels, if associated option(s) exist(s)
       if (Array.isArray(value)) {
         value = value.map(
-          (x) => options.find((o: any) => o.value == x)?.text || x
+          (x) =>
+            resolveLocalizedString(
+              options.find((o: any) => o.value == x)?.text,
+              lang
+            ) || x
         );
       } else {
-        value = options.find((o: any) => o.value == value)?.text || value;
+        value =
+          resolveLocalizedString(
+            options.find((o: any) => o.value == value)?.text,
+            lang
+          ) || value;
       }
     }
 
@@ -975,26 +988,26 @@ export class HtmlParserService {
         if (isArray(value)) {
           for (let i = 0; value[i]; ) {
             const file = value[i];
-            const fileExt = file.name.split('.').pop();
-            const fileIcon =
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? ICON_EXTENSIONS[fileExt]
-                : 'k-i-file';
+            const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
-              fileExt && ICON_EXTENSIONS[fileExt]
-                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                : file.name,
+              removeFileExtension(file.name),
               field
             );
-            convertedValue += `<button type="file"
-              field="${field.name}"
-              index="${i++}"
-              style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
-              ${file.name}
+            convertedValue += `
+              <button
+                type="file"
+                class="k-button k-button-flat k-button-flat-base"
+                field="${field.name}"
+                index="${i++}"
+                style="padding: 4px 6px; cursor: pointer; ${style}"
+                title="${file.name}"
               >
-              <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
-              ${fileName}
-              </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
+                <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                ${fileName}
+              </button>
+            `
+              .replace(/\s+/g, ' ')
+              .trim(); // add elements to be able to identify file when clicking on button
           }
         }
         break;

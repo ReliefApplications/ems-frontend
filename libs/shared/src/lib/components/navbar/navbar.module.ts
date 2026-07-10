@@ -10,6 +10,7 @@ import {
   IconModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { LocalizePipe } from '../../pipes/localize/localize.pipe';
 
 /**
  * Left Sidenav Module
@@ -25,6 +26,7 @@ import {
     ButtonModule,
     IconModule,
     DividerModule,
+    LocalizePipe,
   ],
   exports: [NavbarComponent],
 })

@@ -23,8 +23,6 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_NOTIFICATIONS } from './graphql/queries';
-import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import { AppAbility } from '../../services/auth/auth.service';
 import {
   BreadcrumbsModule,
@@ -40,6 +38,7 @@ describe('LayoutComponent', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
   let controller: ApolloTestingController;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -48,7 +47,7 @@ describe('LayoutComponent', () => {
           provide: 'environment',
           useValue: {
             theme: {},
-            availableLanguages: [],
+            availableLanguages: ['en', 'fr', 'test'],
           },
         },
         OAuthService,
@@ -83,29 +82,22 @@ describe('LayoutComponent', () => {
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
+    translate = TestBed.inject(TranslateService);
+    translate.addLangs(['en', 'fr', 'test']);
+    translate.setDefaultLang('en');
   });
 
   beforeEach(() => {
+    localStorage.clear();
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    const op1 = controller.expectOne(GET_NOTIFICATIONS);
-
-    op1.flush({
-      data: {},
-    });
-
-    const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
-
-    op2.flush({
-      data: {},
-    });
   });
 
   afterEach(() => {
     controller.verify();
     fixture.destroy();
+    localStorage.clear();
   });
 
   it('should create', () => {

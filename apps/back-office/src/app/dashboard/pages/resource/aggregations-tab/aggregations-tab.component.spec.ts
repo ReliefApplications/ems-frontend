@@ -46,7 +46,7 @@ describe('AggregationsTabComponent', () => {
             updateSize: jest.fn(),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

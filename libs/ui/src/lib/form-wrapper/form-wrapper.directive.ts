@@ -71,6 +71,17 @@ export class FormWrapperDirective
   /** Get form control name component */
   @ContentChild(FormControlName) control!: FormControlName;
 
+  /**
+   * Localized input element, if any.
+   *
+   * Detected by tag name rather than `@ContentChild` because the component
+   * lives in the shared lib, which depends on this ui lib (importing it here
+   * would create a circular dependency). Like the date wrapper, it is a
+   * self-contained control: we skip the input/box treatment and only apply the
+   * label and status styling.
+   */
+  private localizedInputElement!: Element | null;
+
   /** Current input element */
   private currentInputElement!: HTMLInputElement;
   /** Current label element */
@@ -319,6 +330,9 @@ export class FormWrapperDirective
       this.elementRef.nativeElement.querySelector('input');
     this.currentLabelElement =
       this.elementRef.nativeElement.querySelector('label');
+    this.localizedInputElement = this.elementRef.nativeElement.querySelector(
+      'shared-localized-input'
+    );
 
     // Creating a wrapper to all that is not label and give it appropriate classes
     // depending of outline value
@@ -344,7 +358,11 @@ export class FormWrapperDirective
       this.renderer.addClass(this.beyondLabelContainer, 'bg-white');
     }
 
-    if (this.currentInputElement && !this.dateWrapperElement) {
+    if (
+      this.currentInputElement &&
+      !this.dateWrapperElement &&
+      !this.localizedInputElement
+    ) {
       // Add related classes to input element
       if (!this.outline) {
         for (const cl of this.inputClassesNoOutline) {
@@ -405,7 +423,7 @@ export class FormWrapperDirective
     this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    if (!this.dateWrapperElement) {
+    if (!this.dateWrapperElement && !this.localizedInputElement) {
       this.renderer.appendChild(
         this.elementRef.nativeElement,
         this.beyondLabelContainer

@@ -15,6 +15,7 @@ const flushAsyncTasks = async () => {
 jest.mock('./utils', () => ({
   buildAddButton: jest.fn(() => document.createElement('button')),
   buildSearchButton: jest.fn(() => document.createElement('button')),
+  canShowSearchButton: jest.fn(() => true),
   processNewCreatedRecords: jest.fn(),
   setUpActionsButtonWrapper: jest.fn(() => document.createElement('div')),
 }));

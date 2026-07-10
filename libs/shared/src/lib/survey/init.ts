@@ -3,6 +3,7 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
+import 'survey-core/survey.i18n';
 import { AuthService } from '../services/auth/auth.service';
 import { DomService } from '../services/dom/dom.service';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
@@ -38,6 +39,9 @@ import * as PopupWidthProperty from './global-properties/popup-width';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
+// Side-effect import: registers the custom property grid editor used to pick
+// the translation source question (translateField property).
+import './property-editors/translate-source-question.editor';
 import { registerOnRecordEditionTrigger } from './triggers/on-record-edition.trigger';
 
 /** Name of the custom components we add to the survey */

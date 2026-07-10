@@ -12,6 +12,10 @@ import {
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from '../../utils/survey-form-action-labels.util';
+import {
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+} from '../../utils/survey-confirm-record-update.util';
 import { Question } from '../types';
 
 type SurveyPropertyOwner = {
@@ -170,6 +174,30 @@ export const init = (environment: any): void => {
     default: '',
   });
 
+  // Require a confirmation modal before updating an existing record.
+  serializer.addProperty('survey', {
+    name: `${SURVEY_PROP_CONFIRM_RECORD_UPDATE}:boolean`,
+    type: 'boolean',
+    category: 'general',
+    visibleIndex: 50,
+    displayName: 'Confirm before updating a record',
+    description:
+      'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.',
+    default: true,
+  });
+  // Expression overriding the confirmation toggle (evaluated as a boolean).
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+    type: 'expression',
+    category: 'logic',
+    visibleIndex: 200,
+    displayName: 'Confirm before updating a record (expression)',
+    description:
+      'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.',
+    default: '',
+    isLocalizable: false,
+  });
+
   // Add custom label expressions for the form action buttons
   serializer.addProperty('survey', {
     name: SURVEY_PROP_SAVE_BUTTON_LABEL,
@@ -177,7 +205,9 @@ export const init = (environment: any): void => {
     category: 'navigation',
     visibleIndex: 100,
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
   });
   serializer.addProperty('survey', {
     name: `${ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY}:boolean`,
@@ -202,7 +232,9 @@ export const init = (environment: any): void => {
     description:
       'Only used when the form is opened in a modal. Falls back to the regular save label if empty.',
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
     visibleIf: shouldShowAdvancedNavigationLabelOverrides,
   });
 };

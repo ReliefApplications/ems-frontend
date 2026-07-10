@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GeoProperties } from '../geospatial-map.interface';
-import { LabelModule } from '@progress/kendo-angular-label';
-import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GeoFieldLabelPipe } from '../../../survey/components/utils/geo-field-label.pipe';
 
 /**
  * Geospatial fields component.
@@ -11,13 +10,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'shared-geospatial-fields',
   standalone: true,
-  imports: [
-    CommonModule,
-    LabelModule,
-    InputsModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, GeoFieldLabelPipe],
   templateUrl: './geospatial-fields.component.html',
   styleUrls: ['./geospatial-fields.component.scss'],
 })

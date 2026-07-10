@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FieldsElementComponent } from './fields-element/fields-element.component';
 import { TextElementComponent } from './text-element/text-element.component';
-import { EditorControlComponent } from '../../../../controls/editor-control/editor-control.component';
 import {
   ButtonModule,
   DividerModule,
@@ -17,6 +16,8 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import { LocalizedInputComponent } from '../../../../controls/public-api';
+import { LocalizePipe } from '../../../../../pipes/localize/localize.pipe';
 
 /**
  * Map layer properties popup module.
@@ -37,7 +38,8 @@ import { PortalModule } from '@angular/cdk/portal';
     IconModule,
     FieldsElementComponent,
     TextElementComponent,
-    EditorControlComponent,
+    LocalizedInputComponent,
+    LocalizePipe,
     TooltipModule,
     PortalModule,
   ],

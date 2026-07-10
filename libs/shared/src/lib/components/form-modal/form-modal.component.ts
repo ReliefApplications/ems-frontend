@@ -42,12 +42,13 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
+import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Interface of Dialog data.
@@ -79,7 +80,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     IconModule,
     TabsModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
@@ -143,6 +143,7 @@ export class FormModalComponent
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -155,9 +156,19 @@ export class FormModalComponent
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
+  }
+
+  /**
+   * Whether the modal edits an existing record (update) rather than creating one.
+   *
+   * @returns True when a record id was provided to the modal
+   */
+  private get isUpdate(): boolean {
+    return !!this.data.recordId;
   }
 
   /**
@@ -170,21 +181,10 @@ export class FormModalComponent
       ? this.data.recordId.length
       : 1;
     let confirmMessage: ConfirmDialogData = {
-      title: this.translate.instant('common.updateObject', {
-        name:
-          rowsSelected > 1
-            ? this.translate.instant('common.row.few')
-            : this.translate.instant('common.row.one'),
-      }),
-      content: this.translate.instant(
-        'components.form.updateRow.confirmationMessage',
-        {
-          quantity: rowsSelected,
-          rowText:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }
+      title: this.translate.instant(
+        rowsSelected > 1
+          ? 'components.form.update.confirmTitle.few'
+          : 'components.form.update.confirmTitle.one'
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
@@ -192,21 +192,9 @@ export class FormModalComponent
     if (this.data.actionButtonCtx) {
       confirmMessage = {
         title: this.translate.instant(
-          this.data.recordId ? 'common.updateObject' : 'common.uploadObject',
-          {
-            name:
-              this.translate.instant('common.record.one') +
-              ' ' +
-              this.form?.name,
-          }
-        ),
-        content: this.translate.instant(
-          'components.form.update.confirmMessage',
-          {
-            action: this.translate
-              .instant(this.data.recordId ? 'common.update' : 'common.creation')
-              .toLowerCase(),
-          }
+          this.isUpdate
+            ? 'components.form.update.confirmActionTitle.update'
+            : 'components.form.update.confirmActionTitle.create'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
@@ -247,7 +235,7 @@ export class FormModalComponent
         })
       );
     }
-    if (!this.data.recordId || this.data.template) {
+    if (!this.isUpdate || this.data.template) {
       promises.push(
         firstValueFrom(
           this.apollo.query<FormQueryResponse>({
@@ -301,7 +289,8 @@ export class FormModalComponent
       this.record
     );
 
-    this.updateButtonLabels();
+    // Auto-translation is wired centrally in FormBuilderService.createSurvey;
+    // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
@@ -309,56 +298,62 @@ export class FormModalComponent
     });
     this.survey.onComplete.add(this.onComplete);
 
-    if (this.prefillMergedData) {
-      // Prefill with merged data from records
-      const cleanedData = omitBy(this.prefillMergedData, isNil);
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    } else if (this.prefillClonedData) {
-      // Prefill with cloned data
-      const resourcesFields = this.survey
-        .getAllQuestions()
-        .filter((q) => q.getType() === 'resources');
-      const resourceNames = new Set(resourcesFields.map((f) => f.name));
-      // Omit nil values and resources questions from prefill data
-      const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
-        return isNil(value) || resourceNames.has(key);
-      });
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    }
+    this.updateButtonLabels();
 
-    // After the survey is created, we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
-    if (this.data.recordId && this.record) {
-      if (this.isMultiEdition) {
-        this.survey.data = null;
-      } else {
-        const cleanedData = omitBy(this.record.data, isNil);
+    // Populate the survey programmatically with translation suppressed so that
+    // prefilling / loading an existing record does not trigger translations.
+    this.autoTranslateService.suppressAutoTranslationWhile(this.survey, () => {
+      if (this.prefillMergedData) {
+        // Prefill with merged data from records
+        const cleanedData = omitBy(this.prefillMergedData, isNil);
+        Object.keys(cleanedData).forEach((question) => {
+          this.survey.setValue(question, cleanedData[question]);
+        });
+      } else if (this.prefillClonedData) {
+        // Prefill with cloned data
+        const resourcesFields = this.survey
+          .getAllQuestions()
+          .filter((q) => q.getType() === 'resources');
+        const resourceNames = new Set(resourcesFields.map((f) => f.name));
+        // Omit nil values and resources questions from prefill data
+        const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
+          return isNil(value) || resourceNames.has(key);
+        });
         Object.keys(cleanedData).forEach((question) => {
           this.survey.setValue(question, cleanedData[question]);
         });
       }
-      addCustomFunctions(this.authService);
-      this.survey.showCompletedPage = false;
-      this.form?.fields?.forEach((field) => {
-        if (field.readOnly && this.survey.getQuestionByName(field.name))
-          this.survey.getQuestionByName(field.name).readOnly = true;
-      });
 
-      // Fire once now that the existing record's data is in the survey
-      fireOnRecordEditionTriggers(this.survey);
-    }
+      // After the survey is created, we add common callback to survey events
+      this.formBuilderService.addEventsCallBacksToSurvey(
+        this.survey,
+        this.selectedPageIndex,
+        this.temporaryFilesStorage
+      );
 
-    // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
-    this.updateButtonLabels();
+      if (this.isUpdate && this.record) {
+        if (this.isMultiEdition) {
+          this.survey.data = null;
+        } else {
+          const cleanedData = omitBy(this.record.data, isNil);
+          Object.keys(cleanedData).forEach((question) => {
+            this.survey.setValue(question, cleanedData[question]);
+          });
+        }
+        addCustomFunctions(this.authService);
+        this.survey.showCompletedPage = false;
+        this.form?.fields?.forEach((field) => {
+          if (field.readOnly && this.survey.getQuestionByName(field.name))
+            this.survey.getQuestionByName(field.name).readOnly = true;
+        });
+
+        // Fire once now that the existing record's data is in the survey
+        fireOnRecordEditionTriggers(this.survey);
+      }
+
+      // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
+      this.updateButtonLabels();
+    });
 
     this.loading = false;
   }
@@ -411,6 +406,28 @@ export class FormModalComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Creates the record, or update it if provided.
    *
    * @param survey Survey instance.
@@ -418,10 +435,25 @@ export class FormModalComponent
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
 
+    // If survey has errors, cancel edition
+    if (this.survey?.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.saving = false;
+      return;
+    }
+
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
+    // Creation only relies on the caller's askForConfirm flag, whereas an update
+    // additionally requires the form-level "confirm before updating" setting.
+    const askForConfirm = this.isUpdate
+      ? this.data.askForConfirm && shouldConfirmRecordUpdate(this.survey)
+      : this.data.askForConfirm;
     // Displays confirmation modal.
-    if (this.data.askForConfirm) {
+    if (askForConfirm) {
       const confirmMessage = this.getConfirmMessageByContext();
       const dialogRef = this.confirmService.openConfirmModal(confirmMessage);
       dialogRef.closed
@@ -505,6 +537,7 @@ export class FormModalComponent
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
           },
         });
     }
@@ -533,6 +566,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -569,6 +603,7 @@ export class FormModalComponent
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
         },
       });
   }
@@ -598,8 +633,34 @@ export class FormModalComponent
         }),
         { error: true }
       );
+      this.saving = false;
     } else {
       if (data) {
+        if (
+          responseType === 'editRecord' &&
+          data.editRecord?.validationErrors?.length
+        ) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.saving = false;
+          return;
+        }
+        if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
+          const recordWithErrors = data.editRecords.find(
+            (r: any) => r.validationErrors?.length
+          );
+          if (recordWithErrors) {
+            this.showLocalErrors(
+              recordWithErrors.validationErrors,
+              recordWithErrors.incrementalId
+            );
+            this.saving = false;
+            return;
+          }
+        }
+
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,
@@ -796,6 +857,8 @@ export class FormModalComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
   }
 }

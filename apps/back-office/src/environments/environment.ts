@@ -24,12 +24,15 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
+  // Disabled for local serving: a SW under the live-reload dev server causes an
+  // infinite reload loop. Serve a static build without live-reload to test PWA.
+  serviceWorker: false,
   href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  availableLanguages: ['en', 'fr', 'test'],
+  availableLanguages: ['en', 'fr', 'test', 'uk'],
   authConfig,
   theme,
   availableWidgets: [

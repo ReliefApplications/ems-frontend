@@ -4,6 +4,7 @@ import { EditorComponent } from './editor.component';
 import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { HtmlWidgetContentModule } from '../common/html-widget-content/html-widget-content.module';
+import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
 
 /**
  * Module for the sharedEditor component
@@ -16,6 +17,7 @@ import { HtmlWidgetContentModule } from '../common/html-widget-content/html-widg
     TranslateModule,
     HtmlWidgetContentModule,
     SpinnerModule,
+    LocalizePipe,
   ],
   exports: [EditorComponent],
 })

@@ -30,6 +30,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * This component is used to display forms
@@ -100,6 +101,7 @@ export class FormComponent
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     public dialog: Dialog,
@@ -109,7 +111,8 @@ export class FormComponent
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
   }
@@ -136,6 +139,8 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
+    // Auto-translation is wired centrally in FormBuilderService.createSurvey;
+    // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
@@ -181,15 +186,19 @@ export class FormComponent
       this.temporaryFilesStorage
     );
 
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-      fireOnRecordEditionTriggers(this.survey);
-    } else if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
-      this.modifiedAt = this.record.modifiedAt || null;
-      fireOnRecordEditionTriggers(this.survey);
-    }
+    // Load existing data with translation suppressed: only genuine user input
+    // should trigger a translation.
+    this.autoTranslateService.suppressAutoTranslationWhile(this.survey, () => {
+      if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+        this.survey.data = this.form.uniqueRecord.data;
+        this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+        fireOnRecordEditionTriggers(this.survey);
+      } else if (this.record && this.record.data) {
+        this.survey.data = this.record.data;
+        this.modifiedAt = this.record.modifiedAt || null;
+        fireOnRecordEditionTriggers(this.survey);
+      }
+    });
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -261,6 +270,28 @@ export class FormComponent
   }
 
   /**
+   * Show errors using ErrorsModalComponent
+   *
+   * @param errors list of validation errors
+   * @param incrementalId record incremental id
+   */
+  private async showLocalErrors(
+    errors: any[],
+    incrementalId?: string
+  ): Promise<void> {
+    const { ErrorsModalComponent } = await import(
+      '../ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, {
+      data: {
+        incrementalId: incrementalId || this.record?.incrementalId || '',
+        errors: errors,
+      },
+      autoFocus: false,
+    });
+  }
+
+  /**
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
@@ -282,6 +313,16 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public async onComplete() {
+    // If survey has errors, cancel
+    if (this.survey.hasErrors()) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed'),
+        { error: true }
+      );
+      this.survey.clear(false, true);
+      return;
+    }
+
     // Set values from expressions setValueOnComplete
     this.survey.getAllQuestions().forEach((question) => {
       const expression = question.getPropertyValue('setValueOnComplete');
@@ -350,6 +391,16 @@ export class FormComponent
         this.surveyActive = true;
         this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
+        if (data.editRecord?.validationErrors?.length) {
+          this.showLocalErrors(
+            data.editRecord.validationErrors,
+            data.editRecord.incrementalId
+          );
+          this.save.emit({ completed: false });
+          this.survey.clear(false, true);
+          this.surveyActive = true;
+          return;
+        }
         if (this.lastDraftRecord) {
           const callback = () => {
             this.lastDraftRecord = undefined;
@@ -488,6 +539,8 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
   }
 }

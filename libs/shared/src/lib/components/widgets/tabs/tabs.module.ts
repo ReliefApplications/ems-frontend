@@ -9,6 +9,7 @@ import {
 import { TabModule } from './tab/tab.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { PortalModule } from '@angular/cdk/portal';
+import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
 
 /**
  * Tabs widget module.
@@ -23,6 +24,7 @@ import { PortalModule } from '@angular/cdk/portal';
     ButtonModule,
     IconModule,
     PortalModule,
+    LocalizePipe,
   ],
   exports: [TabsComponent],
 })

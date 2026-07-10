@@ -25,6 +25,7 @@ import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { WidgetService } from '../../../services/widget/widget.service';
 import { authType } from '../../../models/api-configuration.model';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Default file name for chart exports
@@ -85,6 +86,12 @@ export class ChartComponent
   public loading = true;
   /** Chart options */
   public options: any = null;
+  /**
+   * Chart title with its (possibly localized) text resolved to the active UI
+   * language. Recomputed on settings and language changes so the reference is
+   * stable between change-detection cycles, avoiding redraw churn in the chart.
+   */
+  public chartTitle: any = null;
   /** Graphql query */
   private dataQuery: any;
   /** Chart series as behavior subject */
@@ -130,9 +137,11 @@ export class ChartComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}.png`;
   }
 
   /**
@@ -174,6 +183,11 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
+    this.updateChartTitle();
+    // Re-resolve the localized title when the UI language changes
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateChartTitle());
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
       .pipe(
@@ -245,7 +259,24 @@ export class ChartComponent
         : this.aggregationId;
       this.loadChart();
     }
+    if (changes['settings']) {
+      this.updateChartTitle();
+    }
     this.getOptions();
+  }
+
+  /**
+   * Resolve the chart's (possibly localized) title text to the active UI
+   * language, storing a stable object reference for the chart components.
+   */
+  private updateChartTitle(): void {
+    const title = this.settings?.chart?.title;
+    this.chartTitle = title
+      ? {
+          ...title,
+          text: resolveLocalizedString(title.text, this.translate.currentLang),
+        }
+      : title;
   }
 
   override ngOnDestroy(): void {
@@ -352,6 +383,14 @@ export class ChartComponent
     downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
     downloadLink.download = this.fileName;
     downloadLink.click();
+  }
+
+  /**
+   * Reload the chart data from the server.
+   * Used to keep the chart in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.loadChart();
   }
 
   /**

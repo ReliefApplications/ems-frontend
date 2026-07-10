@@ -167,6 +167,14 @@ export class ApplicationComponent
           }
         }
       });
+    // Rebuild nav items on language change, as their labels are resolved eagerly
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.application) {
+        this.adminNavItems = [];
+        this.setAdminNavItems(this.application);
+        this.setNavGroups(this.application);
+      }
+    });
   }
 
   /**
@@ -210,6 +218,7 @@ export class ApplicationComponent
           ?.filter((x) => x.content)
           .map((x) => ({
             name: x.name,
+            nameTranslations: x.nameTranslations,
             path:
               x.type === ContentType.form
                 ? `./${x.type}/${x.id}`

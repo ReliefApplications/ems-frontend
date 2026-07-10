@@ -6,6 +6,7 @@ import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.const
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { isNil } from 'lodash';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 import {
   getListOfKeys,
   getWithExpiry,
@@ -21,7 +22,7 @@ import jsonpath from 'jsonpath';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** List of disabled fields */
-const DISABLED_FIELDS = [
+export const DISABLED_FIELDS = [
   'id',
   'incrementalId',
   'createdAt',
@@ -88,6 +89,7 @@ export class GridService {
    * @param options.disabled disable the grid
    * @param options.hidden hide the grid
    * @param options.filter filter options for the grid
+   * @param options.readOnlyFields names of fields forced to read-only during inline edition
    * @returns The list of fields formatted for a grid component
    */
   public getFields(
@@ -95,10 +97,17 @@ export class GridService {
     metaFields: any,
     layoutFields: any,
     prefix?: string,
-    options: { disabled?: boolean; hidden?: boolean; filter: boolean } = {
+    options: {
+      disabled?: boolean;
+      hidden?: boolean;
+      filter: boolean;
+      /** Names of fields forced to read-only during inline edition, regardless of permissions */
+      readOnlyFields?: string[];
+    } = {
       disabled: false,
       hidden: false,
       filter: true,
+      readOnlyFields: [],
     }
   ): any[] {
     return flatDeep(
@@ -109,7 +118,10 @@ export class GridService {
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
-        const disabled: boolean = options.disabled || !canUpdate;
+        const disabled: boolean =
+          options.disabled ||
+          !canUpdate ||
+          (options.readOnlyFields || []).includes(fullName);
 
         switch (f.kind) {
           case 'OBJECT': {
@@ -117,7 +129,9 @@ export class GridService {
               metaData = Object.assign([], metaData);
               metaData.type = 'referenceData';
               const cachedField = get(layoutFields, fullName);
-              const title = f.label ? f.label : prettifyLabel(f.name);
+              const title =
+                resolveLocalizedString(f.label, this.translate.currentLang) ||
+                prettifyLabel(f.name);
               const subFields = this.getFields(
                 f.fields,
                 metaFields,
@@ -174,7 +188,9 @@ export class GridService {
               metaData.type = 'records';
             }
             const cachedField = get(layoutFields, fullName);
-            const title = f.label ? f.label : prettifyLabel(f.name);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             const subFields = this.getFields(
               f.fields,
               metaFields,
@@ -212,7 +228,9 @@ export class GridService {
           }
           default: {
             const cachedField = get(layoutFields, fullName);
-            const title = f.label ? f.label : prettifyLabel(f.name);
+            const title =
+              resolveLocalizedString(f.label, this.translate.currentLang) ||
+              prettifyLabel(f.name);
             return {
               name: fullName,
               title,
@@ -430,10 +448,10 @@ export class GridService {
               ...meta,
               choices: meta.choices.map((choice: any) => ({
                 value: choice.value,
-                text:
-                  choice.text[this.translate.currentLang] ||
-                  choice.text.default ||
+                text: resolveLocalizedString(
                   choice.text,
+                  this.translate.currentLang
+                ),
               })),
             };
           } else if (typeof meta === 'object') {

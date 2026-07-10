@@ -15,6 +15,7 @@ export interface Environment {
   module: string;
   version: any;
   production: boolean;
+  serviceWorker?: boolean;
   apiUrl: string;
   subscriptionApiUrl: string;
   frontOfficeUri: string;
@@ -29,4 +30,6 @@ export interface Environment {
   admin0Url?: string;
   csApiUrl?: string;
   csDocUrl?: string;
+  /** Hides the date & time format picker in the preferences modal */
+  hideDateFormatPicker?: boolean;
 }

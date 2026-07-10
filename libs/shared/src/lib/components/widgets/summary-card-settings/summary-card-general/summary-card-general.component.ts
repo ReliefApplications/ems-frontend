@@ -29,6 +29,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
+  LocalizedInputComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
@@ -55,6 +56,7 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
     TooltipModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    LocalizedInputComponent,
     DividerModule,
     QueryParamsMappingComponent,
     SpinnerModule,

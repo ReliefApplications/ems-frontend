@@ -4,13 +4,20 @@ import { LayerFieldsComponent } from './layer-fields.component';
 import { EditableTextModule } from '../../../../editable-text/editable-text.module';
 import { IconModule } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import { LocalizePipe } from '../../../../../pipes/localize/localize.pipe';
 
 /**
  * Map layer fields settings module.
  */
 @NgModule({
   declarations: [LayerFieldsComponent],
-  imports: [CommonModule, IconModule, EditableTextModule, PortalModule],
+  imports: [
+    CommonModule,
+    IconModule,
+    EditableTextModule,
+    LocalizePipe,
+    PortalModule,
+  ],
   exports: [LayerFieldsComponent],
 })
 export class LayerFieldsModule {}

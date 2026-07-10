@@ -26,6 +26,8 @@ import {
   Form,
   Application,
   ContentType,
+  LocalizedInputComponent,
+  localizedRequired,
   Page,
   INLINE_EDITOR_CONFIG,
   QueryBuilderModule,
@@ -81,6 +83,7 @@ interface DialogData {
     ToggleModule,
     EditorModule,
     EditorControlComponent,
+    LocalizedInputComponent,
     DividerModule,
     TabsModule,
     IconModule,
@@ -268,7 +271,7 @@ export class EditActionButtonModalComponent
     };
     const form = this.fb.group({
       general: this.fb.group({
-        buttonText: [get(data, 'text', ''), Validators.required],
+        buttonText: [get(data, 'text', ''), localizedRequired],
         hasRoleRestriction: [
           get(data, 'hasRoleRestriction', false),
           Validators.required,

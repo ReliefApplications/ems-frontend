@@ -62,7 +62,7 @@ describe('AddStepComponent', () => {
             params: of({}),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

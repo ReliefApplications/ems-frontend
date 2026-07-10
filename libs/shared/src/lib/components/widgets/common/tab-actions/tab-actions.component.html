@@ -22,6 +22,32 @@
               [uiTooltip]="action.tooltip | translate"
               uiTooltipPosition="right"
             ></ui-icon>
+            <!-- Pen icon to configure read-only fields for inline edition -->
+            <ui-icon
+              *ngIf="action.name === 'inlineEdition'"
+              class="ml-1 cursor-pointer self-center"
+              variant="grey"
+              icon="edit"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.actions.readOnlyFields.tooltip'
+                  | translate
+              "
+              uiTooltipPosition="right"
+              (click)="openReadOnlyFieldsModal()"
+            ></ui-icon>
+            <!-- Number of fields currently marked as read-only -->
+            <span
+              *ngIf="action.name === 'inlineEdition' && readOnlyFieldsCount"
+              class="ml-1 self-center text-sm text-gray-500"
+            >
+              {{
+                (readOnlyFieldsCount === 1
+                  ? 'components.widget.settings.grid.actions.readOnlyFields.count.one'
+                  : 'components.widget.settings.grid.actions.readOnlyFields.count.few'
+                ) | translate : { count: readOnlyFieldsCount }
+              }}
+            </span>
             <!-- Icon with warning if any -->
             <ui-icon
               *ngIf="
@@ -44,18 +70,14 @@
         formGroupName="navigateSettings"
         class="flex flex-col ml-[55px]"
       >
-        <div uiFormFieldDirective class="w-80">
+        <div uiFormFieldDirective class="w-80" [defaultMargin]="false">
           <label>{{
             'components.widget.settings.grid.actions.goTo.column.label'
               | translate
           }}</label>
-          <input
+          <shared-localized-input
             formControlName="title"
-            [placeholder]="
-              'components.widget.settings.grid.actions.goTo.column.placeholder'
-                | translate
-            "
-          />
+          ></shared-localized-input>
         </div>
         <div uiFormFieldDirective class="w-80">
           <label>

@@ -26,11 +26,17 @@ import { SurveyCreatorModel } from 'survey-creator-core';
 import { Form } from '../../models/form.model';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
+import { removePosArtifacts } from '../../survey/components/utils/remove-pos-artifacts';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import {
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+  SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+} from '../../utils/survey-confirm-record-update.util';
 import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
  * Array containing the different types of questions.
@@ -145,6 +151,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
+   * @param autoTranslateService Auto-translate service
    */
   constructor(
     public dialog: Dialog,
@@ -152,7 +159,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
-    private injector: Injector
+    private injector: Injector,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -169,7 +177,7 @@ export class FormBuilderComponent
 
   ngOnChanges(): void {
     if (this.surveyCreator) {
-      this.surveyCreator.text = this.form.structure || '';
+      this.surveyCreator.text = this.cleanStructure(this.form.structure || '');
       if (!this.form.structure) {
         this.surveyCreator.survey.showQuestionNumbers = 'off';
       }
@@ -196,8 +204,8 @@ export class FormBuilderComponent
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.injector)
       );
-      this.surveyCreator.survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
+      this.formHelpersService.registerCustomSurveyHandlers(
+        this.surveyCreator.survey
       );
     }
   }
@@ -207,7 +215,12 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
-    this.surveyCreator.survey?.dispose();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation when the preview survey is disposed.
+    // Dispose the whole creator ( toolbox, property grid, plugins, survey and
+    // all of their event handlers ), not only the survey, otherwise the creator
+    // graph stays referenced and its memory is never released.
+    this.surveyCreator?.dispose();
   }
 
   /**
@@ -227,14 +240,41 @@ export class FormBuilderComponent
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
 
+    // While a confirmation expression drives the behavior, the matching toggle
+    // in the general settings is forced on and made read-only.
+    this.surveyCreator.onPropertyGridSurveyCreated.add(
+      (_: any, options: any) => {
+        const grid: SurveyModel = options.survey;
+        const toggle = grid.getQuestionByName(
+          SURVEY_PROP_CONFIRM_RECORD_UPDATE
+        );
+        if (!toggle) {
+          return;
+        }
+        const syncToggleState = () => {
+          const hasExpression = !!grid.getValue(
+            SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF
+          );
+          toggle.readOnly = hasExpression;
+          if (hasExpression) {
+            toggle.value = true;
+          }
+        };
+        syncToggleState();
+        grid.onValueChanged.add((__: any, opt: any) => {
+          if (opt.name === SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF) {
+            syncToggleState();
+          }
+        });
+      }
+    );
+
     this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
       survey.applyTheme({
         isPanelless: true,
       });
-      survey.onAfterRenderQuestion.add(
-        this.formHelpersService.addQuestionTooltips
-      );
+      this.formHelpersService.registerCustomSurveyHandlers(survey);
       this.formHelpersService.addUserVariables(survey);
       /** Apply all placeholder with limitation info to all file questions */
       survey
@@ -247,9 +287,13 @@ export class FormBuilderComponent
           )(question);
           question.dragAreaPlaceholder = text;
         });
+
+      this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.text = structure;
+    // Strip any `pos` artifacts already stored in the form so the loaded model
+    // ( and the JSON editor ) never carries them, regardless of save state.
+    this.surveyCreator.text = this.cleanStructure(structure);
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = true;
     this.surveyCreator.toolboxLocation = 'right';
@@ -276,8 +320,23 @@ export class FormBuilderComponent
 
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
-      this.formChange.emit(survey.text);
+      this.formChange.emit(this.cleanStructure(survey.text));
     });
+
+    // Always show the per-field "Settings" gear adorner.
+    // By default SurveyJS only shows it when the property-grid sidebar is
+    // collapsed (flyout mode), which depends on the creator panel width. On
+    // wide screens (e.g. Mac) the sidebar stays docked and the gear disappears.
+    // Forcing allowEdit makes the gear visible regardless of sidebar state.
+    this.surveyCreator.onElementAllowOperations.add(
+      (sender: any, options: any) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) {
+          return;
+        }
+        options.allowEdit = true;
+      }
+    );
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -339,8 +398,8 @@ export class FormBuilderComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.injector)
     );
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips
+    this.formHelpersService.registerCustomSurveyHandlers(
+      this.surveyCreator.survey
     );
 
     this.surveyCreator.onPreviewSurveyCreated.add((sender: any, options: any) =>
@@ -459,13 +518,35 @@ export class FormBuilderComponent
   }
 
   /**
+   * Strips SurveyJS `pos` parser artifacts from a serialized survey structure.
+   * These artifacts ( objects with `start` / `end` offsets ) are attached to
+   * free-form object properties such as `gridFieldsSettings` and nest deeper on
+   * every save cycle, bloating the form definition. Cleaning the serialized
+   * string ( plain, acyclic JSON ) keeps every persisted structure free of them.
+   *
+   * @param text Serialized survey structure ( JSON string )
+   * @returns The structure with all `pos` artifacts removed
+   */
+  private cleanStructure(text: string): string {
+    if (!text) {
+      return text;
+    }
+    try {
+      return JSON.stringify(removePosArtifacts(JSON.parse(text)));
+    } catch {
+      // If the structure is not valid JSON, leave it untouched.
+      return text;
+    }
+  }
+
+  /**
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
     this.validateValueNames()
       .then((canCreate: boolean) => {
         if (canCreate) {
-          this.save.emit(this.surveyCreator.text);
+          this.save.emit(this.cleanStructure(this.surveyCreator.text));
         }
       })
       .catch((error) => {

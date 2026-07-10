@@ -53,8 +53,10 @@ import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Default file name when exporting grid data.
@@ -128,6 +130,8 @@ export class CoreGridComponent
   @Input() canCreateRecords = false;
   /** Whether records can be downloaded */
   @Input() canDownloadRecords = false;
+  /** Whether records can be uploaded */
+  @Input() canUploadRecords = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -305,9 +309,11 @@ export class CoreGridComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
@@ -364,6 +370,7 @@ export class CoreGridComponent
    * @param contextService Shared context service
    * @param router Angular Router
    * @param el Element reference
+   * @param dashboardService Dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -380,7 +387,8 @@ export class CoreGridComponent
     private applicationService: ApplicationService,
     private contextService: ContextService,
     private router: Router,
-    private el: ElementRef
+    private el: ElementRef,
+    private dashboardService: DashboardService
   ) {
     super();
     this.environment = environment;
@@ -441,6 +449,7 @@ export class CoreGridComponent
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
+      import: get(this.settings, 'actions.import', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
@@ -521,7 +530,14 @@ export class CoreGridComponent
                   fields,
                   this.metaFields,
                   defaultLayoutFields,
-                  ''
+                  '',
+                  {
+                    disabled: false,
+                    hidden: false,
+                    filter: true,
+                    readOnlyFields:
+                      this.settings?.actions?.readOnlyFields || [],
+                  }
                 );
                 // Scroll to left
                 if (this.grid) {
@@ -776,7 +792,7 @@ export class CoreGridComponent
       const data = Object.assign({}, item);
       delete data.id;
       for (const field of this.fields) {
-        if (field.type === 'Time') {
+        if (field.type === 'Time' && data[field.name] instanceof Date) {
           data[field.name] = data[field.name].toLocaleTimeString('en', {
             hour: '2-digit',
             minute: '2-digit',
@@ -1108,6 +1124,7 @@ export class CoreGridComponent
         .subscribe((value: any) => {
           if (value) {
             this.reloadData();
+            this.dashboardService.triggerReloadWidgets();
           }
         });
     }
@@ -1211,6 +1228,7 @@ export class CoreGridComponent
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
+        this.dashboardService.triggerReloadWidgets();
       }
     });
   }
@@ -1264,6 +1282,7 @@ export class CoreGridComponent
           .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
+            this.dashboardService.triggerReloadWidgets();
             this.layoutService.setRightSidenav(null);
           });
       }
@@ -1305,6 +1324,7 @@ export class CoreGridComponent
         }
         Promise.all(promises).then(() => {
           this.reloadData();
+          this.dashboardService.triggerReloadWidgets();
         });
       }
     });
@@ -1397,6 +1417,7 @@ export class CoreGridComponent
                 );
               } else {
                 this.reloadData();
+                this.dashboardService.triggerReloadWidgets();
                 this.layoutService.setRightSidenav(null);
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')

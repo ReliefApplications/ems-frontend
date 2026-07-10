@@ -1,5 +1,6 @@
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { get } from 'lodash';
+import { LocalizedString } from '../../../../models/localized-string.model';
 
 /**
  * Extends the widget form with the common fields
@@ -47,7 +48,7 @@ export const extendWidgetForm = <
           showHeader: FormControl<boolean>;
           hideEmpty: FormControl<boolean>;
           expandable: FormControl<boolean>;
-          tooltip: FormControl<string>;
+          tooltip: FormControl<LocalizedString>;
           style: FormControl<string>;
         } & T2
       >;
