@@ -547,6 +547,7 @@
     "updateObject": "Mettre à jour {{name}}",
     "uploadObject": "Importer {{name}}",
     "user": {
+      "current": "Utilisateur connecté",
       "few": "Utilisateurs",
       "none": "Aucun utilisateur",
       "one": "Utilisateur"

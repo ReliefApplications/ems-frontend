@@ -547,6 +547,7 @@
     "updateObject": "****** {{name}}",
     "uploadObject": "****** {{name}}",
     "user": {
+      "current": "******",
       "few": "******",
       "none": "******",
       "one": "******"
