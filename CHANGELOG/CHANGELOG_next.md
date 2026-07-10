@@ -1,16 +1,20 @@
-# [2.23.0-rc.28](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.27...v2.23.0-rc.28) (2026-07-09)
-
+# [2.23.0-rc.29](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.28...v2.23.0-rc.29) (2026-07-10)
 
 ### Features
 
-* Allow admins to indicate which fields should be read-only during inline edition ([#2905](https://github.com/ReliefApplications/ems-frontend/issues/2905)) ([92a8697](https://github.com/ReliefApplications/ems-frontend/commit/92a8697a5d379fad1eb5911e9deb40d0565546b5)), closes [AB#134987](https://github.com/AB/issues/134987)
+- Calculated fields now working with related fields ([#2906](https://github.com/ReliefApplications/ems-frontend/issues/2906)) ([11d1a7b](https://github.com/ReliefApplications/ems-frontend/commit/11d1a7b0c78ebc43be5db856e28113fd3ca03f3b)), closes [AB#129357](https://github.com/AB/issues/129357)
+
+# [2.23.0-rc.28](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.27...v2.23.0-rc.28) (2026-07-09)
+
+### Features
+
+- Allow admins to indicate which fields should be read-only during inline edition ([#2905](https://github.com/ReliefApplications/ems-frontend/issues/2905)) ([92a8697](https://github.com/ReliefApplications/ems-frontend/commit/92a8697a5d379fad1eb5911e9deb40d0565546b5)), closes [AB#134987](https://github.com/AB/issues/134987)
 
 # [2.23.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.26...v2.23.0-rc.27) (2026-07-09)
 
-
 ### Bug Fixes
 
-* Time could break validation during inline edition ([4ec8298](https://github.com/ReliefApplications/ems-frontend/commit/4ec8298561f8ad3aaac4e9b3ab4181d11db91463))
+- Time could break validation during inline edition ([4ec8298](https://github.com/ReliefApplications/ems-frontend/commit/4ec8298561f8ad3aaac4e9b3ab4181d11db91463))
 
 # [2.23.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.25...v2.23.0-rc.26) (2026-07-08)
 
