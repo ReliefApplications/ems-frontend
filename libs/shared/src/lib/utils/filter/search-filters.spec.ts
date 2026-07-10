@@ -98,6 +98,38 @@ describe('searchFilters', () => {
     ]);
   });
 
+  it('emits numeric rules for decimal (expression) fields', () => {
+    expect(searchFilters('12.5', [{ name: 'total', type: 'decimal' }])).toEqual(
+      [{ field: 'total', operator: 'eq', value: 12.5 }]
+    );
+  });
+
+  it('emits contains rules for editor fields', () => {
+    expect(searchFilters('abc', [{ name: 'notes', type: 'editor' }])).toEqual([
+      { field: 'notes', operator: 'contains', value: 'abc' },
+    ]);
+  });
+
+  it('matches users / owner display texts through their choices', () => {
+    const usersField = {
+      name: 'assignees',
+      type: 'users',
+      choices: [
+        { value: 'u1', text: 'john.doe' },
+        { value: 'u2', text: 'jane.smith' },
+      ],
+    };
+    expect(searchFilters('john', [usersField])).toEqual([
+      { field: 'assignees', operator: 'in', value: ['u1'] },
+    ]);
+  });
+
+  it('emits contains rules for file fields', () => {
+    expect(searchFilters('report', [{ name: 'docs', type: 'file' }])).toEqual([
+      { field: 'docs', operator: 'contains', value: 'report' },
+    ]);
+  });
+
   it('emits contains rules for people fields', () => {
     expect(
       searchFilters('doe', [

@@ -8,10 +8,21 @@ const TEXT_TYPES = [
   'comment',
   'radiogroup',
   'dropdown',
+  'editor',
 ];
 
-/** Field types storing one or several values from a choice list */
-const CHOICE_TYPES = ['radiogroup', 'dropdown', 'checkbox', 'tagbox'];
+/**
+ * Field types storing one or several values from a choice list. Includes
+ * users / owner, whose meta carries the user / role list as choices.
+ */
+const CHOICE_TYPES = [
+  'radiogroup',
+  'dropdown',
+  'checkbox',
+  'tagbox',
+  'users',
+  'owner',
+];
 
 /**
  * Returns the values of the choices whose display text matches the searched
@@ -73,9 +84,10 @@ export const searchFilters = (
         value: search,
       });
 
-    // number
+    // number (decimal covers expression fields displayed as decimal / currency / percent)
     if (
-      (field?.type === 'numeric' || field?.name === 'range') &&
+      (['numeric', 'decimal'].includes(field?.type) ||
+        field?.name === 'range') &&
       !isNaN(parseFloat(search))
     )
       filters.push({
@@ -109,6 +121,16 @@ export const searchFilters = (
     // people: records store the person object(s) (firstname, lastname,
     // emailaddress...); the backend searches those subfields
     if (['people-dropdown', 'people-tagbox'].includes(field?.type)) {
+      filters.push({
+        field: field.name,
+        operator: 'contains',
+        value: search,
+      });
+    }
+
+    // file: records store an array of file objects; the backend matches the
+    // file names, which is what the grid displays
+    if (field?.type === 'file') {
       filters.push({
         field: field.name,
         operator: 'contains',
