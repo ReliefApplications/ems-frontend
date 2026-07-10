@@ -861,6 +861,32 @@
         "placeholdersHint": "Utilisez ces espaces réservés dans une expression pour référencer les données d'un enregistrement, l'utilisateur courant ou le résultat d'un autre calcul.",
         "searchPlaceholder": "Filtrer par nom ou description...",
         "title": "Référence des champs dérivés"
+      },
+      "relatedBuilder": {
+        "aggregation": "Agrégation",
+        "aggregations": {
+          "relatedAvg": "Moyenne d'un champ",
+          "relatedCount": "Nombre d'enregistrements liés",
+          "relatedExists": "Au moins un enregistrement lié existe",
+          "relatedMax": "Plus grande valeur d'un champ",
+          "relatedMin": "Plus petite valeur d'un champ",
+          "relatedSum": "Somme d'un champ",
+          "relatedValue": "Valeur unique (dernière, première...)"
+        },
+        "ascending": "Croissant (première / plus petite d'abord)",
+        "descending": "Décroissant (dernière / plus grande d'abord)",
+        "empty": "Aucune autre ressource ne pointe vers cette ressource avec un nom de relation. Ajoutez d'abord une question de type ressource avec un nom de relation sur une autre ressource.",
+        "filter": "N'inclure que les enregistrements liés correspondant à (optionnel)",
+        "insert": "Insérer dans l'expression",
+        "open": "Insérer une valeur d'enregistrement lié",
+        "preview": "Aperçu de l'expression",
+        "quoteError": "Les valeurs du filtre ne peuvent pas contenir d'apostrophe (').",
+        "relatedField": "Enregistrements liés",
+        "sortField": "Choisir l'enregistrement selon",
+        "sortOrder": "Ordre de tri",
+        "title": "Valeur d'enregistrement lié",
+        "tooltip": "Construire une valeur agrégée à partir des enregistrements d'une autre ressource liés à celle-ci (dernière valeur, nombre, somme...) et l'insérer dans l'expression.",
+        "valueField": "Champ de valeur"
       }
     },
     "channel": {
