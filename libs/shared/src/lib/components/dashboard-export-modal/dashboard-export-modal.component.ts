@@ -61,7 +61,10 @@ export class DashboardExportModalComponent {
     { value: 'jpeg', label: 'JPEG' },
   ];
   /** Supported paper sizes */
-  public paperSizes = [{ value: 'auto', label: 'Auto' }];
+  public paperSizes = [
+    { value: 'auto', label: 'Auto' },
+    { value: 'A4', label: 'A4' },
+  ];
 
   /**
    * Dashboard export modal.
