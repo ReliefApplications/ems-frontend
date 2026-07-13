@@ -4,7 +4,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { GraphQLError } from 'graphql';
 import get from 'lodash/get';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, firstValueFrom } from 'rxjs';
 import {
   EditDashboardMutationResponse,
   WIDGET_TYPES,
@@ -30,10 +30,25 @@ export class DashboardService {
   public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   /** Observable of current loaded dashboard widgets */
   public widgets$ = this.widgets.asObservable();
+  /** Emits when dashboard data was edited and widgets should reload their data */
+  private reloadWidgets = new Subject<void>();
 
   /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
   get widgetContentRefreshed$(): Observable<any> {
     return this.widgetContentRefreshed.asObservable();
+  }
+
+  /** @returns To listen when dashboard data was edited and widgets should reload */
+  get reloadWidgets$(): Observable<void> {
+    return this.reloadWidgets.asObservable();
+  }
+
+  /**
+   * Signal that dashboard data was edited (e.g. inline grid edition, record edition).
+   * Subscribed widgets will reload their data so all displays stay in sync.
+   */
+  public triggerReloadWidgets(): void {
+    this.reloadWidgets.next();
   }
 
   /**
@@ -111,20 +126,23 @@ export class DashboardService {
    *
    * @param dashboardId id of the dashboard
    * @param name new name
+   * @param nameTranslations name translations
    * @param callback callback method
    */
   public editName(
     dashboardId: string | undefined,
     name: string,
+    nameTranslations?: Partial<Record<string, string>>,
     callback?: any
   ): void {
-    if (dashboardId) return;
+    if (!dashboardId) return;
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: dashboardId,
           name,
+          nameTranslations,
         },
       })
       .subscribe(() => {

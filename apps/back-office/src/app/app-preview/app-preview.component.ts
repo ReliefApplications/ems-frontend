@@ -155,6 +155,7 @@ export class AppPreviewComponent
         .map((x) => ({
           id: x.id,
           name: x.name,
+          nameTranslations: x.nameTranslations,
           path:
             x.type === ContentType.form
               ? `./${x.type}/${x.id}`

@@ -31,6 +31,7 @@ import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
@@ -77,6 +78,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   public canCreateRecords = false;
   /** Permission to download records */
   public canDownloadRecords = false;
+  /** Permission to upload records */
+  public canUploadRecords = false;
 
   /** Cached configuration */
   public layout: Layout | null = null;
@@ -147,6 +150,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param applicationService The shared application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -159,15 +163,24 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     private confirmService: ConfirmService,
     private applicationService: ApplicationService,
     private translate: TranslateService,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private dashboardService: DashboardService
   ) {
     super();
+  }
+
+  /**
+   * Handle inline edition of records: notify the dashboard so all widgets
+   * reload and reflect the edited data, and bubble the event up.
+   */
+  public onInlineEdition(): void {
+    this.dashboardService.triggerReloadWidgets();
+    this.inlineEdition.emit();
   }
 
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
-    let buildSortFields = false;
     if (this.settings.resource) {
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
@@ -193,6 +206,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               'resource.canDownloadRecords',
               false
             );
+            this.canUploadRecords = get(
+              data,
+              'resource.canUploadRecords',
+              false
+            );
           }
         });
 
@@ -212,7 +230,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 error: true,
               };
             } else {
-              buildSortFields = true;
+              this.widget.settings.sortFields?.forEach((sortField: any) => {
+                this.sortFields.push(sortField);
+              });
             }
             this.gridSettings = {
               ...this.settings,
@@ -243,21 +263,34 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               };
             }
             this.aggregation = this.aggregations[0] || null;
-            buildSortFields = true;
+            this.widget.settings.sortFields?.forEach((sortField: any) => {
+              this.sortFields.push(sortField);
+            });
           });
         return;
       }
     } else if (this.settings.referenceData) {
-      buildSortFields = true;
       this.useReferenceData = true;
-    }
-
-    if (buildSortFields) {
-      // Build list of available sort fields
       this.widget.settings.sortFields?.forEach((sortField: any) => {
         this.sortFields.push(sortField);
       });
     }
+  }
+
+  /**
+   * Reload the grid data from the server.
+   * Used to keep the grid in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.coreGridComponent?.reloadData();
+    this.aggregationGridComponent?.onPageChange({
+      skip: this.aggregationGridComponent.skip,
+      take: this.aggregationGridComponent.pageSize,
+    });
+    this.referenceDataGridComponent?.onPageChange({
+      skip: this.referenceDataGridComponent.skip,
+      take: this.referenceDataGridComponent.pageSize,
+    });
   }
 
   /**
@@ -349,6 +382,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       if (!shouldContinue) {
         // Close the action
         this.grid.reloadData();
+        this.dashboardService.triggerReloadWidgets();
         return;
       }
     }
@@ -396,6 +430,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       if (!shouldContinue) {
         // Close the action
         this.grid.reloadData();
+        this.dashboardService.triggerReloadWidgets();
         return;
       }
     }
@@ -553,6 +588,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     } else {
       this.grid.selectedRows = [];
       this.grid.reloadData();
+      this.dashboardService.triggerReloadWidgets();
     }
   }
 

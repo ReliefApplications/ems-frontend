@@ -38,7 +38,7 @@ describe('AddReferenceDataComponent', () => {
             updateSize: jest.fn(),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

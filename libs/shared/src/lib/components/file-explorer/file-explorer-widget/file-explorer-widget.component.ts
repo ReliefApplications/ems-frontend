@@ -31,6 +31,7 @@ import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/fil
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
 import { ContextService } from '../../../services/context/context.service';
 import getFilter from '../../../utils/common-services/filter.util';
+import { LocalizePipe } from '../../../pipes/localize/localize.pipe';
 
 /**
  * File explorer widget component.
@@ -47,6 +48,7 @@ import getFilter from '../../../utils/common-services/filter.util';
     FileExplorerTreeviewComponent,
     FileExplorerBreadcrumbComponent,
     FileExplorerDocumentPropertiesComponent,
+    LocalizePipe,
   ],
   templateUrl: './file-explorer-widget.component.html',
   styleUrls: ['./file-explorer-widget.component.scss'],
@@ -159,6 +161,14 @@ export class FileExplorerWidgetComponent
           }
         }
       });
+  }
+
+  /**
+   * Reload the document list from the server, keeping the current page.
+   * Used to keep the widget in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.page.next(this.page.getValue());
   }
 
   /**

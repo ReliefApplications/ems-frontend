@@ -21,13 +21,13 @@
 <!-- Header -->
 <ng-template #headerTemplate>
   <div class="overflow-hidden flex-1 flex gap-1 items-center">
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
+    <span class="widget-title" [title]="settings.title | sharedLocalize">{{
+      settings.title | sharedLocalize
     }}</span>
     <span
       *ngIf="settings.widgetDisplay?.tooltip"
       class="widget-tooltip"
-      [title]="settings.widgetDisplay.tooltip"
+      [title]="settings.widgetDisplay.tooltip | sharedLocalize"
       >?</span
     >
   </div>
@@ -54,12 +54,13 @@
     [settings]="gridSettings"
     (defaultLayoutReset)="onResetLayout()"
     (edit)="edit.emit($event)"
-    (inlineEdition)="inlineEdition.emit()"
+    (inlineEdition)="onInlineEdition()"
     [widget]="widget"
     [canUpdate]="canUpdate"
     [status]="status"
     [canCreateRecords]="canCreateRecords"
     [canDownloadRecords]="canDownloadRecords"
+    [canUploadRecords]="canUploadRecords"
   ></shared-core-grid>
 </ng-template>
 
@@ -95,7 +96,7 @@
         *ngIf="gridAction.show"
         class="whitespace-nowrap"
       >
-        {{ gridAction.name }}
+        {{ gridAction.name | sharedLocalize }}
       </ui-button>
     </ng-container>
   </div>
@@ -109,7 +110,7 @@
       [placeholder]="'models.widget.sorting.select' | translate"
     >
       <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-        {{ sort.label }}
+        {{ sort.label | sharedLocalize }}
       </ui-select-option>
     </ui-select-menu>
   </div>
@@ -126,6 +127,12 @@
       [value]="layout"
       (selectionChange)="onLayoutChange($event)"
     >
+      <ng-template kendoDropDownListItemTemplate let-dataItem>
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
+      </ng-template>
+      <ng-template kendoDropDownListValueTemplate let-dataItem>
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
+      </ng-template>
     </kendo-dropdownlist>
   </ng-container>
 </ng-template>

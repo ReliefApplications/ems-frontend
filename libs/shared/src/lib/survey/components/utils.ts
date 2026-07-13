@@ -7,6 +7,24 @@ import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
 
 /**
+ * Determines whether the search button for a resource/resources question
+ * should be shown.
+ *
+ * `canSearch` is a static admin toggle, independent of whether any field was
+ * actually configured to search/display on (`gridFieldsSettings.fields`).
+ * When `canSearch` is on but no field is configured, clicking the button
+ * opens a picker with nothing to search by, which looks broken to end users.
+ * So the button should only be shown once both conditions are met.
+ *
+ * @param question The question object
+ * @returns Whether the search button should be visible
+ */
+export const canShowSearchButton = (question: Question): boolean =>
+  !question.isReadOnly &&
+  !!question.canSearch &&
+  !!(question as any).gridFieldsSettings?.fields?.length;
+
+/**
  * Build the search button for resource and resources components
  *
  * @param question The question object
@@ -112,8 +130,7 @@ export const buildSearchButton = (
       });
     };
   }
-  searchButton.style.display =
-    !question.isReadOnly && question.canSearch ? 'block' : 'none';
+  searchButton.style.display = canShowSearchButton(question) ? 'block' : 'none';
   return searchButton;
 };
 

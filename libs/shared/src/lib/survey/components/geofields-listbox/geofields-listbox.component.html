@@ -10,7 +10,7 @@
     <ng-template kendoListBoxItemTemplate let-dataItem>
       <div class="group inline-flex w-full">
         <span>
-          {{ dataItem.label }}
+          {{ dataItem | geoFieldLabel }}
         </span>
         <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"
@@ -32,7 +32,7 @@
     <ng-template kendoListBoxItemTemplate let-dataItem>
       <div class="group inline-flex w-full">
         <span>
-          {{ dataItem.label }}
+          {{ dataItem | geoFieldLabel }}
         </span>
         <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"

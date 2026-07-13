@@ -62,9 +62,14 @@ export class TabFilterComponent implements OnInit {
       callback(this.referenceFields);
     } else {
       // Classic flow
-      this.queryBuilder.getFilterFields(this.query).then((fields) => {
-        callback(fields);
-      });
+      this.queryBuilder
+        .getFilterFields(this.query)
+        .then((fields) => {
+          callback(fields);
+        })
+        .catch(() => {
+          callback([]);
+        });
     }
   }
 

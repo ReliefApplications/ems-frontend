@@ -26,6 +26,9 @@ type AccessPermissions = {
   };
 };
 
+/** Field types storing people objects ({ userid, emailaddress, ... }) */
+const PEOPLE_FIELD_TYPES = ['people-dropdown', 'people-tagbox'];
+
 /** Permissions to apply by default to all access filters */
 const BASE_PERMISSIONS = {
   canCreateRecords: false,
@@ -33,6 +36,7 @@ const BASE_PERMISSIONS = {
   canUpdateRecords: false,
   canDeleteRecords: false,
   canDownloadRecords: false,
+  canUploadRecords: false,
 };
 
 /** Modal for the definition of access/permissions for a given resource */
@@ -153,7 +157,24 @@ export class RoleResourceFiltersComponent implements OnInit {
     this.initialValue = this.filtersFormArray.value;
     this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
-      .map((x: any) => ({ ...x }));
+      .map((x: any) =>
+        PEOPLE_FIELD_TYPES.includes(x.type)
+          ? {
+              // People fields: access filters can only compare against the
+              // connected user ( backend resolves the special 'me' value )
+              ...x,
+              editor: 'select',
+              multiSelect: false,
+              filter: { defaultOperator: 'eq', operators: ['eq'] },
+              options: [
+                {
+                  text: this.translate.instant('common.user.current'),
+                  value: 'me',
+                },
+              ],
+            }
+          : { ...x }
+      );
 
     const userAttributes: { value: string; text: string }[] =
       await firstValueFrom(this.restService.get('/permissions/attributes'));
@@ -168,6 +189,21 @@ export class RoleResourceFiltersComponent implements OnInit {
       name: x.value,
       editor: 'attribute',
       options,
+      fieldOperators: ['eq', 'neq', 'in', 'notin'],
+      literalOperators: [
+        'eq',
+        'neq',
+        'in',
+        'notin',
+        'contains',
+        'doesnotcontain',
+        'startswith',
+        'endswith',
+        'isnull',
+        'isnotnull',
+        'isempty',
+        'isnotempty',
+      ],
     }));
 
     this.filterFields.unshift({
@@ -189,8 +225,12 @@ export class RoleResourceFiltersComponent implements OnInit {
    * @returns filter as form group
    */
   private createAccessFilterFormGroup(filter?: AccessPermissions) {
+    const access = createFilterGroup(get(filter, 'access', null), {
+      includeValueSource: true,
+    });
+
     return this.fb.group({
-      access: createFilterGroup(get(filter, 'access', null)),
+      access,
       permissions: this.fb.group({
         canCreateRecords: get(filter, 'permissions.canCreateRecords', false),
         canDeleteRecords: get(filter, 'permissions.canDeleteRecords', false),
@@ -203,6 +243,51 @@ export class RoleResourceFiltersComponent implements OnInit {
         ),
       }),
     });
+  }
+
+  /**
+   * Serializes access filters by removing editor-only controls unless they are
+   * needed to preserve literal attribute comparisons.
+   *
+   * @param access access filter to serialize
+   * @returns sanitized access filter
+   */
+  private serializeAccess(access: Access): Access {
+    return {
+      logic: access.logic,
+      filters: access.filters.map((rule: any) => {
+        if (rule.filters) {
+          return this.serializeAccess(rule);
+        }
+
+        const keepsLiteralValue =
+          rule.field?.startsWith('$attribute.') &&
+          ['eq', 'neq', 'in', 'notin'].includes(rule.operator) &&
+          rule.valueSource === 'literal';
+
+        return {
+          field: rule.field,
+          operator: rule.operator,
+          ...(rule.value !== undefined ? { value: rule.value } : {}),
+          ...(keepsLiteralValue ? { valueSource: 'literal' } : {}),
+        };
+      }),
+    };
+  }
+
+  /**
+   * Sanitizes an access permission entry for persistence and comparison.
+   *
+   * @param filter filter to sanitize
+   * @returns sanitized filter
+   */
+  private serializeAccessPermission(
+    filter: AccessPermissions
+  ): AccessPermissions {
+    return {
+      access: this.serializeAccess(filter.access),
+      permissions: filter.permissions,
+    };
   }
 
   /**
@@ -309,6 +394,8 @@ export class RoleResourceFiltersComponent implements OnInit {
         return 'delete';
       case Permission.DOWNLOAD:
         return hasPermission ? 'file_download' : 'file_download_off';
+      case Permission.UPLOAD:
+        return '';
     }
   }
 
@@ -432,8 +519,12 @@ export class RoleResourceFiltersComponent implements OnInit {
    * to go from the initial value to the current one
    */
   save() {
-    const initial = this.initialValue;
-    const current = this.filtersFormArray.value as AccessPermissions[];
+    const initial = this.initialValue.map((x) =>
+      this.serializeAccessPermission(x)
+    );
+    const current = (this.filtersFormArray.value as AccessPermissions[]).map(
+      (x) => this.serializeAccessPermission(x)
+    );
 
     const update: {
       [key in Permission]?: {

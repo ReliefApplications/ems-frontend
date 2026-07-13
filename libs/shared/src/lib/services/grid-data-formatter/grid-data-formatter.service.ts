@@ -1,15 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { get, isNil } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
+import { get, groupBy, isNil, map } from 'lodash';
 import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import {
-  getFileIcon,
   getPropertyValue,
   getStyle,
   getUrl,
-  removeFileExtension,
 } from './grid-data-formatter.helper';
+import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
 /**
  * Grid data formatter service
@@ -49,6 +49,12 @@ export class GridDataFormatterService {
     value: {},
   };
   /**
+   * Grid row actions
+   */
+  private actionsObj: { actions: any[] } = {
+    actions: [],
+  };
+  /**
    * Grid full screen button flags helper object
    */
   private showFullScreenButtonObj = {
@@ -56,6 +62,8 @@ export class GridDataFormatterService {
   };
   /** Shared date pipe */
   datePipe = inject(DatePipe);
+  /** Translate service, source of the active language. */
+  private translate = inject(TranslateService);
 
   /**
    * Grid data formatter service
@@ -83,6 +91,9 @@ export class GridDataFormatterService {
     this.valueObj = {
       value: {},
     };
+    this.actionsObj = {
+      actions: [],
+    };
     this.showFullScreenButtonObj = {
       showFullScreenButton: {},
     };
@@ -97,9 +108,18 @@ export class GridDataFormatterService {
   public formatGridRowData(rowData: any, fields: GridField[]) {
     this.initHelperFields();
     this.iterateFields(rowData, fields);
+    this.actionsObj.actions =
+      map(
+        groupBy(get(rowData, '_meta.actions', []), 'columnLabel'),
+        (actions, label) => ({
+          label,
+          actions,
+        })
+      ) || [];
     // General properties
     Object.assign(rowData, this.styleObj);
     Object.assign(rowData, this.textObj);
+    Object.assign(rowData, this.actionsObj);
     // Specific types for each field and meta
     Object.assign(rowData, this.iconObj);
     Object.assign(rowData, this.urlObj);
@@ -257,7 +277,7 @@ export class GridDataFormatterService {
       }
       default: {
         finalText = this.htmlParserService.applyLayoutFormat(
-          getPropertyValue(rowData, field, parent),
+          getPropertyValue(rowData, field, parent, this.translate.currentLang),
           field
         );
       }

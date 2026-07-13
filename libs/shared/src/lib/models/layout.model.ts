@@ -1,9 +1,12 @@
+import { LocalizedString } from './localized-string.model';
+
 /**
  * Interface for Layout objects.
  */
 export interface Layout {
   id?: string;
   name?: string;
+  nameTranslations?: LocalizedString;
   query?: any;
   display?: any;
 }

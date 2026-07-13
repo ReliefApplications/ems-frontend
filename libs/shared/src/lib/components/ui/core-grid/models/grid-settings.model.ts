@@ -1,4 +1,5 @@
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { LocalizedString } from '../../../../models/localized-string.model';
 
 // TO-DO Finish it
 /**
@@ -31,13 +32,16 @@ export interface GridActions {
   remove: boolean;
   add?: boolean;
   export?: boolean;
+  import?: boolean;
   showDetails?: boolean;
   navigateToPage?: boolean;
   navigateSettings?: {
     field: string;
     pageUrl: string;
-    title: string;
+    title: LocalizedString;
   };
   search?: boolean;
   inlineEdition?: boolean;
+  /** List of field names that should stay read-only during inline edition */
+  readOnlyFields?: string[];
 }

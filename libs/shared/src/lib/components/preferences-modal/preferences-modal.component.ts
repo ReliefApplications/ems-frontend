@@ -55,6 +55,8 @@ export class PreferencesModalComponent implements OnInit {
   dateFormats: { name: string | null; value: string }[] = [];
   /** Current date format */
   currDateFormat: string;
+  /** Whether the date & time format picker should be displayed */
+  public showDateFormatPicker: boolean;
 
   /**
    * Preferences Modal constructor
@@ -63,13 +65,17 @@ export class PreferencesModalComponent implements OnInit {
    * @param fb This is the service that will be used to build forms.
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Shared service for Date Translation
+   * @param environment Environment configuration
    */
   constructor(
     @Inject(DIALOG_DATA) public data: PreferencesDialogData,
     private fb: FormBuilder,
     private translate: TranslateService,
-    private dateTranslate: DateTranslateService
+    private dateTranslate: DateTranslateService,
+    @Inject('environment') environment: any
   ) {
+    // hide the date format picker when the environment opts out of it
+    this.showDateFormatPicker = !environment.hideDateFormatPicker;
     // find the current language
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
     // find the list of languages and their complete names
@@ -91,10 +97,20 @@ export class PreferencesModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.preferencesForm = this.createPreferencesForm();
+    let previousLang = this.currLang;
     this.preferencesForm
       .get('language')
       ?.valueChanges.subscribe((lang: any) => {
         this.translate.use(lang);
+        const dateFormatCtrl = this.preferencesForm.get('dateFormat');
+        if (
+          dateFormatCtrl &&
+          (dateFormatCtrl.value === previousLang ||
+            !localStorage.getItem('date-lang'))
+        ) {
+          dateFormatCtrl.setValue(lang, { emitEvent: false });
+        }
+        previousLang = lang;
       });
   }
 

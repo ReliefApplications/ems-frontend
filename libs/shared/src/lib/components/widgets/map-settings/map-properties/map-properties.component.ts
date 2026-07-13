@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, UntypedFormGroup } from '@angular/forms';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
@@ -14,7 +14,10 @@ import { createGeographicExtent } from '../map-forms';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends UnsubscribeComponent {
+export class MapPropertiesComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Current form group */
   @Input() form!: UntypedFormGroup;
   /** Map settings */
@@ -41,6 +44,10 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
    */
   constructor() {
     super();
+  }
+
+  ngOnInit() {
+    console.log(this.form);
   }
 
   /**

@@ -8,14 +8,6 @@
           [record]="record"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
-
-        <div class="flex gap-4 items-center mr-4">
-          <!-- Translate form -->
-          <shared-form-actions
-            [survey]="survey"
-            [surveyNext]="surveyNext || undefined"
-          ></shared-form-actions>
-        </div>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"

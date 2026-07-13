@@ -13,4 +13,12 @@ export class MapWidgetComponent extends BaseWidgetComponent {
   @Input() settings: any;
   /** Reference to map component */
   @ViewChild(MapComponent) mapComponent!: MapComponent;
+
+  /**
+   * Reload the map layers' data.
+   * Used to keep the map in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.mapComponent?.reloadData();
+  }
 }

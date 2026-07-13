@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Fields } from '../../../../../models/layer.model';
+import { LocalizedString } from '../../../../../models/localized-string.model';
 import { DomPortal } from '@angular/cdk/portal';
 
 /**
@@ -25,7 +26,7 @@ export class LayerFieldsComponent {
    * @param event event of the input.
    * @param field field to update.
    */
-  saveLabel(event: string, field: Fields): void {
+  saveLabel(event: LocalizedString | null, field: Fields): void {
     if (event) {
       this.updatedField.emit({ ...field, label: event });
     }

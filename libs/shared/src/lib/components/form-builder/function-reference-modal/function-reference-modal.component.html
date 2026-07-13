@@ -1,0 +1,99 @@
+<ui-dialog size="medium">
+  <!-- Header: modal title -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'pages.formBuilder.functionReference.title' | translate }}
+    </h3>
+  </ng-container>
+  <!-- Content: search input + custom and built-in function listings -->
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-col gap-4">
+      <!-- Search input: filters both custom and built-in lists by name/description -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.search' | translate }}</label>
+        <input
+          type="text"
+          [(ngModel)]="query"
+          [placeholder]="
+            'pages.formBuilder.functionReference.searchPlaceholder' | translate
+          "
+        />
+      </div>
+
+      <!-- Custom functions: grouped by category, with signature/description/example -->
+      <section>
+        <h4 class="font-semibold mb-2">
+          {{ 'pages.formBuilder.functionReference.custom' | translate }}
+        </h4>
+        <!-- Empty state when the query matches no custom functions -->
+        <p
+          *ngIf="customGroups.length === 0"
+          class="text-sm text-gray-500 italic"
+        >
+          {{ 'pages.formBuilder.functionReference.noResults' | translate }}
+        </p>
+        <!-- One block per category (record, date, matrix, ...) -->
+        <div *ngFor="let group of customGroups" class="mb-4">
+          <h5 class="text-xs uppercase tracking-wide text-gray-500 mb-1">
+            {{ group.label }}
+          </h5>
+          <ul class="flex flex-col gap-2">
+            <!-- Function card: signature, then human description, then optional example -->
+            <li
+              *ngFor="let fn of group.functions"
+              class="border border-gray-200 rounded p-2"
+            >
+              <code class="text-sm font-mono text-gray-800">{{
+                fn.signature
+              }}</code>
+              <p class="text-sm text-gray-700 mt-1">{{ fn.description }}</p>
+              <p
+                *ngIf="fn.example"
+                class="text-xs text-gray-500 mt-1 font-mono"
+              >
+                {{ fn.example }}
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Built-in SurveyJS functions: names only, with link to official docs -->
+      <section>
+        <h4 class="font-semibold mb-1">
+          {{ 'pages.formBuilder.functionReference.builtin' | translate }}
+        </h4>
+        <p class="text-xs text-gray-500 mb-2">
+          {{ 'pages.formBuilder.functionReference.builtinHint' | translate }}
+          <a
+            [href]="builtinDocsUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary-600 underline"
+          >
+            {{ 'pages.formBuilder.functionReference.docs' | translate }}
+          </a>
+        </p>
+        <!-- Empty state when the query matches no built-ins -->
+        <p *ngIf="builtins.length === 0" class="text-sm text-gray-500 italic">
+          {{ 'pages.formBuilder.functionReference.noResults' | translate }}
+        </p>
+        <!-- Flat list of built-in function names as inline code chips -->
+        <div *ngIf="builtins.length > 0" class="flex flex-wrap gap-1">
+          <code
+            *ngFor="let name of builtins"
+            class="text-xs font-mono bg-gray-100 px-2 py-1 rounded"
+          >
+            {{ name }}()
+          </code>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+  <!-- Footer: dismiss-only -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -11,6 +11,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabSettingsModule } from '../tab-settings/tab-settings.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 
 /**
  * Main tab of tabs widget edition module.
@@ -28,6 +29,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     TabSettingsModule,
     DragDropModule,
     TooltipModule,
+    LocalizePipe,
   ],
   exports: [TabMainComponent],
 })

@@ -26,6 +26,7 @@ import {
   AppAbility,
   KendoTranslationService,
   AuthInterceptorService,
+  LanguageInterceptorService,
   FormService,
   DatePipe,
 } from '@oort-front/shared';
@@ -46,6 +47,7 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+import localeUk from '@angular/common/locales/uk';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
 import { ApplicationWidgetRoutingModule } from './widgets/app-widget/app-widget-routing.module';
@@ -59,6 +61,7 @@ import { ShadowDomService } from '@oort-front/ui';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+registerLocaleData(localeUk);
 
 /**
  * Initialize authentication in the platform.
@@ -196,6 +199,11 @@ export const getBaseHref = () => {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LanguageInterceptorService,
       multi: true,
     },
     {

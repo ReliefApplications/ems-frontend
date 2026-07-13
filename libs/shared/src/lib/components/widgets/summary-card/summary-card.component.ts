@@ -21,6 +21,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -149,11 +150,20 @@ export class SummaryCardComponent
   private scrollEventBindTimeout!: NodeJS.Timeout;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /**
+   * Fields the search applies to: the layout fields, flattened like grid
+   * columns (related-resource subfields get dotted names, e.g.
+   * `emergency.name`) with their meta (incl. resolved choices)
+   */
+  private searchableFields: any[] = [];
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
     let filter: CompositeFilterDescriptor | undefined;
-    const skippedFields = ['id', 'incrementalId'];
+    // `id` is the Mongo ObjectId — not a useful regex search target.
+    // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+    // so it must remain searchable.
+    const skippedFields = ['id'];
     if (this.searchControl.value) {
       filter = {
         logic: 'and',
@@ -164,7 +174,11 @@ export class SummaryCardComponent
             operator: 'contains',
             value: searchFilters(
               this.searchControl.value,
-              this.fields,
+              // Fall back to the raw resource fields while the meta query
+              // used to build searchableFields is still loading
+              this.searchableFields.length
+                ? this.searchableFields
+                : this.fields,
               skippedFields
             ),
           },
@@ -255,9 +269,11 @@ export class SummaryCardComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : 'Summary Card'
-    } ${formatDate}.pdf`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : 'Summary Card'} ${formatDate}.pdf`;
   }
 
   /** @returns whether or not we know how many items there are in total */
@@ -614,7 +630,12 @@ export class SummaryCardComponent
 
     // update card list and scroll behavior according to the card items display
 
-    this.cards = newCards;
+    if (this.scrolling) {
+      // Loading next page on infinite scroll, append new cards to the list
+      this.cards = [...this.cards, ...newCards];
+    } else {
+      this.cards = newCards;
+    }
     if (this.widget.settings.widgetDisplay.hideEmpty) {
       // Listen to cards data changes to know when widget is empty and will be hidden
       this.isEmpty = this.cards.length ? false : true;
@@ -938,6 +959,16 @@ export class SummaryCardComponent
               }
             });
             await Promise.all(promises);
+            // Flatten the layout fields like grid columns (dotted names for
+            // related-resource subfields, meta with resolved choices) so the
+            // search applies to every field of the layout — see queryFilter
+            this.searchableFields = this.gridService
+              .getFields(layoutQuery.fields || [], this.metaFields, {})
+              .filter(
+                (f: any) =>
+                  !f.hidden && !f.subFields?.length && !f.name.endsWith('.id')
+              )
+              .map((f: any) => ({ ...f.meta, name: f.name }));
             // Update cards metadata (will be the fields value in the cards content)
             this.cards = this.cards.map((c: CardT) => ({
               ...c,
@@ -1039,7 +1070,6 @@ export class SummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
     if (isScrollNearBottom) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
-        this.cards.length;
         this.scrolling = true;
         if (this.useReferenceData) {
           if (!this.refData?.pageInfo?.strategy) {
@@ -1065,7 +1095,7 @@ export class SummaryCardComponent
             })
           )
             .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-            .subscribe(() => this.updateRecordCards.bind(this));
+            .subscribe((results) => this.updateRecordCards(results));
         }
       }
     }
@@ -1128,6 +1158,14 @@ export class SummaryCardComponent
    */
   public onPageSizeChange(event: PageSizeChangeEvent): void {
     localStorage.setItem(SELECTED_PAGE_SIZE_KEY, event.newPageSize.toString());
+  }
+
+  /**
+   * Reload the summary card data from the server.
+   * Used to keep the card in sync after data is edited elsewhere on the dashboard.
+   */
+  public reload(): void {
+    this.refresh();
   }
 
   /**

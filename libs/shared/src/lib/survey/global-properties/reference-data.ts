@@ -171,25 +171,55 @@ export const render = (questionElement: Question, injector: Injector): void => {
 
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
+    // In SurveyCreator design mode the choices are not displayed in the
+    // design surface; running the fetch + visibleChoices cascade there only
+    // adds work (heavier path because of `isAddDefaultItems`, plus property
+    // grid listeners) and was the source of UI freezes in the form builder.
+    const isDesignMode = (question.survey as SurveyModel)?.isDesignMode;
+    if (isDesignMode) {
+      return;
+    }
 
     const updateChoices = async () => {
       if (question.referenceData && question.referenceDataDisplayField) {
+        const variables = graphQLVariables(
+          question,
+          'referenceDataVariableMapping'
+        );
         const choices = await referenceDataService.getChoices(
           question.referenceData,
           question.referenceDataDisplayField,
           question.isPrimitiveValue,
-          graphQLVariables(question, 'referenceDataVariableMapping')
+          variables
         );
-        question.setPropertyValue(
-          '_graphQLVariables',
-          graphQLVariables(question, 'referenceDataVariableMapping')
-        );
-        // this is to avoid that the choices appear on the 'choices' tab
-        // and also to avoid the choices being sent to the server
-        question.choices = [];
+        question.setPropertyValue('_graphQLVariables', variables);
 
         const choiceItems = choices.map((choice) => new ItemValue(choice));
-        question.setPropertyValue('visibleChoices', choiceItems);
+        choiceItems.forEach((item) => {
+          (item as any).locOwner = question;
+        });
+        // Inject items via the internal `choicesFromUrl` slot — the same one
+        // used by SurveyJS's built-in `choicesByUrl`. It is not a serialized
+        // property, but it feeds `visibleChoices` and `displayValue` through
+        // the normal select-base pipeline, so expressions like
+        // `displayValue('q')` resolve to the choice text rather than the raw
+        // value. This also survives the internal visibleChoices recompute
+        // triggered by setting `question.value` below, which previously wiped
+        // a direct `visibleChoices` override.
+        (question as any).choicesFromUrl = choiceItems;
+        // Setting `choices` to [] keeps the items out of the editor's
+        // "Choices" tab / serialized JSON, AND triggers SurveyJS's built-in
+        // `choices` propertyChanged handler which runs `filterItems()` +
+        // `onVisibleChoicesChanged()` for us — a single cascade. We only
+        // force the cascade ourselves when `choices` is already empty (the
+        // assignment then no-ops and would otherwise leave visibleChoices
+        // stale on a refetch).
+        const wasChoicesEmpty =
+          !question.choices || question.choices.length === 0;
+        question.choices = [];
+        if (wasChoicesEmpty) {
+          (question as any).onVisibleChoicesChanged();
+        }
         // manually set the selected option (not done by default)
         // only affects dropdown questions (only one option selected) with reference data and non primitive values
         if (!question.isPrimitiveValue && question.getType() === 'dropdown') {
@@ -274,6 +304,16 @@ export const render = (questionElement: Question, injector: Injector): void => {
         });
       question.referenceDataChoicesLoaded = true;
     }
+    // Everything below wires listeners exactly ONCE per question.
+    // `onAfterRenderQuestion` fires on every (re)render, so without this guard
+    // each render re-runs the survey-wide `getAllQuestions()` scan and, worse,
+    // stacks duplicate `onValueChanged` / property-changed listeners that never
+    // get detached. After K renders a single value change would fire the linked
+    // handler K times, each running the expensive `graphQLVariables` pipeline.
+    if (question.referenceDataListenersWired) {
+      return;
+    }
+    question.referenceDataListenersWired = true;
     // Prevent selected choices to be removed when sending the value
     question.clearIncorrectValuesCallback = () => {
       // console.log(question.visibleChoices);
@@ -308,6 +348,12 @@ export const render = (questionElement: Question, injector: Injector): void => {
       .getAllQuestions()
       .find((qu) => qu.referenceDataVariableMapping);
     const updateReferenceDataChoicesFunc = async (prop: any) => {
+      // The question may have been disposed (removed from the survey) while this
+      // survey-level listener is still attached on a deferred tick; bail before
+      // touching `_instance`, which is gone after dispose.
+      if (!question._instance) {
+        return;
+      }
       if ((typeof prop === 'boolean' && prop) || typeof prop !== 'boolean') {
         // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
         //
@@ -317,18 +363,16 @@ export const render = (questionElement: Question, injector: Injector): void => {
         // As this two update methods could work on their own specific terms, we have one property for each action to handle:
         // - referenceDataVariableMapping
 
+        const variables = graphQLVariables(
+          question,
+          'referenceDataVariableMapping'
+        );
         if (
           question.referenceDataVariableMapping &&
           question.referenceDataVariableMapping != '{}' &&
-          !isEqual(
-            question._graphQLVariables,
-            graphQLVariables(question, 'referenceDataVariableMapping')
-          )
+          !isEqual(question._graphQLVariables, variables)
         ) {
-          question.setPropertyValue(
-            '_graphQLVariables',
-            graphQLVariables(question, 'referenceDataVariableMapping')
-          );
+          question.setPropertyValue('_graphQLVariables', variables);
           question._instance.loading = true;
           question._instance.disabled = true;
           await updateChoices();
@@ -339,13 +383,29 @@ export const render = (questionElement: Question, injector: Injector): void => {
       }
     };
     if (containsLinkedReferenceDataQuestions) {
-      (question.survey as SurveyModel).onValueChanged.add(
-        updateReferenceDataChoicesFunc
-      );
-      (question.survey as SurveyModel).registerFunctionOnPropertyValueChanged(
+      const survey = question.survey as SurveyModel;
+      // Survey-level listeners outlive the question, so track detachers and
+      // remove them on dispose — otherwise the closure keeps the (disposed)
+      // question alive and keeps firing against it on every value change.
+      const refreshDataKey = `referenceData_${question.name}`;
+      survey.onValueChanged.add(updateReferenceDataChoicesFunc);
+      survey.registerFunctionOnPropertyValueChanged(
         'refreshData',
-        updateReferenceDataChoicesFunc
+        updateReferenceDataChoicesFunc,
+        refreshDataKey
       );
+      // SurveyJS exposes no per-question "destroyed" event, only `dispose()`,
+      // which it calls both when a single question is removed and when the whole
+      // survey is torn down.
+      const disposeQuestion = question.dispose.bind(question);
+      question.dispose = () => {
+        survey.onValueChanged.remove(updateReferenceDataChoicesFunc);
+        survey.unRegisterFunctionOnPropertyValueChanged(
+          'refreshData',
+          refreshDataKey
+        );
+        disposeQuestion();
+      };
     }
   }
 };

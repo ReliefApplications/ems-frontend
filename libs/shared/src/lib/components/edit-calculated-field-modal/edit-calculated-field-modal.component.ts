@@ -1,9 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { EditorService } from '../../services/editor/editor.service';
-import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
+import {
+  getCalcKeys,
+  getDataKeys,
+  getInfoKeys,
+  getUserKeys,
+} from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
@@ -22,6 +27,17 @@ interface DialogData {
   /** TODO: Add type to fields */
   calculatedField?: any;
   resourceFields: any[];
+  /** Id of the resource, enables the related-record value builder */
+  resourceId?: string;
+}
+
+/**
+ * Environment contract for user contextual field fallback.
+ */
+interface EnvironmentWithUserAttributes {
+  user?: {
+    attributes?: string[];
+  };
 }
 
 /**
@@ -63,18 +79,26 @@ export class EditCalculatedFieldModalComponent implements OnInit {
   /** tinymce editor */
   public editor: RawEditorSettings = INLINE_EDITOR_CONFIG;
 
+  /** Expression editor control, used to insert built expressions at the cursor */
+  @ViewChild(EditorControlComponent)
+  private editorControl?: EditorControlComponent;
+
   /**
    * Modal to edit Calculated field.
    *
    * @param dialogRef This is the reference of the dialog that will be opened.
    * @param fb This is the service used to build forms.
    * @param editorService Editor service used to get main URL and current language
+   * @param dialog CDK Dialog service used to open the function reference modal.
+   * @param environment Environment fallback used in tests and previews
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
     public dialogRef: DialogRef,
     public fb: FormBuilder,
     private editorService: EditorService,
+    private dialog: Dialog,
+    @Inject('environment') private environment: EnvironmentWithUserAttributes,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {
     // Set the editor base url based on the environment file
@@ -90,6 +114,7 @@ export class EditCalculatedFieldModalComponent implements OnInit {
       ...getCalcKeys(),
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
+      ...getUserKeys(this.environment.user?.attributes || []),
     ];
     this.editorService.addCalcAndKeysAutoCompleter(
       this.editor,
@@ -102,5 +127,44 @@ export class EditCalculatedFieldModalComponent implements OnInit {
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue());
+  }
+
+  /**
+   * Opens the calculated-field reference modal, which documents every calc
+   * function and placeholder syntax available in the expression editor.
+   */
+  async openReferenceModal(): Promise<void> {
+    const { CalculatedFieldReferenceModalComponent } = await import(
+      './calculated-field-reference-modal/calculated-field-reference-modal.component'
+    );
+    this.dialog.open(CalculatedFieldReferenceModalComponent, {
+      width: '720px',
+      autoFocus: false,
+    });
+  }
+
+  /**
+   * Opens the related-record value builder, and inserts the built
+   * {{calc.related*(...)}} expression at the editor cursor on close.
+   */
+  async openRelatedValueBuilder(): Promise<void> {
+    const { RelatedValueBuilderModalComponent } = await import(
+      './related-value-builder-modal/related-value-builder-modal.component'
+    );
+    const dialogRef = this.dialog.open<string | undefined>(
+      RelatedValueBuilderModalComponent,
+      {
+        width: '720px',
+        autoFocus: false,
+        data: { resourceId: this.data.resourceId },
+      }
+    );
+    dialogRef.closed.subscribe((expression) => {
+      if (expression && this.editorControl) {
+        this.editorControl.editor.editor.insertContent(expression);
+        // Sync the expression form control with the editor content
+        this.editorControl.onEditorContentChange();
+      }
+    });
   }
 }

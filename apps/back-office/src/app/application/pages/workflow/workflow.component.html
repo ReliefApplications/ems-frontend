@@ -12,16 +12,16 @@
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
       <!-- Editable Title -->
       <div class="flex items-center gap-1">
-        <shared-editable-text
-          [text]="workflow.name"
+        <shared-editable-localized-text
+          [value]="workflow.nameTranslations || workflow.name || ''"
           [canEdit]="canEditName"
           (onChange)="saveName($event)"
           (formActiveEvent)="formActive = $event"
         >
           <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ workflow.name }}
+            {{ workflow.nameTranslations || workflow.name | sharedLocalize }}
           </h1>
-        </shared-editable-text>
+        </shared-editable-localized-text>
         <ui-button
           *ngIf="!formActive"
           variant="grey"
@@ -50,7 +50,10 @@
 >
   <shared-dashboard-export-button
     *ngIf="$any(routerOutlet?.component)?.dashboard"
-    [title]="$any(routerOutlet?.component)?.dashboard?.name"
+    [title]="
+      $any(routerOutlet?.component)?.dashboard?.nameTranslations ||
+      $any(routerOutlet?.component)?.dashboard?.name
+    "
     [exporter]="$any(routerOutlet?.component)?.elementRef"
     class="self-center"
   ></shared-dashboard-export-button>

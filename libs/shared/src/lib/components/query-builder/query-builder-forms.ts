@@ -7,15 +7,25 @@ import { FILTER_OPERATORS } from '../filter/filter.const';
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
+type CreateFilterGroupOptions = {
+  includeValueSource?: boolean;
+};
+
 /**
  * Builds a filter form
  *
  * @param filter Initial filter
+ * @param options Optional form controls to include
  * @returns Filter form
  */
-export const createFilterGroup = (filter: any) => {
+export const createFilterGroup = (
+  filter: any,
+  options: CreateFilterGroupOptions = {}
+) => {
   if (filter?.filters) {
-    const filters = filter.filters.map((x: any) => createFilterGroup(x));
+    const filters = filter.filters.map((x: any) =>
+      createFilterGroup(x, options)
+    );
     return formBuilder.group({
       logic: filter.logic || 'and',
       filters: formBuilder.array(filters),
@@ -26,6 +36,9 @@ export const createFilterGroup = (filter: any) => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+      ...(options.includeValueSource
+        ? { valueSource: get(filter, 'valueSource', 'field') }
+        : {}),
       // todo: fix this regression introduced by changes done in emails
       inTheLast: formBuilder.group({
         number: [1],
@@ -185,6 +198,7 @@ export const createDisplayForm = (value: any) =>
 export const createStyleForm = (value: any) =>
   formBuilder.group({
     name: [value?.name || 'New rule', Validators.required],
+    isBadge: [value?.isBadge || false],
     background: formBuilder.group({
       color: [value?.background?.color || ''],
     }),
@@ -194,6 +208,7 @@ export const createStyleForm = (value: any) =>
       underline: [value?.text?.underline || false],
       italic: [value?.text?.italic || false],
     }),
+    wholeRow: [value?.wholeRow ?? !(value?.fields && value.fields.length > 0)],
     fields: [value?.fields || []],
     filter: createFilterGroup(value?.filter || {}),
   });

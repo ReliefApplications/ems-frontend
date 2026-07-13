@@ -26,6 +26,7 @@ import { QuestionResource } from '../types';
 import {
   buildAddButton,
   buildSearchButton,
+  canShowSearchButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
@@ -540,7 +541,9 @@ export const init = (
         (question.survey as SurveyModel).mode !== 'display' &&
         question.resource
       ) {
-        searchBtn.style.display = 'block';
+        searchBtn.style.display = canShowSearchButton(question)
+          ? 'block'
+          : 'none';
         const addBtn = buildAddButton(
           question,
           false,
@@ -552,8 +555,21 @@ export const init = (
 
         // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
         question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-          searchBtn.style.display = question.canSearch ? 'block' : 'none';
+          searchBtn.style.display = canShowSearchButton(question)
+            ? 'block'
+            : 'none';
         });
+        question.registerFunctionOnPropertyValueChanged(
+          'gridFieldsSettings',
+          () => {
+            // Fields were added/removed: re-evaluate whether the search
+            // button should be visible (it needs at least one configured
+            // field to be functional).
+            searchBtn.style.display = canShowSearchButton(question)
+              ? 'block'
+              : 'none';
+          }
+        );
         question.registerFunctionOnPropertyValueChanged('addTemplate', () => {
           addBtn.style.display =
             question.addRecord && question.addTemplate ? 'block' : 'none';

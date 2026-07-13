@@ -27,8 +27,8 @@ describe('ChoseRoleComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
-        }
+          useValue: {},
+        },
       ],
       imports: [
         DialogModule,
@@ -41,7 +41,7 @@ describe('ChoseRoleComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

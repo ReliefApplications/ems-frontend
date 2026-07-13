@@ -33,6 +33,7 @@
       reorderable ||
       actions.add ||
       actions.export ||
+      actions.import ||
       editable ||
       filterable ||
       hasEnabledActions
@@ -86,6 +87,30 @@
     >
       {{ 'common.export' | translate }}
     </button>
+    <button
+      [hidden]="!(actions.import && canUpload)"
+      kendoButton
+      (click)="showUpload = !showUpload"
+      cdkOverlayOrigin
+      #uploadTrigger="cdkOverlayOrigin"
+      class="export-hide"
+    >
+      {{
+        'common.uploadObject'
+          | translate : { name: 'common.record.few' | translate }
+      }}
+    </button>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="uploadTrigger"
+      [cdkConnectedOverlayOpen]="showUpload"
+    >
+      <app-upload-menu
+        (close)="showUpload = false"
+        (upload)="uploadFileData($event)"
+        (download)="onDownloadTemplate()"
+      ></app-upload-menu>
+    </ng-template>
     <ng-container *ngIf="editable">
       <button
         kendoButton
@@ -147,7 +172,7 @@
       [sticky]="true"
     ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
-    <ng-container *ngFor="let field of fields">
+    <ng-container *ngFor="let field of fields; trackBy: trackByFieldName">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
         *ngIf="
@@ -168,6 +193,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <!-- FILTER -->
         <ng-container *ngIf="field.meta">
           <!-- FILTER ( datetime / date ) -->
@@ -594,6 +627,14 @@
             [editable]="!subField.disabled"
             class="no-padding"
           >
+            <ng-template kendoGridHeaderTemplate let-column>
+              <ng-container
+                *ngTemplateOutlet="
+                  headerTitleTemplate;
+                  context: { title: column.title }
+                "
+              ></ng-container>
+            </ng-template>
             <ng-template
               kendoGridFilterMenuTemplate
               let-filter
@@ -663,6 +704,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <a
@@ -691,6 +740,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <div
@@ -746,6 +803,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-template
           kendoGridFilterMenuTemplate
           let-filter
@@ -815,6 +880,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-template
           kendoGridCellTemplate
           let-dataItem="dataItem"
@@ -828,7 +901,7 @@
                 *ngFor="let file of dataItem[field.name]"
                 [look]="'flat'"
                 [uiTooltip]="file.name"
-                (click)="$event.stopPropagation(); onDownload(file)"
+                (click)="$event.stopPropagation(); onOpenFile(file)"
                 class="w-full !justify-start overflow-hidden text-ellipsis"
               >
                 <span [class]="dataItem.icon[file.name]"></span>
@@ -858,7 +931,7 @@
                   *ngFor="let file of dataItem[field.name]"
                   [look]="'flat'"
                   [uiTooltip]="file.name"
-                  (click)="onDownload(file)"
+                  (click)="$event.stopPropagation(); onOpenFile(file)"
                   class="w-full justify-start overflow-hidden text-overflow-ellipsis"
                 >
                   <p style="text-wrap: auto" class="max-w-full">
@@ -890,6 +963,14 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <div
@@ -914,6 +995,14 @@
           field.meta.type !== 'people-tagbox'
         "
       >
+        <ng-template kendoGridHeaderTemplate let-column>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTitleTemplate;
+              context: { title: column.title }
+            "
+          ></ng-container>
+        </ng-template>
         <ng-container
           *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)"
         >
@@ -927,6 +1016,14 @@
             [editable]="!field.disabled"
             class="no-padding"
           >
+            <ng-template kendoGridHeaderTemplate let-column>
+              <ng-container
+                *ngTemplateOutlet="
+                  headerTitleTemplate;
+                  context: { title: column.title }
+                "
+              ></ng-container>
+            </ng-template>
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <ul class="matrix-cell">
                 <li *ngFor="let row of field.meta.rows">
@@ -953,6 +1050,14 @@
             [minResizableWidth]="50"
             [editable]="!field.disabled"
           >
+            <ng-template kendoGridHeaderTemplate let-column>
+              <ng-container
+                *ngTemplateOutlet="
+                  headerTitleTemplate;
+                  context: { title: column.title }
+                "
+              ></ng-container>
+            </ng-template>
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <!-- DISPLAY ( matrix / matrixdropdown / matrixdynamic ) -->
               <ng-container *ngIf="field.meta.type !== 'multipletext'">
@@ -1162,15 +1267,28 @@
     </ng-container>
     <!-- CUSTOM ROW ACTIONS -->
     <kendo-grid-column
-      *ngFor="let group of customRowActionGroups"
+      *ngFor="let group of customRowActionGroups; trackBy: trackByGroupLabel"
       [columnMenu]="false"
-      [width]="108"
+      [width]="group.width"
       [resizable]="true"
       [title]="group.label"
+      [sticky]="true"
     >
+      <!-- Column header -->
+      <ng-template kendoGridHeaderTemplate let-column>
+        <ng-container
+          *ngTemplateOutlet="
+            headerTitleTemplate;
+            context: { title: column.title }
+          "
+        ></ng-container>
+      </ng-template>
+      <!-- Column cell -->
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <div class="flex flex-row gap-2">
-          <ng-container *ngFor="let customRowAction of group.actions">
+          <ng-container
+            *ngFor="let customRowAction of getRowActions(dataItem, group)"
+          >
             <shared-action-button
               [actionButton]="$any(customRowAction)"
               [recordId]="dataItem.id"
@@ -1187,9 +1305,17 @@
       [columnMenu]="false"
       [width]="68"
       [resizable]="false"
-      title="Details"
+      [title]="'components.widget.grid.actions.details' | translate"
       [sticky]="true"
     >
+      <ng-template kendoGridHeaderTemplate let-column>
+        <ng-container
+          *ngTemplateOutlet="
+            headerTitleTemplate;
+            context: { title: column.title }
+          "
+        ></ng-container>
+      </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
           class="text-center"
@@ -1207,9 +1333,17 @@
       [columnMenu]="false"
       [width]="54"
       [resizable]="true"
-      [title]="actions.navigateSettings?.title ?? ''"
+      [title]="(actions.navigateSettings?.title | sharedLocalize) ?? ''"
       [sticky]="true"
     >
+      <ng-template kendoGridHeaderTemplate let-column>
+        <ng-container
+          *ngTemplateOutlet="
+            headerTitleTemplate;
+            context: { title: column.title }
+          "
+        ></ng-container>
+      </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
           class="text-center"
@@ -1296,3 +1430,14 @@
     </div>
   </ng-template>
 </kendo-grid>
+
+<!-- Generic column header template, with tooltip -->
+<ng-template #headerTitleTemplate let-title="title">
+  <span
+    class="block w-full min-w-0 truncate"
+    [uiTooltip]="title || ''"
+    tooltipEnableBy="truncate"
+  >
+    {{ title }}
+  </span>
+</ng-template>

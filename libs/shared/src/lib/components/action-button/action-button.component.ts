@@ -5,11 +5,13 @@ import {
   OnInit,
   Output,
   Inject,
+  Optional,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { LocalizePipe } from '../../pipes/localize/localize.pipe';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Router } from '@angular/router';
@@ -21,6 +23,8 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { WidgetComponent } from '../widget/widget.component';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { lastValueFrom, map, of, Subject, takeUntil, tap } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
@@ -41,7 +45,13 @@ import { EmailNotification } from '../../models/email-notifications.model';
 @Component({
   selector: 'shared-action-button',
   standalone: true,
-  imports: [CommonModule, ButtonModule, TooltipModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    TooltipModule,
+    TranslateModule,
+    LocalizePipe,
+  ],
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],
 })
@@ -105,6 +115,8 @@ export class ActionButtonComponent
    * @param translate TranslateService
    * @param queryBuilder QueryBuilderService
    * @param contextService Shared context service
+   * @param dashboardService Shared dashboard service
+   * @param widgetComponent Parent widget component, if the button is inside a dashboard widget
    */
   constructor(
     @Inject('environment') environment: any,
@@ -119,7 +131,9 @@ export class ActionButtonComponent
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private dashboardService: DashboardService,
+    @Optional() private widgetComponent: WidgetComponent
   ) {
     super();
     this.environment = environment;
@@ -342,6 +356,11 @@ export class ActionButtonComponent
           if (shouldReload) {
             this.reloadParent.emit();
           }
+          // If the action button lives inside a dashboard widget, reload all
+          // dashboard widgets so the edited/added record is reflected everywhere.
+          if (this.widgetComponent) {
+            this.dashboardService.triggerReloadWidgets();
+          }
         };
         const dialogRef = this.dialog.open(FormModalComponent, {
           disableClose: true,
@@ -453,6 +472,8 @@ export class ActionButtonComponent
                     );
                     if (navigateTo.targetUrl.openInNewTab) {
                       window.open(href, '_blank');
+                      // As user stays on same page, execute callback
+                      callback();
                     } else {
                       if (href?.startsWith('./')) {
                         this.router.navigateByUrl(href.substring(1));

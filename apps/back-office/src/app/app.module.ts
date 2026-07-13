@@ -14,6 +14,7 @@ import {
 
 // Env
 import { environment } from '../environments/environment';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
@@ -30,6 +31,7 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
   AuthInterceptorService,
+  LanguageInterceptorService,
   AppAbility,
   FormService,
   DatePipe,
@@ -37,6 +39,7 @@ import {
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+import localeUk from '@angular/common/locales/uk';
 
 /** CASL */
 import { PureAbility } from '@casl/ability';
@@ -44,6 +47,7 @@ import { PureAbility } from '@casl/ability';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+registerLocaleData(localeUk);
 
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -124,6 +128,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     GraphQLModule,
     DateInputsModule,
     MonacoEditorModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.serviceWorker ?? environment.production,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [
     {
@@ -152,6 +160,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LanguageInterceptorService,
       multi: true,
     },
     {

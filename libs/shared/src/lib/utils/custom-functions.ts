@@ -10,6 +10,151 @@ import {
 } from 'survey-core';
 
 /**
+ * Category buckets used to group custom functions in the reference panel.
+ */
+export type CustomFunctionCategory =
+  | 'record'
+  | 'date'
+  | 'matrix'
+  | 'array'
+  | 'string'
+  | 'misc';
+
+/**
+ * Static metadata describing a custom function for the reference panel.
+ */
+export interface CustomFunctionMeta {
+  name: string;
+  signature: string;
+  description: string;
+  example?: string;
+  category: CustomFunctionCategory;
+}
+
+/**
+ * Metadata for every function registered by {@link addCustomFunctions}.
+ * Keep entries in sync with the registrations below.
+ */
+export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
+  /** Creation date of the current record (or now() if new). */
+  {
+    name: 'createdAt',
+    signature: 'createdAt()',
+    description: 'Creation date of the current record (or now() if new).',
+    category: 'record',
+  },
+  /** Last modification date of the current record. */
+  {
+    name: 'modifiedAt',
+    signature: 'modifiedAt()',
+    description: 'Last modification date of the current record.',
+    category: 'record',
+  },
+  /** Name of the user who created the record. */
+  {
+    name: 'createdBy',
+    signature: 'createdBy()',
+    description: 'Name of the user who created the record.',
+    category: 'record',
+  },
+  /** Internal ID of the current record. */
+  {
+    name: 'id',
+    signature: 'id()',
+    description: 'Internal ID of the current record.',
+    category: 'record',
+  },
+  /** Incremental ID of the current record. */
+  {
+    name: 'incrementalId',
+    signature: 'incrementalId()',
+    description: 'Incremental ID of the current record.',
+    category: 'record',
+  },
+  /** Returns the display value (choice text) of a question. */
+  {
+    name: 'displayValue',
+    signature: "displayValue('questionName')",
+    description: 'Returns the display value (choice text) of a question.',
+    example: "displayValue('country') = 'France'",
+    category: 'misc',
+  },
+  /** Day of the week of a date (0 = Sunday, 6 = Saturday). */
+  {
+    name: 'weekday',
+    signature: 'weekday(date)',
+    description: 'Day of the week of a date (0 = Sunday, 6 = Saturday).',
+    example: 'weekday(now()) = 3',
+    category: 'date',
+  },
+  /** Returns a new date with the given number of days added. */
+  {
+    name: 'addDays',
+    signature: 'addDays(date, days)',
+    description: 'Returns a new date with the given number of days added.',
+    category: 'date',
+  },
+  /** Current date in ISO format. */
+  {
+    name: 'now',
+    signature: 'now()',
+    description: 'Current date in ISO format.',
+    example: 'now() = 2024-06-12T14:23:30.123Z',
+    category: 'date',
+  },
+  /** Rows of a matrix where the column equals the given value. */
+  {
+    name: 'listRowsWithColValue',
+    signature: "listRowsWithColValue('matrix', 'col', value)",
+    description: 'Rows of a matrix where the column equals the given value.',
+    category: 'matrix',
+  },
+  /** For each row name, formatted string of its column values. */
+  {
+    name: 'listColsForRows',
+    signature: "listColsForRows('matrix', rows)",
+    description: 'For each row name, formatted string of its column values.',
+    category: 'matrix',
+  },
+  /** Resolves matrix row or column names to their display titles. */
+  {
+    name: 'getMatrixTitles',
+    signature: "getMatrixTitles('matrix', names, isRow?)",
+    description: 'Resolves matrix row or column names to their display titles.',
+    category: 'matrix',
+  },
+  /** Intersection of two arrays (deep equality). */
+  {
+    name: 'intersect',
+    signature: 'intersect(arrayA, arrayB)',
+    description: 'Intersection of two arrays (deep equality).',
+    category: 'array',
+  },
+  /** Length of an array. Returns 0 if not an array. */
+  {
+    name: 'length',
+    signature: 'length(array)',
+    description: 'Length of an array. Returns 0 if not an array.',
+    example: 'length({multiselect}) = 3',
+    category: 'array',
+  },
+  /** Replaces newline characters with <br> tags. */
+  {
+    name: 'nl2br',
+    signature: 'nl2br(text)',
+    description: 'Replaces newline characters with <br> tags.',
+    category: 'string',
+  },
+  /** Parses a JSON string into an object. */
+  {
+    name: 'parse',
+    signature: 'parse(jsonString)',
+    description: 'Parses a JSON string into an object.',
+    category: 'string',
+  },
+];
+
+/**
  * Registration of new custom functions for the survey.
  * Custom functions can be used in the logic fields.
  *
@@ -84,6 +229,42 @@ const addCustomFunctions = (authService: AuthService): void => {
         function: function (this: { survey: SurveyModel }) {
           const record = this.survey.record as Record | undefined;
           return record ? record.id : 'unknown id';
+        },
+      },
+      {
+        name: 'incrementalId',
+        /**
+         * Get the incremental ID of the record.
+         *
+         * @param this Context
+         * @param this.survey Current survey instance
+         * @returns Incremental ID of the record
+         */
+        function: function (this: { survey: SurveyModel }) {
+          const record = this.survey.getPropertyValue('record') as
+            | Record
+            | undefined;
+          console.log(record);
+          return record?.incrementalId ?? '';
+        },
+      },
+      {
+        name: 'displayValue',
+        /**
+         * Get the display value of a question (the choice text rather than
+         * the underlying value). Useful in expressions where {questionName}
+         * resolves to the raw value only.
+         * Example:
+         * - expression: displayValue('country') = 'France'
+         *
+         * @param this Context
+         * @param this.survey Current survey instance
+         * @param params Question name
+         * @returns Display value of the question, or '' if not found
+         */
+        function: function (this: { survey: SurveyModel }, params: any[]) {
+          const question = this.survey.getQuestionByName(params[0]);
+          return question ? question.displayValue : '';
         },
       },
       {

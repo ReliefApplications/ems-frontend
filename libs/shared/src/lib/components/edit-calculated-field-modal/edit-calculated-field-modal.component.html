@@ -1,13 +1,22 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">
-      {{
-        (this.data.calculatedField
-          ? 'components.calculatedFields.edit'
-          : 'components.calculatedFields.add'
-        ) | translate
-      }}
-    </h3>
+    <div class="flex items-start gap-2">
+      <h3 class="font-semibold">
+        {{
+          (this.data.calculatedField
+            ? 'components.calculatedFields.edit'
+            : 'components.calculatedFields.add'
+          ) | translate
+        }}
+      </h3>
+      <ui-icon
+        icon="help_outline"
+        class="cursor-pointer"
+        variant="grey"
+        (click)="openReferenceModal()"
+        [uiTooltip]="'components.calculatedFields.reference.open' | translate"
+      ></ui-icon>
+    </div>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
@@ -41,6 +50,20 @@
             uiSuffix
             [uiTooltip]="'common.tooltip.editor.insert' | translate"
           ></ui-icon>
+        </div>
+        <!-- Guided builder for related-record aggregations -->
+        <div *ngIf="data.resourceId">
+          <ui-button
+            icon="post_add"
+            category="tertiary"
+            variant="primary"
+            (click)="openRelatedValueBuilder()"
+            [uiTooltip]="
+              'components.calculatedFields.relatedBuilder.tooltip' | translate
+            "
+          >
+            {{ 'components.calculatedFields.relatedBuilder.open' | translate }}
+          </ui-button>
         </div>
       </div>
     </form>

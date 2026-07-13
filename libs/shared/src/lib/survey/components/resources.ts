@@ -30,11 +30,18 @@ import { QuestionResource } from '../types';
 import {
   buildAddButton,
   buildSearchButton,
+  canShowSearchButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import {
+  addGridTeardown,
+  destroyGrid,
+  registerGridForCleanup,
+} from './utils/grid-cleanup';
+import { Subscription } from 'rxjs';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -570,14 +577,20 @@ export const init = (
       );
       searchBtn.style.display = 'none';
       if (question.resource) {
-        searchBtn.style.display = question.displayOnly ? 'none' : 'block';
+        searchBtn.style.display =
+          canShowSearchButton(question) && !question.displayOnly
+            ? 'block'
+            : 'none';
         if (parentElement) {
           if (question.displayAsGrid) {
             gridComponentRef = buildGridDisplay(question, parentElement);
           }
 
           if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = question.displayOnly ? 'none' : 'block';
+            searchBtn.style.display =
+              canShowSearchButton(question) && !question.displayOnly
+                ? 'block'
+                : 'none';
             const addBtn = buildAddButton(
               question,
               true,
@@ -609,7 +622,11 @@ export const init = (
       actionsButtons.appendChild(searchBtn);
       parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       question.registerFunctionOnPropertyValueChanged('resource', () => {
-        if (question.resource && question.canSearch && !question.displayOnly) {
+        if (
+          question.resource &&
+          canShowSearchButton(question) &&
+          !question.displayOnly
+        ) {
           searchBtn.style.display = 'block';
         }
       });
@@ -618,7 +635,9 @@ export const init = (
           setGridInputs(gridComponentRef.instance, question);
         } else {
           searchBtn.style.display =
-            question.canSearch && !question.displayOnly ? 'block' : 'none';
+            canShowSearchButton(question) && !question.displayOnly
+              ? 'block'
+              : 'none';
         }
       });
       question.registerFunctionOnPropertyValueChanged(
@@ -626,9 +645,21 @@ export const init = (
         () => {
           if (question.displayAsGrid) {
             // Update grid configuration display
-            domService.removeComponentFromBody(gridComponentRef);
+            destroyGrid(
+              question.survey as SurveyModel,
+              gridComponentRef,
+              domService
+            );
             gridComponentRef = buildGridDisplay(question, parentElement);
             searchBtn.style.display = 'none';
+          } else {
+            // Fields were added/removed: re-evaluate whether the search
+            // button should be visible (it needs at least one configured
+            // field to be functional).
+            searchBtn.style.display =
+              canShowSearchButton(question) && !question.displayOnly
+                ? 'block'
+                : 'none';
           }
         }
       );
@@ -641,7 +672,11 @@ export const init = (
           searchBtn.style.display = 'none';
           gridComponentRef = buildGridDisplay(question, parentElement);
         } else {
-          domService.removeComponentFromBody(gridComponentRef);
+          destroyGrid(
+            question.survey as SurveyModel,
+            gridComponentRef,
+            domService
+          );
           if (element) {
             element.style.display = 'block';
           }
@@ -683,53 +718,64 @@ export const init = (
     const grid: ComponentRef<CoreGridComponent> =
       buildRecordsGrid(question, parentElement.firstChild) || undefined;
     if (grid.instance) {
-      grid.instance.removeRowIds.subscribe((ids) => {
-        question.value = question.value.filter(
-          (id: string) => !ids.includes(id)
-        );
-      });
+      const subscriptions: Subscription[] = [];
+      subscriptions.push(
+        grid.instance.removeRowIds.subscribe((ids) => {
+          question.value = question.value.filter(
+            (id: string) => !ids.includes(id)
+          );
+        })
+      );
       if (
         question.displayOnly &&
         question.displayAsGrid &&
         question.onSelect &&
         question.onSelect.trim()
       ) {
-        grid.instance.selectionChange.subscribe((selection: any) => {
-          try {
-            const selectedRows = selection?.selectedRows || [];
-            if (!selectedRows.length) return;
-            const selectedId = selectedRows[0]?.dataItem?.id;
-            if (!selectedId) return;
-            const mapping = JSON.parse(question.onSelect || '{}');
-            if (Object.keys(mapping).length === 0) return;
-            apollo
-              .query<any>({
-                query: GET_RECORD_BY_ID,
-                variables: { id: selectedId },
-                fetchPolicy: 'no-cache',
-              })
-              .subscribe(({ data }) => {
-                const record = data?.record;
-                if (!record || !record.data) return;
-                const survey = question.survey as SurveyModel;
-                for (const targetQuestion in mapping) {
-                  try {
-                    const expression = mapping[targetQuestion];
-                    if (!expression) continue;
-                    const runner = new ExpressionRunner(expression);
-                    const value = runner.run(record.data);
-                    survey.setValue(targetQuestion, value);
-                  } catch (error) {
-                    console.error(error);
+        subscriptions.push(
+          grid.instance.selectionChange.subscribe((selection: any) => {
+            try {
+              const selectedRows = selection?.selectedRows || [];
+              if (!selectedRows.length) return;
+              const selectedId = selectedRows[0]?.dataItem?.id;
+              if (!selectedId) return;
+              const mapping = JSON.parse(question.onSelect || '{}');
+              if (Object.keys(mapping).length === 0) return;
+              apollo
+                .query<any>({
+                  query: GET_RECORD_BY_ID,
+                  variables: { id: selectedId },
+                  fetchPolicy: 'no-cache',
+                })
+                .subscribe(({ data }) => {
+                  const record = data?.record;
+                  if (!record || !record.data) return;
+                  const survey = question.survey as SurveyModel;
+                  for (const targetQuestion in mapping) {
+                    try {
+                      const expression = mapping[targetQuestion];
+                      if (!expression) continue;
+                      const runner = new ExpressionRunner(expression);
+                      const value = runner.run(record.data);
+                      survey.setValue(targetQuestion, value);
+                    } catch (error) {
+                      console.error(error);
+                    }
                   }
-                }
-              });
-          } catch (e) {
-            console.error('Error applying on select mapping', e);
-          }
-        });
+                });
+            } catch (e) {
+              console.error('Error applying on select mapping', e);
+            }
+          })
+        );
       }
+      // Unsubscribe these grid output subscriptions when the grid is destroyed.
+      addGridTeardown(grid, () =>
+        subscriptions.forEach((subscription) => subscription.unsubscribe())
+      );
     }
+    // Track the grid so it is destroyed when the survey is disposed.
+    registerGridForCleanup(question.survey as SurveyModel, grid, domService);
     return grid;
   }
 
@@ -750,11 +796,16 @@ export const init = (
       el.parentElement
     );
     setGridInputs(grid.instance, question);
-    question.survey?.onValueChanged.add((_: any, options: any) => {
+    const onValueChanged = (_: any, options: any) => {
       if (question.displayOnly || options.name === question.name) {
         setGridInputs(grid.instance, question);
       }
-    });
+    };
+    question.survey?.onValueChanged.add(onValueChanged);
+    // Release this survey handler when the grid is destroyed.
+    addGridTeardown(grid, () =>
+      question.survey?.onValueChanged.remove(onValueChanged)
+    );
     return grid;
   };
 

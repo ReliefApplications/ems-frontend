@@ -36,6 +36,7 @@ import {
   AlertModule,
 } from '@oort-front/ui';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
+import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -67,6 +68,7 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
     SelectMenuModule,
     TabsModule,
     AlertModule,
+    LocalizedInputComponent,
   ],
 })
 export class GridActionSettingsComponent

@@ -15,11 +15,12 @@ import { QueryStyleListComponent } from './tab-style/query-style-list/query-styl
 import { QueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { QueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { CoreGridModule } from '../ui/core-grid/core-grid.module';
-import { SliderModule } from '@oort-front/ui';
+import { CheckboxModule, SliderModule } from '@oort-front/ui';
 import { TabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { FilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
+import { LocalizedInputComponent } from '../controls/public-api';
 import {
   MenuModule,
   TooltipModule,
@@ -75,6 +76,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     FilterModule,
     AlertModule,
     EditorControlComponent,
+    LocalizedInputComponent,
     RadioModule,
     ButtonModule,
     TableModule,
@@ -85,6 +87,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     DividerModule,
     TreeViewModule,
     SpinnerModule,
+    CheckboxModule,
   ],
   exports: [
     QueryBuilderComponent,

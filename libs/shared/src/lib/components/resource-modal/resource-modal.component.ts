@@ -14,7 +14,6 @@ import {
 } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 
 /**
@@ -41,7 +40,6 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     ButtonModule,
     IconModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DialogModule,
     SpinnerModule,

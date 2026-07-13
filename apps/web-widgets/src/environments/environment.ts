@@ -26,10 +26,13 @@ export const environment: Environment = {
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  availableLanguages: ['en', 'test'],
+  availableLanguages: ['en', 'test', 'uk'],
   authConfig,
   theme,
   tinymceBaseUrl: '',
   i18nUrl: '',
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
   csDocUrl: 'https://hems-dev.who.int/csdocui',
 };

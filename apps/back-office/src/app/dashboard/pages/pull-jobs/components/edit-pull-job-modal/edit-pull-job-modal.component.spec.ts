@@ -18,7 +18,7 @@ import {
   ChipModule,
   GraphQLSelectModule,
   IconModule,
-  DialogModule
+  DialogModule,
 } from '@oort-front/ui';
 import {
   ReadableCronModule,
@@ -68,13 +68,13 @@ describe('EditPullJobModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: Dialog,
-          useValue: {}
-        }
-      ]
+          useValue: {},
+        },
+      ],
     }).compileComponents();
   });
 
