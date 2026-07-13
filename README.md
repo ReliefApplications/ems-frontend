@@ -30,17 +30,68 @@ In top of Angular, [Nx](https://nx.dev/) was installed, to better split projects
 
 # General
 
-The project is seperated into three sub-projects:
+The project is separated into four sub-projects:
 
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- web-widgets, an application to genereate the web components
+- web-widgets, an application to generate the web components
+- public-forms, an application to share single forms publicly, without authentication
 
 One library exists:
 
 - shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
+
+# Public forms
+
+The public-forms application renders a single form so it can be shared with people that do not have an account: anyone with the link can open the form and submit records, without logging in.
+
+## How it works
+
+- The app exposes a single route, `/<form-id>`, where `<form-id>` is the id of a form (as seen in the back-office url when editing the form).
+- The form is fetched from the back-end and rendered with the same SurveyJS renderer as the other applications (`shared-form` component).
+- No authentication is required: the app replaces the shared `AuthService` with a `PublicAuthService` that acts as an anonymous "Public user", so the back-end must allow public access to the targeted form for it to load.
+- If the id is missing, malformed, or does not match an accessible form, the user is redirected to the root page, which displays a "form not found" message.
+
+## Usage
+
+Serve the app locally (connecting to a local back-end):
+
+```
+npx nx run public-forms:serve
+```
+
+Then navigate to:
+
+```
+http://localhost:4200/<form-id>
+```
+
+Other serve configurations are available to connect to deployed back-ends: `local-dev`, `local-uat`, `local-prod`. For example:
+
+```
+npx nx run public-forms:serve:local-dev
+```
+
+## Build
+
+Build for Azure environments as for the other apps:
+
+```
+npx nx run public-forms:build:azure-dev
+```
+
+For prod, replace `azure-dev` with `azure-prod`. For uat, replace `azure-dev` with `azure-uat`.
+The compiled application can be found in the ./dist/apps/public-forms folder.
+
+## Sharing a form
+
+To share a form publicly:
+
+1. In the back-office, open the form and copy its id from the url.
+2. Make sure the form is active, and that its permissions allow record creation for non-authenticated users.
+3. Share the link `<public-forms-url>/<form-id>`.
 
 # Azure configuration
 
