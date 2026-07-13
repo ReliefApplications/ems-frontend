@@ -44,12 +44,10 @@ import { PureAbility } from '@casl/ability';
 
 /**
  * Initialize application.
- * Setup oAuth configuration.
  * Initialize form builder.
  *
- * @param oauth OAuth Service
  * @param formService Shared form service
- * @returns oAuth configuration
+ * @returns initializer function
  */
 const initializeApp =
   (formService: FormService): any =>
@@ -72,6 +70,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     '.json'
   );
 
+/**
+ * Main module of the public-forms project.
+ */
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -123,7 +124,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
 })
 export class AppModule {
   /**
-   * Main module of Back-Office project.
+   * Main module of the public-forms project.
    *
    * @param translate Angular translate service
    */

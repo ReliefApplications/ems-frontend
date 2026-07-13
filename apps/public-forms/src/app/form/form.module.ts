@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormModule as SharedFormModule } from '@oort-front/shared';
 import { RouterModule, Routes } from '@angular/router';
 
+/**
+ * Routes of the form module.
+ */
 const routes: Routes = [
   {
     path: '', // This matches the "root" of whatever path loaded this module
@@ -11,6 +14,9 @@ const routes: Routes = [
   },
 ];
 
+/**
+ * Public form page module.
+ */
 @NgModule({
   declarations: [FormComponent],
   imports: [CommonModule, SharedFormModule, RouterModule.forChild(routes)],

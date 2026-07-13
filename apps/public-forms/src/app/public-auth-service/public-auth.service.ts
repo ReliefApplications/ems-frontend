@@ -134,6 +134,7 @@ export class PublicAuthService {
    * @param global is the permission global or not
    * @returns Does the user have access
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   userHasClaim(permission: string | string[], global = true): boolean {
     return true;
   }
@@ -159,6 +160,7 @@ export class PublicAuthService {
   /**
    * Empty logout sequence, as public forms do not require authentication.
    */
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   logout(): void {}
 
   /**
@@ -216,6 +218,7 @@ export class PublicAuthService {
    *
    * @param user active user
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private updateAbility(user: User | null) {}
 
   /**
@@ -223,5 +226,6 @@ export class PublicAuthService {
    *
    * @param application Application to extend ability on
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   public extendAbilityForApplication(application: Application) {}
 }
