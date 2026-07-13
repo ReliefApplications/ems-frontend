@@ -26,5 +26,5 @@ export const environment: Environment = {
   backOfficeUri: 'http://localhost:4200/',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
-  theme
+  theme,
 };

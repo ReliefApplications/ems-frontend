@@ -6,8 +6,7 @@ describe('PublicAuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-      ],
+      providers: [],
       imports: [],
     });
 

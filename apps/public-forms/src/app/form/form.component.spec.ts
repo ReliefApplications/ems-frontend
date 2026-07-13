@@ -1,4 +1,6 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { FormComponent } from './form.component';
 
@@ -9,6 +11,13 @@ describe('FormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [FormComponent],
+      imports: [RouterTestingModule, HttpClientTestingModule],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: { apiUrl: '' },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FormComponent);

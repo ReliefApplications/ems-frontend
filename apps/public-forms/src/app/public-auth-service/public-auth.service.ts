@@ -1,11 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  Ability,
-  AbilityClass,
-  ForcedSubject,
-} from '@casl/ability';
+import { Ability, AbilityClass, ForcedSubject } from '@casl/ability';
 import { Application, ProfileQueryResponse, User } from '@oort-front/shared';
 import {
   BehaviorSubject,
@@ -197,8 +193,8 @@ export class PublicAuthService {
           applications: [],
           positionAttributes: [],
           favoriteApp: undefined,
-          attributes: undefined
-        }
+          attributes: undefined,
+        },
       },
       loading: false,
       networkStatus: 7,

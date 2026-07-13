@@ -7,7 +7,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { GraphQLModule } from './graphql.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { AuthService, DatePipe, FormService, LayoutModule } from '@oort-front/shared';
+import {
+  AuthService,
+  DatePipe,
+  FormService,
+  LayoutModule,
+} from '@oort-front/shared';
 
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
@@ -27,8 +32,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { IconsService } from '@progress/kendo-angular-icons';
-import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay';
-import { AppAbility, PublicAuthService } from './public-auth-service/public-auth.service';
+import {
+  FullscreenOverlayContainer,
+  OverlayContainer,
+} from '@angular/cdk/overlay';
+import {
+  AppAbility,
+  PublicAuthService,
+} from './public-auth-service/public-auth.service';
 import { PureAbility } from '@casl/ability';
 
 /**

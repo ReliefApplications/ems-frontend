@@ -12,18 +12,13 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./no-form/no-form.module').then(
-        (m) => m.NoFormModule
-      ),
+      import('./no-form/no-form.module').then((m) => m.NoFormModule),
     // component: NoFormModule,
     pathMatch: 'full',
   },
   {
     path: ':id',
-    loadChildren: () =>
-      import('./form/form.module').then(
-        (m) => m.FormModule
-      ),
+    loadChildren: () => import('./form/form.module').then((m) => m.FormModule),
     // component: FormModule,
   },
   //   children: [
@@ -52,7 +47,7 @@ const routes: Routes = [
 ];
 
 /**
- * 
+ *
  */
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

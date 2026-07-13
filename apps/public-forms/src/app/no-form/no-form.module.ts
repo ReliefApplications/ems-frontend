@@ -7,8 +7,8 @@ import { TranslateModule } from '@ngx-translate/core';
 const routes: Routes = [
   {
     path: '', // This matches the "root" of whatever path loaded this module
-    component: NoFormComponent
-  }
+    component: NoFormComponent,
+  },
 ];
 
 @NgModule({

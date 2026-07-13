@@ -1,73 +1,70 @@
 import { Component, OnInit } from '@angular/core';
-import { Apollo } from 'apollo-angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  FormQueryResponse,
-} from '@oort-front/shared';
-import {
-  GET_SHORT_FORM_BY_ID
-} from './graphql/queries';
+import { Form, RestService } from '@oort-front/shared';
 
+/** Shape of a form returned by the public REST endpoint */
+interface PublicForm {
+  _id: string;
+  name?: string;
+  structure?: string;
+  fields?: any[];
+  status?: string;
+  createdAt?: string;
+  modifiedAt?: string;
+}
+
+/**
+ * Public form page. Fetches the form matching the id in the url from the public REST endpoint and displays it.
+ */
 @Component({
   selector: 'oort-front-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-
+  /** Form id, from the url */
   public formId: string | null = null;
-  public form: FormQueryResponse['form'] | null = null;
+  /** Form to display */
+  public form: Form | null = null;
 
   /**
    * Form component. Displays a form based on the id in the url. If the form doesn't exist or an error occurs, we navigate back to the home page.
-   * 
+   *
    * @param route Used to get the form id from the url
    * @param router Used to navigate back to the home page if the form doesn't exist or an error occurs
-   * @param apollo Used to fetch the form from the backend
+   * @param restService Used to fetch the form from the public REST endpoint
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apollo: Apollo
+    private restService: RestService
   ) {}
 
   /**
-   * On init, we get the form id from the url and fetch the form. If the form doesn't exist or an error occurs, we navigate back to the home page.
+   * On init, we get the form id from the url and fetch the form from the public REST endpoint,
+   * which only exposes forms marked as public. If the form doesn't exist or an error occurs,
+   * we navigate back to the home page.
    */
   ngOnInit(): void {
     this.formId = this.route.snapshot.paramMap.get('id');
-    if (!this.formId ||!/^[a-fA-F0-9]{24}$/.test(this.formId)) {
+    if (!this.formId || !/^[a-fA-F0-9]{24}$/.test(this.formId)) {
       this.router.navigate(['/']);
       return;
-    } else {
-      this.getFormQuery(this.formId ?? '').subscribe({
-        next: (result) => {
-          if (result.errors && result.errors.find((error) => error.message === 'Data not found')) {
-            console.error('Error fetching form:', result.errors);
-            this.router.navigate(['/']);
-          }
-          this.form = result.data.form;
-          this.form.canCreateRecords = true; // We force this to true as we want to allow anyone with the link to create records.
-          this.form.metadata = this.form.metadata || [];
-        },
-        error: (error) => {
-          this.router.navigate(['/']);
-        }
-      });
     }
-  }
-
-  /**
-   * Returns a form query stream for the given id
-   *
-   * @param {string} id form id to fetch
-   * @returns a query stream
-   */
-  private getFormQuery(id: string) {
-    return this.apollo.query<FormQueryResponse>({
-      query: GET_SHORT_FORM_BY_ID,
-      variables: {
-        id,
+    this.restService.get(`/public/forms/${this.formId}`).subscribe({
+      next: (form: PublicForm) => {
+        this.form = {
+          id: form._id,
+          name: form.name,
+          structure: form.structure,
+          fields: form.fields,
+          status: form.status as Form['status'],
+          metadata: [],
+          canCreateRecords: true, // We force this to true as we want to allow anyone with the link to create records.
+        };
+      },
+      error: () => {
+        this.router.navigate(['/']);
       },
     });
   }

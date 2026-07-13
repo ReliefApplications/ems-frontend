@@ -50,9 +50,9 @@ The public-forms application renders a single form so it can be shared with peop
 ## How it works
 
 - The app exposes a single route, `/<form-id>`, where `<form-id>` is the id of a form (as seen in the back-office url when editing the form).
-- The form is fetched from the back-end and rendered with the same SurveyJS renderer as the other applications (`shared-form` component).
-- No authentication is required: the app replaces the shared `AuthService` with a `PublicAuthService` that acts as an anonymous "Public user", so the back-end must allow public access to the targeted form for it to load.
-- If the id is missing, malformed, or does not match an accessible form, the user is redirected to the root page, which displays a "form not found" message.
+- The form is fetched from the back-end public REST endpoint (`GET <api-url>/public/forms/<form-id>`), which only exposes forms marked as public, and rendered with the same SurveyJS renderer as the other applications (`shared-form` component).
+- No authentication is required: the app replaces the shared `AuthService` with a `PublicAuthService` that acts as an anonymous "Public user".
+- If the id is missing, malformed, or does not match a public form, the user is redirected to the root page, which displays a "form not found" message.
 
 ## Usage
 
@@ -89,9 +89,8 @@ The compiled application can be found in the ./dist/apps/public-forms folder.
 
 To share a form publicly:
 
-1. In the back-office, open the form and copy its id from the url.
-2. Make sure the form is active, and that its permissions allow record creation for non-authenticated users.
-3. Share the link `<public-forms-url>/<form-id>`.
+1. In the back-office, open the form in the form builder and enable the "Public form" toggle, in the general settings of the form. On save, the back-end extracts this flag from the form definition and exposes the form on the public endpoints.
+2. Copy the form id from the url, and share the link `<public-forms-url>/<form-id>`.
 
 # Azure configuration
 
