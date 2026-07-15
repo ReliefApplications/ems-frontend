@@ -40,6 +40,29 @@
   margin-top: 0.7rem;
 }
 
+.history-value,
+::ng-deep .history-value {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+::ng-deep .history-value-highlight {
+  border-radius: 0.2rem;
+  color: inherit;
+  padding: 0 0.1rem;
+}
+
+::ng-deep .history-value-highlight-added {
+  @apply bg-green-100;
+}
+
+::ng-deep .history-value-highlight-removed {
+  @apply bg-red-100;
+  text-decoration: line-through;
+  text-decoration-thickness: 0.08em;
+}
+
 ui-expansion-panel {
   display: flex;
   flex-direction: column;

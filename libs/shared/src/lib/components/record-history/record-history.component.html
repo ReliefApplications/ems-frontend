@@ -235,9 +235,9 @@
             class="italic text-gray-400"
             >{{ 'components.history.renderError' | translate }}</span
           >
-          <ng-template #originalValueTmpl>{{
-            element.old | sharedReadableHistoryValue
-          }}</ng-template>
+          <ng-template #originalValueTmpl>
+            <div class="history-value" [innerHTML]="element.oldHtml"></div>
+          </ng-template>
         </td>
       </ng-container>
       <ng-container cdkColumnDef="modifiedValue">
@@ -254,9 +254,9 @@
             class="italic text-gray-400"
             >{{ 'components.history.renderError' | translate }}</span
           >
-          <ng-template #modifiedValueTmpl>{{
-            element.new | sharedReadableHistoryValue
-          }}</ng-template>
+          <ng-template #modifiedValueTmpl>
+            <div class="history-value" [innerHTML]="element.newHtml"></div>
+          </ng-template>
         </td>
       </ng-container>
 
