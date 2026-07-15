@@ -3176,6 +3176,11 @@
         "down": "******",
         "up": "******"
       },
+      "publicForm": {
+        "copyLink": "******",
+        "linkCopied": "******",
+        "open": "******"
+      },
       "questionsCategories": {
         "core": "******"
       },

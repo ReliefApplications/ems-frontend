@@ -10,10 +10,12 @@ import {
   StatusOptionsComponent,
 } from '@oort-front/shared';
 import {
+  ButtonModule,
   FormWrapperModule,
   SelectMenuModule,
   SpinnerModule,
   TableModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -39,6 +41,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
+    ButtonModule,
+    TooltipModule,
   ],
   exports: [FormBuilderComponent],
 })

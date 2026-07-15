@@ -19,7 +19,21 @@
         *ngIf="form.canUpdate && !formActive"
       ></shared-access>
     </div>
-    <div class="flex items-center" *ngIf="!formActive">
+    <div class="flex items-center gap-1" *ngIf="!formActive">
+      <ng-container *ngIf="form.isPublic && publicFormUrl">
+        <ui-button
+          [isIcon]="true"
+          icon="content_copy"
+          (click)="copyPublicFormLink()"
+          [uiTooltip]="'pages.formBuilder.publicForm.copyLink' | translate"
+        ></ui-button>
+        <ui-button
+          [isIcon]="true"
+          icon="open_in_new"
+          (click)="openPublicForm()"
+          [uiTooltip]="'pages.formBuilder.publicForm.open' | translate"
+        ></ui-button>
+      </ng-container>
       <div uiFormFieldDirective [outline]="false" class="p-0">
         <label>{{ 'common.status' | translate }}</label>
         <ui-select-menu

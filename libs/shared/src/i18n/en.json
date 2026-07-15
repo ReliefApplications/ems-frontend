@@ -3176,6 +3176,11 @@
         "down": "Move down",
         "up": "Move up"
       },
+      "publicForm": {
+        "copyLink": "Copy public form link",
+        "linkCopied": "Public form link copied!",
+        "open": "Open public form in a new tab"
+      },
       "questionsCategories": {
         "core": "Question Library"
       },

@@ -3179,6 +3179,11 @@
         "down": "Descendre la question",
         "up": "Monter la question"
       },
+      "publicForm": {
+        "copyLink": "Copier le lien du formulaire public",
+        "linkCopied": "Lien du formulaire public copié !",
+        "open": "Ouvrir le formulaire public dans un nouvel onglet"
+      },
       "questionsCategories": {
         "core": "Bibliothèque de questions"
       },
