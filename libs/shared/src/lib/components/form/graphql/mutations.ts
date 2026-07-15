@@ -2,8 +2,13 @@ import { gql } from 'apollo-angular';
 
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
-  mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
-    addRecord(form: $form, data: $data) {
+  mutation addRecord(
+    $form: ID!
+    $data: JSON!
+    $display: Boolean
+    $captchaToken: String
+  ) {
+    addRecord(form: $form, data: $data, captchaToken: $captchaToken) {
       id
       createdAt
       modifiedAt

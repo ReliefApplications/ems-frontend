@@ -3198,6 +3198,10 @@
       "title": "Your profile"
     },
     "publicForms": {
+      "captcha": {
+        "description": "Please complete the verification below to submit the form.",
+        "title": "Verification"
+      },
       "noForm": "This form does not exist or is not active. Please check the link or contact the form owner."
     },
     "pullJobs": {

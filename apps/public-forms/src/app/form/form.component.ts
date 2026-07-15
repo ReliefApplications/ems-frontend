@@ -1,6 +1,9 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Form, RestService } from '@oort-front/shared';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { HeaderService } from '../services/header/header.service';
 
 /** Shape of a form returned by the public REST endpoint */
@@ -27,6 +30,15 @@ export class FormComponent implements OnInit, OnDestroy {
   public formId: string | null = null;
   /** Form to display */
   public form: Form | null = null;
+  /**
+   * Gets a captcha token by opening the captcha modal, called by the shared
+   * form component when submitting. Undefined when no site key is configured.
+   *
+   * @returns The captcha token, or null if the challenge was not completed.
+   */
+  public requestCaptchaToken? = environment.captcha?.siteKey
+    ? (): Promise<string | null> => this.openCaptchaModal()
+    : undefined;
 
   /**
    * Form component. Displays a form based on the id in the url. If the form doesn't exist or an error occurs, we navigate back to the home page.
@@ -35,12 +47,14 @@ export class FormComponent implements OnInit, OnDestroy {
    * @param router Used to navigate back to the home page if the form doesn't exist or an error occurs
    * @param restService Used to fetch the form from the public REST endpoint
    * @param headerService Used to display the form name in the application header
+   * @param dialog Used to open the captcha modal when submitting the form
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private restService: RestService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private dialog: Dialog
   ) {}
 
   /**
@@ -71,6 +85,23 @@ export class FormComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       },
     });
+  }
+
+  /**
+   * Opens the captcha modal and waits for the challenge to be completed.
+   *
+   * @returns The captcha token, or null if the modal was closed without
+   * completing the challenge.
+   */
+  private async openCaptchaModal(): Promise<string | null> {
+    const { CaptchaModalComponent } = await import(
+      '../components/captcha-modal/captcha-modal.component'
+    );
+    const dialogRef = this.dialog.open<string | null>(CaptchaModalComponent, {
+      data: { siteKey: environment.captcha?.siteKey },
+      autoFocus: false,
+    });
+    return (await firstValueFrom(dialogRef.closed)) ?? null;
   }
 
   /** On destroy, restore the default application header title. */

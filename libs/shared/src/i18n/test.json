@@ -3198,6 +3198,10 @@
       "title": "******"
     },
     "publicForms": {
+      "captcha": {
+        "description": "******",
+        "title": "******"
+      },
       "noForm": "******"
     },
     "pullJobs": {

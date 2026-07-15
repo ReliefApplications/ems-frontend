@@ -3201,6 +3201,10 @@
       "title": "Votre profil"
     },
     "publicForms": {
+      "captcha": {
+        "description": "Veuillez compléter la vérification ci-dessous pour envoyer le formulaire.",
+        "title": "Vérification"
+      },
       "noForm": "Ce formulaire n'existe pas ou n'est pas actif. Veuillez vérifier le lien ou contacter le propriétaire du formulaire."
     },
     "pullJobs": {

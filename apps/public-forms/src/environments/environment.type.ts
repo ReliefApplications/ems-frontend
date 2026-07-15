@@ -30,4 +30,9 @@ export interface Environment {
   admin0Url?: string;
   csApiUrl?: string;
   csDocUrl?: string;
+  /** Captcha configuration, used to verify unauthenticated form submissions */
+  captcha?: {
+    /** Cloudflare Turnstile site key */
+    siteKey: string;
+  };
 }

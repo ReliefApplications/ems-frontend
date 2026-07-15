@@ -48,6 +48,12 @@ export class FormComponent
   @Input() form!: Form;
   /** Record input, optional */
   @Input() record?: RecordModel;
+  /**
+   * When set, called before creating a record to get a captcha token, sent
+   * with the record creation so unauthenticated users can add records to
+   * public forms. The submission is cancelled if no token is returned.
+   */
+  @Input() requestCaptchaToken?: () => Promise<string | null>;
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
@@ -334,6 +340,18 @@ export class FormComponent
     let mutation: any;
     this.surveyActive = false;
 
+    // Ask for a captcha token before saving, when required ( e.g. public forms )
+    let captchaToken: string | null = null;
+    if (!this.record && !this.form.uniqueRecord && this.requestCaptchaToken) {
+      captchaToken = await this.requestCaptchaToken();
+      if (!captchaToken) {
+        // Submission cancelled: let the user submit again
+        this.survey.clear(false, true);
+        this.surveyActive = true;
+        return;
+      }
+    }
+
     try {
       await this.formHelpersService.uploadFiles(
         this.survey,
@@ -381,6 +399,7 @@ export class FormComponent
         variables: {
           form: this.form.id,
           data: this.survey.data,
+          ...(captchaToken && { captchaToken }),
         },
       });
     }

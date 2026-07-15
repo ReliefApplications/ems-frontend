@@ -10,5 +10,9 @@ export const sharedEnvironment = {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   version: require('../../../../package.json').version,
   esriApiKey: esriApiKey,
+  captcha: {
+    // Cloudflare Turnstile site key, used to verify unauthenticated form submissions
+    siteKey: '0x4AAAAAADzXikY8kjwvDZSe',
+  },
   /* cSpell:enable */
 };
