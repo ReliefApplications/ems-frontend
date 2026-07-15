@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -94,6 +95,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     DialogCdkModule,
     DateInputsModule,
     LayoutModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.serviceWorker ?? environment.production,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [
     {
