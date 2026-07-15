@@ -1,0 +1,16 @@
+<!-- Header -->
+<header
+  id="app-header"
+  class="flex items-center gap-4 px-4 py-2 text-white flex-shrink-0"
+  [ngClass]="theme.headerClass"
+>
+  <h1 class="text-xl mb-0 truncate font-medium">
+    {{ theme.prefix }}
+    {{ (formTitle$ | async) || ('common.platform.publicForms' | translate) }}
+  </h1>
+  <div class="ml-auto flex items-center">
+    <!-- Language switch -->
+    <shared-language-switch></shared-language-switch>
+  </div>
+</header>
+<shared-layout [showHeader]="false"></shared-layout>

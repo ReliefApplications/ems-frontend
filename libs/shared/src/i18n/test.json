@@ -442,7 +442,8 @@
       "title": "******"
     },
     "platform": {
-      "backOffice": "******"
+      "backOffice": "******",
+      "publicForms": "******"
     },
     "position": {
       "bottomleft": "******",
@@ -3176,6 +3177,12 @@
         "down": "******",
         "up": "******"
       },
+      "publicForm": {
+        "copyLink": "******",
+        "linkCopied": "******",
+        "open": "******",
+        "warning": "******"
+      },
       "questionsCategories": {
         "core": "******"
       },
@@ -3190,6 +3197,13 @@
         "updated": "******"
       },
       "title": "******"
+    },
+    "publicForms": {
+      "captcha": {
+        "description": "******",
+        "title": "******"
+      },
+      "noForm": "******"
     },
     "pullJobs": {
       "create": "******"
