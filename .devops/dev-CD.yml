@@ -37,6 +37,12 @@ steps:
     env:
       NODE_OPTIONS: --max-old-space-size=6144
 
+  - script: |
+      npx nx run public-forms:build:azure-dev --skip-nx-cache
+    displayName: 'Build public-forms'
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+
   - task: ArchiveFiles@2
     inputs:
       rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/front-office'
@@ -51,6 +57,14 @@ steps:
       includeRootFolder: false
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'
+      replaceExistingArchive: true
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/public-forms'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/dev/public-forms/$(Build.BuildId).zip'
       replaceExistingArchive: true
 
   # - task: CopyFiles@2
@@ -89,6 +103,12 @@ steps:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'
       ArtifactName: 'dev-back-office'
+      publishLocation: 'Container'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/dev/public-forms/$(Build.BuildId).zip'
+      ArtifactName: 'dev-public-forms'
       publishLocation: 'Container'
 # - task: PublishBuildArtifacts@1
 #   inputs:

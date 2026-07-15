@@ -22,7 +22,7 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  href: '/apps',
+  href: '/submit',
   apiUrl: 'https://hems.who.int/api',
   subscriptionApiUrl: 'wss://hems.who.int/api',
   frontOfficeUri: 'https://hems.who.int/apps/',

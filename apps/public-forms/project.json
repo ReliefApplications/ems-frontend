@@ -111,7 +111,7 @@
               "maximumError": "20kb"
             }
           ],
-          "baseHref": "/apps/",
+          "baseHref": "/submit/",
           "outputHashing": "all",
           "serviceWorker": true,
           "ngswConfigPath": "apps/public-forms/src/ngsw-config.json",
@@ -138,7 +138,7 @@
               "maximumError": "20kb"
             }
           ],
-          "baseHref": "/apps/",
+          "baseHref": "/submit/",
           "outputHashing": "all",
           "serviceWorker": true,
           "ngswConfigPath": "apps/public-forms/src/ngsw-config.json",
@@ -165,7 +165,7 @@
               "maximumError": "20kb"
             }
           ],
-          "baseHref": "/apps/",
+          "baseHref": "/submit/",
           "outputHashing": "all",
           "serviceWorker": true,
           "ngswConfigPath": "apps/public-forms/src/ngsw-config.json",
