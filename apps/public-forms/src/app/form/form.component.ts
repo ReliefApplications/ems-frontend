@@ -1,7 +1,11 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Form, RestService } from '@oort-front/shared';
+import {
+  Form,
+  FormComponent as SharedFormComponent,
+  RestService,
+} from '@oort-front/shared';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HeaderService } from '../services/header/header.service';
@@ -30,6 +34,11 @@ export class FormComponent implements OnInit, OnDestroy {
   public formId: string | null = null;
   /** Form to display */
   public form: Form | null = null;
+  /** Whether the form has been submitted, to display the new record button */
+  public completed = false;
+  /** Shared form component, used to reset the form to create a new record */
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
   /**
    * Gets a captcha token by opening the captcha modal, called by the shared
    * form component when submitting. Undefined when no site key is configured.
@@ -85,6 +94,23 @@ export class FormComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       },
     });
+  }
+
+  /**
+   * On save, displays the new record button once the form has been submitted.
+   *
+   * @param e completion event
+   * @param e.completed is completed
+   */
+  onComplete(e: { completed: boolean }): void {
+    this.completed = e.completed;
+  }
+
+  /**
+   * Resets the form, to create a new record.
+   */
+  clearForm(): void {
+    this.formComponent?.reset();
   }
 
   /**

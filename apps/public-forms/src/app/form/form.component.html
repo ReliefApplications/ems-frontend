@@ -1,5 +1,13 @@
-<shared-form
-  *ngIf="form"
-  [form]="form"
-  [requestCaptchaToken]="requestCaptchaToken"
-></shared-form>
+<ng-container *ngIf="form">
+  <shared-form
+    [form]="form"
+    [requestCaptchaToken]="requestCaptchaToken"
+    (save)="onComplete($event)"
+  ></shared-form>
+  <!-- New record button, once the form has been submitted -->
+  <div *ngIf="completed" class="flex justify-center py-4">
+    <ui-button category="secondary" (click)="clearForm()">
+      {{ 'models.record.new' | translate }}
+    </ui-button>
+  </div>
+</ng-container>

@@ -11,7 +11,11 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import {
+  ADD_RECORD,
+  ADD_RECORD_PUBLIC,
+  EDIT_RECORD,
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
@@ -395,7 +399,9 @@ export class FormComponent
       // Else create a new one
     } else {
       mutation = this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
+        // As unauthenticated users cannot read the other record fields, only
+        // make sure the record has been created when submitting with a captcha
+        mutation: captchaToken ? ADD_RECORD_PUBLIC : ADD_RECORD,
         variables: {
           form: this.form.id,
           data: this.survey.data,
@@ -430,7 +436,7 @@ export class FormComponent
           );
         }
         // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
+        if (data.editRecord || data.addRecord.form?.uniqueRecord) {
           this.survey.clear(false, false);
           if (data.addRecord) {
             this.record = data.addRecord;
@@ -447,7 +453,7 @@ export class FormComponent
         );
         this.save.emit({
           completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
           record: data.addRecord || data.editRecord,
         });
       }

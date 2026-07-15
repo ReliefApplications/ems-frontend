@@ -2,13 +2,8 @@ import { gql } from 'apollo-angular';
 
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
-  mutation addRecord(
-    $form: ID!
-    $data: JSON!
-    $display: Boolean
-    $captchaToken: String
-  ) {
-    addRecord(form: $form, data: $data, captchaToken: $captchaToken) {
+  mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
+    addRecord(form: $form, data: $data) {
       id
       createdAt
       modifiedAt
@@ -26,6 +21,19 @@ export const ADD_RECORD = gql`
           data
         }
       }
+    }
+  }
+`;
+
+/**
+ * Graphql request for adding a new record to a public form, as an
+ * unauthenticated user. Only checks that the record has been created, as
+ * unauthenticated users cannot read the other record fields.
+ */
+export const ADD_RECORD_PUBLIC = gql`
+  mutation addRecord($form: ID!, $data: JSON!, $captchaToken: String) {
+    addRecord(form: $form, data: $data, captchaToken: $captchaToken) {
+      id
     }
   }
 `;
