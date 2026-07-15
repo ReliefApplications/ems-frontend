@@ -1,3 +1,9 @@
+# [2.23.0-rc.31](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.30...v2.23.0-rc.31) (2026-07-15)
+
+### Features
+
+- Forms can now be made public ([#2860](https://github.com/ReliefApplications/ems-frontend/issues/2860)) ([b55ee9f](https://github.com/ReliefApplications/ems-frontend/commit/b55ee9f2d764ccd123b0b40e12d59d57d526c58f)), closes [AB#129136](https://github.com/AB/issues/129136)
+
 # [2.23.0-rc.30](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.29...v2.23.0-rc.30) (2026-07-10)
 
 ### Features
