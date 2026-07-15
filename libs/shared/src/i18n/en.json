@@ -3180,7 +3180,8 @@
       "publicForm": {
         "copyLink": "Copy public form link",
         "linkCopied": "Public form link copied!",
-        "open": "Open public form in a new tab"
+        "open": "Open public form in a new tab",
+        "warning": "This form is public and can be submitted by unauthenticated users. Questions that rely on authentication — such as resource, resources or file questions, or questions loading their choices from an API that requires authentication — will not work for them. Always test the public version of the form in a private (incognito) browser window to validate its behavior."
       },
       "questionsCategories": {
         "core": "Question Library"

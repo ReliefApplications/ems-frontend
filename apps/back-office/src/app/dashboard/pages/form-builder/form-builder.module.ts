@@ -10,6 +10,7 @@ import {
   StatusOptionsComponent,
 } from '@oort-front/shared';
 import {
+  AlertModule,
   ButtonModule,
   FormWrapperModule,
   SelectMenuModule,
@@ -43,6 +44,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     ButtonModule,
     TooltipModule,
+    AlertModule,
   ],
   exports: [FormBuilderComponent],
 })

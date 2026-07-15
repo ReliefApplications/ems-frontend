@@ -55,6 +55,10 @@
       </div>
     </div>
   </div>
+  <!-- Public form warning -->
+  <ui-alert *ngIf="form.isPublic" variant="warning" class="block mb-6">
+    {{ 'pages.formBuilder.publicForm.warning' | translate }}
+  </ui-alert>
   <app-history
     *ngIf="activeVersions"
     [dataSource]="form.versions || []"
