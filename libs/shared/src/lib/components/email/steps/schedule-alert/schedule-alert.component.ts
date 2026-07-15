@@ -52,6 +52,11 @@ export class ScheduleAlertComponent
     this.scheduleCron = this.scheduleForm.get('cronValue') as FormControl;
     this.scheduleCron.setValidators([Validators.required, cronValidator()]);
     this.scheduleCron.updateValueAndValidity();
+    this.cronValid = this.scheduleCron.valid;
+    this.emailService.disableSaveAndProceed.next(
+      !!this.scheduleForm.get('scheduleEnabled')?.value &&
+        !this.scheduleCron.valid
+    );
 
     this.scheduleCron.valueChanges
       .pipe(takeUntil(this.destroy$))

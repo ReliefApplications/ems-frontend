@@ -20,37 +20,9 @@ export const cronValidator =
       return { pattern: { value } };
     }
 
-    const valid = cron.isValidCron(value, CRON_OPTIONS);
-
-    if (!valid) {
+    if (!cron.isValidCron(value, CRON_OPTIONS)) {
       return { pattern: { value } };
     }
 
-    // Exclude nonsense expressions like every 0 minutes/seconds
-    const excludedExpressions = [
-      '0 0/0 1/1 * *',
-      '0/0 * 1/1 * *',
-      '0 NaN 1/1 * *',
-      '0 undefined * * MON-FRI',
-      '0 undefined undefined 1/0 *',
-      '0 NaN 1 undefined *',
-    ];
-    if (excludedExpressions.includes(value)) {
-      return { pattern: { value } };
-    }
-
-    // Extra validation: disallow step values of 0 in any field
-    const parts = value.trim().split(/\s+/);
-
-    for (const part of parts) {
-      if (part.includes('/')) {
-        const [, step] = part.split('/');
-        if (step === '0' || step === 'NaN' || step === 'undefined') {
-          return { pattern: { value } };
-        }
-      }
-    }
-
-    // ✅ valid cron
     return null;
   };
