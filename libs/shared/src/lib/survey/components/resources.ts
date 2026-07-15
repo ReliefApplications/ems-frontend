@@ -741,6 +741,36 @@ export const init = (
               if (!selectedId) return;
               const mapping = JSON.parse(question.onSelect || '{}');
               if (Object.keys(mapping).length === 0) return;
+
+              // Build map of value -> text from the selected grid row dataItem to help map Common Services values
+              const dataItem = selectedRows[0]?.dataItem;
+              const valueTextMap = new Map<any, string>();
+              if (dataItem && dataItem.text) {
+                for (const k in dataItem.text) {
+                  const rawVal = dataItem[k];
+                  const textVal = dataItem.text[k];
+                  if (Array.isArray(rawVal) && Array.isArray(textVal)) {
+                    rawVal.forEach((v, index) => {
+                      if (
+                        v !== undefined &&
+                        v !== null &&
+                        textVal[index] !== undefined &&
+                        textVal[index] !== null
+                      ) {
+                        valueTextMap.set(v, String(textVal[index]));
+                      }
+                    });
+                  } else if (
+                    rawVal !== undefined &&
+                    rawVal !== null &&
+                    textVal !== undefined &&
+                    textVal !== null
+                  ) {
+                    valueTextMap.set(rawVal, String(textVal));
+                  }
+                }
+              }
+
               apollo
                 .query<any>({
                   query: GET_RECORD_BY_ID,
@@ -751,13 +781,66 @@ export const init = (
                   const record = data?.record;
                   if (!record || !record.data) return;
                   const survey = question.survey as SurveyModel;
+
+                  // Enrich the record data context with metadata fields (such as incrementalId, createdAt, etc.)
+                  const context = {
+                    ...record.data,
+                    id: record.id,
+                    incrementalId: record.incrementalId,
+                    createdAt: record.createdAt,
+                    created: record.createdAt,
+                    modifiedAt: record.modifiedAt,
+                    modified: record.modifiedAt,
+                    createdBy: record.createdBy,
+                    modifiedBy: record.modifiedBy,
+                    record: {
+                      id: record.id,
+                      incrementalId: record.incrementalId,
+                      createdAt: record.createdAt,
+                      created: record.createdAt,
+                      modifiedAt: record.modifiedAt,
+                      modified: record.modifiedAt,
+                      createdBy: record.createdBy,
+                      modifiedBy: record.modifiedBy,
+                    },
+                  };
+
                   for (const targetQuestion in mapping) {
                     try {
                       const expression = mapping[targetQuestion];
                       if (!expression) continue;
                       const runner = new ExpressionRunner(expression);
-                      const value = runner.run(record.data);
+                      const value = runner.run(context);
                       survey.setValue(targetQuestion, value);
+
+                      // If target question is a dropdown/choice/tagbox, add the text of Common Services values to target choices if missing
+                      const targetQ = survey.getQuestionByName(targetQuestion);
+                      if (targetQ && value !== undefined && value !== null) {
+                        const targetChoices =
+                          targetQ.choices || targetQ.contentQuestion?.choices;
+                        if (targetChoices) {
+                          const values = Array.isArray(value) ? value : [value];
+                          let choicesUpdated = false;
+                          const newChoices = [...targetChoices];
+                          values.forEach((v) => {
+                            const text = valueTextMap.get(v);
+                            if (
+                              text &&
+                              !newChoices.some((c: any) => c.value === v)
+                            ) {
+                              newChoices.push({ value: v, text });
+                              choicesUpdated = true;
+                            }
+                          });
+                          if (choicesUpdated) {
+                            if (targetQ.contentQuestion) {
+                              targetQ.contentQuestion.choices = newChoices;
+                            } else {
+                              targetQ.choices = newChoices;
+                            }
+                          }
+                        }
+                      }
                     } catch (error) {
                       console.error(error);
                     }
