@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Form, RestService } from '@oort-front/shared';
+import { HeaderService } from '../services/header/header.service';
 
 /** Shape of a form returned by the public REST endpoint */
 interface PublicForm {
@@ -21,7 +22,7 @@ interface PublicForm {
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
   /** Form id, from the url */
   public formId: string | null = null;
   /** Form to display */
@@ -33,11 +34,13 @@ export class FormComponent implements OnInit {
    * @param route Used to get the form id from the url
    * @param router Used to navigate back to the home page if the form doesn't exist or an error occurs
    * @param restService Used to fetch the form from the public REST endpoint
+   * @param headerService Used to display the form name in the application header
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private restService: RestService
+    private restService: RestService,
+    private headerService: HeaderService
   ) {}
 
   /**
@@ -62,10 +65,16 @@ export class FormComponent implements OnInit {
           metadata: [],
           canCreateRecords: true, // We force this to true as we want to allow anyone with the link to create records.
         };
+        this.headerService.setFormTitle(form.name ?? null);
       },
       error: () => {
         this.router.navigate(['/']);
       },
     });
+  }
+
+  /** On destroy, restore the default application header title. */
+  ngOnDestroy(): void {
+    this.headerService.setFormTitle(null);
   }
 }

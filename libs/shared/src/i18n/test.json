@@ -442,7 +442,8 @@
       "title": "******"
     },
     "platform": {
-      "backOffice": "******"
+      "backOffice": "******",
+      "publicForms": "******"
     },
     "position": {
       "bottomleft": "******",

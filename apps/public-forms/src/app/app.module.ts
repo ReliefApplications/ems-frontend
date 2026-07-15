@@ -12,6 +12,7 @@ import {
   AuthService,
   DatePipe,
   FormService,
+  LanguageSwitchComponent,
   LayoutModule,
 } from '@oort-front/shared';
 
@@ -95,6 +96,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     DialogCdkModule,
     DateInputsModule,
     LayoutModule,
+    LanguageSwitchComponent,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.serviceWorker ?? environment.production,
       registrationStrategy: 'registerWhenStable:30000',

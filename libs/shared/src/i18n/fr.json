@@ -442,7 +442,8 @@
       "title": "Entrez un titre"
     },
     "platform": {
-      "backOffice": "Back-Office"
+      "backOffice": "Back-Office",
+      "publicForms": "Formulaires publics"
     },
     "position": {
       "bottomleft": "En bas à gauche",

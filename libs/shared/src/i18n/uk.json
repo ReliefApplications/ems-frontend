@@ -442,7 +442,8 @@
       "title": "Введіть Назва"
     },
     "platform": {
-      "backOffice": "Бек-офіс"
+      "backOffice": "Бек-офіс",
+      "publicForms": "Публічні форми"
     },
     "position": {
       "bottomleft": "Внизу ліворуч",
