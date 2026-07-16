@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { get, groupBy, isNil, map } from 'lodash';
+import { get, groupBy, isNil, isPlainObject, map } from 'lodash';
 import { GridField } from '../../models/grid.model';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { HtmlParserService } from '../html-parser/html-parser.service';
@@ -281,6 +281,14 @@ export class GridDataFormatterService {
           field
         );
       }
+    }
+    // Raw values whose shape could not be mapped to a display string would
+    // interpolate as "[object Object]" in the cell: drop them instead.
+    if (isPlainObject(finalText)) {
+      return '';
+    }
+    if (Array.isArray(finalText)) {
+      finalText = finalText.filter((entry: any) => !isPlainObject(entry));
     }
     return finalText ?? '';
   }
