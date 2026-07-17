@@ -56,6 +56,7 @@ import {
 import { ActionButton } from '../../../widgets/grid/action-button.type';
 import { resolveLocalizedString } from '../../../../models/localized-string.model';
 import { File, FileService } from '../../../../services/file/file.service';
+import { DownloadService } from '../../../../services/download/download.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -117,6 +118,7 @@ export class GridComponent
     history: false,
     convert: false,
     export: false,
+    import: false,
     showDetails: false,
     navigateToPage: false,
     navigateSettings: {
@@ -136,6 +138,8 @@ export class GridComponent
   @Input() canAdd = false;
   /** Download permission */
   @Input() canDownload = false;
+  /** Upload permission */
+  @Input() canUpload = false;
   /** Selectable status */
   @Input() selectable = true;
   /** Multi-select status */
@@ -217,6 +221,8 @@ export class GridComponent
   public selectedItems: any[] = [];
   /** Column chooser visibility */
   public showColumnChooser = false;
+  /** Upload menu visibility */
+  public showUpload = false;
   /** Search control */
   public search = new UntypedFormControl('');
   /** Row actions for the component */
@@ -324,6 +330,7 @@ export class GridComponent
    * @param popupService Kendo popup service
    * @param gridDataFormatterService GridDataFormatterService
    * @param fileService File service
+   * @param downloadService Download service
    * @param cdr Change detector reference
    */
   constructor(
@@ -337,6 +344,7 @@ export class GridComponent
     private popupService: PopupService,
     private gridDataFormatterService: GridDataFormatterService,
     private fileService: FileService,
+    private downloadService: DownloadService,
     private cdr: ChangeDetectorRef
   ) {
     super();
@@ -918,7 +926,13 @@ export class GridComponent
    */
   private updateColumnShowFullScreenButton(columnField: string) {
     const updatableTooltips = this.tooltips.filter(
-      (tooltip) => tooltip.enableBy !== 'default'
+      (tooltip) =>
+        tooltip.enableBy !== 'default' &&
+        Boolean(
+          (tooltip.elementRef.nativeElement as HTMLElement).closest(
+            '.textbox-container'
+          )
+        )
     );
     this.data.data.forEach((element) => {
       const relatedTooltipElement = updatableTooltips.find(
@@ -958,10 +972,22 @@ export class GridComponent
     if (this.currentEditedItem) {
       if (this.formGroup.dirty) {
         this.expandActionsColumn();
+        // Only emit the fields the user actually changed: the form group is
+        // seeded with raw record values, whose shape can differ from the
+        // display values shown in the grid.
+        const value = Object.entries(this.formGroup.controls)
+          .filter(([, control]) => control.dirty)
+          .reduce(
+            (dirtyValues: Record<string, unknown>, [key, control]) => ({
+              ...dirtyValues,
+              [key]: control.value,
+            }),
+            {}
+          );
         this.action.emit({
           action: 'edit',
           item: this.currentEditedItem,
-          value: this.formGroup.value,
+          value,
         });
       }
     }
@@ -1005,6 +1031,49 @@ export class GridComponent
       .downloadOrPreview(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe();
+  }
+
+  /**
+   * Get the records template, for upload.
+   */
+  onDownloadTemplate(): void {
+    if (!this.widget?.settings?.resource) return;
+    const path = `download/resource/records/${this.widget.settings.resource}`;
+    const queryString = new URLSearchParams({
+      type: 'xlsx',
+      template: 'true',
+    }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/xlsx;charset=utf-8;`,
+      `${this.widget.settings.title?.en || 'template'}_template.xlsx`
+    );
+  }
+
+  /**
+   * Upload file and indicate status of request.
+   *
+   * @param file file to upload.
+   */
+  uploadFileData(file: any): void {
+    if (!this.widget?.settings?.resource) return;
+    const path = `upload/resource/records/${this.widget.settings.resource}`;
+    this.downloadService.uploadFile(path, file).subscribe({
+      next: ({ status }) => {
+        if (status === 'OK') {
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'models.record.notifications.uploadSuccessful'
+            )
+          );
+          this.reload.emit();
+          this.showUpload = false;
+        }
+      },
+      error: () => {
+        this.showUpload = false;
+      },
+    });
   }
 
   /**

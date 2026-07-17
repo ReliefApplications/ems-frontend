@@ -24,6 +24,7 @@ const CATEGORY_LABELS: Record<CalcFunctionCategory, string> = {
   string: 'String',
   array: 'Array',
   conversion: 'Conversion',
+  related: 'Related records',
   misc: 'Misc',
 };
 
@@ -36,6 +37,7 @@ const CATEGORY_ORDER: CalcFunctionCategory[] = [
   'string',
   'array',
   'conversion',
+  'related',
   'misc',
 ];
 

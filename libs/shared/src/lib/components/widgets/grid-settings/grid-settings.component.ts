@@ -22,6 +22,7 @@ import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
+import { Layout } from '../../../models/layout.model';
 import {
   Resource,
   ResourceQueryResponse,
@@ -115,6 +116,8 @@ export class GridSettingsComponent
   public selectedTab = 0;
   /** Available distribution lists */
   public distributionLists: any[] = [];
+  /** Layouts currently selected in the widget */
+  public selectedLayouts: Layout[] = [];
   /** Available email templates */
   public emailTemplates: any[] = [];
 
@@ -226,6 +229,7 @@ export class GridSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateValueAndValidityByType(value, 'layouts');
+        this.updateSelectedLayouts();
       });
     // If some layouts are selected, remove validators on aggregations field
     if (this.widgetFormGroup.get('layouts')?.value.length > 0) {
@@ -378,6 +382,7 @@ export class GridSettingsComponent
             this.resource = null;
             this.fields = [];
           }
+          this.updateSelectedLayouts();
           this.loading = false;
         });
     } else {
@@ -385,7 +390,20 @@ export class GridSettingsComponent
       this.templates = [];
       this.resource = null;
       this.fields = [];
+      this.updateSelectedLayouts();
     }
+  }
+
+  /**
+   * Updates the list of layouts currently selected in the widget, from the
+   * layouts fetched with the resource meta.
+   */
+  private updateSelectedLayouts(): void {
+    const layoutIds: string[] =
+      this.widgetFormGroup?.get('layouts')?.value || [];
+    this.selectedLayouts = (this.resource?.layouts?.edges || [])
+      .map((edge) => edge.node)
+      .filter((layout) => layoutIds.includes(layout.id as string));
   }
 
   /**

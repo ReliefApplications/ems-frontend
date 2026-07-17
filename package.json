@@ -1,12 +1,12 @@
 {
   "name": "oort-front",
-  "version": "2.23.0-rc.19",
+  "version": "2.23.0-rc.32",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
-    "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
-    "format": "npx prettier --write \"**/*.{ts,scss,html}\"",
+    "lint": "npx nx run-many --target=lint --output-style=static --projects=shared,front-office,back-office,ui,web-widgets,public-forms",
+    "format": "npx prettier --write . --ignore-unknown",
     "test": "npx nx run-many --target=test --projects=ui,shared --configuration=ci",
     "postinstall": "./setup-hooks.sh"
   },
@@ -142,6 +142,7 @@
     "@nrwl/workspace": "15.7.2",
     "@schematics/angular": "~15.1.1",
     "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^11.0.1",
     "@semantic-release/release-notes-generator": "^12.1.0",

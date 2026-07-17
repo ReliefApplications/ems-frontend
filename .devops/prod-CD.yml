@@ -4,63 +4,83 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- prod
+  - prod
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: UseNode@1
-  inputs:
-    version: '24.x'
-  displayName: 'Install Node.js'
+  - task: UseNode@1
+    inputs:
+      version: '24.x'
+    displayName: 'Install Node.js'
 
-- script: |
-    npm ci
-  displayName: 'npm install'
+  - script: |
+      npm ci
+    displayName: 'npm install'
 
-- script: |
-    npx kendo-ui-license activate
-  displayName: 'Activate Kendo UI License'
-  env:
-    KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
+  - script: |
+      npx kendo-ui-license activate
+    displayName: 'Activate Kendo UI License'
+    env:
+      KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
 
-- script: |
-    npx nx run front-office:build:azure-prod --skip-nx-cache
-  displayName: 'Build front-office'
-  env:
-    NODE_OPTIONS: --max-old-space-size=6144
+  - script: |
+      npx nx run front-office:build:azure-prod --skip-nx-cache
+    displayName: 'Build front-office'
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
 
-- script: |
-    npx nx run back-office:build:azure-prod --skip-nx-cache
-  displayName: 'Build back-office'
-  env:
-    NODE_OPTIONS: --max-old-space-size=6144
+  - script: |
+      npx nx run back-office:build:azure-prod --skip-nx-cache
+    displayName: 'Build back-office'
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/front-office'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+  - script: |
+      npx nx run public-forms:build:azure-prod --skip-nx-cache
+    displayName: 'Build public-forms'
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/back-office'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/front-office'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
+      replaceExistingArchive: true
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
-    ArtifactName: 'prod-front-office'
-    publishLocation: 'Container'
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/back-office'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
+      replaceExistingArchive: true
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
-    ArtifactName: 'prod-back-office'
-    publishLocation: 'Container'
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/public-forms'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/prod/public-forms/$(Build.BuildId).zip'
+      replaceExistingArchive: true
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/front-office/$(Build.BuildId).zip'
+      ArtifactName: 'prod-front-office'
+      publishLocation: 'Container'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/back-office/$(Build.BuildId).zip'
+      ArtifactName: 'prod-back-office'
+      publishLocation: 'Container'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/prod/public-forms/$(Build.BuildId).zip'
+      ArtifactName: 'prod-public-forms'
+      publishLocation: 'Container'

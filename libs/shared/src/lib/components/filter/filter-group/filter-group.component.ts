@@ -31,6 +31,8 @@ export class FilterGroupComponent implements OnChanges {
   @Input() isEmailNotification = false;
   /** Is disabled */
   @Input() disabled = false;
+  /** Enables attribute filters to switch between field and literal values */
+  @Input() enableAttributeValueSource = false;
 
   /**
    * Getter for the filters
@@ -65,6 +67,7 @@ export class FilterGroupComponent implements OnChanges {
       field: '',
       operator: 'eq',
       value: null,
+      ...(this.enableAttributeValueSource ? { valueSource: 'field' } : {}),
       inTheLast: this.fb.group({
         number: [1],
         unit: ['days'],

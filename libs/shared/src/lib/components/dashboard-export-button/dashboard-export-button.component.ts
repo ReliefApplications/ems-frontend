@@ -63,7 +63,6 @@ export class DashboardExportButtonComponent {
 
   /** @returns Document title resolved against the current UI language. */
   private get resolvedTitle(): string {
-    console.log(this.title);
     return resolveLocalizedString(this.title, this.translate.currentLang);
   }
 

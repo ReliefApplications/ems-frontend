@@ -38,6 +38,7 @@ export interface Form {
   versions?: Version[];
   recordsCount?: number;
   core?: boolean;
+  isPublic?: boolean;
   records?: Connection<Record>;
   fields?: any[];
   permissions?: any;
