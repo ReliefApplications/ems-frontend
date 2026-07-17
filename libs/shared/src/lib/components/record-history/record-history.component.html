@@ -158,7 +158,6 @@
     <table
       cdk-table
       uiTableWrapper
-      class="history-table"
       [dataSource]="historyForTable"
       [trackBy]="trackByIndex"
     >
@@ -247,6 +246,7 @@
               <div class="history-value" [innerHTML]="element.oldHtml"></div>
             </div>
           </ng-template>
+          <!-- Expand / Collapse button -->
           <ui-button
             *ngIf="element.expandable && !element.renderError"
             variant="primary"

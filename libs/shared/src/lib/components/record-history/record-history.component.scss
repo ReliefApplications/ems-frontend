@@ -47,7 +47,7 @@
   word-break: break-word;
 }
 
-.history-table td {
+table td {
   padding-bottom: 1.25rem;
   padding-top: 1.25rem;
   vertical-align: top;
@@ -64,21 +64,20 @@
 .history-value-container-collapsed {
   max-height: 6rem;
   overflow: hidden;
-}
-
-.history-value-container-collapsed::after {
-  background: linear-gradient(
+  // Fade the content itself instead of overlaying a solid color, so the
+  // effect matches any row background (striped or hovered rows included)
+  -webkit-mask-image: linear-gradient(
     to bottom,
-    rgb(255 255 255 / 0),
-    rgb(255 255 255 / 0.95) 60%,
-    #fff
+    #000 calc(100% - 3rem),
+    rgb(0 0 0 / 0.05) calc(100% - 1.2rem),
+    transparent
   );
-  bottom: 0;
-  content: '';
-  height: 3rem;
-  left: 0;
-  position: absolute;
-  right: 0;
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 3rem),
+    rgb(0 0 0 / 0.05) calc(100% - 1.2rem),
+    transparent
+  );
 }
 
 .history-value-cell-old {
