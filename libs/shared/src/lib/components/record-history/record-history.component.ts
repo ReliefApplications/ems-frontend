@@ -370,20 +370,12 @@ export class RecordHistoryComponent
    * history and the active date / field filters.
    */
   private applyFilters(): void {
-    const startDate = this.filters.get('startDate')?.value
-      ? new Date(this.filters.get('startDate')?.value as any)
-      : undefined;
-    if (startDate) startDate.setHours(0, 0, 0, 0);
-    const endDate = this.filters.get('endDate')?.value
-      ? new Date(this.filters.get('endDate')?.value as any)
-      : undefined;
-    if (endDate) endDate.setHours(23, 59, 59, 99);
+    const { fromDate, toDate } = this.getDateRange();
     this.filterHistory = this.history.filter((item) => {
       const createdAt = new Date(item.createdAt);
+      // Each bound applies independently, matching the API & export filtering
       return (
-        !startDate ||
-        !endDate ||
-        (createdAt >= startDate && createdAt <= endDate)
+        (!fromDate || createdAt >= fromDate) && (!toDate || createdAt <= toDate)
       );
     });
 
