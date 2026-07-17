@@ -442,7 +442,8 @@
       "title": "Enter a title"
     },
     "platform": {
-      "backOffice": "Back-Office"
+      "backOffice": "Back-Office",
+      "publicForms": "Public forms"
     },
     "position": {
       "bottomleft": "Bottom left",
@@ -3178,6 +3179,12 @@
         "down": "Move down",
         "up": "Move up"
       },
+      "publicForm": {
+        "copyLink": "Copy public form link",
+        "linkCopied": "Public form link copied!",
+        "open": "Open public form in a new tab",
+        "warning": "This form is public and can be submitted by unauthenticated users. Questions that rely on authentication — such as resource, resources or file questions, or questions loading their choices from an API that requires authentication — will not work for them. Always test the public version of the form in a private (incognito) browser window to validate its behavior."
+      },
       "questionsCategories": {
         "core": "Question Library"
       },
@@ -3192,6 +3199,13 @@
         "updated": "Preferences saved."
       },
       "title": "Your profile"
+    },
+    "publicForms": {
+      "captcha": {
+        "description": "Please complete the verification below to submit the form.",
+        "title": "Verification"
+      },
+      "noForm": "This form does not exist or is not active. Please check the link or contact the form owner."
     },
     "pullJobs": {
       "create": "Create a pull job"

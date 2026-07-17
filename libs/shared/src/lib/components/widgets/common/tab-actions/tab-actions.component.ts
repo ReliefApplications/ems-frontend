@@ -179,7 +179,6 @@ export class TabActionsComponent
         )
       : this.fields;
     this.ngZone.run(() => {
-      console.log(fields);
       const dialogRef = this.dialog.open<string[]>(
         ReadOnlyFieldsModalComponent,
         {

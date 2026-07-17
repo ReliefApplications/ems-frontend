@@ -1,3 +1,22 @@
+# [2.23.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.32...v2.23.0-rc.33) (2026-07-17)
+
+### Bug Fixes
+
+- meta fields from record not being copied onSelect in resources fields ([#2909](https://github.com/ReliefApplications/ems-frontend/issues/2909)) ([e4aa835](https://github.com/ReliefApplications/ems-frontend/commit/e4aa835873da743885c47a941fdc359f9b327d02)), closes [AB#135075](https://github.com/AB/issues/135075)
+
+# [2.23.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.31...v2.23.0-rc.32) (2026-07-16)
+
+### Bug Fixes
+
+- add parameter to filter out enriched attributes ([6f3c3c8](https://github.com/ReliefApplications/ems-frontend/commit/6f3c3c889959d7cdfbb3cf0d3edaf194c3f80e68))
+- text columns could sometimes appear as object object ([d653477](https://github.com/ReliefApplications/ems-frontend/commit/d6534777dabba965cac81d66c0f05d80be59d1ee))
+
+# [2.23.0-rc.31](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.30...v2.23.0-rc.31) (2026-07-15)
+
+### Features
+
+- Forms can now be made public ([#2860](https://github.com/ReliefApplications/ems-frontend/issues/2860)) ([b55ee9f](https://github.com/ReliefApplications/ems-frontend/commit/b55ee9f2d764ccd123b0b40e12d59d57d526c58f)), closes [AB#129136](https://github.com/AB/issues/129136)
+
 # [2.23.0-rc.30](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.29...v2.23.0-rc.30) (2026-07-10)
 
 ### Features

@@ -174,6 +174,19 @@ export const init = (environment: any): void => {
     default: '',
   });
 
+  // Mark the form as public: the back-end extracts this flag from the
+  // structure on save, exposing the form on the unauthenticated public routes.
+  serializer.addProperty('survey', {
+    name: 'isPublic:boolean',
+    type: 'boolean',
+    category: 'general',
+    visibleIndex: 49,
+    displayName: 'Public form',
+    description:
+      'When enabled, the form is accessible without authentication through the public forms application: anyone with the link can open it and submit records.',
+    default: false,
+  });
+
   // Require a confirmation modal before updating an existing record.
   serializer.addProperty('survey', {
     name: `${SURVEY_PROP_CONFIRM_RECORD_UPDATE}:boolean`,
