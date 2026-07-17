@@ -1,3 +1,9 @@
+# [2.23.0-rc.34](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.33...v2.23.0-rc.34) (2026-07-17)
+
+### Features
+
+- editor & tabs widget can now resize automatically the grid so we removed duplicated scrollbars ([#2893](https://github.com/ReliefApplications/ems-frontend/issues/2893)) ([a20720b](https://github.com/ReliefApplications/ems-frontend/commit/a20720bb1b04fa9a3f1a949353077ddf9c31adf6)), closes [AB#134729](https://github.com/AB/issues/134729)
+
 # [2.23.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.32...v2.23.0-rc.33) (2026-07-17)
 
 ### Bug Fixes
