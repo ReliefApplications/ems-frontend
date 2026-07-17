@@ -11,7 +11,11 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import {
+  ADD_RECORD,
+  ADD_RECORD_PUBLIC,
+  EDIT_RECORD,
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
@@ -48,6 +52,12 @@ export class FormComponent
   @Input() form!: Form;
   /** Record input, optional */
   @Input() record?: RecordModel;
+  /**
+   * When set, called before creating a record to get a captcha token, sent
+   * with the record creation so unauthenticated users can add records to
+   * public forms. The submission is cancelled if no token is returned.
+   */
+  @Input() requestCaptchaToken?: () => Promise<string | null>;
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
@@ -334,6 +344,18 @@ export class FormComponent
     let mutation: any;
     this.surveyActive = false;
 
+    // Ask for a captcha token before saving, when required ( e.g. public forms )
+    let captchaToken: string | null = null;
+    if (!this.record && !this.form.uniqueRecord && this.requestCaptchaToken) {
+      captchaToken = await this.requestCaptchaToken();
+      if (!captchaToken) {
+        // Submission cancelled: let the user submit again
+        this.survey.clear(false, true);
+        this.surveyActive = true;
+        return;
+      }
+    }
+
     try {
       await this.formHelpersService.uploadFiles(
         this.survey,
@@ -377,10 +399,13 @@ export class FormComponent
       // Else create a new one
     } else {
       mutation = this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
+        // As unauthenticated users cannot read the other record fields, only
+        // make sure the record has been created when submitting with a captcha
+        mutation: captchaToken ? ADD_RECORD_PUBLIC : ADD_RECORD,
         variables: {
           form: this.form.id,
           data: this.survey.data,
+          ...(captchaToken && { captchaToken }),
         },
       });
     }
@@ -411,7 +436,7 @@ export class FormComponent
           );
         }
         // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
+        if (data.editRecord || data.addRecord.form?.uniqueRecord) {
           this.survey.clear(false, false);
           if (data.addRecord) {
             this.record = data.addRecord;
@@ -428,7 +453,7 @@ export class FormComponent
         );
         this.save.emit({
           completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
           record: data.addRecord || data.editRecord,
         });
       }

@@ -177,7 +177,13 @@ export class RoleResourceFiltersComponent implements OnInit {
       );
 
     const userAttributes: { value: string; text: string }[] =
-      await firstValueFrom(this.restService.get('/permissions/attributes'));
+      await firstValueFrom(
+        this.restService.get('/permissions/attributes', {
+          params: {
+            enriched: true,
+          },
+        })
+      );
 
     const options = this.filterFields.map((x) => ({
       value: x.name,

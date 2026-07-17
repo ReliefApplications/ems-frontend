@@ -25,6 +25,19 @@ export const ADD_RECORD = gql`
   }
 `;
 
+/**
+ * Graphql request for adding a new record to a public form, as an
+ * unauthenticated user. Only checks that the record has been created, as
+ * unauthenticated users cannot read the other record fields.
+ */
+export const ADD_RECORD_PUBLIC = gql`
+  mutation addRecord($form: ID!, $data: JSON!, $captchaToken: String) {
+    addRecord(form: $form, data: $data, captchaToken: $captchaToken) {
+      id
+    }
+  }
+`;
+
 /** Graphql request for editing a record by its id */
 export const EDIT_RECORD = gql`
   mutation editRecord(

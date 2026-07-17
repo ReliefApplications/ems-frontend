@@ -972,10 +972,22 @@ export class GridComponent
     if (this.currentEditedItem) {
       if (this.formGroup.dirty) {
         this.expandActionsColumn();
+        // Only emit the fields the user actually changed: the form group is
+        // seeded with raw record values, whose shape can differ from the
+        // display values shown in the grid.
+        const value = Object.entries(this.formGroup.controls)
+          .filter(([, control]) => control.dirty)
+          .reduce(
+            (dirtyValues: Record<string, unknown>, [key, control]) => ({
+              ...dirtyValues,
+              [key]: control.value,
+            }),
+            {}
+          );
         this.action.emit({
           action: 'edit',
           item: this.currentEditedItem,
-          value: this.formGroup.value,
+          value,
         });
       }
     }

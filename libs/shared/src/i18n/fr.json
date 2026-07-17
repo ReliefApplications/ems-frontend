@@ -442,7 +442,8 @@
       "title": "Entrez un titre"
     },
     "platform": {
-      "backOffice": "Back-Office"
+      "backOffice": "Back-Office",
+      "publicForms": "Formulaires publics"
     },
     "position": {
       "bottomleft": "En bas à gauche",
@@ -3179,6 +3180,12 @@
         "down": "Descendre la question",
         "up": "Monter la question"
       },
+      "publicForm": {
+        "copyLink": "Copier le lien du formulaire public",
+        "linkCopied": "Lien du formulaire public copié !",
+        "open": "Ouvrir le formulaire public dans un nouvel onglet",
+        "warning": "Ce formulaire est public et peut être soumis par des utilisateurs non authentifiés. Les questions qui reposent sur l'authentification — comme les questions de type ressource(s) ou fichier, ou celles chargeant leurs choix depuis une API nécessitant une authentification — ne fonctionneront pas pour eux. Testez toujours la version publique du formulaire dans une fenêtre de navigation privée afin de valider son comportement."
+      },
       "questionsCategories": {
         "core": "Bibliothèque de questions"
       },
@@ -3193,6 +3200,13 @@
         "updated": "Préférences sauvegardées."
       },
       "title": "Votre profil"
+    },
+    "publicForms": {
+      "captcha": {
+        "description": "Veuillez compléter la vérification ci-dessous pour envoyer le formulaire.",
+        "title": "Vérification"
+      },
+      "noForm": "Ce formulaire n'existe pas ou n'est pas actif. Veuillez vérifier le lien ou contacter le propriétaire du formulaire."
     },
     "pullJobs": {
       "create": "Créer une tâche planifiée"
