@@ -152,7 +152,7 @@ describe('resources question', () => {
     expect(gridInstance.configureGrid).toHaveBeenCalledTimes(1);
   });
 
-  it('should copy incrementalId and map Common Services display text on selection change', async () => {
+  it('should copy incrementalId and mapped values exactly on selection change', async () => {
     const componentCollection = {
       add: jest.fn(),
     };
@@ -216,19 +216,9 @@ describe('resources question', () => {
     element.appendChild(content);
     document.body.appendChild(element);
 
-    const targetQuestionObj: any = {
-      choices: [],
-    };
-
     const survey = {
       mode: 'display',
       setValue: jest.fn(),
-      getQuestionByName: jest.fn((name: string) => {
-        if (name === 'targetCommonService') {
-          return targetQuestionObj;
-        }
-        return null;
-      }),
       getFilteredProperties: jest.fn(() => []),
       getFilteredValues: jest.fn(() => ({})),
       onValueChanged: {
@@ -265,22 +255,17 @@ describe('resources question', () => {
           dataItem: {
             id: 'record-1',
             country: 'country-id-123',
-            text: {
-              country: 'Burkina Faso',
-            },
           },
         },
       ],
     });
 
     expect(apolloMock.query).toHaveBeenCalled();
+    expect(survey.setValue).toHaveBeenCalledTimes(2);
     expect(survey.setValue).toHaveBeenCalledWith('targetField', 'INC-999');
     expect(survey.setValue).toHaveBeenCalledWith(
       'targetCommonService',
       'country-id-123'
     );
-    expect(targetQuestionObj.choices).toEqual([
-      { value: 'country-id-123', text: 'Burkina Faso' },
-    ]);
   });
 });
