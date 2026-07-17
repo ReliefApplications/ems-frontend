@@ -6,6 +6,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   Optional,
   Output,
@@ -57,7 +58,7 @@ import { authType } from '../../../models/api-configuration.model';
 })
 export class EditorComponent
   extends BaseWidgetComponent
-  implements OnInit, AfterViewChecked
+  implements OnInit, AfterViewChecked, OnDestroy
 {
   /** Widget settings */
   @Input() settings: any;

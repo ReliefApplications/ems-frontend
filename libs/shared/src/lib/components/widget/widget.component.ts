@@ -178,9 +178,9 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  /** True when this widget is the bottom-most item in the grid (no items below it). */
-  get isBottomEditor(): boolean {
-    if (!this.grid || !this.gridItem) return false;
+  /** @returns True when this widget is the bottom-most item in the grid (no items below it). */
+  get isBottomWidget(): boolean {
+    if (!this.grid || !this.gridItem || this.grid.mobile) return false;
     const bottom = (this.widget.y ?? 0) + (this.widget.rows ?? 1);
     return this.grid.grid.every(
       (item) => item === this.gridItem || (item.item.y ?? 0) < bottom
@@ -188,32 +188,38 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /**
-   * Auto-grows the widget's row count so its editor content fits without an
+   * Auto-grows or shrinks the widget's row count so its content fits without an
    * inner scrollbar. Only active in view mode (canUpdate = false).
    *
-   * @param overflowPx Pixels of scroll overflow (scrollHeight − clientHeight, ≥ 0).
+   * @param overflowPx Pixels of scroll overflow (content height − visible height).
+   * Positive values grow the widget; negative values shrink it back toward its
+   * original row count (e.g. after switching to a smaller tab).
    */
-  onEditorHeightChange(overflowPx: number): void {
+  onContentHeightChange(overflowPx: number): void {
+    console.log('Update height...');
     if (this.canUpdate || !this.grid || !this.gridItem) return;
-    if (this.grid.mobile) return;
 
     // Only auto-resize the bottom-most widget to avoid overlapping items below it
-    const bottom = (this.widget.y ?? 0) + (this.widget.rows ?? 1);
-    const isBottomWidget = this.grid.grid.every(
-      (item) => item === this.gridItem || (item.item.y ?? 0) < bottom
-    );
-    if (!isBottomWidget) return;
+    if (!this.isBottomWidget) return;
 
-    if (this.autoHeightOriginalRows === undefined) {
-      this.autoHeightOriginalRows = this.widget.rows;
-    }
-
-    if (overflowPx <= 0) return;
+    const originalRows: number =
+      this.autoHeightOriginalRows ?? this.widget.rows;
+    this.autoHeightOriginalRows = originalRows;
 
     const fixedRowHeight = (this.grid.options.fixedRowHeight as number) ?? 200;
     const margin = (this.grid.options.margin as number) ?? 10;
-    const extraRows = Math.ceil(overflowPx / (fixedRowHeight + margin));
-    const newRows = this.widget.rows + extraRows;
+    const rowUnit = fixedRowHeight + margin;
+
+    let newRows = this.widget.rows;
+    if (overflowPx > 0) {
+      newRows = this.widget.rows + Math.ceil(overflowPx / rowUnit);
+    } else if (overflowPx < 0) {
+      // Shrink unused rows back, but never below the configured row count
+      newRows = Math.max(
+        originalRows,
+        this.widget.rows - Math.floor(-overflowPx / rowUnit)
+      );
+    }
 
     if (newRows === this.widget.rows) return;
 
