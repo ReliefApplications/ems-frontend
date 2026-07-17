@@ -24,6 +24,10 @@ import {
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureOnFieldUpdateInitialData,
+  fireOnFieldUpdateTriggersForRecordUpdate,
+} from '../../survey/triggers/on-field-update.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -209,6 +213,7 @@ export class FormComponent
         fireOnRecordEditionTriggers(this.survey);
       }
     });
+    captureOnFieldUpdateInitialData(this.survey);
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -253,6 +258,7 @@ export class FormComponent
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
+    captureOnFieldUpdateInitialData(this.survey);
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();
     this.save.emit({ completed: false });
@@ -382,8 +388,10 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
+    const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
+    fireOnFieldUpdateTriggersForRecordUpdate(this.survey, isRecordUpdate);
     // If is an already saved record, edit it
-    if (this.record || this.form.uniqueRecord) {
+    if (isRecordUpdate) {
       const recordId = this.record
         ? this.record.id
         : this.form.uniqueRecord?.id;
@@ -483,6 +491,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
+    captureOnFieldUpdateInitialData(this.survey);
     this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
