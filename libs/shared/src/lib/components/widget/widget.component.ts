@@ -65,6 +65,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   public expanded = false;
   /** Loading state of the widget */
   public loading = true;
+  /** Original row count before auto-height expansion, used to restore in edit mode */
+  private autoHeightOriginalRows?: number;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
@@ -143,6 +145,18 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
       if (changes['canUpdate'].previousValue === false && this.expanded) {
         this.onResize();
       }
+      // Restore original rows if auto-height had expanded the widget
+      if (
+        changes['canUpdate'].currentValue === true &&
+        this.autoHeightOriginalRows !== undefined
+      ) {
+        this.widget.rows = this.autoHeightOriginalRows;
+        this.autoHeightOriginalRows = undefined;
+        this.gridItem?.updateOptions();
+        if (this.grid?.options?.api?.resize) {
+          this.grid.options.api.resize();
+        }
+      }
     }
   }
 
@@ -161,6 +175,58 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     const content = this.widgetContentComponent as { reload?: () => void };
     if (typeof content?.reload === 'function') {
       content.reload();
+    }
+  }
+
+  /** @returns True when this widget is the bottom-most item in the grid (no items below it). */
+  get isBottomWidget(): boolean {
+    if (!this.grid || !this.gridItem || this.grid.mobile) return false;
+    const bottom = (this.widget.y ?? 0) + (this.widget.rows ?? 1);
+    return this.grid.grid.every(
+      (item) => item === this.gridItem || (item.item.y ?? 0) < bottom
+    );
+  }
+
+  /**
+   * Auto-grows or shrinks the widget's row count so its content fits without an
+   * inner scrollbar. Only active in view mode (canUpdate = false).
+   *
+   * @param overflowPx Pixels of scroll overflow (content height − visible height).
+   * Positive values grow the widget; negative values shrink it back toward its
+   * original row count (e.g. after switching to a smaller tab).
+   */
+  onContentHeightChange(overflowPx: number): void {
+    console.log('Update height...');
+    if (this.canUpdate || !this.grid || !this.gridItem) return;
+
+    // Only auto-resize the bottom-most widget to avoid overlapping items below it
+    if (!this.isBottomWidget) return;
+
+    const originalRows: number =
+      this.autoHeightOriginalRows ?? this.widget.rows;
+    this.autoHeightOriginalRows = originalRows;
+
+    const fixedRowHeight = (this.grid.options.fixedRowHeight as number) ?? 200;
+    const margin = (this.grid.options.margin as number) ?? 10;
+    const rowUnit = fixedRowHeight + margin;
+
+    let newRows = this.widget.rows;
+    if (overflowPx > 0) {
+      newRows = this.widget.rows + Math.ceil(overflowPx / rowUnit);
+    } else if (overflowPx < 0) {
+      // Shrink unused rows back, but never below the configured row count
+      newRows = Math.max(
+        originalRows,
+        this.widget.rows - Math.floor(-overflowPx / rowUnit)
+      );
+    }
+
+    if (newRows === this.widget.rows) return;
+
+    this.widget.rows = newRows;
+    this.gridItem.updateOptions();
+    if (this.grid.options.api?.resize) {
+      this.grid.options.api.resize();
     }
   }
 
