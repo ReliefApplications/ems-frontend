@@ -1,3 +1,9 @@
+# [2.23.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.32...v2.23.0-rc.33) (2026-07-17)
+
+### Bug Fixes
+
+- meta fields from record not being copied onSelect in resources fields ([#2909](https://github.com/ReliefApplications/ems-frontend/issues/2909)) ([e4aa835](https://github.com/ReliefApplications/ems-frontend/commit/e4aa835873da743885c47a941fdc359f9b327d02)), closes [AB#135075](https://github.com/AB/issues/135075)
+
 # [2.23.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.31...v2.23.0-rc.32) (2026-07-16)
 
 ### Bug Fixes
