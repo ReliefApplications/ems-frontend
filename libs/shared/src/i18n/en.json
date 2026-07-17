@@ -1240,6 +1240,7 @@
         "to": "to",
         "withValue": "with value"
       },
+      "collapseValue": "Collapse",
       "columns": {
         "action": "Action type",
         "date": "Date",
@@ -1251,6 +1252,7 @@
       },
       "download": "Download history",
       "empty": "No activity detected",
+      "expandValue": "Expand",
       "field": {
         "all": "All fields",
         "select": "Select fields"

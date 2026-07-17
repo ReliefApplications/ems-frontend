@@ -269,6 +269,47 @@ describe('RecordHistoryComponent', () => {
         '&lt;strong&gt;'
       );
     });
+
+    it('marks long table values as expandable', () => {
+      component.historyForTable = [];
+      const change: Change = {
+        type: 'add',
+        field: 'notes',
+        displayName: 'Notes',
+        new: JSON.stringify('Patient notes '.repeat(30)),
+      };
+
+      component.setHistoryForTableFromChange(change, {
+        createdAt: new Date(),
+        createdBy: 'tester',
+      });
+
+      expect(component.historyForTable[0].expandable).toBe(true);
+      expect(component.historyForTable[0].expanded).toBeUndefined();
+    });
+
+    it('toggles expanded state for a table comparison', () => {
+      component.historyForTable = [];
+      const change: Change = {
+        type: 'modify',
+        field: 'notes',
+        displayName: 'Notes',
+        old: JSON.stringify('Old patient notes '.repeat(30)),
+        new: JSON.stringify('New patient notes '.repeat(30)),
+      };
+
+      component.setHistoryForTableFromChange(change, {
+        createdAt: new Date(),
+        createdBy: 'tester',
+      });
+
+      const row = component.historyForTable[0];
+      component.toggleHistoryValue(row);
+      expect(row.expanded).toBe(true);
+
+      component.toggleHistoryValue(row);
+      expect(row.expanded).toBe(false);
+    });
   });
 
   describe('loadMoreHistory', () => {

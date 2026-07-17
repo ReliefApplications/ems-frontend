@@ -1240,6 +1240,7 @@
         "to": "******",
         "withValue": "******"
       },
+      "collapseValue": "******",
       "columns": {
         "action": "******",
         "date": "******",
@@ -1251,6 +1252,7 @@
       },
       "download": "******",
       "empty": "******",
+      "expandValue": "******",
       "field": {
         "all": "******",
         "select": "******"

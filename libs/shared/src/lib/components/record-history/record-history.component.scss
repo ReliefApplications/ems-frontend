@@ -47,6 +47,63 @@
   word-break: break-word;
 }
 
+.history-table td {
+  padding-bottom: 1.25rem;
+  padding-top: 1.25rem;
+  vertical-align: top;
+}
+
+.history-value-container {
+  position: relative;
+}
+
+.history-value-container-expandable {
+  padding-bottom: 3rem;
+}
+
+.history-value-container-collapsed {
+  max-height: 6rem;
+  overflow: hidden;
+}
+
+.history-value-container-collapsed::after {
+  background: linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0),
+    rgb(255 255 255 / 0.95) 60%,
+    #fff
+  );
+  bottom: 0;
+  content: '';
+  height: 3rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.history-value-cell-old {
+  position: relative;
+}
+
+.history-value-toggle {
+  bottom: 0.5rem;
+  position: absolute;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+::ng-deep .history-value-toggle button.ui-button-icon {
+  align-items: center;
+  @apply bg-white border border-primary-400;
+  border-radius: 9999px;
+  box-shadow: none;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+}
+
 ::ng-deep .history-value-highlight {
   border-radius: 0.2rem;
   color: inherit;

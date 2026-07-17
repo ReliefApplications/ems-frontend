@@ -48,6 +48,8 @@ interface HistoryTableRow {
   displayName: string;
   oldHtml?: string;
   newHtml?: string;
+  expandable?: boolean;
+  expanded?: boolean;
   renderError?: boolean;
   type: Change['type'];
   chip?: string;
@@ -65,7 +67,14 @@ interface HistoryTableContext {
 interface RenderedHistoryValues {
   oldHtml: string;
   newHtml: string;
+  expandable: boolean;
 }
+
+/** Highlighted HTML versions of a change's values */
+type HighlightedHistoryValues = Pick<
+  RenderedHistoryValues,
+  'oldHtml' | 'newHtml'
+>;
 
 /** CSS class used to highlight changed text segments */
 const HISTORY_VALUE_HIGHLIGHT_CLASS = 'history-value-highlight';
@@ -78,6 +87,12 @@ const HISTORY_VALUE_ADDED_CLASS = 'history-value-highlight-added';
 
 /** Minimum value length before changed segments are highlighted */
 const HISTORY_VALUE_HIGHLIGHT_MIN_LENGTH = 30;
+
+/** Minimum value length before table values are collapsed */
+const HISTORY_VALUE_COLLAPSE_MIN_LENGTH = 240;
+
+/** Minimum line count before table values are collapsed */
+const HISTORY_VALUE_COLLAPSE_MIN_LINES = 4;
 
 /**
  * Checks if a value is a non-null object.
@@ -475,6 +490,7 @@ export class RecordHistoryComponent
         displayName: change.displayName,
         newHtml: values.newHtml,
         oldHtml: values.oldHtml,
+        expandable: values.expandable,
         type: change.type,
         chip: this.getChipFromChange(change),
         createdAt: filterHistoryElement.createdAt,
@@ -490,6 +506,15 @@ export class RecordHistoryComponent
         createdBy: filterHistoryElement.createdBy,
       });
     }
+  }
+
+  /**
+   * Toggles a collapsed old/new table comparison.
+   *
+   * @param row History table row
+   */
+  toggleHistoryValue(row: HistoryTableRow): void {
+    row.expanded = !row.expanded;
   }
 
   /**
@@ -562,15 +587,35 @@ export class RecordHistoryComponent
     const shouldHighlight =
       oldText.length >= HISTORY_VALUE_HIGHLIGHT_MIN_LENGTH ||
       newText.length >= HISTORY_VALUE_HIGHLIGHT_MIN_LENGTH;
+    const expandable =
+      this.isExpandableHistoryValue(oldText) ||
+      this.isExpandableHistoryValue(newText);
 
     if (change.type !== 'modify' || !shouldHighlight) {
       return {
         oldHtml: this.escapeHtml(oldText),
         newHtml: this.escapeHtml(newText),
+        expandable,
       };
     }
 
-    return this.highlightChangedValues(oldText, newText);
+    return {
+      ...this.highlightChangedValues(oldText, newText),
+      expandable,
+    };
+  }
+
+  /**
+   * Checks whether a table value should be collapsed by default.
+   *
+   * @param value Plain text value
+   * @returns True when the value is long enough to collapse
+   */
+  private isExpandableHistoryValue(value: string): boolean {
+    return (
+      value.length > HISTORY_VALUE_COLLAPSE_MIN_LENGTH ||
+      value.split(/\r\n|\r|\n/).length > HISTORY_VALUE_COLLAPSE_MIN_LINES
+    );
   }
 
   /**
@@ -711,7 +756,7 @@ export class RecordHistoryComponent
   private highlightChangedValues(
     oldText: string,
     newText: string
-  ): RenderedHistoryValues {
+  ): HighlightedHistoryValues {
     if (oldText === newText) {
       return {
         oldHtml: this.escapeHtml(oldText),
