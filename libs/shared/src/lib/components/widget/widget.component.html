@@ -96,6 +96,7 @@
       #widgetContent
       [settings]="widget.settings"
       [usePadding]="usePadding"
+      [overflowHidden]="!canUpdate && isBottomEditor"
       (contentHeightChange)="onEditorHeightChange($event)"
       class="flex-1 overflow-hidden gridster-item-content"
     >

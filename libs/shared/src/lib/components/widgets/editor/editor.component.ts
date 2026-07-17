@@ -63,6 +63,8 @@ export class EditorComponent
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
+  /** Hides the inner scrollbar; set true when the widget auto-resizes to fit content */
+  @Input() overflowHidden = false;
   /** Emits overflow in pixels (content height − editor area height, ≥ 0) */
   @Output() contentHeightChange = new EventEmitter<number>();
   /** Reference to html content component */
@@ -76,6 +78,8 @@ export class EditorComponent
   private contentResizeObserver?: ResizeObserver;
   /** Prevents re-registering the observer while content is stable */
   private contentObserverSetup = false;
+  /** Debounce timer for ResizeObserver emissions */
+  private debounceTimer?: ReturnType<typeof setTimeout>;
   /** Layout */
   private layout: any;
   /** Record */
@@ -209,20 +213,25 @@ export class EditorComponent
     if (!this.loading && this.contentWrapperRef && !this.contentObserverSetup) {
       this.contentObserverSetup = true;
       this.contentResizeObserver = new ResizeObserver(() => {
-        const overflow =
-          (this.contentWrapperRef?.nativeElement.offsetHeight ?? 0) -
-          (this.scrollContainerRef?.nativeElement.clientHeight ?? 0);
-        this.contentHeightChange.emit(Math.max(0, overflow));
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+          const sc = this.scrollContainerRef?.nativeElement;
+          this.contentHeightChange.emit(
+            Math.max(0, (sc?.scrollHeight ?? 0) - (sc?.clientHeight ?? 0))
+          );
+        }, 300);
       });
       this.contentResizeObserver.observe(this.contentWrapperRef.nativeElement);
     } else if (this.loading && this.contentObserverSetup) {
       this.contentObserverSetup = false;
+      clearTimeout(this.debounceTimer);
       this.contentResizeObserver?.disconnect();
       this.contentResizeObserver = undefined;
     }
   }
 
   override ngOnDestroy(): void {
+    clearTimeout(this.debounceTimer);
     this.contentResizeObserver?.disconnect();
     super.ngOnDestroy();
   }

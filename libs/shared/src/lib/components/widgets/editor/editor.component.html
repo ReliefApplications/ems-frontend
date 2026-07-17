@@ -1,7 +1,9 @@
 <div
   #scrollContainer
-  class="h-full overflow-auto"
+  class="h-full"
   [ngClass]="{
+    'overflow-auto': !overflowHidden,
+    'overflow-hidden': overflowHidden,
     'p-[14px]': usePadding
   }"
   (click)="onClick($event)"

@@ -178,12 +178,20 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  /** True when this widget is the bottom-most item in the grid (no items below it). */
+  get isBottomEditor(): boolean {
+    if (!this.grid || !this.gridItem) return false;
+    const bottom = (this.widget.y ?? 0) + (this.widget.rows ?? 1);
+    return this.grid.grid.every(
+      (item) => item === this.gridItem || (item.item.y ?? 0) < bottom
+    );
+  }
+
   /**
    * Auto-grows the widget's row count so its editor content fits without an
    * inner scrollbar. Only active in view mode (canUpdate = false).
    *
-   * @param contentHeight Natural pixel height of the rendered HTML content.
-   * @param overflowPx
+   * @param overflowPx Pixels of scroll overflow (scrollHeight − clientHeight, ≥ 0).
    */
   onEditorHeightChange(overflowPx: number): void {
     if (this.canUpdate || !this.grid || !this.gridItem) return;
@@ -204,9 +212,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
 
     const fixedRowHeight = (this.grid.options.fixedRowHeight as number) ?? 200;
     const margin = (this.grid.options.margin as number) ?? 10;
-
     const extraRows = Math.ceil(overflowPx / (fixedRowHeight + margin));
-    const newRows = (this.autoHeightOriginalRows as number) + extraRows;
+    const newRows = this.widget.rows + extraRows;
 
     if (newRows === this.widget.rows) return;
 
