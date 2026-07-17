@@ -1,3 +1,9 @@
+# [2.23.0-rc.35](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.34...v2.23.0-rc.35) (2026-07-17)
+
+### Bug Fixes
+
+- Improve readability of long values in history ([#2910](https://github.com/ReliefApplications/ems-frontend/issues/2910)) ([9ea4864](https://github.com/ReliefApplications/ems-frontend/commit/9ea48645f5a5338a69c793ff7e406993bb07dc3a)), closes [AB#135187](https://github.com/AB/issues/135187)
+
 # [2.23.0-rc.34](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.33...v2.23.0-rc.34) (2026-07-17)
 
 ### Features
