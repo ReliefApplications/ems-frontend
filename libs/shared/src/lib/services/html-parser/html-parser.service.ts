@@ -566,7 +566,8 @@ export class HtmlParserService {
     html: string,
     fieldsValue: any,
     fields: any,
-    styles: any[] = []
+    styles: any[] = [],
+    showOutdatedFiles = true
   ): string {
     let formattedHtml = html;
     if (fields) {
@@ -689,7 +690,12 @@ export class HtmlParserService {
             }
           });
 
-          replacement = this.placeholderToValue(field, value, style);
+          replacement = this.placeholderToValue(
+            field,
+            value,
+            style,
+            showOutdatedFiles
+          );
         }
 
         const escapeFieldNameForRegex = (fieldName: string): string =>
@@ -732,6 +738,8 @@ export class HtmlParserService {
    * @param options.fields Available fields.
    * @param options.pages list of application pages
    * @param options.styles Array of layout styles.
+   * @param options.showOutdatedFiles Whether files flagged as outdated
+   * should be rendered in file fields. Defaults to true.
    * @returns The parsed html.
    */
   public parseHtml(
@@ -742,6 +750,7 @@ export class HtmlParserService {
       fields?: any;
       pages?: any[];
       styles?: any[];
+      showOutdatedFiles?: boolean;
     }
   ) {
     let formattedHtml = replacePages(html, options.pages);
@@ -760,7 +769,8 @@ export class HtmlParserService {
         formattedHtml,
         options.data,
         getFlatFields(options.fields),
-        options.styles
+        options.styles,
+        options.showOutdatedFiles !== false
       );
     }
     formattedHtml = applyTableStyle(formattedHtml);
@@ -925,9 +935,16 @@ export class HtmlParserService {
    * @param field Current field
    * @param value Value
    * @param style Style, if any
+   * @param showOutdatedFiles Whether files flagged as outdated should be
+   * rendered for file fields. Defaults to true.
    * @returns Placeholder replacement, as html
    */
-  public placeholderToValue(field: any, value: any, style?: any) {
+  public placeholderToValue(
+    field: any,
+    value: any,
+    style?: any,
+    showOutdatedFiles = true
+  ) {
     let convertedValue = '';
     switch (field.type) {
       case 'url': {
@@ -986,23 +1003,37 @@ export class HtmlParserService {
       case 'file':
         convertedValue = '';
         if (isArray(value)) {
-          for (let i = 0; value[i]; ) {
+          // Loop over the full, unfiltered array so the `index` attribute
+          // (used to resolve the file on click, see onClick) always points
+          // at the right entry in the underlying data, even when some
+          // entries are skipped from rendering below.
+          for (let i = 0; value[i]; i++) {
             const file = value[i];
+            const isOutdated = !!file.outdated;
+            if (isOutdated && !showOutdatedFiles) {
+              continue;
+            }
             const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
               removeFileExtension(file.name),
               field
             );
+            const outdatedIcon = isOutdated
+              ? `<span class="material-icons" style="font-size: 14px; line-height: 1; vertical-align: middle; margin-right: 2px; color: #eab308;" title="${this.translate.instant(
+                  'common.file.outdated'
+                )}">warning</span>`
+              : '';
             convertedValue += `
               <button
                 type="file"
                 class="k-button k-button-flat k-button-flat-base"
                 field="${field.name}"
-                index="${i++}"
+                index="${i}"
                 style="padding: 4px 6px; cursor: pointer; ${style}"
                 title="${file.name}"
               >
                 <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                ${outdatedIcon}
                 ${fileName}
               </button>
             `

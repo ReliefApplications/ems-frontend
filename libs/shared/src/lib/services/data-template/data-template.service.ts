@@ -77,6 +77,8 @@ export class DataTemplateService {
    * @param options.aggregation aggregation data
    * @param options.fields definition of fields
    * @param options.styles definition of styles
+   * @param options.showOutdatedFiles whether files flagged as outdated
+   * should be rendered in file fields. Defaults to true.
    * @returns html to render
    */
   public renderHtml(
@@ -86,6 +88,7 @@ export class DataTemplateService {
       aggregation?: any;
       fields?: any[];
       styles?: any[];
+      showOutdatedFiles?: boolean;
     } = {}
   ) {
     // Add available pages to the list of available keys
@@ -97,6 +100,7 @@ export class DataTemplateService {
         fields: options.fields,
         pages: this.getPages(application),
         styles: options.styles,
+        showOutdatedFiles: options.showOutdatedFiles,
       })
     );
   }

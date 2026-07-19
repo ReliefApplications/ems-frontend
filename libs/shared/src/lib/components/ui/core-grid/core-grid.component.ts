@@ -451,6 +451,7 @@ export class CoreGridComponent
       export: get(this.settings, 'actions.export', false),
       import: get(this.settings, 'actions.import', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      showOutdatedFiles: get(this.settings, 'actions.showOutdatedFiles', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),

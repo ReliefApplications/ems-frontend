@@ -217,6 +217,12 @@
       "none": "******",
       "one": "******"
     },
+    "file": {
+      "deleteBlocked": "******",
+      "markOutdated": "******",
+      "outdated": "******",
+      "unmarkOutdated": "******"
+    },
     "filter": {
       "apply": "******",
       "clear": "******",
@@ -2096,6 +2102,7 @@
             "remove": "******",
             "show": "******",
             "showDetails": "******",
+            "showOutdatedFiles": "******",
             "title": "******",
             "update": "******",
             "useRecordId": "******"
@@ -2161,6 +2168,7 @@
               "inline": "******",
               "show": "******",
               "showDetails": "******",
+              "showOutdatedFiles": "******",
               "update": "******"
             },
             "attachToRecord": "******",

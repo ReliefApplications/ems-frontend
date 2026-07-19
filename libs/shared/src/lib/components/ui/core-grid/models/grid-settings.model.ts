@@ -44,4 +44,6 @@ export interface GridActions {
   inlineEdition?: boolean;
   /** List of field names that should stay read-only during inline edition */
   readOnlyFields?: string[];
+  /** Whether files flagged as outdated should be rendered in file columns */
+  showOutdatedFiles?: boolean;
 }

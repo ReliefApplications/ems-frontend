@@ -28,7 +28,22 @@ export interface QuestionText extends QuestionTextModel, GlobalProperties {
 }
 
 /** File question interface */
-export interface QuestionFile extends QuestionFileModel, GlobalProperties {}
+export interface QuestionFile extends QuestionFileModel, GlobalProperties {
+  /** When true, existing (persisted) files cannot be deleted, only added to */
+  preventDeleteExistingFiles?: boolean;
+  /** When false, files flagged as outdated are hidden from the rendered list */
+  showOutdatedFiles?: boolean;
+}
+
+/** Shape of a single entry stored in a file question's value array */
+export interface QuestionFileValueItem {
+  name: string;
+  type?: string;
+  content?: unknown;
+  /** Flag set by the user to mark a persisted file as no longer relevant */
+  outdated?: boolean;
+  [key: string]: unknown;
+}
 
 /** Type for comment question */
 export interface QuestionComment

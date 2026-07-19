@@ -123,6 +123,27 @@
               </ui-toggle>
             </div>
           </ng-container>
+          <ui-divider class="my-2"></ui-divider>
+          <div [formGroup]="widgetFormGroup">
+            <ui-toggle formControlName="showOutdatedFiles">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.grid.actions.showOutdatedFiles'
+                    | translate
+                }}
+                <ui-icon
+                  class="ml-1 cursor-help self-center"
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.widget.settings.grid.hint.actions.showOutdatedFiles'
+                      | translate
+                  "
+                ></ui-icon>
+              </ng-container>
+            </ui-toggle>
+          </div>
         </div>
       </ng-template>
     </ui-tab>

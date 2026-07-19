@@ -304,6 +304,17 @@ export const init = (
         visibleIndex: 3,
       });
       Serializer.addProperty('resources', {
+        name: 'showOutdatedFiles:boolean',
+        displayName: 'Show outdated files',
+        description:
+          'When disabled, files flagged as outdated are hidden from the file columns of the embedded grid. Files remain stored, they are only hidden from view.',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: visibleIfResource,
+        default: true,
+        visibleIndex: 3,
+      });
+      Serializer.addProperty('resources', {
         name: 'history:boolean',
         displayName: 'Show history',
         category: 'Custom Questions',
@@ -693,6 +704,7 @@ export const init = (
           'update',
           'inlineEdition',
           'export',
+          'showOutdatedFiles',
         ],
         () => {
           if (question.displayAsGrid) {
@@ -839,6 +851,12 @@ export const init = (
     instance.selectable = hasOnSelect ? true : !question.displayOnly;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
+    // Applies regardless of edit permissions: hiding outdated files is a
+    // display concern, not an edit one, so it must also apply to read-only /
+    // display-mode grids.
+    Object.assign(settings, {
+      actions: { showOutdatedFiles: question.showOutdatedFiles !== false },
+    });
     if (
       !question.readOnly &&
       (question.survey as SurveyModel).mode !== 'display'
@@ -853,6 +871,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          showOutdatedFiles: question.showOutdatedFiles !== false,
           remove: true,
         },
       });

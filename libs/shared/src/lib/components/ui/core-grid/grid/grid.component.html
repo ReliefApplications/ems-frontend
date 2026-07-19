@@ -895,10 +895,12 @@
         >
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <!-- Single file -->
-            <ng-container *ngIf="dataItem[field.name]?.length === 1">
+            <ng-container
+              *ngIf="visibleFiles(dataItem[field.name]).length === 1"
+            >
               <button
                 kendoButton
-                *ngFor="let file of dataItem[field.name]"
+                *ngFor="let file of visibleFiles(dataItem[field.name])"
                 [look]="'flat'"
                 [uiTooltip]="file.name"
                 (click)="$event.stopPropagation(); onOpenFile(file)"
@@ -908,10 +910,20 @@
                 <span class="textbox">{{
                   dataItem.text[field.name][file.name] || file.name
                 }}</span>
+                <ui-icon
+                  *ngIf="file.outdated"
+                  class="ml-1 shrink-0"
+                  variant="warning"
+                  icon="warning"
+                  [size]="16"
+                  [uiTooltip]="'common.file.outdated' | translate"
+                ></ui-icon>
               </button>
             </ng-container>
             <!-- Multiple files -->
-            <ng-container *ngIf="dataItem[field.name]?.length > 1">
+            <ng-container
+              *ngIf="visibleFiles(dataItem[field.name]).length > 1"
+            >
               <button
                 kendoButton
                 class="w-full text-center"
@@ -922,13 +934,14 @@
               >
                 {{
                   'components.widget.grid.files'
-                    | translate : { number: dataItem[field.name].length }
+                    | translate
+                      : { number: visibleFiles(dataItem[field.name]).length }
                 }}
               </button>
               <ui-menu #fileMenu>
                 <button
                   kendoButton
-                  *ngFor="let file of dataItem[field.name]"
+                  *ngFor="let file of visibleFiles(dataItem[field.name])"
                   [look]="'flat'"
                   [uiTooltip]="file.name"
                   (click)="$event.stopPropagation(); onOpenFile(file)"
@@ -939,6 +952,14 @@
                     <span class="textbox">{{
                       dataItem.text[field.name][file.name] || file.name
                     }}</span>
+                    <ui-icon
+                      *ngIf="file.outdated"
+                      class="ml-1 shrink-0"
+                      variant="warning"
+                      icon="warning"
+                      [size]="16"
+                      [uiTooltip]="'common.file.outdated' | translate"
+                    ></ui-icon>
                   </p>
                 </button>
               </ui-menu>

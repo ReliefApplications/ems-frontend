@@ -75,6 +75,9 @@ export const createEditorForm = (id: string, value: any) => {
           disabled: !isNil(get<string | null>(value, 'referenceData', null)),
         },
       ],
+      // When disabled, files flagged as outdated are hidden from the
+      // rendered file lists of this widget, without touching the stored data.
+      showOutdatedFiles: get<boolean>(value, 'showOutdatedFiles', true),
       // Automation
       automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
         get(value, 'automationRules', []).map((rule: any) =>

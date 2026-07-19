@@ -269,6 +269,9 @@ export class GridSettingsFormFactory {
       export: [get(configuration, 'actions.export', true)],
       import: [get(configuration, 'actions.import', false)],
       showDetails: [get(configuration, 'actions.showDetails', true)],
+      showOutdatedFiles: [
+        get(configuration, 'actions.showOutdatedFiles', true),
+      ],
       navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
       navigateSettings: this.fb.group({
         pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],

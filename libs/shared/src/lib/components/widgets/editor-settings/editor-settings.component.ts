@@ -254,6 +254,8 @@ export class EditorSettingsComponent
         this.widget.settings.title = this.widgetFormGroup.value.title;
         this.widget.settings.showDataSourceLink =
           this.widgetFormGroup.value.showDataSourceLink;
+        this.widget.settings.showOutdatedFiles =
+          this.widgetFormGroup.value.showOutdatedFiles;
       });
   }
 

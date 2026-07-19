@@ -120,6 +120,7 @@ export class GridComponent
     export: false,
     import: false,
     showDetails: false,
+    showOutdatedFiles: true,
     navigateToPage: false,
     navigateSettings: {
       field: '',
@@ -1031,6 +1032,24 @@ export class GridComponent
       .downloadOrPreview(file)
       .pipe(takeUntil(this.destroy$))
       .subscribe();
+  }
+
+  /**
+   * Filters out files flagged as outdated when the grid is configured to
+   * hide them. The underlying record data is left untouched, only the
+   * rendered list is affected.
+   *
+   * @param files Files stored on the record for a given file column
+   * @returns Files that should be rendered in the column
+   */
+  public visibleFiles(files: any[]): any[] {
+    if (!Array.isArray(files)) {
+      return [];
+    }
+    if (this.actions?.showOutdatedFiles !== false) {
+      return files;
+    }
+    return files.filter((file) => !file?.outdated);
   }
 
   /**

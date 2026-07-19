@@ -165,6 +165,34 @@ export const init = (environment: any): void => {
     minValue: 2,
   });
 
+  // Once a file has been uploaded and saved on the record, prevent users
+  // from deleting it. Files added during the current editing session (not
+  // yet saved) can still be removed normally.
+  serializer.addProperty('file', {
+    name: 'preventDeleteExistingFiles:boolean',
+    type: 'boolean',
+    category: 'general',
+    displayName: 'Prevent deleting existing files',
+    description:
+      'When enabled, users can still add new files but cannot delete files that were already saved on the record. Files added during the current editing session can still be removed.',
+    visibleIndex: 13,
+    default: false,
+  });
+
+  // Controls whether files flagged as outdated are rendered in the file
+  // list. Hidden files stay part of the stored value, they are only
+  // excluded from the visible list.
+  serializer.addProperty('file', {
+    name: 'showOutdatedFiles:boolean',
+    type: 'boolean',
+    category: 'general',
+    displayName: 'Show outdated files',
+    description:
+      'When disabled, files flagged as outdated are hidden from the file list. They are not deleted and remain part of the stored value.',
+    visibleIndex: 14,
+    default: true,
+  });
+
   // Add set value on complete expression to questions
   serializer.addProperty('question', {
     name: 'setValueOnComplete',

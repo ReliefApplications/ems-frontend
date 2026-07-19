@@ -426,6 +426,7 @@ export class EditorComponent
               aggregation: this.aggregationsData,
               fields: this.fields,
               styles: this.styles,
+              showOutdatedFiles: this.settings.showOutdatedFiles,
             }
           );
           this.loading = false;
@@ -472,6 +473,7 @@ export class EditorComponent
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
               fields: this.fields,
+              showOutdatedFiles: this.settings.showOutdatedFiles,
             }
           );
           this.loading = false;
@@ -487,6 +489,7 @@ export class EditorComponent
               data: this.fieldsValue,
               aggregation: this.aggregationsData,
               fields: this.fields,
+              showOutdatedFiles: this.settings.showOutdatedFiles,
             }
           );
           this.loading = false;
@@ -632,6 +635,7 @@ export class EditorComponent
                   aggregation: this.aggregationsData,
                   fields: this.fields,
                   styles: this.styles,
+                  showOutdatedFiles: this.settings.showOutdatedFiles,
                 }
               );
             })

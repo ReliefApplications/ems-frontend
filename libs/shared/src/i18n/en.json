@@ -217,6 +217,12 @@
       "none": "No field",
       "one": "Field"
     },
+    "file": {
+      "deleteBlocked": "This file was already saved and cannot be deleted from here.",
+      "markOutdated": "Mark as outdated",
+      "outdated": "Outdated",
+      "unmarkOutdated": "Unmark as outdated"
+    },
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
@@ -2096,6 +2102,7 @@
             "remove": "Remove",
             "show": "Show history",
             "showDetails": "Show record details",
+            "showOutdatedFiles": "Show outdated files",
             "title": "Row Actions",
             "update": "Update records",
             "useRecordId": "Pass id as query parameter"
@@ -2161,6 +2168,7 @@
               "inline": "If authorized, user can edit records in the grid",
               "show": "User can see full history of visible records",
               "showDetails": "User can see full details of visible records",
+              "showOutdatedFiles": "When disabled, files flagged as outdated are hidden from the file column. Files remain stored, they are only hidden from view.",
               "update": "If authorized, user can update visible records"
             },
             "attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
