@@ -84,8 +84,7 @@ export class TabActionsComponent
     {
       name: 'showOutdatedFiles',
       text: 'components.widget.settings.grid.actions.showOutdatedFiles',
-      tooltip:
-        'components.widget.settings.grid.hint.actions.showOutdatedFiles',
+      tooltip: 'components.widget.settings.grid.hint.actions.showOutdatedFiles',
     },
     {
       name: 'navigateToPage',

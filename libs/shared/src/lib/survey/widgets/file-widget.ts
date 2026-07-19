@@ -74,6 +74,8 @@ const OUTDATED_TOGGLE_ACTIVE_CLASS = 'file-outdated-toggle--active';
  * added in the current editing session (which don't carry a stable id).
  *
  * @param file File value entry (or preview entry)
+ * @param file.name File name
+ * @param file.content File content (data url, http url or storage reference)
  * @returns Identity key, stable across re-renders of the same file
  */
 const getFileKey = (file: {
@@ -293,9 +295,7 @@ const applyDeleteProtection = (
   // before loading a replacement file.
   const originalClear = question.clear.bind(question);
   question.clear = (doneCallback?: () => void) => {
-    const currentValue: QuestionFileValueItem[] = Array.isArray(
-      question.value
-    )
+    const currentValue: QuestionFileValueItem[] = Array.isArray(question.value)
       ? question.value
       : question.value
       ? [question.value]

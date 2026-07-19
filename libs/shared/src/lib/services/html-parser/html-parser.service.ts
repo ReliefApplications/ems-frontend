@@ -560,6 +560,8 @@ export class HtmlParserService {
    * @param fieldsValue Content of the fields.
    * @param fields Available fields.
    * @param styles Array of layout styles.
+   * @param showOutdatedFiles Whether files flagged as outdated should be
+   * rendered in file fields. Defaults to true.
    * @returns formatted html.
    */
   replaceRecordFields(
