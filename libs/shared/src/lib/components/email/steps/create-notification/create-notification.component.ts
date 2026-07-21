@@ -4,6 +4,7 @@ import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { getLanguageNativeName } from '../../../../utils/languages';
 import { takeUntil } from 'rxjs';
 
 /**
@@ -24,10 +25,22 @@ export class CreateNotificationComponent
   public formGroup: FormGroup = this.emailService.datasetsForm;
   /** Notification types for email service. */
   public notificationTypes: string[] = this.emailService.notificationTypes;
+  /** Languages the application supports, offered as the notification language. */
+  public languages: string[] = this.translate.getLangs();
   /** Event emitter for navigating to list screen. */
   @Output() navigateToListScreen: EventEmitter<any> = new EventEmitter();
   /** Opened snackBars */
   private snackBars: any[] = [];
+
+  /**
+   * Native display name for a language code, shown in the language dropdown.
+   *
+   * @param lang ISO language code.
+   * @returns The language native name.
+   */
+  public getLanguageLabel(lang: string): string {
+    return getLanguageNativeName(lang);
+  }
 
   /**
    * Checks if name input is empty.
