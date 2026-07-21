@@ -343,6 +343,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           variables: {
             first: this.grid.gridData.total,
             filter: this.grid.queryFilter,
+            ...this.grid.recordVisibilityVariables,
           },
         })
       );
@@ -398,6 +399,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 query: GET_RECORD_DETAILS,
                 variables: {
                   id: record.id,
+                  ...this.grid.recordVisibilityVariables,
                 },
               })
             )
@@ -793,6 +795,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         sortField: this.grid.sortField || undefined,
         sortOrder: this.grid.sortOrder || undefined,
         styles: this.layout?.query?.style,
+        ...this.grid.recordVisibilityVariables,
         at: undefined,
         skip: this.grid.skip,
       };

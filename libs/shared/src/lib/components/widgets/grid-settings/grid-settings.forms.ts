@@ -185,6 +185,8 @@ export class GridSettingsFormFactory {
           get(configuration, 'aggregations', []),
           Validators.required,
         ],
+        draft: [get(configuration, 'draft', false)],
+        allDrafts: [get(configuration, 'allDrafts', false)],
         actions: this.createGridActionsFormGroup(configuration),
         floatingButtons: this.fb.array(
           configuration.floatingButtons && configuration.floatingButtons.length
@@ -214,6 +216,14 @@ export class GridSettingsFormFactory {
       formGroup,
       configuration?.widgetDisplay
     );
+    formGroup
+      .get('draft')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          formGroup.get('allDrafts')?.setValue(false);
+        }
+      });
     return extendedForm;
   };
 

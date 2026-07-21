@@ -7,11 +7,13 @@
           [record]="record"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
-        <!-- <shared-draft-record
+        <shared-draft-record
+          *ngIf="showSaveAsDraft"
           [survey]="survey"
           [formId]="form?.id ?? ''"
+          [beforeOpenDrafts]="beforeOpenDrafts"
           (loadDraft)="onLoadDraftRecord($event)"
-        ></shared-draft-record> -->
+        ></shared-draft-record>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
@@ -67,9 +69,13 @@
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
-    <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
+    <ui-button
+      *ngIf="showSaveAsDraft"
+      [disabled]="disableSaveAsDraft"
+      (click)="saveAsDraft()"
+      >{{
       'components.form.draftRecords.save' | translate
-    }}</ui-button> -->
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

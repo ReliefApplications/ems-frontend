@@ -21,7 +21,13 @@ import {
 import { Apollo } from 'apollo-angular';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  firstValueFrom,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
 import { SurveyModel } from 'survey-core';
 import { Form, FormQueryResponse } from '../../models/form.model';
@@ -49,6 +55,7 @@ import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { DraftRecordComponent } from '../draft-record/draft-record.component';
 
 /**
  * Interface of Dialog data.
@@ -61,6 +68,8 @@ interface DialogData {
   askForConfirm?: boolean;
   recordData?: any;
   actionButtonCtx?: boolean;
+  draft?: boolean;
+  allDrafts?: boolean;
 }
 /**
  * Defines the default Dialog data
@@ -85,6 +94,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
+    DraftRecordComponent,
   ],
 })
 export class FormModalComponent
@@ -114,6 +124,8 @@ export class FormModalComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Whether the current survey data changed since the last save/load. */
+  private valueChanged = false;
   /** Available pages*/
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
@@ -128,6 +140,26 @@ export class FormModalComponent
   private prefillClonedData: any;
   /** Stored merged data */
   private prefillMergedData: any;
+  /** Auto-save trigger stream. */
+  private autoSaveSubject = new Subject<void>();
+  /** Whether auto-save should save the form as a draft. */
+  private autoSaveEnabled = false;
+  /** Active auto-save operation, used to avoid duplicate draft creation. */
+  private autoSavePromise: Promise<void> | null = null;
+  /** Whether another auto-save was requested while one was running. */
+  private autoSavePending = false;
+  /** Incremented on every user edit to detect stale auto-save responses. */
+  private autoSaveRevision = 0;
+
+  /** @returns True when the Save as Draft button should be shown. */
+  public get showSaveAsDraft(): boolean {
+    return !this.data.recordId || !!this.lastDraftRecord;
+  }
+
+  /** @returns True when auto-save can write the current form as a draft. */
+  private get canAutoSaveDraft(): boolean {
+    return !this.data.recordId || !!this.lastDraftRecord;
+  }
 
   /**
    * Display a form instance in a modal.
@@ -160,6 +192,13 @@ export class FormModalComponent
     private autoTranslateService: AutoTranslateService
   ) {
     super();
+    this.autoSaveSubject
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.autoSaveEnabled) {
+          this.performAutoSave();
+        }
+      });
   }
 
   /**
@@ -219,10 +258,15 @@ export class FormModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id,
+              draft: this.data.draft,
+              allDrafts: this.data.allDrafts,
             },
           })
         ).then(({ data }) => {
           this.record = data.record;
+          if (this.record?.draft && this.record.id) {
+            this.lastDraftRecord = this.record.id;
+          }
           if (this.data.recordData) {
             this.record.data = { ...this.record.data, ...this.data.recordData };
           }
@@ -289,12 +333,19 @@ export class FormModalComponent
       this.record
     );
 
+    this.valueChanged = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
     // Auto-translation is wired centrally in FormBuilderService.createSurvey;
     // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      this.valueChanged = true;
+      this.autoSaveRevision++;
       this.updateButtonLabels();
+      if (this.autoSaveEnabled) {
+        this.autoSaveSubject.next();
+      }
     });
     this.survey.onComplete.add(this.onComplete);
 
@@ -372,6 +423,10 @@ export class FormModalComponent
    */
   public async submit(): Promise<void> {
     this.saving = true;
+    this.autoSaveEnabled = false;
+    if (this.autoSavePromise) {
+      await this.autoSavePromise;
+    }
     let uploadErrors;
     /** If any file attached, first upload them before record creation */
     if (
@@ -402,6 +457,7 @@ export class FormModalComponent
         { error: true }
       );
       this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
     }
   }
 
@@ -442,6 +498,7 @@ export class FormModalComponent
         { error: true }
       );
       this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
       return;
     }
 
@@ -463,6 +520,7 @@ export class FormModalComponent
             await this.onUpdate(survey);
           } else {
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
           }
         });
       // Updates the data directly.
@@ -494,6 +552,48 @@ export class FormModalComponent
       } else {
         this.updateData(this.data.recordId, survey);
       }
+    } else if (this.lastDraftRecord) {
+      this.apollo
+        .mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: this.lastDraftRecord,
+            data: survey.data,
+            template: this.data.template,
+            lang: this.translate.currentLang,
+            updateDraftStatus: false,
+          },
+        })
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
+                error: true,
+              });
+              this.saving = false;
+              this.autoSaveEnabled = this.canAutoSaveDraft;
+            } else {
+              this.lastDraftRecord = undefined;
+              this.valueChanged = false;
+              this.ngZone.run(() => {
+                this.dialogRef.close({
+                  template: this.data.template,
+                  data: data?.editRecord,
+                } as any);
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.form.display.submissionMessage'
+                  )
+                );
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
+          },
+        });
     } else {
       this.apollo
         .mutate<AddRecordMutationResponse>({
@@ -538,6 +638,7 @@ export class FormModalComponent
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
           },
         });
     }
@@ -558,6 +659,8 @@ export class FormModalComponent
           id,
           data: survey.data,
           template: this.data.template,
+          lang: this.translate.currentLang,
+          ...(this.record?.draft && { updateDraftStatus: false }),
         },
       })
       .subscribe({
@@ -567,6 +670,7 @@ export class FormModalComponent
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
         },
       });
   }
@@ -604,6 +708,7 @@ export class FormModalComponent
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
         },
       });
   }
@@ -634,6 +739,7 @@ export class FormModalComponent
         { error: true }
       );
       this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
     } else {
       if (data) {
         if (
@@ -645,6 +751,7 @@ export class FormModalComponent
             data.editRecord.incrementalId
           );
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
           return;
         }
         if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
@@ -657,6 +764,7 @@ export class FormModalComponent
               recordWithErrors.incrementalId
             );
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
             return;
           }
         }
@@ -667,6 +775,10 @@ export class FormModalComponent
             value: '',
           })
         );
+        this.valueChanged = false;
+        if (data[responseType]?.draft === false) {
+          this.lastDraftRecord = undefined;
+        }
         this.dialogRef.close({
           template: this.form?.id,
           data: data[responseType],
@@ -828,11 +940,134 @@ export class FormModalComponent
   }
 
   /**
+   * Saves changed modal data as a draft without showing success toasts.
+   */
+  private performAutoSave(): void {
+    if (this.saving || !this.valueChanged || !this.form?.id) {
+      return;
+    }
+    if (this.autoSavePromise) {
+      this.autoSavePending = true;
+      return;
+    }
+
+    const revision = this.autoSaveRevision;
+    this.autoSavePromise = new Promise<void>((resolve) => {
+      if (this.lastDraftRecord) {
+        this.apollo
+          .mutate<EditRecordMutationResponse>({
+            mutation: EDIT_RECORD,
+            variables: {
+              id: this.lastDraftRecord,
+              data: this.survey.data,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ errors }) => {
+              this.handleAutoSaveResponse(
+                errors,
+                this.lastDraftRecord,
+                revision,
+                resolve
+              );
+            },
+            error: (err: unknown) => {
+              this.handleAutoSaveError(err, resolve);
+            },
+          });
+      } else {
+        this.apollo
+          .mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: this.form?.id,
+              data: this.survey.data,
+              draft: true,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ errors, data }) => {
+              this.handleAutoSaveResponse(
+                errors,
+                data?.addRecord?.id,
+                revision,
+                resolve
+              );
+            },
+            error: (err: unknown) => {
+              this.handleAutoSaveError(err, resolve);
+            },
+          });
+      }
+    });
+  }
+
+  /**
+   * Handles a draft auto-save mutation response.
+   *
+   * @param errors GraphQL errors, if any.
+   * @param savedDraftId Saved draft id.
+   * @param revision Change revision captured when the auto-save started.
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private handleAutoSaveResponse(
+    errors: readonly { message: string }[] | undefined,
+    savedDraftId: string | undefined,
+    revision: number,
+    resolve: () => void
+  ): void {
+    if (errors) {
+      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    } else {
+      if (savedDraftId) {
+        this.lastDraftRecord = savedDraftId;
+        this.disableSaveAsDraft = true;
+      }
+      if (this.autoSaveRevision === revision) {
+        this.valueChanged = false;
+      }
+    }
+    this.finishAutoSave(resolve);
+  }
+
+  /**
+   * Handles a draft auto-save transport error.
+   *
+   * @param err Transport error.
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private handleAutoSaveError(err: unknown, resolve: () => void): void {
+    const message = err instanceof Error ? err.message : String(err);
+    this.snackBar.openSnackBar(message, { error: true });
+    this.finishAutoSave(resolve);
+  }
+
+  /**
+   * Clears the current auto-save and replays a queued one if needed.
+   *
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private finishAutoSave(resolve: () => void): void {
+    const shouldReplay = this.autoSavePending;
+    this.autoSavePending = false;
+    this.autoSavePromise = null;
+    resolve();
+    if (shouldReplay && this.autoSaveEnabled) {
+      this.performAutoSave();
+    }
+  }
+
+  /**
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
     const callback = (details: any) => {
       this.lastDraftRecord = details.id;
+      this.disableSaveAsDraft = true;
+      this.valueChanged = false;
+      this.autoSaveEnabled = true;
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
@@ -850,7 +1085,29 @@ export class FormModalComponent
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
+    this.valueChanged = false;
+    this.autoSaveEnabled = true;
   }
+
+  /**
+   * Asks for confirmation before replacing unsaved data with a draft.
+   *
+   * @returns True when the draft picker can open.
+   */
+  public beforeOpenDrafts = async (): Promise<boolean> => {
+    if (!this.valueChanged) {
+      return true;
+    }
+
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.form.update.exit'),
+      content: this.translate.instant('components.form.update.exitMessage'),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    });
+    const value = await firstValueFrom(dialogRef.closed);
+    return !!value;
+  };
 
   /**
    * Clears the cache for the records created by resource questions

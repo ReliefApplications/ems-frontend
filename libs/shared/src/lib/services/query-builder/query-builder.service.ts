@@ -27,6 +27,8 @@ interface QueryVariables {
   styles?: any;
   actions?: any;
   at?: Date;
+  draft?: boolean;
+  allDrafts?: boolean;
 }
 
 /** Interface for a query response */
@@ -361,10 +363,12 @@ export class QueryBuilderService {
    */
   public singleGraphQLQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetSingleRecord($id: ID! $data: JSON) {
+    query GetSingleRecord($id: ID! $data: JSON $draft: Boolean $allDrafts: Boolean) {
       ${name}(
       id: $id
       data: $data
+      draft: $draft
+      allDrafts: $allDrafts
       ) {
         ${fields}
       }
@@ -381,7 +385,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date, $draft: Boolean, $allDrafts: Boolean) {
       ${name}(
       first: $first
       skip: $skip
@@ -392,6 +396,8 @@ export class QueryBuilderService {
       styles: $styles
       actions: $actions
       at: $at
+      draft: $draft
+      allDrafts: $allDrafts
       ) {
         edges {
           node {
