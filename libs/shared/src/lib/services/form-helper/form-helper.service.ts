@@ -28,7 +28,10 @@ import { getFileIcon, removeFileExtension } from '../file/file.utils';
 import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../../pipes/date/date.pipe';
 
 /** Survey question with input type metadata. */
-type InputTypeQuestion = { inputType?: string };
+type InputTypeQuestion = {
+  inputType?: string;
+  getPropertyValue?: (name: string) => unknown;
+};
 
 /**
  * Shared survey helper service.
@@ -524,6 +527,7 @@ export class FormHelpersService {
     options: { question: Question; htmlElement: HTMLElement }
   ): void => {
     this.addQuestionTooltips(survey, options);
+    this.formatHtmlQuestionDates(survey, options);
     this.bindHtmlQuestionFileClicks(survey, options);
   };
 
@@ -580,16 +584,6 @@ export class FormHelpersService {
       survey.getQuestionByValueName(options.name) ||
       survey.getQuestionByName(options.name);
     const value = this.resolveValue(survey, options.name);
-    const formattedQuestionDate = this.formatQuestionDate(
-      question as InputTypeQuestion | undefined,
-      value
-    );
-    if (!isNil(formattedQuestionDate)) {
-      options.value = formattedQuestionDate;
-      options.isExists = true;
-      return;
-    }
-
     if (!question || question.getType() !== 'file') {
       // No file question resolved for this placeholder, but the value may still
       // be compatible with the file links format (an array of file objects).
@@ -609,6 +603,108 @@ export class FormHelpersService {
   };
 
   /**
+   * Formats date-like values after HTML question dynamic text has been resolved.
+   * This keeps expressions working with raw values while avoiding ISO strings in final text.
+   *
+   * @param survey current survey
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private formatHtmlQuestionDates(
+    survey: SurveyModel,
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    const htmlQuestion =
+      options.htmlElement.querySelector<HTMLElement>('.sd-html');
+    if (!htmlQuestion) {
+      return;
+    }
+
+    if (htmlQuestion.dataset['dateFormattingBound'] !== 'true') {
+      htmlQuestion.dataset['dateFormattingBound'] = 'true';
+      new MutationObserver(() => {
+        this.replaceHtmlQuestionDates(survey, htmlQuestion);
+      }).observe(htmlQuestion, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    }
+
+    this.replaceHtmlQuestionDates(survey, htmlQuestion);
+  }
+
+  /**
+   * Replaces raw date values in rendered HTML question text nodes.
+   *
+   * @param survey current survey
+   * @param htmlQuestion rendered HTML question element
+   */
+  private replaceHtmlQuestionDates(
+    survey: SurveyModel,
+    htmlQuestion: HTMLElement
+  ): void {
+    const replacements = this.getHtmlQuestionDateReplacements(survey);
+
+    if (!replacements.length) {
+      return;
+    }
+
+    const treeWalker = document.createTreeWalker(
+      htmlQuestion,
+      NodeFilter.SHOW_TEXT
+    );
+    let currentNode = treeWalker.nextNode();
+    while (currentNode) {
+      const originalText = currentNode.textContent || '';
+      let text = originalText;
+      replacements.forEach(({ value, formattedDate }) => {
+        text = text.replace(
+          new RegExp(this.escapeRegExp(value), 'g'),
+          formattedDate
+        );
+      });
+      if (text !== originalText) {
+        currentNode.textContent = text;
+      }
+      currentNode = treeWalker.nextNode();
+    }
+  }
+
+  /**
+   * Gets raw-to-formatted date replacement pairs for the current survey data.
+   *
+   * @param survey current survey
+   * @returns Replacement pairs for date-like question values
+   */
+  private getHtmlQuestionDateReplacements(
+    survey: SurveyModel
+  ): { value: string; formattedDate: string }[] {
+    return survey
+      .getAllQuestions()
+      .map((question) => {
+        const value = this.resolveValue(survey, question.name);
+        const formattedDate = this.formatQuestionDate(
+          question as InputTypeQuestion,
+          value
+        );
+        return !isNil(formattedDate) && !isNil(value)
+          ? { value: `${value}`, formattedDate }
+          : null;
+      })
+      .filter(
+        (
+          replacement
+        ): replacement is { value: string; formattedDate: string } =>
+          !isNil(replacement)
+      );
+  }
+
+  /**
    * Formats raw date question placeholders in HTML question dynamic text.
    *
    * @param question Survey question resolved for the placeholder
@@ -623,7 +719,8 @@ export class FormHelpersService {
       return null;
     }
 
-    const inputType = question.inputType;
+    const inputType =
+      question.inputType || question.getPropertyValue?.('inputType');
     switch (inputType) {
       case 'date':
         return (
@@ -711,6 +808,16 @@ export class FormHelpersService {
 
     result.push(current.trim());
     return result;
+  }
+
+  /**
+   * Escapes a string to use as a regular expression pattern.
+   *
+   * @param value Raw value
+   * @returns Escaped value
+   */
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   /**
