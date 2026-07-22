@@ -2,9 +2,11 @@
 
 /** This file has the correct feature to add intensity to the features of the heat array */
 /** Issue taken as source: https://github.com/Leaflet/Leaflet.heat/issues/74 */
-import * as L from 'leaflet';
+import * as LModule from 'leaflet';
 import simpleheat from 'simpleheat';
 import { isNil } from 'lodash';
+
+const L = LModule.default || LModule;
 
 L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
   initialize: function (latlngs, options) {

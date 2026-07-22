@@ -64,13 +64,6 @@ const PDF_PREVIEW_CLASS = 'file-pdf-preview';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
 
-/** Services needed to resolve and render an inline file preview. */
-interface FilePreviewDeps {
-  documentManagementService: DocumentManagementService;
-  restService: RestService;
-  environment: any;
-}
-
 /** CSS class of the custom preview wrapper we inject. */
 const FILE_PREVIEW_CLASS = 'file-preview';
 /** Class toggled on the question root to hide SurveyJS's default preview. */
@@ -379,7 +372,7 @@ export const init = (
       (question as any).__filePreviewEl = htmlElement;
 
       // Render the preview for the current value.
-      updateFilePreview(previewDeps, question, htmlElement);
+      updatePdfPreview(question, htmlElement);
       updateOutdatedControls(question, htmlElement);
 
       // Re-render the preview whenever this question's value changes. Subscribe
@@ -393,7 +386,7 @@ export const init = (
             if (!el) return;
             // Defer so SurveyJS finishes its own DOM update first.
             setTimeout(() => {
-              updateFilePreview(previewDeps, question, el);
+              updatePdfPreview(question, el);
               updateOutdatedControls(question, el);
             }, 0);
           }

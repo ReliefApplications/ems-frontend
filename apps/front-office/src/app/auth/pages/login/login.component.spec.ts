@@ -6,6 +6,8 @@ import { LoginComponent } from './login.component';
 import { Ability } from '@casl/ability';
 import { SpinnerModule } from '@oort-front/ui';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
@@ -17,6 +19,7 @@ describe('LoginComponent', () => {
         OAuthModule.forRoot(),
         ApolloTestingModule,
         SpinnerModule,
+        TranslateModule.forRoot(),
       ],
       providers: [
         Ability,

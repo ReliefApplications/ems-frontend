@@ -11,6 +11,10 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 
+import { DialogModule } from '@angular/cdk/dialog';
+
+import { Ability } from '@casl/ability';
+
 describe('FormComponent', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
@@ -22,6 +26,7 @@ describe('FormComponent', () => {
         HttpClientTestingModule,
         OAuthModule.forRoot(),
         ApolloTestingModule,
+        DialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -30,7 +35,14 @@ describe('FormComponent', () => {
         }),
       ],
       declarations: [FormComponent],
-      providers: [TranslateService],
+      providers: [
+        Ability,
+        TranslateService,
+        {
+          provide: 'environment',
+          useValue: {},
+        },
+      ],
     }).compileComponents();
   });
 

@@ -85,7 +85,7 @@ export class SummaryCardComponent
   /** Reference to pdf */
   @ViewChild('pdf') pdf!: any;
   /** Reference to grid component, when grid view is activated */
-  @ViewChild(GridWidgetComponent) gridComponent?: GridWidgetComponent;
+  @ViewChild('gridWidget') gridComponent?: GridWidgetComponent;
   /** Grid settings */
   public gridSettings: any = null;
   /** Current display mode */
