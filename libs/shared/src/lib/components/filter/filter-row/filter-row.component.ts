@@ -69,8 +69,12 @@ export class FilterRowComponent
   @Input() isEmailNotification = false;
   /** Enables attribute filters to switch editor mode based on operator. */
   @Input() enableAttributeValueSource = false;
-  /** From widget */
-  @Input() dlContextSettings: any;
+  /**
+   * Per-dataset Common Services field settings for the value editor. When it
+   * carries `datasetBlocks`, the editor offers a picker of that dataset's fields
+   * that inserts `{{Block N.field}}` tokens (resolved per row when the email is sent).
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -157,17 +161,17 @@ export class FilterRowComponent
   }
 
   /**
-   * Dataset token options built from dlContextSettings.datasetBlocks or previewFields.
-   * Memoised field (not a getter) recomputed only when dlContextSettings changes, so the
+   * Dataset token options built from datasetCommonServicesFieldSettings.datasetBlocks or previewFields.
+   * Memoised field (not a getter) recomputed only when datasetCommonServicesFieldSettings changes, so the
    * bound *ngFor receives stable references and its option nodes are not recreated each
    * change-detection cycle (which made the open value picker unclickable).
    */
   public datasetTokenOptions: { value: string; label: string }[] = [];
 
-  /** Recomputes datasetTokenOptions from the current dlContextSettings. */
+  /** Recomputes datasetTokenOptions from the current datasetCommonServicesFieldSettings. */
   private computeDatasetTokenOptions(): void {
     const blocks: { name: string; fields: string[] }[] =
-      this.dlContextSettings?.datasetBlocks ?? [];
+      this.datasetCommonServicesFieldSettings?.datasetBlocks ?? [];
     if (blocks.length > 0) {
       this.datasetTokenOptions = blocks.flatMap((block) =>
         block.fields.map((field) => ({
@@ -179,7 +183,7 @@ export class FilterRowComponent
       );
       return;
     }
-    const previewFields: string[] = this.dlContextSettings?.previewFields ?? [];
+    const previewFields: string[] = this.datasetCommonServicesFieldSettings?.previewFields ?? [];
     this.datasetTokenOptions = previewFields.map((field) => ({
       value: `{{${field}}}`,
       label: this.emailService.replaceUnderscores(field),
@@ -345,16 +349,16 @@ export class FilterRowComponent
       initialField &&
       this.field &&
       !isEqual(
-        changes.dlContextSettings?.previousValue,
-        changes.dlContextSettings?.currentValue
+        changes.datasetCommonServicesFieldSettings?.previousValue,
+        changes.datasetCommonServicesFieldSettings?.currentValue
       );
 
     // Recompute the memoised token options only when the settings actually change.
     if (
-      changes.dlContextSettings &&
+      changes.datasetCommonServicesFieldSettings &&
       !isEqual(
-        changes.dlContextSettings.previousValue,
-        changes.dlContextSettings.currentValue
+        changes.datasetCommonServicesFieldSettings.previousValue,
+        changes.datasetCommonServicesFieldSettings.currentValue
       )
     ) {
       this.computeDatasetTokenOptions();
@@ -506,8 +510,8 @@ export class FilterRowComponent
       // previewFields exist), even if the exact field list hasn't loaded yet.
       // Fall back to contextEditor only when no token config is present at all.
       const hasTokenConfig =
-        (this.dlContextSettings?.datasetBlocks?.length ?? 0) > 0 ||
-        (this.dlContextSettings?.previewFields?.length ?? 0) > 0;
+        (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0 ||
+        (this.datasetCommonServicesFieldSettings?.previewFields?.length ?? 0) > 0;
       this.editor = hasTokenConfig
         ? this.datasetTokenEditor
         : this.contextEditor;
@@ -603,8 +607,8 @@ export class FilterRowComponent
       // Returning to expression editor — clear any picker value and restore the saved one
       this.form.get('value')?.setValue(null);
       if (
-        this.dlContextSettings?.previewFields?.length > 0 ||
-        this.dlContextSettings?.datasetBlocks?.length > 0
+        this.datasetCommonServicesFieldSettings?.previewFields?.length > 0 ||
+        this.datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0
       ) {
         this.editor = this.datasetTokenEditor;
       } else {

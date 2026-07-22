@@ -22,6 +22,9 @@ export class FilterComponent {
   @Input() isEmailNotification = false;
   /** Enables attribute filters to switch between field and literal values */
   @Input() enableAttributeValueSource = false;
-  /** Is from widget */
-  @Input() dlContextSettings: any;
+  /**
+   * Per-dataset Common Services field settings, forwarded to the filter row's value
+   * editor to drive the `{{Block N.field}}` dataset-field token picker.
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
 }

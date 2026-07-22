@@ -27,8 +27,11 @@ export class TabFilterComponent implements OnInit {
   @Input() query: any;
   /** Is disabled */
   @Input() disabled = false;
-  /** Is from widget */
-  @Input() dlContextSettings: any;
+  /**
+   * Per-dataset Common Services field settings, forwarded to the filter row's value
+   * editor to drive the `{{Block N.field}}` dataset-field token picker.
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
 
   /** Date editor */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
