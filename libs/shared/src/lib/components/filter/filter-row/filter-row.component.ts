@@ -212,7 +212,7 @@ export class FilterRowComponent
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.getCsData(value, selectedField[0], namePath);
+          await this.loadCommonServiceOptions(selectedField[0], namePath);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -292,15 +292,6 @@ export class FilterRowComponent
             .filter((x) => x.label === this.form.getRawValue().field)?.[0]?.key
         );
     }
-
-    //Calling the common service function for getting value for Select type of data
-    if (this.field?.isCommonService) {
-      const commonServiceField = commonServiceFields.find(
-        (field) => field.key === this.field?.name
-      );
-      const namePath = commonServiceField?.namePath;
-      this.getCsData(this.field?.name, this.field, namePath);
-    }
   }
 
   /**
@@ -321,7 +312,13 @@ export class FilterRowComponent
       // paint (otherwise the async options arrive after render and only show on hover).
       const field = this.fields.find((x: any) => x.name === initialField);
       if (field?.isCommonService && field?.editor === 'select') {
-        await this.loadCommonServiceOptions(field);
+        const commonServiceField = commonServiceFields.find(
+          (f) => f.key === field.name
+        );
+        await this.loadCommonServiceOptions(
+          field,
+          commonServiceField?.namePath
+        );
       }
       this.setField(initialField);
     }
@@ -594,10 +591,12 @@ export class FilterRowComponent
   /**
    * Loads the Common Services value options for a select field and assigns them
    * onto the field as a fresh array, so the value dropdown reflects them.
+   * Supports an optional nested path for the display value (user-group filtering).
    *
    * @param field selected field object (its name is the reference-data key)
+   * @param path optional nested path to the option value (else uses Name)
    */
-  async loadCommonServiceOptions(field: any): Promise<void> {
+  async loadCommonServiceOptions(field: any, path?: string): Promise<void> {
     const key = field?.name;
     // User-table fields are free-text inputs, not select dropdowns — nothing to load.
     if (!key || this.emailService?.userTableFields?.some((x) => x === key)) {
@@ -607,53 +606,13 @@ export class FilterRowComponent
     try {
       const data = await firstValueFrom(this.cs.restRequest(key));
       field.options = (data?.value ?? []).map((x: any) => ({
-        text: x?.Name,
-        value: x?.Name,
+        text: path ? get(x, path) : x?.Name,
+        value: path ? get(x, path) : x?.Name,
       }));
     } catch (error) {
       console.error(`Error while fetching reference data ${key}:`, error);
     } finally {
       this.loading = false;
-    }
-  }
-
-  /**
-   * Loads Common Services value options onto a select field, supporting an
-   * optional nested path for the display value (used by user-group filtering).
-   *
-   * @param key the reference-data key
-   * @param selectedField field object to assign options onto
-   * @param path optional nested path to the option value (else uses Name)
-   */
-  async getCsData(
-    key: string,
-    selectedField: any,
-    path?: string
-  ): Promise<void> {
-    if (
-      this.emailService?.userTableFields?.filter((x) => x === key).length === 0
-    ) {
-      this.loading = true;
-      await firstValueFrom(this.cs.restRequest(key))
-        .then((data) => {
-          this.loading = false;
-          if (path) {
-            selectedField.options =
-              data?.value.map((x: any) => ({
-                text: get(x, path),
-                value: get(x, path),
-              })) || [];
-          } else {
-            selectedField.options =
-              data?.value.map((x: any) => ({
-                text: x?.Name,
-                value: x?.Name,
-              })) || [];
-          }
-        })
-        .catch((error) => {
-          console.error(`Error while fetching reference data ${key}:`, error);
-        });
     }
   }
 }
