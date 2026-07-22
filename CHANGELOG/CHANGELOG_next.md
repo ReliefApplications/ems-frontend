@@ -1,3 +1,28 @@
+# [2.23.0-rc.35](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.34...v2.23.0-rc.35) (2026-07-17)
+
+### Bug Fixes
+
+- Improve readability of long values in history ([#2910](https://github.com/ReliefApplications/ems-frontend/issues/2910)) ([9ea4864](https://github.com/ReliefApplications/ems-frontend/commit/9ea48645f5a5338a69c793ff7e406993bb07dc3a)), closes [AB#135187](https://github.com/AB/issues/135187)
+
+# [2.23.0-rc.34](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.33...v2.23.0-rc.34) (2026-07-17)
+
+### Features
+
+- editor & tabs widget can now resize automatically the grid so we removed duplicated scrollbars ([#2893](https://github.com/ReliefApplications/ems-frontend/issues/2893)) ([a20720b](https://github.com/ReliefApplications/ems-frontend/commit/a20720bb1b04fa9a3f1a949353077ddf9c31adf6)), closes [AB#134729](https://github.com/AB/issues/134729)
+
+# [2.23.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.32...v2.23.0-rc.33) (2026-07-17)
+
+### Bug Fixes
+
+- meta fields from record not being copied onSelect in resources fields ([#2909](https://github.com/ReliefApplications/ems-frontend/issues/2909)) ([e4aa835](https://github.com/ReliefApplications/ems-frontend/commit/e4aa835873da743885c47a941fdc359f9b327d02)), closes [AB#135075](https://github.com/AB/issues/135075)
+
+# [2.23.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.31...v2.23.0-rc.32) (2026-07-16)
+
+### Bug Fixes
+
+- add parameter to filter out enriched attributes ([6f3c3c8](https://github.com/ReliefApplications/ems-frontend/commit/6f3c3c889959d7cdfbb3cf0d3edaf194c3f80e68))
+- text columns could sometimes appear as object object ([d653477](https://github.com/ReliefApplications/ems-frontend/commit/d6534777dabba965cac81d66c0f05d80be59d1ee))
+
 # [2.23.0-rc.31](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.30...v2.23.0-rc.31) (2026-07-15)
 
 ### Features

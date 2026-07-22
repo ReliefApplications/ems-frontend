@@ -40,7 +40,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
-import { get, isEqual, isNil } from 'lodash';
+import { get, isEqual, isNil, omit } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -622,16 +622,24 @@ export class CoreGridComponent
       const index = this.updatedItems.findIndex((x) => x.id === item.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
-      this.updatedItems.push({ id: item.id, ...value });
+      updatedItem = { id: item.id, ...value };
+      this.updatedItems.push(updatedItem);
     }
+    // Reflect pending changes on the raw value immediately, so reopening the
+    // inline editor ( seeded from the raw value ) shows them without waiting
+    // for the draft edition round-trip.
+    this.applyPendingChangesToRaw(item, updatedItem);
 
-    // Use the draft option to apply triggers, and then update the data
+    // Use the draft option to apply triggers, and then update the data.
+    // Send all pending ( unsaved ) changes of the row, not only the last
+    // edition, so triggers & display values are computed from the same state
+    // the user sees.
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data: value,
+          data: omit(updatedItem, 'id'),
           draft: true,
         },
       })
@@ -675,16 +683,20 @@ export class CoreGridComponent
                       );
                       // Update data item element
                       Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
+                      // Update data item raw value ( used by inline edition ),
+                      // re-applying pending changes on top in case another
+                      // edition happened while this draft was in flight.
+                      dataItem._meta = { ...dataItem._meta, raw: editedData };
+                      this.applyPendingChangesToRaw(
+                        dataItem,
+                        this.updatedItems.find((x) => x.id === item.id) ?? {}
                       );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
+                      item.saved = false;
+                      // updatedItems deliberately keeps only the fields the
+                      // user edited: raw record values ( as returned by the
+                      // draft edition ) can have a different shape than the
+                      // display values, and updatedItems is re-applied on top
+                      // of the displayed rows after each data fetch.
                       this.loadItems();
                     });
                 }
@@ -692,6 +704,31 @@ export class CoreGridComponent
             });
         }
       });
+  }
+
+  /**
+   * Merges pending ( unsaved ) inline changes into the raw value of the given
+   * row, so the inline editor ( which is seeded from the raw value ) opens on
+   * the pending values instead of the last saved ones.
+   * Time fields are skipped: their form value is a timezone-shifted Date that
+   * would be shifted again when seeding the next form group.
+   * The `_meta` object is replaced instead of mutated, as it can be shared
+   * with the `originalItems` backup used to cancel inline changes.
+   *
+   * @param item Grid row item to update.
+   * @param changes Pending changes of the row ( `id` key ignored ).
+   */
+  private applyPendingChangesToRaw(item: any, changes: any): void {
+    const timeFields = this.fields
+      .filter((x) => x.type === 'Time')
+      .map((x) => x.name);
+    item._meta = {
+      ...item._meta,
+      raw: {
+        ...item._meta?.raw,
+        ...omit(changes, ['id', ...timeFields]),
+      },
+    };
   }
 
   /**
@@ -855,6 +892,10 @@ export class CoreGridComponent
                   );
                   if (item) {
                     Object.assign(item, updatedItem);
+                    // Fetched raw values only reflect the last saved state:
+                    // re-apply pending changes so the inline editor ( seeded
+                    // from the raw value ) opens on them.
+                    this.applyPendingChangesToRaw(item, updatedItem);
                     item.saved = false;
                   }
                 }

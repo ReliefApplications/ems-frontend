@@ -741,6 +741,7 @@ export const init = (
               if (!selectedId) return;
               const mapping = JSON.parse(question.onSelect || '{}');
               if (Object.keys(mapping).length === 0) return;
+
               apollo
                 .query<any>({
                   query: GET_RECORD_BY_ID,
@@ -751,12 +752,24 @@ export const init = (
                   const record = data?.record;
                   if (!record || !record.data) return;
                   const survey = question.survey as SurveyModel;
+
+                  // Enrich the record data context with metadata fields (such as incrementalId, createdAt, etc.)
+                  const context = {
+                    ...record.data,
+                    id: record.id,
+                    incrementalId: record.incrementalId,
+                    createdAt: record.createdAt,
+                    modifiedAt: record.modifiedAt,
+                    createdBy: record.createdBy,
+                    modifiedBy: record.modifiedBy,
+                  };
+
                   for (const targetQuestion in mapping) {
                     try {
                       const expression = mapping[targetQuestion];
                       if (!expression) continue;
                       const runner = new ExpressionRunner(expression);
-                      const value = runner.run(record.data);
+                      const value = runner.run(context);
                       survey.setValue(targetQuestion, value);
                     } catch (error) {
                       console.error(error);

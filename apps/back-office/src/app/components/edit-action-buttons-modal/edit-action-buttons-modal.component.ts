@@ -209,7 +209,6 @@ export class EditActionButtonsModalComponent
     const newActionButton = structuredClone(actionButton);
     if (typeof newActionButton.text === 'object' && newActionButton.text) {
       for (const locale of Object.keys(newActionButton.text)) {
-        console.log('locale', locale);
         const copySuffix = this.translate.instant('common.copy');
         const val = (newActionButton.text as Record<string, string>)[locale];
         if (val)
