@@ -64,8 +64,6 @@ const PDF_PREVIEW_CLASS = 'file-pdf-preview';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
 
-/** CSS class of the custom preview wrapper we inject. */
-const FILE_PREVIEW_CLASS = 'file-preview';
 /** Class toggled on the question root to hide SurveyJS's default preview. */
 const FILE_PREVIEW_ACTIVE_CLASS = 'file-preview-active';
 /** Id of the stylesheet that hides the default preview when ours is active. */

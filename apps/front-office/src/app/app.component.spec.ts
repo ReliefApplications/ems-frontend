@@ -34,7 +34,12 @@ describe('AppComponent', () => {
         },
         {
           provide: SwUpdate,
-          useValue: { isEnabled: false, versionUpdates: { subscribe: () => {} } },
+          useValue: {
+            isEnabled: false,
+            versionUpdates: {
+              subscribe: () => undefined,
+            },
+          },
         },
       ],
     }).compileComponents();
