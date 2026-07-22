@@ -27,6 +27,9 @@ import { File, FileService } from '../file/file.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
 import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../../pipes/date/date.pipe';
 
+/** Survey question with input type metadata. */
+type InputTypeQuestion = { inputType?: string };
+
 /**
  * Shared survey helper service.
  */
@@ -577,6 +580,16 @@ export class FormHelpersService {
       survey.getQuestionByValueName(options.name) ||
       survey.getQuestionByName(options.name);
     const value = this.resolveValue(survey, options.name);
+    const formattedQuestionDate = this.formatQuestionDate(
+      question as InputTypeQuestion | undefined,
+      value
+    );
+    if (!isNil(formattedQuestionDate)) {
+      options.value = formattedQuestionDate;
+      options.isExists = true;
+      return;
+    }
+
     if (!question || question.getType() !== 'file') {
       // No file question resolved for this placeholder, but the value may still
       // be compatible with the file links format (an array of file objects).
@@ -594,6 +607,48 @@ export class FormHelpersService {
     options.value = this.renderFileLinks(options.name, value);
     options.isExists = true;
   };
+
+  /**
+   * Formats raw date question placeholders in HTML question dynamic text.
+   *
+   * @param question Survey question resolved for the placeholder
+   * @param value Raw question value
+   * @returns Formatted date or null when the question is not date-like
+   */
+  private formatQuestionDate(
+    question: InputTypeQuestion | undefined,
+    value: unknown
+  ): string | null {
+    if (!question || isNil(value) || value === '') {
+      return null;
+    }
+
+    const inputType = question.inputType;
+    switch (inputType) {
+      case 'date':
+        return (
+          this.datePipe.transform(
+            value as string | number | Date,
+            'shortDate'
+          ) || ''
+        );
+      case 'datetime':
+      case 'datetime-local':
+        return (
+          this.datePipe.transform(value as string | number | Date, 'short') ||
+          ''
+        );
+      case 'time':
+        return (
+          this.datePipe.transform(
+            value as string | number | Date,
+            'shortTime'
+          ) || ''
+        );
+      default:
+        return null;
+    }
+  }
 
   /**
    * Resolves formatDate placeholders in SurveyJS HTML dynamic text.

@@ -15,6 +15,14 @@ import { FormHelpersService } from './form-helper.service';
 describe('FormHelpersService', () => {
   let service: FormHelpersService;
 
+  const createSurveyMock = (question: unknown, data: Record<string, unknown>) =>
+    ({
+      data,
+      getQuestionByValueName: () => question,
+      getQuestionByName: () => question,
+      getVariable: () => undefined,
+    } as unknown as SurveyModel);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -71,5 +79,37 @@ describe('FormHelpersService', () => {
 
     expect(options.value).toBe('');
     expect(options.isExists).toBe(true);
+  });
+
+  it('formats raw date question placeholders in HTML dynamic text', () => {
+    const options = {
+      name: 'birth_date',
+      value: '1986-04-16T18:30:00.000Z',
+      isExists: true,
+    };
+    const survey = createSurveyMock(
+      { getType: () => 'text', inputType: 'date' },
+      { birth_date: '1986-04-16T18:30:00.000Z' }
+    );
+
+    service.onProcessTextValue(survey, options);
+
+    expect(options.value).toBe('4/16/86');
+  });
+
+  it('formats raw datetime question placeholders in HTML dynamic text', () => {
+    const options = {
+      name: 'birth_datetime',
+      value: '1986-04-16T18:30:00.000Z',
+      isExists: true,
+    };
+    const survey = createSurveyMock(
+      { getType: () => 'text', inputType: 'datetime-local' },
+      { birth_datetime: '1986-04-16T18:30:00.000Z' }
+    );
+
+    service.onProcessTextValue(survey, options);
+
+    expect(options.value).toBe('4/16/86, 6:30 PM');
   });
 });

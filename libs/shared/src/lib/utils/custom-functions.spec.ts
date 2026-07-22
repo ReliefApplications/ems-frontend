@@ -293,6 +293,16 @@ describe('addCustomFunctions', () => {
       ).toBe('26/11/2024 23:00');
     });
 
+    it('formats Date objects for UTC audit timestamps', () => {
+      expect(
+        runFn('formatDate', [
+          new Date(Date.UTC(2024, 10, 26, 12, 34, 56)),
+          'yyyy-MM-dd HH:mm:ss',
+          'UTC',
+        ])
+      ).toBe('2024-11-26 12:34:56');
+    });
+
     it('returns an empty string for invalid or missing dates', () => {
       expect(runFn('formatDate', ['not a date', 'dd/MM/yyyy'])).toBe('');
       expect(runFn('formatDate', [null, 'dd/MM/yyyy'])).toBe('');
