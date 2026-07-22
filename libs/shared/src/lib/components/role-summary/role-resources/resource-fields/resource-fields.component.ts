@@ -8,7 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { isEqual, sortBy } from 'lodash';
+import { get, isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 import { FormControl } from '@angular/forms';
@@ -49,6 +49,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     fields: ResourceField[];
     permission: 'canSee' | 'canUpdate';
     grant: boolean;
+  }>();
+  /** Event emitter for fields auto-grant toggle */
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+  @Output() onAutoGrantToggle = new EventEmitter<{
+    resource: Resource;
+    permission: 'canSee' | 'canUpdate';
   }>();
 
   /** Filter template id */
@@ -188,6 +194,47 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
       fields: [...this.selection.selected],
       permission,
       grant: !this.bulkPermissionGranted(permission),
+    });
+  }
+
+  /**
+   * Whether the fields auto-grant checkbox for the given permission is checked.
+   *
+   * @param permission permission to check
+   * @returns true if new fields are currently auto-granted this permission for the role
+   */
+  public isAutoGrantChecked(permission: 'canSee' | 'canUpdate'): boolean {
+    return !!get(
+      this.resource,
+      `rolePermissions.autoGrantFields${
+        permission === 'canSee' ? 'CanSee' : 'CanUpdate'
+      }`,
+      false
+    );
+  }
+
+  /**
+   * Whether the fields auto-grant checkbox for the given permission should be disabled,
+   * i.e. the role has no view / edit permission ( global or filtered ) on the resource.
+   *
+   * @param permission permission to check
+   * @returns true if the role has no matching permission on the resource
+   */
+  public isAutoGrantDisabled(permission: 'canSee' | 'canUpdate'): boolean {
+    const recordsPermission =
+      permission === 'canSee' ? 'canSeeRecords' : 'canUpdateRecords';
+    return !get(this.resource, `rolePermissions.${recordsPermission}`, null);
+  }
+
+  /**
+   * Emits an event to toggle the fields auto-grant setting for the given permission.
+   *
+   * @param permission permission to toggle
+   */
+  public onToggleAutoGrant(permission: 'canSee' | 'canUpdate') {
+    this.onAutoGrantToggle.emit({
+      resource: this.resource,
+      permission,
     });
   }
 }

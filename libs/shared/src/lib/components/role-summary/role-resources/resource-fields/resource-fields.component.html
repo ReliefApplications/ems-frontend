@@ -2,39 +2,6 @@
 <div class="flex justify-between items-center">
   <h2>{{ 'common.field.few' | translate }}</h2>
   <div class="flex gap-2 items-center">
-    <!-- Bulk actions, shown when at least one field is selected -->
-    <div *ngIf="selection.hasValue()" class="flex gap-2 items-center">
-      <ui-button
-        icon="visibility"
-        category="secondary"
-        [variant]="bulkPermissionGranted('canSee') ? 'primary' : 'grey'"
-        [disabled]="disabled"
-        [uiTooltip]="
-          (bulkPermissionGranted('canSee')
-            ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
-            : 'components.role.tooltip.allowSelectedFieldsAccessibility'
-          ) | translate : { count: selection.selected.length }
-        "
-        (click)="onBulkEditFieldAccess('canSee')"
-      >
-        {{ 'common.view' | translate }}
-      </ui-button>
-      <ui-button
-        icon="edit"
-        category="secondary"
-        [variant]="bulkPermissionGranted('canUpdate') ? 'primary' : 'grey'"
-        [disabled]="disabled"
-        [uiTooltip]="
-          (bulkPermissionGranted('canUpdate')
-            ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
-            : 'components.role.tooltip.allowSelectedFieldsUpdate'
-          ) | translate : { count: selection.selected.length }
-        "
-        (click)="onBulkEditFieldAccess('canUpdate')"
-      >
-        {{ 'common.edit' | translate }}
-      </ui-button>
-    </div>
     <div uiFormFieldDirective class="min-w-[8rem]">
       <label>{{ 'models.form.field.usedIn' | translate }}</label>
       <ui-select-menu [formControl]="filterId">
@@ -52,6 +19,33 @@
   </div>
 </div>
 <!-- Content -->
+<!-- Fields auto-grant toggles -->
+<div class="flex gap-4 items-center mb-3 ml-4">
+  <ui-checkbox
+    [checked]="isAutoGrantChecked('canSee')"
+    [disabled]="disabled || isAutoGrantDisabled('canSee')"
+    [uiTooltip]="
+      'components.role.tooltip.autoGrantFieldsAccessibility' | translate
+    "
+    (change)="onToggleAutoGrant('canSee')"
+  >
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.autoGrantFieldsAccessibility' | translate
+    }}</ng-container>
+  </ui-checkbox>
+  <ui-checkbox
+    [checked]="isAutoGrantChecked('canUpdate')"
+    [disabled]="disabled || isAutoGrantDisabled('canUpdate')"
+    [uiTooltip]="
+      'components.role.tooltip.autoGrantFieldsUpdate' | translate
+    "
+    (change)="onToggleAutoGrant('canUpdate')"
+  >
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.autoGrantFieldsUpdate' | translate
+    }}</ng-container>
+  </ui-checkbox>
+</div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
@@ -95,9 +89,37 @@
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16">
+        <!-- Bulk actions, shown when at least one field is selected -->
+        <div *ngIf="selection.hasValue()" class="flex gap-2 mb-[-20px] mt-[-24px]">
+          <ui-button
+            [isIcon]="true"
+            [icon]="bulkPermissionGranted('canSee') ? 'visibility_off' : 'visibility'"
+            [disabled]="disabled"
+            [uiTooltip]="
+              (bulkPermissionGranted('canSee')
+                ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
+                : 'components.role.tooltip.allowSelectedFieldsAccessibility'
+              ) | translate
+            "
+            (click)="onBulkEditFieldAccess('canSee')"
+          ></ui-button>
+          <ui-button
+            [isIcon]="true"
+            [icon]="bulkPermissionGranted('canUpdate') ? 'edit_off' : 'edit'"
+            [disabled]="disabled"
+            [uiTooltip]="
+              (bulkPermissionGranted('canUpdate')
+                ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
+                : 'components.role.tooltip.allowSelectedFieldsUpdate'
+              ) | translate
+            "
+            (click)="onBulkEditFieldAccess('canUpdate')"
+          ></ui-button>
+        </div>
+        </th>
         <td uiCell *cdkCellDef="let element">
-          <div class="flex">
+          <div class="flex gap-2 ">
             <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"

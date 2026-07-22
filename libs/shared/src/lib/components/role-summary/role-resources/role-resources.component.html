@@ -120,6 +120,9 @@
                     $event.grant
                   )
                 "
+                (onAutoGrantToggle)="
+                  onEditFieldsAutoGrant($event.resource, $event.permission)
+                "
               ></shared-resource-fields>
             </ng-container>
           </div>
