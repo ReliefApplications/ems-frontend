@@ -30,6 +30,7 @@ export interface QuestionText extends QuestionTextModel, GlobalProperties {
 /** File question interface */
 export interface QuestionFile extends QuestionFileModel, GlobalProperties {
   allowOutdatedFiles?: boolean;
+  canDeleteFiles?: boolean;
 }
 
 /** Type for comment question */

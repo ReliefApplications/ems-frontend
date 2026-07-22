@@ -248,9 +248,10 @@ const updateOutdatedControls = (
   htmlElement: HTMLElement
 ): void => {
   ensureFilePreviewStyles();
+  const canDeleteFiles = question.canDeleteFiles !== false;
   htmlElement.classList.toggle(
     FILE_OUTDATED_MODE_CLASS,
-    question.allowOutdatedFiles === true
+    question.allowOutdatedFiles === true && !canDeleteFiles
   );
   htmlElement.querySelector(`.${FILE_OUTDATED_CONTROLS_CLASS}`)?.remove();
   htmlElement.classList.remove(FILE_LIMIT_REACHED_CLASS);
@@ -265,7 +266,8 @@ const updateOutdatedControls = (
   const limit = question.allowMultiple
     ? Number(question.getPropertyValue('allowedFileNumber'))
     : 1;
-  const limitReached = files.length >= limit;
+  const activeFilesCount = files.filter((f) => !isFileOutdated(f)).length;
+  const limitReached = activeFilesCount >= limit;
   htmlElement.classList.toggle(FILE_LIMIT_REACHED_CLASS, limitReached);
   if (files.length === 0) {
     return;

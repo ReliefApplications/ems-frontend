@@ -25,6 +25,7 @@ import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { AutoTranslateService } from '../auto-translate/auto-translate.service';
 import { toSurveyLocale } from '../../utils/languages';
+import { isFileOutdated } from '../file/file-outdated.utils';
 
 /**
  * Shared form builder service.
@@ -132,6 +133,9 @@ export class FormBuilderService {
             question.delete();
           } else {
             question.readOnly = disabled || !editable;
+            if (f.canDeleteFiles !== undefined) {
+              question.setPropertyValue('canDeleteFiles', f.canDeleteFiles);
+            }
           }
         }
       }
@@ -232,7 +236,8 @@ export class FormBuilderService {
     const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
     const allowOutdatedFiles = question.getPropertyValue('allowOutdatedFiles');
     const maximumFiles = allowMultiple ? allowedFileNumber : 1;
-    if (allowOutdatedFiles && files.length > maximumFiles) {
+    const activeFilesCount = files.filter((f) => !isFileOutdated(f)).length;
+    if (allowOutdatedFiles && activeFilesCount > maximumFiles) {
       this.snackBar.openSnackBar(
         this.translate.instant(
           'components.formBuilder.errors.maximumAllowedFiles',
@@ -267,8 +272,10 @@ export class FormBuilderService {
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
     const filesToClear = Array.isArray(options.value) ? options.value : [];
+    const canDeleteFiles = options.question?.getPropertyValue('canDeleteFiles') !== false;
     if (
       options.question?.getPropertyValue('allowOutdatedFiles') &&
+      !canDeleteFiles &&
       filesToClear.length > 0
     ) {
       options.question.value = options.value;

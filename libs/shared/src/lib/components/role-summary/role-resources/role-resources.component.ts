@@ -397,8 +397,13 @@ export class RoleResourcesComponent
    */
   onEditFieldAccess(
     resource: Resource,
-    field: { name: string; canSee: boolean; canUpdate: boolean },
-    action: 'canSee' | 'canUpdate'
+    field: {
+      name: string;
+      canSee: boolean;
+      canUpdate: boolean;
+      canDeleteFiles?: boolean;
+    },
+    action: 'canSee' | 'canUpdate' | 'canDeleteFiles'
   ): void {
     if (!this.role.id) return;
 

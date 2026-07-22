@@ -175,6 +175,13 @@ export const init = (environment: any): void => {
     default: false,
   });
 
+  serializer.addProperty('file', {
+    name: 'canDeleteFiles:boolean',
+    category: 'general',
+    visible: false,
+    default: true,
+  });
+
   serializer.addProperty('html', {
     name: 'showOutdatedFiles:boolean',
     category: 'general',
