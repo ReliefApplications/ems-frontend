@@ -10,7 +10,6 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { EditorComponent } from '@tinymce/tinymce-angular';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
@@ -20,8 +19,6 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
-import { EditorService } from '../../../services/editor/editor.service';
-import { SINGLE_INPUT_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /** Operators that keep attribute comparisons tied to another record field. */
 const ATTRIBUTE_FIELD_OPERATORS = ['eq', 'neq', 'in', 'notin'];
@@ -98,11 +95,6 @@ export class FilterRowComponent
   /** Reference to dataset token editor template */
   @ViewChild('datasetTokenEditor', { static: false })
   datasetTokenEditor!: TemplateRef<any>;
-  /** Configuration object for the Tinymce editor. */
-  public contextTinyMCEConfig: any = SINGLE_INPUT_EDITOR_CONFIG;
-  /** Reference to context editor template */
-  @ViewChild('contextTinyMce', { static: false })
-  contextTinyMce: EditorComponent | null = null;
   /** In the last operator editor template */
   @ViewChild('inTheLastEditor', { static: false })
   inTheLastEditor!: TemplateRef<any>;
@@ -116,8 +108,6 @@ export class FilterRowComponent
   public operators: any[] = [];
   /** Is context editor used */
   public contextEditorIsActivated = false;
-  /** Saved expression value when temporarily switching to value picker */
-  private savedContextValue: string | null = null;
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'minutes', label: 'Minutes' },
@@ -161,10 +151,10 @@ export class FilterRowComponent
   }
 
   /**
-   * Dataset token options built from datasetCommonServicesFieldSettings.datasetBlocks or previewFields.
-   * Memoised field (not a getter) recomputed only when datasetCommonServicesFieldSettings changes, so the
-   * bound *ngFor receives stable references and its option nodes are not recreated each
-   * change-detection cycle (which made the open value picker unclickable).
+   * Dataset token options built from datasetCommonServicesFieldSettings.datasetBlocks.
+   * Memoised field (not a getter) recomputed only when datasetCommonServicesFieldSettings
+   * changes, so the bound *ngFor receives stable references and its option nodes are not
+   * recreated each change-detection cycle (which made the open value picker unclickable).
    */
   public datasetTokenOptions: { value: string; label: string }[] = [];
 
@@ -172,22 +162,12 @@ export class FilterRowComponent
   private computeDatasetTokenOptions(): void {
     const blocks: { name: string; fields: string[] }[] =
       this.datasetCommonServicesFieldSettings?.datasetBlocks ?? [];
-    if (blocks.length > 0) {
-      this.datasetTokenOptions = blocks.flatMap((block) =>
-        block.fields.map((field) => ({
-          value: `{{${block.name}.${field}}}`,
-          label: `${block.name} - ${this.emailService.replaceUnderscores(
-            field
-          )}`,
-        }))
-      );
-      return;
-    }
-    const previewFields: string[] = this.datasetCommonServicesFieldSettings?.previewFields ?? [];
-    this.datasetTokenOptions = previewFields.map((field) => ({
-      value: `{{${field}}}`,
-      label: this.emailService.replaceUnderscores(field),
-    }));
+    this.datasetTokenOptions = blocks.flatMap((block) =>
+      block.fields.map((field) => ({
+        value: `{{${block.name}.${field}}}`,
+        label: `${block.name} - ${this.emailService.replaceUnderscores(field)}`,
+      }))
+    );
   }
 
   /**
@@ -207,18 +187,12 @@ export class FilterRowComponent
    *
    * @param emailService email notifications helper functions
    * @param cs Common Services connection
-   * @param editorService editor helper functions
    */
   constructor(
     public emailService: EmailService,
-    private cs: CommonServicesService,
-    private editorService: EditorService
+    private cs: CommonServicesService
   ) {
     super();
-    // Set the editor base url based on the environment file
-    this.contextTinyMCEConfig.base_url = editorService.url;
-    // Set the editor language
-    this.contextTinyMCEConfig.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -503,18 +477,11 @@ export class FilterRowComponent
     } else if (
       typeof value === 'string' &&
       value.startsWith('{{') &&
-      value.endsWith('}}')
+      value.endsWith('}}') &&
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0
     ) {
-      // Value was saved from an expression editor — restore the correct editor.
-      // Use datasetTokenEditor if token options are configured (datasetBlocks or
-      // previewFields exist), even if the exact field list hasn't loaded yet.
-      // Fall back to contextEditor only when no token config is present at all.
-      const hasTokenConfig =
-        (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0 ||
-        (this.datasetCommonServicesFieldSettings?.previewFields?.length ?? 0) > 0;
-      this.editor = hasTokenConfig
-        ? this.datasetTokenEditor
-        : this.contextEditor;
+      // Value saved from the dataset token editor — restore it.
+      this.editor = this.datasetTokenEditor;
       this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
@@ -594,31 +561,19 @@ export class FilterRowComponent
 
   /** Toggles context editor */
   public toggleContextEditor() {
+    this.form.get('value')?.setValue(null);
+    const hasDatasetBlocks =
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0;
     if (
       this.editor === this.contextEditor ||
       this.editor === this.datasetTokenEditor
     ) {
-      // Leaving expression editor — save the current value and clear it for the picker
-      this.savedContextValue = this.form.get('value')?.value ?? null;
-      this.form.get('value')?.setValue(null);
-      this.contextEditorIsActivated = false;
       this.setEditor(this.field);
     } else {
-      // Returning to expression editor — clear any picker value and restore the saved one
-      this.form.get('value')?.setValue(null);
-      if (
-        this.datasetCommonServicesFieldSettings?.previewFields?.length > 0 ||
-        this.datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0
-      ) {
-        this.editor = this.datasetTokenEditor;
-      } else {
-        this.editor = this.contextEditor;
-      }
+      this.editor = hasDatasetBlocks
+        ? this.datasetTokenEditor
+        : this.contextEditor;
       this.contextEditorIsActivated = true;
-      if (this.savedContextValue !== null) {
-        this.form.get('value')?.setValue(this.savedContextValue);
-        this.savedContextValue = null;
-      }
     }
   }
 

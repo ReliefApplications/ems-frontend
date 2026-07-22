@@ -145,13 +145,13 @@ export class DatasetFilterComponent
 
   /**
    * datasetCommonServicesFieldSettings for the per-row CS filter, enabling the {{DatasetName.field}} token picker.
-   * Memoised field (not a getter) recomputed only when its inputs change (fields load, dataset
-   * name change, resource reset, cache restore), so the bound [datasetCommonServicesFieldSettings] input does not
-   * change every change-detection cycle and tear down the open value picker.
+   * Memoised field recomputed only when its inputs change (fields load, dataset name change, resource reset,
+   * cache restore), so the bound [datasetCommonServicesFieldSettings] input does not change every change-detection
+   * cycle and tear down the open value picker.
    */
-  public datasetCommonServicesFieldSettings: any = { enableContextEditor: true };
+  public datasetCommonServicesFieldSettings: any = {};
 
-  /** Recomputes datasetCommonServicesFieldSettings from the current dataset name + available fields. */
+  /** Recomputes datasetCommonServicesFieldSettings from the dataset name + available fields. */
   private computeDatasetCommonServicesFieldSettings(): void {
     const datasetName = this.query.get('name')?.value;
     const fields: string[] = [];
@@ -165,7 +165,7 @@ export class DatasetFilterComponent
     this.datasetCommonServicesFieldSettings =
       datasetName && fields.length > 0
         ? { datasetBlocks: [{ name: datasetName, fields }] }
-        : { enableContextEditor: true };
+        : {};
   }
 
   /**

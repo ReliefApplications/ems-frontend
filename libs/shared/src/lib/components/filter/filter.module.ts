@@ -14,7 +14,6 @@ import {
   SpinnerModule,
 } from '@oort-front/ui';
 import { LocalizePipe } from '../../pipes/localize/localize.pipe';
-import { EditorModule } from '@tinymce/tinymce-angular';
 
 /**
  * Composite Filter module.
@@ -34,7 +33,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     TooltipModule,
     SpinnerModule,
     LocalizePipe,
-    EditorModule,
   ],
   exports: [FilterComponent],
 })

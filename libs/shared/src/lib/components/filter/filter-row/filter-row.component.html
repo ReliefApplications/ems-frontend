@@ -41,7 +41,7 @@
     ></ng-container>
   </ng-container>
 
-  <!-- TOGGLE CONTEXT EDITOR (dashboard context variables) -->
+  <!-- TOGGLE CONTEXT EDITOR -->
   <ui-button
     *ngIf="field && canUseContext"
     [isIcon]="true"
@@ -58,7 +58,7 @@
 
   <!-- TOGGLE DATASET FIELD EDITOR (email notification context) -->
   <ui-button
-    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0 && !datasetCommonServicesFieldSettings?.hideExpressionEditor"
+    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0"
     [isIcon]="true"
     [disabled]="disabled"
     icon="change_circle_outline"
@@ -200,19 +200,6 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
-    <ui-button
-      *ngIf="this.datasetCommonServicesFieldSettings?.enableContextEditor && !datasetCommonServicesFieldSettings?.hideExpressionEditor"
-      [isIcon]="true"
-      icon="change_circle_outline"
-      variant="primary"
-      (click)="toggleContextEditor()"
-      [uiTooltip]="
-        (contextEditorIsActivated
-          ? 'components.queryBuilder.tooltip.filter.select.usePicker'
-          : 'components.queryBuilder.tooltip.filter.select.useExpression'
-        ) | translate
-      "
-    ></ui-button>
   </ng-template>
 
   <!-- ATTRIBUTE EDITOR -->
@@ -311,33 +298,15 @@
 
   <!-- CONTEXT EDITOR -->
   <ng-template #contextEditor>
-    <div class="w-60">
-      <label class="block text-sm font-medium leading-6 text-gray-900" for="value">{{
-        'models.dashboard.context.title' | translate
-      }}</label>
-      <div class="relative flex py-1.5 px-2 w-full items-center shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600">
-      <editor
-        #contextTinyMCE
-          class="block w-full text-sm text-gray-900"
-        [init]="contextTinyMCEConfig"
-        [outputFormat]="'text'"
-        formControlName="value"
-      ></editor>
+    <div uiFormFieldDirective [outline]="false" [defaultMargin]="false">
+      <label>{{ 'models.dashboard.context.title' | translate }}</label>
+      <input matInput formControlName="value" type="text" />
+      <!-- To be replaced by the new editor control, so we can have autocomplete -->
+      <!-- <safe-editor-control
+        formControlName="title"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control> -->
     </div>
-    </div>
-    <ui-button
-      *ngIf="!canUseContext && (contextEditorIsActivated || this.datasetCommonServicesFieldSettings?.enableContextEditor)"
-      [isIcon]="true"
-      icon="change_circle_outline"
-      variant="primary"
-      (click)="toggleContextEditor()"
-      [uiTooltip]="
-        (contextEditorIsActivated
-          ? 'components.queryBuilder.tooltip.filter.select.usePicker'
-          : 'components.queryBuilder.tooltip.filter.select.useExpression'
-        ) | translate
-      "
-    ></ui-button>
   </ng-template>
 </form>
 <ng-container *ngIf="loading">
