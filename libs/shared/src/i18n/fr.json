@@ -1606,8 +1606,10 @@
       "tooltip": {
         "allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
         "allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+        "allowFileDelete": "Autoriser ce rôle à supprimer des fichiers dans le champ {{field}}",
         "disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
         "disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+        "disallowFileDelete": "Interdire ce rôle de supprimer des fichiers dans le champ {{field}}",
         "grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
         "grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
         "grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",

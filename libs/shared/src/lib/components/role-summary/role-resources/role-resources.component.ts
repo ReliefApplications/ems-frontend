@@ -393,6 +393,7 @@ export class RoleResourcesComponent
    * @param field.name the name of the field to be edited
    * @param field.canSee whether the field can be seen
    * @param field.canUpdate whether the field can be edited
+   * @param field.canDeleteFiles whether the field's persisted files can be deleted outright
    * @param action the permission to be edited
    */
   onEditFieldAccess(

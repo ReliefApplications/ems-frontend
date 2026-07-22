@@ -272,7 +272,8 @@ export class FormBuilderService {
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
     const filesToClear = Array.isArray(options.value) ? options.value : [];
-    const canDeleteFiles = options.question?.getPropertyValue('canDeleteFiles') !== false;
+    const canDeleteFiles =
+      options.question?.getPropertyValue('canDeleteFiles') !== false;
     if (
       options.question?.getPropertyValue('allowOutdatedFiles') &&
       !canDeleteFiles &&

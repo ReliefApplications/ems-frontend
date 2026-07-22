@@ -1603,8 +1603,10 @@
       "tooltip": {
         "allowFieldAccessibility": "Дозволити цій ролі бачити поле {{field}}",
         "allowFieldUpdate": "Дозволити цій ролі оновлювати поле {{field}}",
+        "allowFileDelete": "Дозволити цій ролі видаляти файли в полі {{field}}",
         "disallowFieldAccessibility": "Заборонити цій ролі бачити поле {{field}}",
         "disallowFieldUpdate": "Заборонити цій ролі оновлювати поле {{field}}",
+        "disallowFileDelete": "Заборонити цій ролі видаляти файли в полі {{field}}",
         "grantAddRecordsPermission": "Надати дозвіл на додавання нових записів",
         "grantDeleteRecordsPermission": "Надати дозвіл на видалення записів",
         "grantDownloadRecordsPermission": "Надати дозвіл на завантаження записів",
