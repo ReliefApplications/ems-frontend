@@ -1,16 +1,54 @@
 <!-- Header -->
 <div class="flex justify-between items-center">
   <h2>{{ 'common.field.few' | translate }}</h2>
-  <div uiFormFieldDirective class="min-w-[8rem]">
-    <label>{{ 'models.form.field.usedIn' | translate }}</label>
-    <ui-select-menu [formControl]="filterId">
-      <ui-select-option>{{
-        'common.filter.none' | translate
-      }}</ui-select-option>
-      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
-        {{ form.name }}
-      </ui-select-option>
-    </ui-select-menu>
+  <div class="flex gap-2 items-center">
+    <!-- Bulk actions, shown when at least one field is selected -->
+    <div *ngIf="selection.hasValue()" class="flex gap-2 items-center">
+      <ui-button
+        icon="visibility"
+        category="secondary"
+        [variant]="bulkPermissionGranted('canSee') ? 'primary' : 'grey'"
+        [disabled]="disabled"
+        [uiTooltip]="
+          (bulkPermissionGranted('canSee')
+            ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
+            : 'components.role.tooltip.allowSelectedFieldsAccessibility'
+          ) | translate : { count: selection.selected.length }
+        "
+        (click)="onBulkEditFieldAccess('canSee')"
+      >
+        {{ 'common.view' | translate }}
+      </ui-button>
+      <ui-button
+        icon="edit"
+        category="secondary"
+        [variant]="bulkPermissionGranted('canUpdate') ? 'primary' : 'grey'"
+        [disabled]="disabled"
+        [uiTooltip]="
+          (bulkPermissionGranted('canUpdate')
+            ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
+            : 'components.role.tooltip.allowSelectedFieldsUpdate'
+          ) | translate : { count: selection.selected.length }
+        "
+        (click)="onBulkEditFieldAccess('canUpdate')"
+      >
+        {{ 'common.edit' | translate }}
+      </ui-button>
+    </div>
+    <div uiFormFieldDirective class="min-w-[8rem]">
+      <label>{{ 'models.form.field.usedIn' | translate }}</label>
+      <ui-select-menu [formControl]="filterId">
+        <ui-select-option>{{
+          'common.filter.none' | translate
+        }}</ui-select-option>
+        <ui-select-option
+          *ngFor="let form of resource.forms"
+          [value]="form.id"
+        >
+          {{ form.name }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </div>
 <!-- Content -->
@@ -24,6 +62,26 @@
       [dataSource]="fields"
       *ngIf="fields.length > 0"
     >
+      <ng-container cdkColumnDef="select">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-10">
+          <ui-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [disabled]="disabled"
+            [ariaLabel]="checkboxLabel()"
+          ></ui-checkbox>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(element) : null"
+            [checked]="selection.isSelected(element)"
+            [disabled]="disabled"
+            [ariaLabel]="checkboxLabel(element)"
+          ></ui-checkbox>
+        </td>
+      </ng-container>
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.field.one' | translate }}
@@ -38,7 +96,7 @@
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td uiCell *cdkCellDef="let element; let index = index">
+        <td uiCell *cdkCellDef="let element">
           <div class="flex">
             <ui-button
               [isIcon]="true"
@@ -51,7 +109,7 @@
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canSee')"
+              (click)="onEditFieldAccess(element, 'canSee')"
             >
             </ui-button>
             <ui-button
@@ -65,7 +123,7 @@
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canUpdate')"
+              (click)="onEditFieldAccess(element, 'canUpdate')"
             >
             </ui-button>
           </div>

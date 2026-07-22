@@ -112,6 +112,14 @@
                     $event.permission
                   )
                 "
+                (onBulkToggle)="
+                  onBulkEditFieldAccess(
+                    $event.resource,
+                    $event.fields,
+                    $event.permission,
+                    $event.grant
+                  )
+                "
               ></shared-resource-fields>
             </ng-container>
           </div>

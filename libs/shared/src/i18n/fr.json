@@ -1575,6 +1575,8 @@
           },
           "title": "Attribution automatique"
         },
+        "autoGrantFieldsAccessibility": "Accorder automatiquement l'accès en visualisation aux nouveaux champs",
+        "autoGrantFieldsUpdate": "Accorder automatiquement l'accès en modification aux nouveaux champs",
         "details": {
           "access": {
             "channels": "Canaux accessibles",
@@ -1604,8 +1606,14 @@
       "tooltip": {
         "allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
         "allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+        "allowSelectedFieldsAccessibility": "Autoriser ce rôle à voir les {{count}} champs sélectionnés",
+        "allowSelectedFieldsUpdate": "Autoriser ce rôle à mettre à jour les {{count}} champs sélectionnés",
+        "autoGrantFieldsAccessibility": "Accorder automatiquement l'accès en visualisation aux champs ajoutés à cette ressource à l'avenir",
+        "autoGrantFieldsUpdate": "Accorder automatiquement l'accès en modification aux champs ajoutés à cette ressource à l'avenir",
         "disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
         "disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+        "disallowSelectedFieldsAccessibility": "Interdire ce rôle pour voir les {{count}} champs sélectionnés",
+        "disallowSelectedFieldsUpdate": "Interdire ce rôle pour mettre à jour les {{count}} champs sélectionnés",
         "grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
         "grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
         "grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",

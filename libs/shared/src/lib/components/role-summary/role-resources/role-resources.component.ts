@@ -442,6 +442,53 @@ export class RoleResourcesComponent
   }
 
   /**
+   * Bulk edits the given permission for a set of fields at once
+   *
+   * @param resource the resource containing the fields to be updated
+   * @param fields the fields to be edited
+   * @param permission the permission to be edited
+   * @param grant whether to grant (true) or revoke (false) the permission for all given fields
+   */
+  onBulkEditFieldAccess(
+    resource: Resource,
+    fields: { name: string }[],
+    permission: 'canSee' | 'canUpdate',
+    grant: boolean
+  ): void {
+    if (!this.role.id || !fields.length) return;
+
+    this.updating = true;
+    const entries = fields.map((field) => ({
+      field: field.name,
+      role: this.role.id as string,
+    }));
+    const updatedPermissions = grant ? { add: entries } : { remove: entries };
+
+    this.apollo
+      .mutate<EditResourceMutationResponse>({
+        mutation: EDIT_RESOURCE_FIELD_PERMISSION,
+        variables: {
+          id: resource.id,
+          role: this.role.id,
+          fieldsPermissions: {
+            [permission]: updatedPermissions,
+          },
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors });
+          this.updating = false;
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        },
+      });
+  }
+
+  /**
    * Custom TrackByFunction to compute the identity of items in an iterable, so when
    * updating fields the scroll don't get back to the beginning of the table.
    *
