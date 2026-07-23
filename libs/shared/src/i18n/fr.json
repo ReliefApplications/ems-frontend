@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "Est un formulaire source",
+      "isPublic": "Est public",
       "paginator": {
         "ariaLabel": "Sélectionnez la page de formulaires"
       },
@@ -2927,6 +2928,7 @@
         "name": "Nom du champ",
         "usedIn": "Utilisé par"
       },
+      "isPublic": "Public",
       "new": "Nouveau formulaire",
       "notifications": {
         "savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."
