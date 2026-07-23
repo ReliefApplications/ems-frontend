@@ -6,7 +6,14 @@
 ></shared-role-resources-filter>
 <!-- Resource Table -->
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg">
+<div class="overflow-x-hidden shadow-2lg relative">
+  <!-- Saving overlay -->
+  <div
+    *ngIf="updating && !loading"
+    class="absolute inset-0 z-10 bg-white opacity-70 flex items-center justify-center"
+  >
+    <ui-spinner size="medium" variant="primary"></ui-spinner>
+  </div>
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table

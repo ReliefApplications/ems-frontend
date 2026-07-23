@@ -30,6 +30,7 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -108,8 +109,13 @@ export class RoleResourcesComponent
    *
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
+   * @param translate Angular translate service
    */
-  constructor(private apollo: Apollo, private snackBar: SnackbarService) {
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
@@ -383,6 +389,13 @@ export class RoleResourcesComponent
     }
     if (errors) {
       this.snackBar.openSnackBar(errors[0].message, { error: true });
+    } else if (data?.editResource) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.resource.one'),
+          value: '',
+        })
+      );
     }
   }
 
