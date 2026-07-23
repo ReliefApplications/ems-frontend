@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "Is core",
+      "isPublic": "Is public",
       "paginator": {
         "ariaLabel": "Select page of forms"
       },
@@ -2924,6 +2925,7 @@
         "name": "Field name",
         "usedIn": "Used in"
       },
+      "isPublic": "Public",
       "new": "New form",
       "notifications": {
         "savingFailed": "Saving failed, some fields require your attention."
