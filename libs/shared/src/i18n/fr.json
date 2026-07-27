@@ -320,7 +320,8 @@
         },
         "fieldselect": {
           "placeholder": "Sélection de champ",
-          "tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats"
+          "tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats",
+          "tooltipTwo": "Sélectionnez le champ à insérer; \nLa liste déroulante ne fait que remplir les valeurs séparées d'envoi"
         },
         "footer": {
           "logo": "Pied-de-page Logo",

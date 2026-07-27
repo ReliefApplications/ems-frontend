@@ -98,6 +98,8 @@ export class LayoutComponent
   EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   /** Key codes of separators */
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
+  /** Block field select values */
+  blockFieldSelect: string[] = [];
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -159,6 +161,7 @@ export class LayoutComponent
   ngOnInit(): void {
     if (this.emailService.isGridAction) {
       this.emailService.resetPreviewData();
+      this.emailService.sendSeparateBlocks = [];
       if (
         !this.emailService.isCustomTemplateEdit &&
         !this.emailService.isNewCustomTemplate
@@ -206,6 +209,7 @@ export class LayoutComponent
         inTheLastDropdown: [''],
         headerTimeInput: [''],
         header: [this.emailService.allLayoutdata.headerHtml],
+        bodyFieldSelect: [''],
         block: [''],
         body: [this.emailService.allLayoutdata.bodyHtml],
         to: [''],
@@ -225,6 +229,7 @@ export class LayoutComponent
           this.emailService.datasetsForm?.get('emailLayout')?.value?.header
             ?.headerHtml,
         ],
+        bodyFieldSelect: [''],
         block: [''],
         body: [
           this.emailService.datasetsForm?.get('emailLayout')?.value?.body
@@ -412,6 +417,11 @@ export class LayoutComponent
       this.blockData =
         this.emailService.previewData?.datasets ??
         this.emailService.getAllPreviewData();
+
+      this.blockFieldSelect = this.emailService.sendSeparateBlocks.flatMap(
+        (block: any) =>
+          this.firstBlockFields.map((field: string) => `${block} - ${field}`)
+      );
     } else {
       this.blockData = [];
     }
@@ -995,6 +1005,8 @@ export class LayoutComponent
       this.layoutForm.get('body')?.value;
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
+
+    this.blockFieldSelect = [];
     // this.emailService.patchEmailLayout();
   }
 
