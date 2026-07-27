@@ -306,9 +306,8 @@
           "noCustomTitle": "Назва власного шаблону обов'язкова для продовження!",
           "noDistributionList": "Щось пішло не так під час надсилання листа: не знайдено списку розсилки",
           "noFields": "DocumentType & InformationConfidentiality обов'язкові для продовження!",
-          "noRecipient": "At least one recipient is required to proceed!",
-          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
-          "noRecipientSse": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
+          "noRecipient": "Потрібен принаймні один одержувач для продовження!",
+          "noRecipientSeparateEmail": "Потрібен принаймні один одержувач для продовження! Переконайтеся, що використані поля для відправки окремих email містять принаймні одне поле з дійсними адресами email.",
           "noSubject": "Тема обов'язкова для продовження!",
           "noTemplate": "Щось пішло не так під час надсилання листа: шаблон не знайдено",
           "preview": "Не вдалося завантажити попередній перегляд листа"
@@ -324,7 +323,7 @@
         "fieldselect": {
           "placeholder": "Вибір поля",
           "tooltip": "Вибирайте варіант поля, лише якщо воно містить унікальне значення; інакше система за замовчуванням вибере перший запис у результатах",
-          "tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
+          "tooltipTwo": "Виберіть поле для вставлення; розкривний список містить лише поля для відправки окремих email."
         },
         "footer": {
           "logo": "Логотип підвалу",
@@ -971,7 +970,7 @@
         "noResourceFields": "Вибраний Ресурс не містить жодних полів",
         "noSelectedFields": "Будь ласка, виберіть принаймні 1 поле для збереження цього набору даних",
         "scheduler": {
-          "invalid": "Error! Please enter a valid cron value"
+          "invalid": "Помилка! Введіть дійсний вираз cron"
         },
         "selectChildFields": "Ви вибрали поле об'єкта/списку. Виберіть принаймні одне дочірнє поле для подальшого продовження та/або попереднього перегляду.",
         "selectedNonEmailFields": "Вибране поле не налаштоване як поле email. Подальші дії можуть призвести до помилок.",
@@ -1032,7 +1031,10 @@
       "name": "Електронна пошта",
       "notification": {
         "create": "Створити сповіщення",
+        "language": "Мова",
+        "languageDescription": "Мова, якою відображаються дані цього сповіщення (перекладені поля та значення виборів).",
         "list": "Список сповіщень",
+        "selectLanguage": "Виберіть мову",
         "type": "Тип сповіщення",
         "validTitle": "Будь ласка, введіть Назву"
       },
@@ -1049,16 +1051,15 @@
       },
       "saveAsDraft": "Зберегти як чернетку",
       "schedule": {
-        "checkbox": "Click to enable/ disable scheduler",
         "disable": {
-          "checkbox": "Disable Scheduler",
-          "tooltip": "Click to disable scheduler"
+          "checkbox": "Вимкнути планувальник",
+          "tooltip": "Натисніть, щоб вимкнути планувальник"
         },
         "enable": {
-          "checkbox": "Enable scheduler",
-          "tooltip": "Click to enable scheduler"
+          "checkbox": "Увімкнути планувальник",
+          "tooltip": "Натисніть, щоб увімкнути планувальник"
         },
-        "title": "Schedule Alert"
+        "title": "Запланувати сповіщення"
       },
       "subscribe": {
         "error": {
@@ -1434,7 +1435,7 @@
         "title": "Попередній перегляд"
       },
       "sendSeparate": {
-        "csFilter": "Common Service Users Filter",
+        "csFilter": "Фільтр користувачів Common Services",
         "title": "Поля для відправки окремих email"
       },
       "sort": {
@@ -1479,8 +1480,8 @@
             "usePicker": "Використовувати вибір дати"
           },
           "select": {
-            "useExpression": "Use Expression editor",
-            "usePicker": "Use Value picker"
+            "useExpression": "Використовувати редактор виразів",
+            "usePicker": "Використовувати вибір значення"
           }
         },
         "pagination": {
@@ -1672,12 +1673,12 @@
         "label": "Назва списку розсилки*",
         "noPreviewData": "Вибраний набір даних не містить даних для попереднього перегляду",
         "sendseparate": {
-          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "alsoToDistributionList": "Кожен із цих листів також надсилається до списку розсилки.",
           "list": "Одержувачі окремих email",
-          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
+          "ownRecipientOnly": "Кожен із цих листів надсилається лише його власному одержувачу."
         },
         "separateEmail": "Надіслати окремий email",
-        "separateEmailToDistributionList": "Also send to the distribution list",
+        "separateEmailToDistributionList": "Також надіслати до списку розсилки",
         "subscriptionList": "Список підписок",
         "to": "Кому"
       }
@@ -2154,10 +2155,7 @@
               "selectAllRecordsActivePage": "Вибрати всі записи на активній сторінці",
               "selectDisplay": "Вибрати відображувані поля",
               "sendMail": "Надіслати лист",
-              "sendSeparateEmail": "Send separate email",
-              "separateEmailFields": "Send Separate Email Fields",
-              "separateEmailRecipientRequired": "Select a distribution list or add at least one separate email field containing email values, otherwise the email has no recipients.",
-              "separateEmailTokens": "Available body tokens:",
+              "separateEmailRecipientRequired": "Виберіть список розсилки або додайте принаймні одне поле для відправки окремих email, що містить адреси email, інакше лист не матиме одержувачів.",
               "workflow": {
                 "close": "Закрити Робочий процес",
                 "confirm": "Повідомлення про підтвердження",

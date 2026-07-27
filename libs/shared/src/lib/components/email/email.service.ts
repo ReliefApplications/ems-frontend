@@ -894,6 +894,9 @@ export class EmailService {
     this.datasetsForm = this.formBuilder.group({
       name: ['', Validators.required],
       notificationType: [null, Validators.required],
+      language: [
+        this.translate.currentLang || this.translate.defaultLang || null,
+      ],
       applicationId: [''],
       datasets: new FormArray([this.createNewDataSetGroup()]),
       emailDistributionList: this.initialiseDistributionList(),
@@ -1945,7 +1948,16 @@ export class EmailService {
    */
   sendQuickEmail(emailData: any): Observable<any> {
     const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
-    return this.http.post<any>(urlWithConfigId, emailData);
+    // Grid-action emails have no configured language: render in the sender's
+    // current UI language (falling back to the app default).
+    const payload = {
+      ...emailData,
+      language:
+        emailData?.language ||
+        this.translate.currentLang ||
+        this.translate.defaultLang,
+    };
+    return this.http.post<any>(urlWithConfigId, payload);
   }
 
   /**

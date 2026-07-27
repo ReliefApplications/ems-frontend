@@ -239,6 +239,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           name
           id
           notificationType
+          language
           createdBy
           isDraft
           isDeleted
@@ -287,6 +288,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       lastExecution
       name
       notificationType
+      language
       emailDistributionList
       subscriptionList
       restrictSubscription
@@ -335,6 +337,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       id
       name
       notificationType
+      language
       emailDistributionList
       subscriptionList
       restrictSubscription

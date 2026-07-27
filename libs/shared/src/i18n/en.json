@@ -1031,7 +1031,10 @@
       "name": "Email",
       "notification": {
         "create": "Create Notification",
+        "language": "Language",
+        "languageDescription": "The language used to render this notification's data (translated fields and choice values).",
         "list": "Notification List",
+        "selectLanguage": "Select a language",
         "type": "Alert Type",
         "validTitle": "Please enter a title"
       },

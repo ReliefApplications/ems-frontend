@@ -1031,7 +1031,10 @@
       "name": "******",
       "notification": {
         "create": "******",
+        "language": "******",
+        "languageDescription": "******",
         "list": "******",
+        "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"
       },
