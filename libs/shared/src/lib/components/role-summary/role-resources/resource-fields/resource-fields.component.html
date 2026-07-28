@@ -8,10 +8,7 @@
         <ui-select-option>{{
           'common.filter.none' | translate
         }}</ui-select-option>
-        <ui-select-option
-          *ngFor="let form of resource.forms"
-          [value]="form.id"
-        >
+        <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
           {{ form.name }}
         </ui-select-option>
       </ui-select-menu>
@@ -36,9 +33,7 @@
   <ui-checkbox
     [checked]="isAutoGrantChecked('canUpdate')"
     [disabled]="disabled || isAutoGrantDisabled('canUpdate')"
-    [uiTooltip]="
-      'components.role.tooltip.autoGrantFieldsUpdate' | translate
-    "
+    [uiTooltip]="'components.role.tooltip.autoGrantFieldsUpdate' | translate"
     (change)="onToggleAutoGrant('canUpdate')"
   >
     <ng-container ngProjectAs="label">{{
@@ -90,36 +85,43 @@
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16">
-        <!-- Bulk actions, shown when at least one field is selected -->
-        <div *ngIf="selection.hasValue()" class="flex gap-2 mb-[-20px] mt-[-24px]">
-          <ui-button
-            [isIcon]="true"
-            [icon]="bulkPermissionGranted('canSee') ? 'visibility_off' : 'visibility'"
-            [disabled]="disabled"
-            [uiTooltip]="
-              (bulkPermissionGranted('canSee')
-                ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
-                : 'components.role.tooltip.allowSelectedFieldsAccessibility'
-              ) | translate
-            "
-            (click)="onBulkEditFieldAccess('canSee')"
-          ></ui-button>
-          <ui-button
-            [isIcon]="true"
-            [icon]="bulkPermissionGranted('canUpdate') ? 'edit_off' : 'edit'"
-            [disabled]="disabled"
-            [uiTooltip]="
-              (bulkPermissionGranted('canUpdate')
-                ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
-                : 'components.role.tooltip.allowSelectedFieldsUpdate'
-              ) | translate
-            "
-            (click)="onBulkEditFieldAccess('canUpdate')"
-          ></ui-button>
-        </div>
+          <!-- Bulk actions, shown when at least one field is selected -->
+          <div
+            *ngIf="selection.hasValue()"
+            class="flex gap-2 mb-[-20px] mt-[-24px]"
+          >
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                bulkPermissionGranted('canSee')
+                  ? 'visibility_off'
+                  : 'visibility'
+              "
+              [disabled]="disabled"
+              [uiTooltip]="
+                (bulkPermissionGranted('canSee')
+                  ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
+                  : 'components.role.tooltip.allowSelectedFieldsAccessibility'
+                ) | translate
+              "
+              (click)="onBulkEditFieldAccess('canSee')"
+            ></ui-button>
+            <ui-button
+              [isIcon]="true"
+              [icon]="bulkPermissionGranted('canUpdate') ? 'edit_off' : 'edit'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (bulkPermissionGranted('canUpdate')
+                  ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
+                  : 'components.role.tooltip.allowSelectedFieldsUpdate'
+                ) | translate
+              "
+              (click)="onBulkEditFieldAccess('canUpdate')"
+            ></ui-button>
+          </div>
         </th>
         <td uiCell *cdkCellDef="let element">
-          <div class="flex gap-2 ">
+          <div class="flex gap-2">
             <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
