@@ -1,7 +1,5 @@
-OORT Front-end
+WHO App Builder front-end
 =======
-[![Github Pages](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/github-pages.yml)
-[![Storybook](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/ems-frontend/actions/workflows/storybook.yml)
 
 # Versions
 
@@ -21,53 +19,38 @@ This front-end was made using [Angular](https://angular.io/). It uses multiple e
 
 It was made for a Proof of Concept of a UI Builder for WHO.
 
-To read more about the project, and how to setup the back-end, please refer to the [documentation of the project](https://gitlab.com/who-ems/ui-doc).
+On top of Angular, [Nx](https://nx.dev/) was installed, to better split projects and libs.
 
-*   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
-*   [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
+# Setup
 
-In top of Angular, [Nx](https://nx.dev/) was installed, to better split projects and libs.
+Install the dependencies:
 
+```
+npm i
+```
 
 # General
 
-The project is seperated into three sub-projects:
+The project is separated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- web-widgets, an application to genereate the web components
+- web-widgets, an application to generate the web components
 
-One library exists:
+Several libraries exist:
 - shared, a library for common ui / capacity, shared with other projects
+- ui, a library of generic ui components
+- styles, a library with shared styles
+- doc-management, a library for document management
 
 Library changes should automatically be detected when serving the other projects.
 
-# Azure configuration
+# Infrastructure & deployment
 
-If you want to deploy on Azure, build back-office and front-office:
-```
-npx nx run back-office:build:azure-dev
-npx nx run front-office:build:azure-dev
-```
+Infrastructure and deployment are managed in the [emssafe-infra](https://dev.azure.com/WHOHQ/EMSSAFE/_git/emssafe-infra) repository. Please refer to it for instructions.
 
-For prod, replace `azure-dev` with `azure-prod`.
-For uat, replace `azure-dev` with `azure-uat`.
+# Contributing
 
-The compiled applications can be found there in ./dist/apps/ folder.
-
-# Deployment
-
-These steps describe how to do a deployment from your machine to target static web app.
-
-Get a deployment token:
-```
-az staticwebapp secrets list --name <static-webapp-name> --query "properties.apiKey"
-```
-
-Deploy code:
-```
-npm i -g @azure/static-web-apps-cli
-npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-token> --env production
-```
+Please refer to the [contribution guide](docs/CONTRIBUTING.md) for branching strategy and Pull Request rules.
 
 # Useful commands
 
@@ -75,7 +58,7 @@ npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-toke
 
 To serve a project, run:
 ```
-npx nx run <project>:server:<config>
+npx nx run <project>:serve:<config>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
 
@@ -88,10 +71,18 @@ npx nx run back-office:serve
 will serve back-office with default development configuration.
 
 ```
-npx nx run back-office:serve:oort-local
+npx nx run back-office:serve:local-dev
 ```
 
-will serve back-office, connecting to the deployed back-end for development.
+will serve back-office, connecting to the deployed dev back-end. Other available serve configurations are `local-uat` and `local-prod`, to connect to the deployed uat / prod back-ends.
+
+The makefile also provides shortcuts to serve each application with an increased memory limit:
+
+```
+make serve-back
+make serve-front
+make serve-widgets
+```
 
 ## Code scaffolding
 
@@ -114,7 +105,7 @@ Run `npx nx run <project>:build:<config>` to build a project. The build artifact
 
 ## Prettify scss and html
 
-Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all scss / html files locally.
+Run `npx prettier --write "**/*.{scss,html}"` (or `make prettify`) to execute prettier and update all scss / html files locally.
 
 ## Analyze bundle
 
@@ -132,7 +123,13 @@ npx webpack-bundle-analyzer dist/apps/back-office/stats.json
 
 ## Storybook
 
-UI library has its own storybook definition. To execute storybook locally, you can run:
+The ui, shared and doc-management libraries have their own storybook definitions. To execute a storybook locally, you can run:
+
+```
+npx nx run <library>:storybook
+```
+
+For example:
 
 ```
 npx nx run ui:storybook
@@ -140,7 +137,7 @@ npx nx run ui:storybook
 
 To build it, you can run:
 ```
-npx nx run ui:build-storybook
+npx nx run <library>:build-storybook
 ```
 
 Pushing the code on the repo should automatically deploy storybook on a public environment.
@@ -167,6 +164,11 @@ make bundle-widgets project=azure-prod
 
 The command will generate a file under the `widgets` folder, called `app-builder.js`.
 This is the file you'll need to deploy on Azure blob storage to provide the code.
+
+If web-widgets is already built, you can regenerate the bundle without rebuilding by running:
+```
+make build-widgets
+```
 
 If you need to upload files to the blob storage where we store shared assets, you can use the az commands.
 First, build the front-office in production mode ( any environment, but same version ).
