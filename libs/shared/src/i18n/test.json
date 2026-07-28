@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "******",
+      "isPublic": "******",
       "paginator": {
         "ariaLabel": "******"
       },
@@ -2932,6 +2933,7 @@
         "name": "******",
         "usedIn": "******"
       },
+      "isPublic": "******",
       "new": "******",
       "notifications": {
         "savingFailed": "******"

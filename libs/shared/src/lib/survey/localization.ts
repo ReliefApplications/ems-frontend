@@ -144,6 +144,30 @@ const addDynamicTextHelp = (editorLocale: any, locale: string) => {
   editorLocale.pehelp.tooltip = DYNAMIC_TEXT_HELP[locale];
 };
 
+/** Locales available in the survey creator */
+const CREATOR_LOCALES = ['en', 'fr', 'uk'];
+
+/**
+ * Register help text for a custom property, displayed in the survey creator
+ * property grid below the property title. The creator only reads help text
+ * from its localization (pehelp), never from the description given to
+ * Serializer.addProperty, so custom properties must register it here. The
+ * same text is used for every locale until translations are provided.
+ *
+ * @param propName Property name, as registered in the serializer
+ * @param helpText Help text to display
+ */
+export const registerCustomPropertyHelp = (
+  propName: string,
+  helpText: string
+) => {
+  for (const locale of CREATOR_LOCALES) {
+    const editorLocale = editorLocalization.getLocale(locale);
+    if (!editorLocale.pehelp) editorLocale.pehelp = {};
+    editorLocale.pehelp[propName] = helpText;
+  }
+};
+
 /**
  * Add localizable strings to surveyjs
  *

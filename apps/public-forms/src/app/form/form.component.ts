@@ -36,6 +36,8 @@ export class FormComponent implements OnInit, OnDestroy {
   public form: Form | null = null;
   /** Whether the form has been submitted, to display the new record button */
   public completed = false;
+  /** Whether the new record button is displayed once the form has been submitted, from the form structure */
+  public showNewRecordButton = true;
   /** Shared form component, used to reset the form to create a new record */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
@@ -89,6 +91,12 @@ export class FormComponent implements OnInit, OnDestroy {
           canCreateRecords: true, // We force this to true as we want to allow anyone with the link to create records.
         };
         this.headerService.setFormTitle(form.name ?? null);
+        try {
+          const structure = JSON.parse(form.structure || '{}');
+          this.showNewRecordButton = structure.showNewRecordButton !== false;
+        } catch {
+          this.showNewRecordButton = true;
+        }
       },
       error: () => {
         this.router.navigate(['/']);
