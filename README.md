@@ -1,5 +1,4 @@
-WHO App Builder front-end
-=======
+# WHO App Builder front-end
 
 # Versions
 
@@ -32,11 +31,13 @@ npm i
 # General
 
 The project is separated into three sub-projects:
+
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
 - web-widgets, an application to generate the web components
 
 Several libraries exist:
+
 - shared, a library for common ui / capacity, shared with other projects
 - ui, a library of generic ui components
 - styles, a library with shared styles
@@ -173,6 +174,7 @@ The command will generate a file under the `widgets` folder, called `app-builder
 This is the file you'll need to deploy on Azure blob storage to provide the code.
 
 If web-widgets is already built, you can regenerate the bundle without rebuilding by running:
+
 ```
 make build-widgets
 ```
