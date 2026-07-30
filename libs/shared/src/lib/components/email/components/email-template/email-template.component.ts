@@ -1058,6 +1058,7 @@ export class EmailTemplateComponent
       this.commonServiceFields.push({
         graphQLFieldName: ele,
         name: ele.key,
+        text: ele.label,
         kind: 'SCALAR',
         type: 'checkbox',
         editor: 'select',

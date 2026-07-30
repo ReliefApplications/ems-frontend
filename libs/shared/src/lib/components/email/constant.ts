@@ -25,6 +25,7 @@ export const commonServiceFields = [
   { key: 'Region', label: 'Region' },
   { key: 'LocationType', label: 'LocationType' },
   { key: 'InternalExternal', label: 'InternalExternal' },
+  { key: 'Groups', label: 'User Groups', namePath: 'GroupName' },
 ];
 
 /** Maximum number of files allowed */
