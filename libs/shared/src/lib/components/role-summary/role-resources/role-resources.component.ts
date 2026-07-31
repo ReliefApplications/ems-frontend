@@ -19,6 +19,7 @@ import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
 import {
   EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_RESOURCE_ACCESS,
+  EDIT_RESOURCE_FIELDS_AUTO_GRANT,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -29,6 +30,7 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -107,8 +109,13 @@ export class RoleResourcesComponent
    *
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
+   * @param translate Angular translate service
    */
-  constructor(private apollo: Apollo, private snackBar: SnackbarService) {
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
@@ -382,6 +389,13 @@ export class RoleResourcesComponent
     }
     if (errors) {
       this.snackBar.openSnackBar(errors[0].message, { error: true });
+    } else if (data?.editResource) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.resource.one'),
+          value: '',
+        })
+      );
     }
   }
 
@@ -425,6 +439,101 @@ export class RoleResourcesComponent
           role: this.role.id,
           fieldsPermissions: {
             [action]: updatedPermissions,
+          },
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors });
+          this.updating = false;
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        },
+      });
+  }
+
+  /**
+   * Bulk edits the given permission for a set of fields at once
+   *
+   * @param resource the resource containing the fields to be updated
+   * @param fields the fields to be edited
+   * @param permission the permission to be edited
+   * @param grant whether to grant (true) or revoke (false) the permission for all given fields
+   */
+  onBulkEditFieldAccess(
+    resource: Resource,
+    fields: { name: string }[],
+    permission: 'canSee' | 'canUpdate',
+    grant: boolean
+  ): void {
+    if (!this.role.id || !fields.length) return;
+
+    this.updating = true;
+    const entries = fields.map((field) => ({
+      field: field.name,
+      role: this.role.id as string,
+    }));
+    const updatedPermissions = grant ? { add: entries } : { remove: entries };
+
+    this.apollo
+      .mutate<EditResourceMutationResponse>({
+        mutation: EDIT_RESOURCE_FIELD_PERMISSION,
+        variables: {
+          id: resource.id,
+          role: this.role.id,
+          fieldsPermissions: {
+            [permission]: updatedPermissions,
+          },
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors });
+          this.updating = false;
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        },
+      });
+  }
+
+  /**
+   * Toggles the fields auto-grant setting for the given permission.
+   *
+   * @param resource the resource to update
+   * @param permission the fields auto-grant permission to toggle
+   */
+  onEditFieldsAutoGrant(
+    resource: Resource,
+    permission: 'canSee' | 'canUpdate'
+  ): void {
+    if (!this.role.id) return;
+
+    this.updating = true;
+    const checked = get(
+      resource,
+      `rolePermissions.autoGrantFields${
+        permission === 'canSee' ? 'CanSee' : 'CanUpdate'
+      }`,
+      false
+    );
+    const updatedPermissions: { add?: string[]; remove?: string[] } = checked
+      ? { remove: [this.role.id] }
+      : { add: [this.role.id] };
+
+    this.apollo
+      .mutate<EditResourceMutationResponse>({
+        mutation: EDIT_RESOURCE_FIELDS_AUTO_GRANT,
+        variables: {
+          id: resource.id,
+          role: this.role.id,
+          fieldsAutoGrant: {
+            [permission]: updatedPermissions,
           },
         },
       })

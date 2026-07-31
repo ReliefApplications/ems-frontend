@@ -1,19 +1,46 @@
 <!-- Header -->
 <div class="flex justify-between items-center">
   <h2>{{ 'common.field.few' | translate }}</h2>
-  <div uiFormFieldDirective class="min-w-[8rem]">
-    <label>{{ 'models.form.field.usedIn' | translate }}</label>
-    <ui-select-menu [formControl]="filterId">
-      <ui-select-option>{{
-        'common.filter.none' | translate
-      }}</ui-select-option>
-      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
-        {{ form.name }}
-      </ui-select-option>
-    </ui-select-menu>
+  <div class="flex gap-2 items-center">
+    <div uiFormFieldDirective class="min-w-[8rem]">
+      <label>{{ 'models.form.field.usedIn' | translate }}</label>
+      <ui-select-menu [formControl]="filterId">
+        <ui-select-option>{{
+          'common.filter.none' | translate
+        }}</ui-select-option>
+        <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
+          {{ form.name }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </div>
 <!-- Content -->
+<!-- Fields auto-grant toggles -->
+<div class="flex gap-4 items-center mb-3 ml-4">
+  <ui-checkbox
+    [checked]="isAutoGrantChecked('canSee')"
+    [disabled]="disabled || isAutoGrantDisabled('canSee')"
+    [uiTooltip]="
+      'components.role.tooltip.autoGrantFieldsAccessibility' | translate
+    "
+    (change)="onToggleAutoGrant('canSee')"
+  >
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.autoGrantFieldsAccessibility' | translate
+    }}</ng-container>
+  </ui-checkbox>
+  <ui-checkbox
+    [checked]="isAutoGrantChecked('canUpdate')"
+    [disabled]="disabled || isAutoGrantDisabled('canUpdate')"
+    [uiTooltip]="'components.role.tooltip.autoGrantFieldsUpdate' | translate"
+    (change)="onToggleAutoGrant('canUpdate')"
+  >
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.autoGrantFieldsUpdate' | translate
+    }}</ng-container>
+  </ui-checkbox>
+</div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
@@ -24,6 +51,26 @@
       [dataSource]="fields"
       *ngIf="fields.length > 0"
     >
+      <ng-container cdkColumnDef="select">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-10">
+          <ui-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [disabled]="disabled"
+            [ariaLabel]="checkboxLabel()"
+          ></ui-checkbox>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(element) : null"
+            [checked]="selection.isSelected(element)"
+            [disabled]="disabled"
+            [ariaLabel]="checkboxLabel(element)"
+          ></ui-checkbox>
+        </td>
+      </ng-container>
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.field.one' | translate }}
@@ -37,9 +84,44 @@
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td uiCell *cdkCellDef="let element; let index = index">
-          <div class="flex">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16">
+          <!-- Bulk actions, shown when at least one field is selected -->
+          <div
+            *ngIf="selection.hasValue()"
+            class="flex gap-2 mb-[-20px] mt-[-24px]"
+          >
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                bulkPermissionGranted('canSee')
+                  ? 'visibility_off'
+                  : 'visibility'
+              "
+              [disabled]="disabled"
+              [uiTooltip]="
+                (bulkPermissionGranted('canSee')
+                  ? 'components.role.tooltip.disallowSelectedFieldsAccessibility'
+                  : 'components.role.tooltip.allowSelectedFieldsAccessibility'
+                ) | translate
+              "
+              (click)="onBulkEditFieldAccess('canSee')"
+            ></ui-button>
+            <ui-button
+              [isIcon]="true"
+              [icon]="bulkPermissionGranted('canUpdate') ? 'edit_off' : 'edit'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (bulkPermissionGranted('canUpdate')
+                  ? 'components.role.tooltip.disallowSelectedFieldsUpdate'
+                  : 'components.role.tooltip.allowSelectedFieldsUpdate'
+                ) | translate
+              "
+              (click)="onBulkEditFieldAccess('canUpdate')"
+            ></ui-button>
+          </div>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div class="flex gap-2">
             <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
@@ -51,7 +133,7 @@
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canSee')"
+              (click)="onEditFieldAccess(element, 'canSee')"
             >
             </ui-button>
             <ui-button
@@ -65,7 +147,7 @@
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canUpdate')"
+              (click)="onEditFieldAccess(element, 'canUpdate')"
             >
             </ui-button>
           </div>

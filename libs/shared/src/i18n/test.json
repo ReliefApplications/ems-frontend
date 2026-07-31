@@ -1575,6 +1575,8 @@
           },
           "title": "******"
         },
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "details": {
           "access": {
             "channels": "******",
@@ -1604,8 +1606,14 @@
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsUpdate": "******",
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",
