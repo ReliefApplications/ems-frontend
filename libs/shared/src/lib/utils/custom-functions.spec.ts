@@ -1,5 +1,7 @@
 import { FunctionFactory, SurveyModel } from 'survey-core';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { AuthService } from '../services/auth/auth.service';
+import { DateTranslateService } from '../services/date-translate/date-translate.service';
 import addCustomFunctions from './custom-functions';
 
 /**
@@ -39,9 +41,13 @@ describe('addCustomFunctions', () => {
   const authServiceMock = {
     userValue: { name: 'Test User' },
   } as Partial<AuthService> as AuthService;
+  const dateTranslateServiceMock = {
+    currentLang: 'en',
+  } as unknown as DateTranslateService;
+  const datePipe = new DatePipe(dateTranslateServiceMock);
 
   beforeEach(() => {
-    addCustomFunctions(authServiceMock);
+    addCustomFunctions(authServiceMock, datePipe);
   });
 
   it('registers all expected functions', () => {
@@ -62,6 +68,7 @@ describe('addCustomFunctions', () => {
       'length',
       'parse',
       'now',
+      'formatDate',
     ];
     expected.forEach((name) => {
       expect(FunctionFactory.Instance.hasFunction(name)).toBe(true);
@@ -69,7 +76,7 @@ describe('addCustomFunctions', () => {
   });
 
   it('re-registering replaces existing functions without throwing', () => {
-    expect(() => addCustomFunctions(authServiceMock)).not.toThrow();
+    expect(() => addCustomFunctions(authServiceMock, datePipe)).not.toThrow();
   });
 
   describe('createdAt', () => {
@@ -263,6 +270,42 @@ describe('addCustomFunctions', () => {
       expect(result).toMatch(/T.*Z$/);
       expect(parsed).toBeGreaterThanOrEqual(before);
       expect(parsed).toBeLessThanOrEqual(after);
+    });
+  });
+
+  describe('formatDate', () => {
+    it('formats dates using Angular DatePipe and UTC by default', () => {
+      expect(
+        runFn('formatDate', [
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm',
+        ])
+      ).toBe('27/11/2024 04:00');
+    });
+
+    it('supports an explicit timezone', () => {
+      expect(
+        runFn('formatDate', [
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm',
+          '-0500',
+        ])
+      ).toBe('26/11/2024 23:00');
+    });
+
+    it('formats Date objects for UTC audit timestamps', () => {
+      expect(
+        runFn('formatDate', [
+          new Date(Date.UTC(2024, 10, 26, 12, 34, 56)),
+          'yyyy-MM-dd HH:mm:ss',
+          'UTC',
+        ])
+      ).toBe('2024-11-26 12:34:56');
+    });
+
+    it('returns an empty string for invalid or missing dates', () => {
+      expect(runFn('formatDate', ['not a date', 'dd/MM/yyyy'])).toBe('');
+      expect(runFn('formatDate', [null, 'dd/MM/yyyy'])).toBe('');
     });
   });
 

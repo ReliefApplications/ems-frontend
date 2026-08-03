@@ -37,6 +37,7 @@ import {
   ConfirmDialogData,
   ConfirmService,
 } from '../../services/confirm/confirm.service';
+import { DatePipe } from '../../pipes/date/date.pipe';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
@@ -144,6 +145,7 @@ export class FormModalComponent
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
    * @param autoTranslateService Auto-translate text using Azure Translator
+   * @param datePipe Shared date pipe
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -157,7 +159,8 @@ export class FormModalComponent
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
     protected ngZone: NgZone,
-    private autoTranslateService: AutoTranslateService
+    private autoTranslateService: AutoTranslateService,
+    private datePipe: DatePipe
   ) {
     super();
   }
@@ -340,7 +343,7 @@ export class FormModalComponent
             this.survey.setValue(question, cleanedData[question]);
           });
         }
-        addCustomFunctions(this.authService);
+        addCustomFunctions(this.authService, this.datePipe);
         this.survey.showCompletedPage = false;
         this.form?.fields?.forEach((field) => {
           if (field.readOnly && this.survey.getQuestionByName(field.name))

@@ -26,6 +26,7 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
+import { DatePipe } from '../../pipes/date/date.pipe';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -112,6 +113,7 @@ export class FormComponent
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
    * @param autoTranslateService Auto-translate text using Azure Translator
+   * @param datePipe Shared date pipe
    */
   constructor(
     public dialog: Dialog,
@@ -122,14 +124,15 @@ export class FormComponent
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
     private translate: TranslateService,
-    private autoTranslateService: AutoTranslateService
+    private autoTranslateService: AutoTranslateService,
+    private datePipe: DatePipe
   ) {
     super();
   }
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService);
+    addCustomFunctions(this.authService, this.datePipe);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
