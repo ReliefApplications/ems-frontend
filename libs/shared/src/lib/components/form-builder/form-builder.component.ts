@@ -323,6 +323,13 @@ export class FormBuilderComponent
       this.formChange.emit(this.cleanStructure(survey.text));
     });
 
+    // SurveyJS only rebuilds the description CSS after the question is reloaded.
+    this.surveyCreator.onSurveyPropertyValueChanged.add((_, options) => {
+      if (options.propertyName === 'description') {
+        options.obj.updateElementCss(true);
+      }
+    });
+
     // Always show the per-field "Settings" gear adorner.
     // By default SurveyJS only shows it when the property-grid sidebar is
     // collapsed (flyout mode), which depends on the creator panel width. On
