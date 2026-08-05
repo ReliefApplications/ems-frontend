@@ -23,6 +23,24 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Subject, takeUntil } from 'rxjs';
 
+/** Actions that can be run by a grid quick action button. */
+export const GRID_ACTION_EXECUTION_ORDER = [
+  'selectAll',
+  'selectPage',
+  'autoSave',
+  'attachToRecord',
+  'prefillForm',
+  'modifySelectedRows',
+  'notify',
+  'publish',
+  'sendMail',
+  'goToNextStep',
+  'goToPreviousStep',
+  'closeWorkflow',
+] as const;
+
+export type GridActionExecution = (typeof GRID_ACTION_EXECUTION_ORDER)[number];
+
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
 
@@ -143,6 +161,10 @@ export class GridSettingsFormFactory {
       navigateToPage: [
         value && value.navigateToPage ? value.navigateToPage : false,
       ],
+      actionOrder: [
+        this.getActionOrder(value?.actionOrder),
+        Validators.required,
+      ],
     });
     // Avoid goToNextStep & goToPreviousStep to coexist
     if (formGroup.get('goToNextStep')?.value) {
@@ -162,6 +184,34 @@ export class GridSettingsFormFactory {
     });
     return formGroup;
   };
+
+  /**
+   * Normalizes persisted action ordering, retaining a deterministic position
+   * for actions added after an existing widget was configured.
+   *
+   * @param value persisted action ordering
+   * @returns complete action ordering
+   */
+  private getActionOrder(value: unknown): GridActionExecution[] {
+    const persistedOrder: GridActionExecution[] = [];
+    if (Array.isArray(value)) {
+      for (const action of value) {
+        if (
+          GRID_ACTION_EXECUTION_ORDER.includes(action as GridActionExecution) &&
+          !persistedOrder.includes(action as GridActionExecution)
+        ) {
+          persistedOrder.push(action as GridActionExecution);
+        }
+      }
+    }
+
+    return [
+      ...persistedOrder,
+      ...GRID_ACTION_EXECUTION_ORDER.filter(
+        (action) => !persistedOrder.includes(action)
+      ),
+    ];
+  }
 
   /**
    * Create a grid widget form group.

@@ -50,6 +50,9 @@ import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/referen
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { clone } from 'lodash';
 
+type EmailTemplate = { id: string };
+type EmailDistributionList = { id: string };
+
 /** Component for the grid widget */
 @Component({
   selector: 'shared-grid-widget',
@@ -331,6 +334,66 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param options action options.
    */
   public async onGridAction(options: any): Promise<void> {
+    const actionKeys = [
+      'selectAll',
+      'selectPage',
+      'autoSave',
+      'attachToRecord',
+      'prefillForm',
+      'modifySelectedRows',
+      'notify',
+      'publish',
+      'sendMail',
+      'goToNextStep',
+      'goToPreviousStep',
+      'closeWorkflow',
+    ];
+    const actionOrder: string[] = Array.isArray(options.actionOrder)
+      ? Array.from(new Set(options.actionOrder)).filter(
+          (action: unknown): action is string =>
+            typeof action === 'string' &&
+            actionKeys.includes(action) &&
+            Boolean(options[action])
+        )
+      : [];
+
+    // Keep the previous fixed execution order for quick actions saved before
+    // action ordering was introduced.
+    if (actionOrder.length === 0) {
+      await this.executeGridAction(options);
+      return;
+    }
+
+    for (const action of actionOrder) {
+      const actionOptions = { ...options };
+      for (const actionKey of actionKeys) {
+        actionOptions[actionKey] = actionKey === action;
+      }
+      const shouldContinue = await this.executeGridAction(actionOptions, false);
+      if (!shouldContinue) return;
+    }
+
+    const hasWorkflowAction = actionOrder.some((action) =>
+      ['goToNextStep', 'goToPreviousStep', 'closeWorkflow'].includes(action)
+    );
+    if (!hasWorkflowAction) {
+      this.grid.selectedRows = [];
+      this.grid.reloadData();
+      this.dashboardService.triggerReloadWidgets();
+    }
+  }
+
+  /**
+   * Executes one quick action step.
+   *
+   * @param options action configuration
+   * @param shouldRefresh whether to refresh the grid after the action
+   * @returns whether the next action should run
+   */
+  private async executeGridAction(
+    options: any,
+    shouldRefresh = true
+  ): Promise<boolean> {
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -368,7 +431,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           }
         );
         // Close the action if error detected during auto save
-        return;
+        return false;
       }
     }
     // Attaches the records to another one.
@@ -383,7 +446,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         // Close the action
         this.grid.reloadData();
         this.dashboardService.triggerReloadWidgets();
-        return;
+        return false;
       }
     }
     // Opens a form with selected records.
@@ -431,7 +494,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         // Close the action
         this.grid.reloadData();
         this.dashboardService.triggerReloadWidgets();
-        return;
+        return false;
       }
     }
     // Auto modify the selected rows
@@ -480,80 +543,65 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     // Send email using backend mail service.
     if (options.sendMail) {
       const selectedIds = clone(this.grid.selectedRows);
-      this.emailService.getCustomTemplates().subscribe({
-        next: ({ data }) => {
-          const allTemplateData = data.customTemplates.edges.map(
-            (x: any) => x.node
-          );
-          const templates = allTemplateData.filter((template: any) =>
-            options.templates?.includes(template.id)
-          );
-          if (templates.length === 0) {
-            // no template found, skip
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.email.errors.noTemplate'
-              ),
-              { error: true }
+      const { data: templateData } = await firstValueFrom(
+        this.emailService.getCustomTemplates()
+      );
+      const templates: EmailTemplate[] = templateData.customTemplates.edges
+        .map((edge: { node: EmailTemplate }) => edge.node)
+        .filter((template: EmailTemplate) =>
+          options.templates?.includes(template.id)
+        );
+      if (templates.length === 0) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'common.notifications.email.errors.noTemplate'
+          ),
+          { error: true }
+        );
+      } else {
+        const { data: distributionListData } = await firstValueFrom(
+          this.emailService.getEmailDistributionList()
+        );
+        const distributionList: EmailDistributionList | undefined =
+          distributionListData.emailDistributionLists.edges
+            .map((edge: { node: EmailDistributionList }) => edge.node)
+            .find(
+              (list: EmailDistributionList) =>
+                options.distributionList === list.id
             );
-          } else {
-            this.emailService.getEmailDistributionList().subscribe({
-              next: async ({ data }) => {
-                const allDistributionLists =
-                  data.emailDistributionLists.edges.map((x: any) => x.node);
-
-                const distributionList = allDistributionLists.filter(
-                  (dl: any) => options.distributionList === dl.id
-                )[0];
-
-                // Open email template selection
-                const { EmailTemplateModalComponent } = await import(
-                  '../../email-template-modal/email-template-modal.component'
-                );
-                const dialogRef = this.dialog.open(
-                  EmailTemplateModalComponent,
-                  {
-                    data: {
-                      templates,
-                    },
-                  }
-                );
-
-                // Get template from dialog ref
-                const value = await firstValueFrom<any>(
-                  dialogRef.closed.pipe(takeUntil(this.destroy$))
-                );
-                if (value?.template) {
-                  const selectedId = value?.template;
-                  const template = templates.filter(
-                    (x: any) => x.id === selectedId
-                  )[0];
-                  if (template) {
-                    const emailQuery = this.buildEmailQuery(
-                      selectedIds,
-                      options.bodyFields
-                    );
-                    if (emailQuery) {
-                      this.emailService.previewCustomTemplate(
-                        template,
-                        distributionList,
-                        options.navigateToPage &&
-                          this.widget.settings.actions.navigateToPage
-                          ? this.widget.settings.actions.navigateSettings
-                          : undefined,
-                        emailQuery
-                      );
-                      this.status = {
-                        error: false,
-                      };
-                    }
-                  }
-                }
-              },
-            });
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: { templates },
+        });
+        const value = await firstValueFrom(
+          dialogRef.closed.pipe(takeUntil(this.destroy$))
+        );
+        if (
+          typeof value === 'object' &&
+          value !== null &&
+          'template' in value &&
+          typeof value.template === 'string'
+        ) {
+          const template = templates.find((item) => item.id === value.template);
+          const emailQuery = template
+            ? this.buildEmailQuery(selectedIds, options.bodyFields)
+            : null;
+          if (emailQuery) {
+            this.emailService.previewCustomTemplate(
+              template,
+              distributionList,
+              options.navigateToPage &&
+                this.widget.settings.actions.navigateToPage
+                ? this.widget.settings.actions.navigateSettings
+                : undefined,
+              emailQuery
+            );
+            this.status = { error: false };
           }
-        },
-      });
+        }
+      }
     }
 
     // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
@@ -585,11 +633,12 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             }
           });
       }
-    } else {
+    } else if (shouldRefresh) {
       this.grid.selectedRows = [];
       this.grid.reloadData();
       this.dashboardService.triggerReloadWidgets();
     }
+    return true;
   }
 
   /**
