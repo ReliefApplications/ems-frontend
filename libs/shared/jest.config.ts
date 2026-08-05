@@ -42,6 +42,7 @@ export default {
     '<rootDir>/src/lib/components/widgets/common/tab-actions/*.spec.ts',
     '<rootDir>/src/lib/components/widgets/common/tab-actions/read-only-fields-modal/*.spec.ts',
     '<rootDir>/src/lib/models/*.spec.ts',
+    '<rootDir>/src/lib/services/auth/*.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/utils/filter/*.spec.ts',
