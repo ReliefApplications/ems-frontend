@@ -1,53 +1,78 @@
 <form [formGroup]="form">
-  <div class="flex gap-2" formGroupName="sort">
-    <div uiFormFieldDirective class="w-44">
-      <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
-      <ui-select-menu formControlName="field" [filterable]="true">
-        <ng-container *ngFor="let field of fields">
-          <ui-select-option
-            *ngIf="field.type.kind === 'SCALAR'"
-            [value]="field.name"
-          >
-            {{ field.name }}
-          </ui-select-option>
-          <ng-container *ngIf="field.type.kind !== 'SCALAR'">
+  <div
+    formArrayName="sort"
+    class="flex flex-col gap-2 w-fit"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      *ngFor="let row of sortRows.controls; let i = index"
+      [formGroupName]="i"
+      cdkDrag
+      class="flex gap-2 items-end"
+    >
+      <ui-icon
+        *ngIf="sortRows.length > 1"
+        cdkDragHandle
+        icon="drag_indicator"
+        class="cursor-move mb-6 mt-auto icon-grey"
+      ></ui-icon>
+      <div uiFormFieldDirective class="w-44">
+        <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
+        <ui-select-menu formControlName="field" [filterable]="true">
+          <ng-container *ngFor="let field of fields">
             <ui-select-option
-              *ngIf="field.type.kind !== 'SCALAR' && field.fields"
-              [isGroup]="true"
+              *ngIf="field.type.kind === 'SCALAR'"
+              [value]="field.name"
             >
               {{ field.name }}
-              <ui-select-option
-                *ngFor="let subField of field.fields"
-                [value]="field.name + '.' + subField.name"
-              >
-                {{ subField.name }}
-              </ui-select-option>
             </ui-select-option>
+            <ng-container *ngIf="field.type.kind !== 'SCALAR'">
+              <ui-select-option
+                *ngIf="field.type.kind !== 'SCALAR' && field.fields"
+                [isGroup]="true"
+              >
+                {{ field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="field.name + '.' + subField.name"
+                >
+                  {{ subField.name }}
+                </ui-select-option>
+              </ui-select-option>
+            </ng-container>
           </ng-container>
-        </ng-container>
-      </ui-select-menu>
+        </ui-select-menu>
+      </div>
+      <div *ngIf="row.value.field" uiFormFieldDirective class="w-44">
+        <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>
+        <ui-select-menu formControlName="order">
+          <ui-select-option value="asc">{{
+            'components.queryBuilder.sort.ascending' | translate
+          }}</ui-select-option>
+          <ui-select-option value="desc">{{
+            'components.queryBuilder.sort.descending' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
       <ui-button
-        *ngIf="form.value.sort.field"
-        uiSuffix
         [isIcon]="true"
         variant="danger"
-        icon="close"
-        [uiTooltip]="'common.remove' | translate"
-        size="small"
-        (click)="form.get('sort.field')?.setValue(null)"
+        icon="delete"
+        [uiTooltip]="'common.delete' | translate"
+        (click)="removeRow(i)"
+        class="mb-4 mt-auto"
       ></ui-button>
     </div>
-    <div *ngIf="form.value.sort.field" uiFormFieldDirective class="w-44">
-      <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>
-      <ui-select-menu formControlName="order">
-        <ui-select-option value="asc">{{
-          'components.queryBuilder.sort.ascending' | translate
-        }}</ui-select-option>
-        <ui-select-option value="desc">{{
-          'components.queryBuilder.sort.descending' | translate
-        }}</ui-select-option>
-      </ui-select-menu>
-    </div>
+  </div>
+  <div class="flex mt-2 ml-8">
+    <ui-button
+      icon="add"
+      (click)="addRow()"
+      category="tertiary"
+      variant="primary"
+      >{{ 'components.queryBuilder.sort.add' | translate }}</ui-button
+    >
   </div>
   <div uiFormFieldDirective *ngIf="showLimit">
     <label>{{ 'components.queryBuilder.sort.limit' | translate }}</label>

@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { Form } from '../../models/form.model';
-import { createFilterGroup } from './query-builder-forms';
+import { createFilterGroup, createSortRowForm } from './query-builder-forms';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -159,13 +159,7 @@ export class QueryBuilderComponent
             ? this.fb.array([], Validators.required)
             : this.fb.array([])
         );
-        this.form?.setControl(
-          'sort',
-          this.fb.group({
-            field: [''],
-            order: ['asc'],
-          })
-        );
+        this.form?.setControl('sort', this.fb.array([createSortRowForm(null)]));
       };
       this.form?.controls.name.valueChanges
         .pipe(takeUntil(this.destroy$))
