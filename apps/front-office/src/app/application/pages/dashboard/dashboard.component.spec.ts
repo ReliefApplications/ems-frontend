@@ -13,6 +13,8 @@ import {
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SkeletonModule } from '@oort-front/shared';
 
+import { Ability } from '@casl/ability';
+
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
@@ -35,6 +37,7 @@ describe('DashboardComponent', () => {
       ],
       declarations: [DashboardComponent],
       providers: [
+        Ability,
         TranslateService,
         {
           provide: 'environment',

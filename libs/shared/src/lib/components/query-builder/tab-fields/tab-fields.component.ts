@@ -35,6 +35,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
+  /** Field names that should display file-specific settings. */
+  @Input() fileFieldNames: string[] = [];
   /** Should show limit input */
   @Input() showLimit = false;
   /** Is the column width field displayed */
@@ -210,6 +212,17 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public onCloseField(): void {
     this.fieldForm = null;
     this.checkfieldsIsValid();
+  }
+
+  /** @returns true when the edited field is a file field. */
+  public get isEditedFileField(): boolean {
+    const fieldName = this.fieldForm?.get('name')?.value;
+    if (this.fileFieldNames.length > 0) {
+      return this.fileFieldNames.includes(fieldName);
+    }
+    return this.fields.some(
+      (field) => field.name === fieldName && field.meta?.type === 'file'
+    );
   }
 
   /**

@@ -68,6 +68,21 @@
               (click)="onEditFieldAccess(index, element, 'canUpdate')"
             >
             </ui-button>
+            <ui-button
+              *ngIf="element.isFileField"
+              [isIcon]="true"
+              [icon]="element.canDeleteFiles ? 'delete' : 'delete_outline'"
+              [variant]="element.canDeleteFiles ? 'primary' : 'grey'"
+              [disabled]="disabled || !element.canSee || !element.canUpdate"
+              [uiTooltip]="
+                (element.canDeleteFiles
+                  ? 'components.role.tooltip.allowFileDelete'
+                  : 'components.role.tooltip.disallowFileDelete'
+                ) | translate : { field: element.name }
+              "
+              (click)="onEditFieldAccess(index, element, 'canDeleteFiles')"
+            >
+            </ui-button>
           </div>
         </td>
       </ng-container>

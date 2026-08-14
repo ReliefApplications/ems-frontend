@@ -152,6 +152,7 @@ export class AddLayoutModalComponent
       disableClose: true,
       data: {
         queryName: this.resource?.queryName || this.form?.queryName,
+        fileFieldNames: this.getFileFieldNames(),
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {
@@ -175,5 +176,16 @@ export class AddLayoutModalComponent
           });
       }
     });
+  }
+
+  /**
+   * Gets file field names available in this layout context.
+   *
+   * @returns File field names
+   */
+  private getFileFieldNames(): string[] {
+    return (this.resource?.fields ?? this.form?.fields ?? [])
+      .filter((field: any) => field.type === 'file')
+      .map((field: any) => field.name);
   }
 }

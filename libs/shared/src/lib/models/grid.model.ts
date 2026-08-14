@@ -11,6 +11,7 @@ export interface GridField {
   meta: Meta;
   disabled: boolean;
   hidden: boolean;
+  showOutdatedFiles?: boolean;
   width: number;
   order: number;
   canSee: boolean;

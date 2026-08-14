@@ -16,6 +16,8 @@ import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { resolveLocalizedString } from '../../models/localized-string.model';
+import { File } from '../file/file.service';
+import { isFileOutdated } from '../file/file-outdated.utils';
 
 type Shape = 'circle' | 'square';
 
@@ -986,8 +988,12 @@ export class HtmlParserService {
       case 'file':
         convertedValue = '';
         if (isArray(value)) {
-          for (let i = 0; value[i]; ) {
-            const file = value[i];
+          const files = value as File[];
+          for (let i = 0; files[i]; i++) {
+            const file = files[i];
+            if (field.showOutdatedFiles === false && isFileOutdated(file)) {
+              continue;
+            }
             const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
               removeFileExtension(file.name),
@@ -998,11 +1004,16 @@ export class HtmlParserService {
                 type="file"
                 class="k-button k-button-flat k-button-flat-base"
                 field="${field.name}"
-                index="${i++}"
+                index="${i}"
                 style="padding: 4px 6px; cursor: pointer; ${style}"
                 title="${file.name}"
               >
                 <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+                ${
+                  isFileOutdated(file)
+                    ? '<span class="k-icon k-i-warning" style="color: #b45309; margin-right: 4px" title="Outdated file"></span>'
+                    : ''
+                }
                 ${fileName}
               </button>
             `

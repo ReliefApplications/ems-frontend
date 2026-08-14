@@ -131,6 +131,7 @@ export const addNewField = (field: any, newField?: boolean) => {
         ],
         width: [newField ? null : field.width],
         format: [get(field, 'format', null)],
+        showOutdatedFiles: [get(field, 'showOutdatedFiles', true)],
       });
     }
   }

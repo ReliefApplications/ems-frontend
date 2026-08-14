@@ -27,6 +27,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 interface DialogData {
   layout?: Layout;
   queryName?: string;
+  fileFieldNames?: string[];
 }
 
 /**

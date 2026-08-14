@@ -31,6 +31,16 @@ import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /** Reference to router outlet */
   @ViewChild(RouterOutlet) routerOutlet?: RouterOutlet;
+
+  /**
+   * Get active component safely from router outlet without throwing when unactivated
+   *
+   * @returns active router component instance or null
+   */
+  get activeOutletComponent(): any {
+    return this.routerOutlet?.isActivated ? this.routerOutlet.component : null;
+  }
+
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */

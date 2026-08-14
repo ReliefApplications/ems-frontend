@@ -28,12 +28,12 @@
   class="block"
 >
   <shared-dashboard-export-button
-    *ngIf="$any(routerOutlet?.component)?.dashboard"
+    *ngIf="$any(activeOutletComponent)?.dashboard"
     [title]="
-      $any(routerOutlet?.component)?.dashboard?.nameTranslations ||
-      $any(routerOutlet?.component)?.dashboard?.name
+      $any(activeOutletComponent)?.dashboard?.nameTranslations ||
+      $any(activeOutletComponent)?.dashboard?.name
     "
-    [exporter]="$any(routerOutlet?.component)?.elementRef"
+    [exporter]="$any(activeOutletComponent)?.elementRef"
     class="self-center"
   ></shared-dashboard-export-button>
 </shared-workflow-stepper>

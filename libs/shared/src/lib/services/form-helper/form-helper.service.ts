@@ -25,6 +25,7 @@ import {
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { isFileOutdated } from '../file/file-outdated.utils';
 
 /**
  * Shared survey helper service.
@@ -610,6 +611,9 @@ export class FormHelpersService {
           `<span class="k-icon ${getFileIcon(
             file.name
           )}" style="margin-right: 4px"></span>` +
+          (isFileOutdated(file)
+            ? '<span class="k-icon k-i-warning" style="color: #b45309; margin-right: 4px" title="Outdated file"></span>'
+            : '') +
           `${removeFileExtension(file.name)}</button>`
       )
       .join('');
@@ -635,12 +639,48 @@ export class FormHelpersService {
     if (!htmlQuestion || htmlQuestion.dataset['fileLinksBound'] === 'true') {
       return;
     }
+    this.updateHtmlQuestionOutdatedFiles(
+      survey,
+      options.question,
+      htmlQuestion
+    );
     // Bind the click handler once per rendered element.
     htmlQuestion.dataset['fileLinksBound'] = 'true';
     htmlQuestion.addEventListener('click', (event) =>
       this.onFileClick(event, survey)
     );
   };
+
+  /**
+   * Applies the HTML-question setting that hides outdated file placeholders.
+   *
+   * @param survey Current survey
+   * @param question HTML question
+   * @param htmlQuestion Rendered HTML question element
+   */
+  private updateHtmlQuestionOutdatedFiles(
+    survey: SurveyModel,
+    question: Question,
+    htmlQuestion: HTMLElement
+  ): void {
+    if (question.getPropertyValue('showOutdatedFiles') !== false) {
+      return;
+    }
+    htmlQuestion
+      .querySelectorAll<HTMLButtonElement>('button[type="file"][field][index]')
+      .forEach((button) => {
+        const fieldName = button.getAttribute('field');
+        const index = Number(button.getAttribute('index'));
+        if (!fieldName || Number.isNaN(index)) {
+          return;
+        }
+        const files = this.resolveValue(survey, fieldName);
+        const file = Array.isArray(files) ? files[index] : null;
+        if (this.isFile(file) && isFileOutdated(file)) {
+          button.remove();
+        }
+      });
+  }
 
   /**
    * Handle click event on a rendered HTML question.
