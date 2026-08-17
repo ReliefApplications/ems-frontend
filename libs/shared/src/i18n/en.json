@@ -2151,6 +2151,12 @@
               "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
             }
           },
+          "drafts": {
+            "all": "Show all users' drafts",
+            "allTooltip": "When enabled, the grid includes drafts created by all users. Otherwise users only see their own drafts.",
+            "records": "Show draft records",
+            "recordsTooltip": "Display draft records instead of submitted records"
+          },
           "hint": {
             "actions": {
               "add": "If authorized, user can add new records using selected template",

@@ -6,6 +6,7 @@ import { SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { Record as RecordModel } from '../../models/record.model';
 
 /**
  * Shared button to open list of available record drafts.
@@ -22,6 +23,8 @@ export class DraftRecordComponent extends UnsubscribeComponent {
   @Input() survey!: SurveyModel;
   /** Form input */
   @Input() formId!: string;
+  /** Optional hook before opening drafts list. Return false to cancel. */
+  @Input() beforeOpenDrafts?: () => Promise<boolean> | boolean;
   /** Emit event when selecting draft */
   @Output() loadDraft: EventEmitter<string> = new EventEmitter();
 
@@ -38,6 +41,10 @@ export class DraftRecordComponent extends UnsubscribeComponent {
    * Open draft list.
    */
   public async onOpenDrafts(): Promise<void> {
+    const beforeOpenDrafts = await this.beforeOpenDrafts?.();
+    if (beforeOpenDrafts === false) {
+      return;
+    }
     // Lazy load modal
     const { DraftRecordListModalComponent } = await import(
       '../draft-record-list-modal/draft-record-list-modal.component'
@@ -47,11 +54,14 @@ export class DraftRecordComponent extends UnsubscribeComponent {
         form: this.formId,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.survey.data = value.data;
-        this.loadDraft.emit(value.id);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: unknown) => {
+        const record = value as RecordModel | undefined;
+        if (record?.id) {
+          this.survey.data = record.data;
+          this.loadDraft.emit(record.id);
+        }
+      });
   }
 }

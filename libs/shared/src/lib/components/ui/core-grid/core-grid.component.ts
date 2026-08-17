@@ -63,6 +63,12 @@ import { resolveLocalizedString } from '../../../models/localized-string.model';
  */
 const DEFAULT_FILE_NAME = 'Records';
 
+/** Draft visibility variables accepted by record queries. */
+interface RecordVisibilityVariables {
+  draft?: boolean;
+  allDrafts?: boolean;
+}
+
 /**
  * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
  *
@@ -223,6 +229,22 @@ export class CoreGridComponent
   /** @returns grid styling rules */
   get style(): any {
     return this.settings.query?.style || null;
+  }
+
+  /** @returns Draft visibility variables for generated record queries. */
+  public get recordVisibilityVariables(): RecordVisibilityVariables {
+    if (!this.isDraftGrid) {
+      return {};
+    }
+    return {
+      draft: true,
+      allDrafts: get(this.settings, 'allDrafts', false),
+    };
+  }
+
+  /** @returns True when this grid displays draft records instead of submitted records. */
+  private get isDraftGrid(): boolean {
+    return get(this.settings, 'draft', false);
   }
 
   // === FILTERING ===
@@ -501,6 +523,7 @@ export class CoreGridComponent
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
+            ...this.recordVisibilityVariables,
           },
           fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
@@ -674,6 +697,7 @@ export class CoreGridComponent
                       variables: {
                         id: item.id,
                         data: editedData,
+                        ...this.recordVisibilityVariables,
                       },
                     })
                     .pipe(takeUntil(this.destroy$))
@@ -1234,6 +1258,7 @@ export class CoreGridComponent
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
           parentComponent: this,
+          ...this.recordVisibilityVariables,
         },
         autoFocus: false,
       });
@@ -1262,6 +1287,7 @@ export class CoreGridComponent
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         template: this.settings.template || null,
+        ...this.recordVisibilityVariables,
       },
       autoFocus: false,
     });
@@ -1318,6 +1344,7 @@ export class CoreGridComponent
             mutation: DELETE_RECORDS,
             variables: {
               ids,
+              hardDelete: this.isDraftGrid,
             },
           })
           .pipe(takeUntil(this.destroy$))
@@ -1516,6 +1543,7 @@ export class CoreGridComponent
       fileName: this.fileName,
       email: e.email,
       resource: this.settings.resource,
+      ...this.recordVisibilityVariables,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1583,6 +1611,7 @@ export class CoreGridComponent
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
         styles: this.style,
+        ...this.recordVisibilityVariables,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
         }),

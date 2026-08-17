@@ -47,6 +47,44 @@
         ></ui-icon>
       </div>
     </div>
+    <div *ngIf="resource" class="flex flex-col mt-4">
+      <ui-checkbox formControlName="draft">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.drafts.records' | translate
+        }}</ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.drafts.recordsTooltip'
+                | translate
+            "
+            class="self-center ml-1 cursor-help"
+          ></ui-icon>
+        </ng-container>
+      </ui-checkbox>
+      <ui-checkbox
+        formControlName="allDrafts"
+        [disabled]="!formGroup.get('draft')?.value"
+      >
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.drafts.all' | translate
+        }}</ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.drafts.allTooltip' | translate
+            "
+            class="self-center ml-1 cursor-help"
+          ></ui-icon>
+        </ng-container>
+      </ui-checkbox>
+    </div>
   </ng-container>
 </div>
 

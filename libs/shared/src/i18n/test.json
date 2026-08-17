@@ -2151,6 +2151,12 @@
               "publish": "******"
             }
           },
+          "drafts": {
+            "all": "******",
+            "allTooltip": "******",
+            "records": "******",
+            "recordsTooltip": "******"
+          },
           "hint": {
             "actions": {
               "add": "******",
