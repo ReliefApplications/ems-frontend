@@ -306,6 +306,8 @@
           "noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
           "noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
           "noFields": "Type de document et informationsLa confidentialité est requise pour continuer !",
+          "noRecipient": "Au moins un destinataire est requis pour continuer !",
+          "noRecipientSeparateEmail": "Au moins un destinataire est requis pour continuer ! Assurez-vous que les champs utilisés pour l'envoi d'e-mails séparés contiennent au moins un champ avec des adresses e-mail valides.",
           "noSubject": "Le sujet doit continuer!",
           "noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
           "preview": "Erreur lors de la génération de l'e-mail"
@@ -2145,6 +2147,7 @@
               "selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
               "selectDisplay": "Sélectionner les champs affichés",
               "sendMail": "Envoyer le mail",
+              "separateEmailRecipientRequired": "Ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, sinon les e-mails séparés n'ont aucun destinataire. Une liste de distribution peut également être ajoutée, mais ne remplace pas le champ par ligne.",
               "workflow": {
                 "close": "Fermer le workflow",
                 "confirm": "Message de confirmation",

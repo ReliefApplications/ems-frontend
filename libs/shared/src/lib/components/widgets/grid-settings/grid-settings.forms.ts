@@ -125,10 +125,7 @@ export class GridSettingsFormFactory {
         value && value.publish ? Validators.required : null,
       ],
       sendMail: [value && value.sendMail ? value.sendMail : false],
-      distributionList: [
-        get(value, 'distributionList', null),
-        value && value.sendMail ? Validators.required : null,
-      ],
+      distributionList: [get(value, 'distributionList', null)],
       templates: [
         get(value, 'templates', []),
         value && value.sendMail ? Validators.required : null,
@@ -140,10 +137,19 @@ export class GridSettingsFormFactory {
           : [],
         value && value.sendMail ? Validators.required : null
       ),
+      sendSeparateEmail: [get(value, 'sendSeparateEmail', false)],
+      separateEmailFields: this.fb.array(
+        (get(value, 'separateEmailFields', []) as any[]).map((x: any) =>
+          addNewField(x)
+        )
+      ),
       navigateToPage: [
         value && value.navigateToPage ? value.navigateToPage : false,
       ],
     });
+    // Require a separate-email grid action to have at least one per-row field.
+    formGroup.addValidators(this.sendSeparateEmailRecipientValidator);
+    formGroup.updateValueAndValidity();
     // Avoid goToNextStep & goToPreviousStep to coexist
     if (formGroup.get('goToNextStep')?.value) {
       formGroup.get('goToPreviousStep')?.setValue(false);
@@ -161,6 +167,29 @@ export class GridSettingsFormFactory {
       }
     });
     return formGroup;
+  };
+
+  /**
+   * Send-separate-email requires at least one separate-email field (the per-row
+   * recipient source). The distribution list is optional and does not replace it.
+   *
+   * @param group grid action form group
+   * @returns validation errors
+   */
+  sendSeparateEmailRecipientValidator = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    const sendMail = group.get('sendMail')?.value;
+    const sendSeparateEmail = group.get('sendSeparateEmail')?.value;
+    if (!sendMail || !sendSeparateEmail) {
+      return null;
+    }
+    const separateEmailFields = group.get('separateEmailFields') as FormArray;
+    const hasSeparateEmailFields = (separateEmailFields?.length ?? 0) > 0;
+    if (!hasSeparateEmailFields) {
+      return { missingRecipientSource: true };
+    }
+    return null;
   };
 
   /**

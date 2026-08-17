@@ -100,6 +100,8 @@ export class LayoutComponent
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   /** Block field select values */
   blockFieldSelect: string[] = [];
+  /** Drives the To-field inline error; set explicitly after API resolves to ensure false→true transition */
+  showRecipientError = false;
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -161,7 +163,6 @@ export class LayoutComponent
   ngOnInit(): void {
     if (this.emailService.isGridAction) {
       this.emailService.resetPreviewData();
-      this.emailService.sendSeparateBlocks = [];
       if (
         !this.emailService.isCustomTemplateEdit &&
         !this.emailService.isNewCustomTemplate
@@ -291,6 +292,8 @@ export class LayoutComponent
    */
   async loadDistributionList() {
     this.emailService.loading = true;
+    this.emailService.distributionListSeparate = [];
+    this.showRecipientError = false;
     const query = this.emailService.datasetsForm?.getRawValue();
     query.datasets = this.emailService.datasetsForm
       ?.get('datasets')
@@ -308,6 +311,23 @@ export class LayoutComponent
         this.emailService.quickEmailDistributionListQuery.cc;
       query.emailDistributionList.bcc =
         this.emailService.quickEmailDistributionListQuery.bcc;
+
+      if (
+        this.emailService.gridActionSendSeparateEmail &&
+        this.emailService.allPreviewData?.[0]?.dataQuery?.queryName
+      ) {
+        if (query.datasets?.length > 0) {
+          const previewData = this.emailService.allPreviewData[0];
+          query.datasets[0].name = 'Block 1';
+          query.datasets[0].individualEmail = true;
+          query.datasets[0].individualEmailFields =
+            previewData.separateEmailFields ?? [];
+          query.datasets[0].query.name = previewData.dataQuery.queryName ?? '';
+          query.datasets[0].query.filter = previewData.dataQuery.filter;
+          query.datasets[0].query.fields = previewData.dataQuery.fields ?? [];
+          query.datasets[0].resource = previewData.dataQuery.resource ?? '';
+        }
+      }
     }
     //Start:- When We are checking from Grid Action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
@@ -345,6 +365,16 @@ export class LayoutComponent
         cc: this.emailService.emailDistributionList?.cc || [],
         bcc: this.emailService.emailDistributionList?.bcc || [],
       };
+    }
+
+    if (response?.individualEmailList?.length > 0) {
+      this.emailService.distributionListSeparate = response.individualEmailList;
+      this.emailService.distributionListSeparate.forEach((block: any) => {
+        block.isExpanded = false; // client-side UI flag for >6 emails
+        block.emails = Array.from(new Set(block.emails));
+      });
+    } else {
+      this.emailService.distributionListSeparate = [];
     }
     this.populateDLForm();
     this.emailService.loading = false;
@@ -410,17 +440,39 @@ export class LayoutComponent
    * Block Data for Body
    */
   getBlockData() {
-    if (
+    const hasFieldsInForm =
       this.emailService.datasetsForm.get('datasets')?.value?.[0]?.query?.fields
-        ?.length > 0
-    ) {
+        ?.length > 0;
+    const hasFieldsInGridAction =
+      this.emailService.isGridAction &&
+      this.emailService.gridActionDataQuery?.fields?.length > 0;
+
+    if (hasFieldsInForm || hasFieldsInGridAction) {
       this.blockData =
         this.emailService.previewData?.datasets ??
         this.emailService.getAllPreviewData();
 
       this.blockFieldSelect = this.emailService.sendSeparateBlocks.flatMap(
-        (block: any) =>
-          this.firstBlockFields.map((field: string) => `${block} - ${field}`)
+        (blockName: string) => {
+          let fields: string[];
+          if (this.emailService.isGridAction) {
+            // single 'Block 1', already appendFields-flattened in initialiseFieldSelectDropdown
+            fields = this.firstBlockFields;
+          } else {
+            // Source each send-separate-email block's OWN dataset fields (flattened via
+            // appendFields so nested tokens survive) instead of always using the first block's fields.
+            const dataset = (
+              this.emailService.datasetsForm?.get('datasets')?.getRawValue() ??
+              []
+            ).find((d: any) => d.name === blockName);
+            const acc: string[] = [];
+            (dataset?.query?.fields ?? []).forEach((f: any) =>
+              this.emailService.appendFields(f, f.name, acc)
+            );
+            fields = acc;
+          }
+          return fields.map((field: string) => `${blockName} - ${field}`);
+        }
       );
     } else {
       this.blockData = [];
@@ -488,7 +540,17 @@ export class LayoutComponent
     } else {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
-      this.emailService.disableNextActionBtn = false;
+      // In grid-action mode the recipient validator is the authority for the
+      // Next button once the layout is valid; blanket-enabling here would stomp
+      // the send-separate-email / To recipient gate (last-writer-wins on disableNextActionBtn).
+      // Only applies when the To-field UI actually exists (isPreviewTemplate) --
+      // otherwise (e.g. the "create new template" wizard) there's no way to
+      // ever satisfy the recipient check and Next would stay disabled forever.
+      if (this.emailService.isGridAction && this.isPreviewTemplate) {
+        this.validateQuickActionToEmails();
+      } else {
+        this.emailService.disableNextActionBtn = false;
+      }
     }
   }
 
@@ -610,6 +672,19 @@ export class LayoutComponent
    * Initializes the field select dropdown.
    */
   initialiseFieldSelectDropdown(): void {
+    if (
+      this.emailService.isGridAction &&
+      this.emailService.gridActionSendSeparateEmail
+    ) {
+      const fields: string[] = [];
+      (this.emailService.gridActionDataQuery?.fields ?? []).forEach(
+        (field: any) =>
+          this.emailService.appendFields(field, field.name, fields)
+      );
+      this.firstBlockFields = fields;
+      return;
+    }
+
     const firstBlock = this.emailService.getAllPreviewData()[0];
     if (
       firstBlock?.datasetFields?.length > 0 ||
@@ -1133,9 +1208,24 @@ export class LayoutComponent
    * Validate Grid Action To emails
    */
   validateQuickActionToEmails() {
-    if (this.emailService.isGridAction) {
-      this.emailService.disableNextActionBtn =
-        this.layoutForm?.getRawValue()?.to?.length === 0 ? true : false;
+    // Layout validity must keep gating Next even when this recipient-aware
+    // check runs last (on load via loadDistributionList, or on a To-field
+    // change), so the two writers of disableNextActionBtn agree.
+    const layoutInvalid = this.showSubjectValidator || this.showBodyValidator;
+    const toEmpty = (this.layoutForm?.getRawValue()?.to?.length ?? 0) === 0;
+    if (
+      this.emailService.isGridAction &&
+      !this.emailService.gridActionSendSeparateEmail
+    ) {
+      this.emailService.disableNextActionBtn = toEmpty || layoutInvalid;
+      this.showRecipientError = toEmpty;
+    } else if (
+      this.emailService.isGridAction &&
+      this.emailService.gridActionSendSeparateEmail
+    ) {
+      const missing = toEmpty && !this.emailService.hasSeparateEmailRecipients;
+      this.emailService.disableNextActionBtn = missing || layoutInvalid;
+      this.showRecipientError = missing;
     }
   }
 }

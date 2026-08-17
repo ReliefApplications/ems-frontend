@@ -375,12 +375,16 @@ export class EmailService {
    * @param distributionListInfo Distribution list
    * @param navigateSettings Navigate settings, optional
    * @param dataQuery Query email function will use to fetch data
+   * @param sendSeparateEmail Whether to send a separate email per record
+   * @param separateEmailFields Fields used to extract per-record recipient addresses
    */
   async previewCustomTemplate(
     emailContent: any,
     distributionListInfo: any,
     navigateSettings: any,
-    dataQuery?: any
+    dataQuery?: any,
+    sendSeparateEmail?: boolean,
+    separateEmailFields?: any[]
   ) {
     const { PreviewTemplateModalComponent } = await import(
       '../../components/templates/components/preview-template-modal/preview-template-modal.component'
@@ -391,6 +395,8 @@ export class EmailService {
         distributionListInfo,
         navigateSettings,
         dataQuery,
+        sendSeparateEmail,
+        separateEmailFields,
       },
       autoFocus: false,
       disableClose: true,

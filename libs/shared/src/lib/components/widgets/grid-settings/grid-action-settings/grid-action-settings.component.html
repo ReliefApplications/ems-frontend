@@ -314,6 +314,32 @@
         }}</ng-container>
       </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
+        <!-- Export dataset -->
+        <ui-checkbox formControlName="export">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.export'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+
+        <!-- Send Separate Email -->
+        <ui-checkbox formControlName="sendSeparateEmail">
+          <ng-container ngProjectAs="label">{{
+            'components.select.distribution.separateEmail' | translate
+          }}</ng-container>
+        </ui-checkbox>
+
+        <!-- Include navigate To Page -->
+        <ui-checkbox
+          formControlName="navigateToPage"
+          *ngIf="widgetFormGroup.value.actions.navigateToPage"
+        >
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.navigateToPage'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+
         <!-- Distribution list -->
         <div uiFormFieldDirective>
           <label>{{
@@ -395,24 +421,7 @@
           >
           </ui-button>
         </div>
-        <!-- Export dataset -->
-        <ui-checkbox formControlName="export">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.export'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
 
-        <!-- Include navigate To Page -->
-        <ui-checkbox
-          formControlName="navigateToPage"
-          *ngIf="widgetFormGroup.value.actions.navigateToPage"
-        >
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.navigateToPage'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <shared-tab-fields
@@ -422,6 +431,30 @@
           [showLimit]="true"
           [showColumnWidth]="true"
         ></shared-tab-fields>
+
+        <!-- Separate email fields -->
+        <ng-container *ngIf="formGroup.value.sendSeparateEmail">
+          <h2>{{
+            'components.queryBuilder.sendSeparate.title' | translate
+          }}</h2>
+          <shared-tab-fields
+            *ngIf="fields.length > 0"
+            [form]="separateEmailFieldsArray"
+            [fields]="fields"
+            [showLimit]="false"
+            [showColumnWidth]="false"
+          ></shared-tab-fields>
+          <ui-alert
+            *ngIf="formGroup.errors?.missingRecipientSource"
+            variant="danger"
+            class="mt-2"
+          >
+            {{
+              'components.widget.settings.grid.buttons.callback.separateEmailRecipientRequired'
+                | translate
+            }}
+          </ui-alert>
+        </ng-container>
       </div>
 
       <!-- Workflow actions -->

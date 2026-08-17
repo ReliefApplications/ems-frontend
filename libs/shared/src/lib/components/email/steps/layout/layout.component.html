@@ -8,15 +8,29 @@
   <div>
     <div
       *ngIf="isPreviewTemplate"
-      [uiErrorMessage]="emailsError | translate"
+      [uiErrorMessage]="
+        showRecipientError
+          ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSeparateEmailRecipients
+              ? 'common.notifications.email.errors.noRecipientSeparateEmail'
+              : 'common.notifications.email.errors.noRecipient') | translate)
+          : (emailsError | translate)
+      "
       [uiErrorMessageIf]="
-        layoutForm.get('to')?.errors && layoutForm.get('to')?.touched
+        (layoutForm.get('to')?.errors && layoutForm.get('to')?.touched) ||
+        showRecipientError
       "
       uiFormFieldDirective
     >
-      <label class="block text-sm font-medium leading-6 text-gray-900"
-        >{{ 'components.email.distributionList.to' | translate }}*</label
-      >
+      <label class="block text-sm font-medium leading-6 text-gray-900">
+        {{ 'components.email.distributionList.to' | translate
+        }}<ng-container
+          *ngIf="
+            !emailService.gridActionSendSeparateEmail ||
+            !emailService.hasSeparateEmailRecipients
+          "
+          >*</ng-container
+        >
+      </label>
       <div uiChipList #chipList formControlName="to">
         <ui-chip
           *ngFor="let to of layoutForm.get('to')?.value"
@@ -94,6 +108,37 @@
         (focusout)="addEmail('bcc', $event)"
         (chipTokenEnd)="addEmail('bcc', $event)"
       />
+    </div>
+
+    <!-- Emails from Send Separate Email Preview (read-only) -->
+    <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSeparateEmailRecipients">
+      <h1>
+        {{ 'components.select.distribution.sendseparate.list' | translate }}
+      </h1>
+      <ng-container *ngFor="let block of emailService.distributionListSeparate">
+        <div uiChipList>
+          <ng-container *ngFor="let email of block.emails; let j = index">
+            <ui-chip
+              *ngIf="j < 6 || block.isExpanded"
+              variant="primary"
+              class="w-full flex-row flex-wrap justify-between mr-1"
+              >{{ email }}</ui-chip
+            >
+          </ng-container>
+        </div>
+        <ui-button
+          *ngIf="block.emails.length > 6 && !block.isExpanded"
+          class="inline-block mt-2"
+          (click)="block.isExpanded = true"
+          >{{ 'components.email.preview.more' | translate : { length: block.emails.length - 6 } }}</ui-button
+        >
+        <ui-button
+          *ngIf="block.isExpanded"
+          class="inline-block mt-2"
+          (click)="block.isExpanded = false"
+          >{{ 'components.email.preview.less' | translate }}</ui-button
+        >
+      </ng-container>
     </div>
 
     <!-- Dropdowns and Subject Input -->
@@ -434,7 +479,7 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="!this.emailService.isGridAction"
+          *ngIf="blockFieldSelect.length > 0"
         >
           <label
             for="fieldSelect"

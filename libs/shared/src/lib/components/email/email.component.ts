@@ -147,6 +147,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   ngOnInit(): void {
     this.emailService.showFileUpload = false;
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;
@@ -499,6 +500,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   ) {
     this.emailService.isDistributionListEdit = false;
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
@@ -1130,6 +1132,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * used to create new custom template
    */
   createTemplate(): void {
+    this.emailService.gridActionSendSeparateEmail = false;
+    this.emailService.gridActionDataQuery = null;
     this.emailService.showFileUpload = false;
     this.showTemplateCreationWizard = true;
     if (!this.emailService.isCustomTemplateEdit) {
@@ -1406,6 +1410,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.setDatasetForm();
     this.emailService.selectedDistributionListName = '';
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);

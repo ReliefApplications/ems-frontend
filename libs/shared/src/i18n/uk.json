@@ -306,6 +306,9 @@
           "noCustomTitle": "Назва власного шаблону обов'язкова для продовження!",
           "noDistributionList": "Щось пішло не так під час надсилання листа: не знайдено списку розсилки",
           "noFields": "DocumentType & InformationConfidentiality обов'язкові для продовження!",
+          "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
+          "noRecipientSse": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Тема обов'язкова для продовження!",
           "noTemplate": "Щось пішло не так під час надсилання листа: шаблон не знайдено",
           "preview": "Не вдалося завантажити попередній перегляд листа"
@@ -2143,6 +2146,10 @@
               "selectAllRecordsActivePage": "Вибрати всі записи на активній сторінці",
               "selectDisplay": "Вибрати відображувані поля",
               "sendMail": "Надіслати лист",
+              "sendSeparateEmail": "Send separate email",
+              "separateEmailFields": "Send Separate Email Fields",
+              "separateEmailRecipientRequired": "Select a distribution list or add at least one separate email field containing email values, otherwise the email has no recipients.",
+              "separateEmailTokens": "Available body tokens:",
               "workflow": {
                 "close": "Закрити Робочий процес",
                 "confirm": "Повідомлення про підтвердження",

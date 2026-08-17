@@ -541,7 +541,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                           this.widget.settings.actions.navigateToPage
                           ? this.widget.settings.actions.navigateSettings
                           : undefined,
-                        emailQuery
+                        emailQuery,
+                        options.sendSeparateEmail,
+                        options.separateEmailFields
                       );
                       this.status = {
                         error: false,
@@ -779,6 +781,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       return {
         queryName: this.layout?.query.name || '',
         fields: fields || [],
+        resource: this.settings.resource,
         first: selectedIds.length,
         filter: {
           logic: 'and',
