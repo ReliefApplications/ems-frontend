@@ -1432,6 +1432,7 @@
         "title": "******"
       },
       "sendSeparate": {
+        "csFilter": "******",
         "title": "******"
       },
       "sort": {
@@ -1472,6 +1473,10 @@
         "displayField": "******",
         "filter": {
           "date": {
+            "useExpression": "******",
+            "usePicker": "******"
+          },
+          "select": {
             "useExpression": "******",
             "usePicker": "******"
           }
@@ -1665,9 +1670,12 @@
         "label": "******",
         "noPreviewData": "******",
         "sendseparate": {
-          "list": "******"
+          "alsoToDistributionList": "******",
+          "list": "******",
+          "ownRecipientOnly": "******"
         },
         "separateEmail": "******",
+        "separateEmailToDistributionList": "******",
         "subscriptionList": "******",
         "to": "******"
       }

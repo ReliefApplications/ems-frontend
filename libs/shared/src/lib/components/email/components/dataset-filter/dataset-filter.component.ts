@@ -135,6 +135,40 @@ export class DatasetFilterComponent
   public showFieldsWarning_SSE = false;
 
   /**
+   * Reference fields for the per-row CS filter builder. Combined static + dynamic fields from service.
+   *
+   * @returns the Common Services reference fields.
+   */
+  get csFilterReferenceFields(): any[] {
+    return this.emailService.computedCommonServiceFields;
+  }
+
+  /**
+   * datasetCommonServicesFieldSettings for the per-row CS filter, enabling the {{DatasetName.field}} token picker.
+   * Memoised field recomputed only when its inputs change (fields load, dataset name change, resource reset,
+   * cache restore), so the bound [datasetCommonServicesFieldSettings] input does not change every change-detection
+   * cycle and tear down the open value picker.
+   */
+  public datasetCommonServicesFieldSettings: any = {};
+
+  /** Recomputes datasetCommonServicesFieldSettings from the dataset name + available fields. */
+  private computeDatasetCommonServicesFieldSettings(): void {
+    const datasetName = this.query.get('name')?.value;
+    const fields: string[] = [];
+    // Source the selected dataset fields (children under `field.fields`) rather than
+    // availableFields (children under `field.type.fields`), so appendFields descends and
+    // emits nested dotted tokens like createdBy.username — matching the SSE-body dropdown.
+    const selectedFields = this.query.getRawValue()?.query?.fields ?? [];
+    selectedFields.forEach((field: any) => {
+      this.emailService.appendFields(field, field.name, fields);
+    });
+    this.datasetCommonServicesFieldSettings =
+      datasetName && fields.length > 0
+        ? { datasetBlocks: [{ name: datasetName, fields }] }
+        : {};
+  }
+
+  /**
    * To use helper functions, Apollo serve
    *
    * @param emailService helper functions
@@ -160,6 +194,7 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
+    this.emailService.buildCommonServiceFields();
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
     if (this.query.controls.resource.value && !this.resource) {
@@ -181,10 +216,12 @@ export class DatasetFilterComponent
           this.getResourceData(true);
         } else if (value === null) {
           this.availableFields = [];
+          this.emailService.allAvailableDatasetFields = [];
           this.selectedFields = [];
           if (this.resource?.fields) {
             this.resource.fields = [];
           }
+          this.computeDatasetCommonServicesFieldSettings();
         }
       });
     this.query.controls.name.valueChanges
@@ -197,7 +234,14 @@ export class DatasetFilterComponent
           this.emailService.title.next(data);
         }
         this.emailService.index.next(this.activeTab.index);
+        this.computeDatasetCommonServicesFieldSettings();
       });
+    // Keep the csFilter dataset-token options in sync with the selected fields, so newly
+    // selected nested fields appear in the value picker without leaving the dataset config.
+    this.query.controls.query
+      .get('fields')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.computeDatasetCommonServicesFieldSettings());
     this.query.controls?.navigateSettings?.controls?.field?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
@@ -242,8 +286,10 @@ export class DatasetFilterComponent
       this.selectedFields = selectedFields;
       this.filterFields = filterFields;
       this.availableFields = availableFields;
+      this.emailService.allAvailableDatasetFields = availableFields ?? [];
       this.availableFieldsIndividualEmail = availableFieldsIndividualEmail;
       this.selectedResourceId = selectedResourceId;
+      this.computeDatasetCommonServicesFieldSettings();
     }
 
     this.setFieldsValidity();
@@ -252,13 +298,8 @@ export class DatasetFilterComponent
     this.query.controls.individualEmail.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        if (
-          value === true &&
-          this.selectedFieldsIndividualEmail?.length === 0 &&
-          this.resource
-        ) {
+        if (value === true && this.resource) {
           this.onTabSelect(4, false);
-          this.emailService.disableSaveAndProceed.next(true);
         } else if (this.resource) {
           this.onTabSelect(0, false);
         }
@@ -309,10 +350,7 @@ export class DatasetFilterComponent
     const newIndex = event;
     const previewTabIndex = 3;
 
-    const isSeparateEmailValid =
-      (this.query.get('individualEmail').value === true &&
-        this.selectedFieldsIndividualEmail.length > 0) ||
-      this.query.get('individualEmail').value === false;
+    const isSeparateEmailValid = true;
     const isValid =
       this.query.get('query').get('fields')?.value.length > 0 &&
       !this.showDatasetLimitWarning &&
@@ -383,11 +421,13 @@ export class DatasetFilterComponent
           }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
+          this.emailService.allAvailableDatasetFields = newData;
           this.availableFieldsIndividualEmail = cloneDeep(newData);
           this.filterFields = cloneDeep(newData);
           this.loading = false;
           this.resourcePopulated = true;
           this.resource = data.resource;
+          this.computeDatasetCommonServicesFieldSettings();
         });
     } else {
       this.loading = false;
@@ -718,8 +758,14 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
-    } else if (this.query.get('individualEmail').value === true) {
+    } else if (
+      this.query.get('individualEmail').value === true &&
+      !(this.query.get('csFilter')?.value?.filters?.length > 0)
+    ) {
+      // Send-separate dataset with no recipient source (no email fields and no
+      // CS users filter) — block proceeding.
       this.emailService.disableSaveAndProceed.next(true);
+      this.showFieldsWarning_SSE = true;
     }
 
     return formArray;

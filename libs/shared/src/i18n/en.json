@@ -993,7 +993,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
+          "allSeparate": "All datasets are set to send separate email, so there is no distribution list to configure. To also send the separate emails to a distribution list, enable \"send each separate email to the distribution list\" on a dataset.",
           "and": "and",
           "noEmail": "Selected Dataset does not contain valid email addresses",
           "partOne": "To proceed, please enter",
@@ -1432,6 +1432,7 @@
         "title": "Preview"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Send Separate Email Fields"
       },
       "sort": {
@@ -1474,6 +1475,10 @@
           "date": {
             "useExpression": "Use Expression editor",
             "usePicker": "Use Date picker"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {
@@ -1665,9 +1670,12 @@
         "label": "Distribution List Name*",
         "noPreviewData": "Selected dataset does not contain any preview data",
         "sendseparate": {
-          "list": "Send separate email recipients"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Send separate email recipients",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Send separate email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Subscription list",
         "to": "To"
       }

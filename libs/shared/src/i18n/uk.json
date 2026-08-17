@@ -1434,6 +1434,7 @@
         "title": "Попередній перегляд"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Поля для відправки окремих email"
       },
       "sort": {
@@ -1476,6 +1477,10 @@
           "date": {
             "useExpression": "Використовувати редактор виразів",
             "usePicker": "Використовувати вибір дати"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {
@@ -1667,9 +1672,12 @@
         "label": "Назва списку розсилки*",
         "noPreviewData": "Вибраний набір даних не містить даних для попереднього перегляду",
         "sendseparate": {
-          "list": "Одержувачі окремих email"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Одержувачі окремих email",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Надіслати окремий email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Список підписок",
         "to": "Кому"
       }

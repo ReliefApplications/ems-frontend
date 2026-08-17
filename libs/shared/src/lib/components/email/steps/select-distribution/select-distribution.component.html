@@ -48,9 +48,10 @@
         (input)="validateDistributionList()"
         [class]="{
           'form-error':
-            (isNameDuplicate() && !distributionListId) ||
-            !emailService.distributionListData.get('name').value ||
-            emailService.distributionListData.get('name').value.trim() === ''
+            !emailService.isDistributionListOptional &&
+            ((isNameDuplicate() && !distributionListId) ||
+              !emailService.distributionListData.get('name').value ||
+              emailService.distributionListData.get('name').value.trim() === '')
         }"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
