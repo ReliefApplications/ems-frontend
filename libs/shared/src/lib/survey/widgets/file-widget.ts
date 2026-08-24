@@ -1,5 +1,9 @@
 import { isNil } from 'lodash';
-import { CustomWidgetCollection, SurveyModel } from 'survey-core';
+import {
+  CustomWidgetCollection,
+  SurveyModel,
+  ValueChangedEvent,
+} from 'survey-core';
 import {
   CS_DOCUMENTS_PROPERTIES,
   DocumentManagementService,
@@ -7,6 +11,8 @@ import {
 import { Question, QuestionFile } from '../types';
 import { Injector } from '@angular/core';
 import jsonpath from 'jsonpath';
+import { File, FileService } from '../../services/file/file.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Set document properties based on value expressions
@@ -61,6 +67,21 @@ const setDocumentProperties = (
 const PDF_PREVIEW_CLASS = 'file-pdf-preview';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
+/** Class toggled on questions with a downloadable image preview. */
+const IMAGE_PREVIEW_CLASS = 'file-image-preview';
+/** CSS class of the download action injected over image previews. */
+const IMAGE_DOWNLOAD_CLASS = 'file-image-preview__download';
+
+/** File question state retained between widget lifecycle hooks. */
+interface FilePreviewQuestion extends QuestionFile {
+  __filePreviewElement?: HTMLElement;
+  __pdfPreviewObserver?: MutationObserver;
+  __survey?: SurveyModel;
+  __valueChangedHandler?: (
+    sender: SurveyModel,
+    options: ValueChangedEvent
+  ) => void;
+}
 
 /**
  * Determines whether a file can be previewed inline and how.
@@ -70,13 +91,94 @@ const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
  * @returns 'image' | 'pdf' for files we can preview, otherwise null
  */
 const getPreviewKind = (name: string, type: string): 'image' | 'pdf' | null => {
-  const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|bmp|svg)$/i;
+  const IMAGE_EXTENSIONS = /\.(apng|avif|bmp|gif|jpe?g|png|svg|webp)$/i;
+  const hasGenericType = !type || type === 'application/octet-stream';
   const isImage =
     (typeof type === 'string' && type.startsWith('image/')) ||
-    (!type && IMAGE_EXTENSIONS.test(name));
+    (hasGenericType && IMAGE_EXTENSIONS.test(name));
   if (isImage) return 'image';
-  const isPdf = type === 'application/pdf' || (!type && /\.pdf$/i.test(name));
+  const isPdf =
+    type === 'application/pdf' || (hasGenericType && /\.pdf$/i.test(name));
   return isPdf ? 'pdf' : null;
+};
+
+/**
+ * Removes the image download action from a rendered file question.
+ *
+ * @param htmlElement The question's rendered root HTML element
+ */
+const removeImageDownloadAction = (htmlElement: HTMLElement): void => {
+  htmlElement.classList.remove(IMAGE_PREVIEW_CLASS);
+  htmlElement.querySelector(`.${IMAGE_DOWNLOAD_CLASS}`)?.remove();
+};
+
+/**
+ * Adds a download action to a single image preview in display mode.
+ *
+ * SurveyJS keeps the file-name download link in edit mode, but its read-only
+ * image rendering does not expose a download icon. The action delegates to the
+ * shared file service so both legacy and document-management files are handled.
+ *
+ * @param question File question instance
+ * @param htmlElement The question's rendered root HTML element
+ * @param fileService Shared file service
+ * @param downloadLabel Localized accessible label for the action
+ */
+const updateImageDownloadAction = (
+  question: QuestionFile,
+  htmlElement: HTMLElement,
+  fileService: FileService,
+  downloadLabel: string
+): void => {
+  const value = question.value as File[];
+  const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
+  const isDisplayMode = (question.survey as SurveyModel)?.mode === 'display';
+  const isImage = file
+    ? getPreviewKind(file.name, file.type ?? '') === 'image'
+    : false;
+  const existing = htmlElement.querySelector(`.${IMAGE_DOWNLOAD_CLASS}`);
+
+  if (!isDisplayMode || !file || !isImage) {
+    removeImageDownloadAction(htmlElement);
+    return;
+  }
+
+  const wrapper = htmlElement.querySelector(
+    '.sd-file__image-wrapper'
+  ) as HTMLElement | null;
+  if (!wrapper || existing) return;
+
+  htmlElement.classList.add(IMAGE_PREVIEW_CLASS);
+  const button = document.createElement('button');
+  const accessibleLabel = `${downloadLabel}: ${file.name}`;
+  button.type = 'button';
+  button.classList.add(IMAGE_DOWNLOAD_CLASS);
+  button.title = accessibleLabel;
+  button.setAttribute('aria-label', accessibleLabel);
+
+  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z');
+  icon.appendChild(path);
+  button.appendChild(icon);
+  button.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const currentValue = question.value as File[];
+    const currentFile =
+      Array.isArray(currentValue) && currentValue.length === 1
+        ? currentValue[0]
+        : null;
+    if (
+      currentFile &&
+      getPreviewKind(currentFile.name, currentFile.type ?? '') === 'image'
+    ) {
+      fileService.download(currentFile);
+    }
+  });
+  wrapper.appendChild(button);
 };
 
 /**
@@ -193,22 +295,34 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection
 ): void => {
   const documentManagementService = injector.get(DocumentManagementService);
+  const fileService = injector.get(FileService);
+  const translateService = injector.get(TranslateService);
   const widget = {
     name: 'file-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'file',
     isDefaultRender: true,
     afterRender: (question: QuestionFile, htmlElement: HTMLElement): void => {
+      const filePreviewQuestion = question as FilePreviewQuestion;
+      const survey = question.survey as SurveyModel;
+      filePreviewQuestion.__filePreviewElement = htmlElement;
       // Subscribe to changes, to set all value expressions
-      (question.survey as SurveyModel)?.onValueChanged.add((sender) => {
+      if (
+        filePreviewQuestion.__survey &&
+        filePreviewQuestion.__valueChangedHandler
+      ) {
+        filePreviewQuestion.__survey.onValueChanged.remove(
+          filePreviewQuestion.__valueChangedHandler
+        );
+      }
+      const valueChangedHandler = (sender: SurveyModel): void => {
         setDocumentProperties(documentManagementService, question, sender);
-      });
+      };
+      survey?.onValueChanged.add(valueChangedHandler);
+      filePreviewQuestion.__survey = survey;
+      filePreviewQuestion.__valueChangedHandler = valueChangedHandler;
       // Execute once to set initial values
-      setDocumentProperties(
-        documentManagementService,
-        question,
-        question.survey as SurveyModel
-      );
+      setDocumentProperties(documentManagementService, question, survey);
 
       // Give stored images the same native in-area preview as freshly picked
       // ones: SurveyJS only recognizes images from string contents, but files
@@ -225,13 +339,45 @@ export const init = (
 
       // Render the PDF preview inside the upload area, and keep it in sync
       // with SurveyJS re-renders (value changes, async preview loading).
-      (question as any).__pdfPreviewObserver?.disconnect();
-      const observer = new MutationObserver(() =>
-        updatePdfPreview(question, htmlElement)
-      );
+      filePreviewQuestion.__pdfPreviewObserver?.disconnect();
+      const observer = new MutationObserver(() => {
+        updatePdfPreview(question, htmlElement);
+        updateImageDownloadAction(
+          question,
+          htmlElement,
+          fileService,
+          translateService.instant('common.download')
+        );
+      });
       observer.observe(htmlElement, { childList: true, subtree: true });
-      (question as any).__pdfPreviewObserver = observer;
+      filePreviewQuestion.__pdfPreviewObserver = observer;
       updatePdfPreview(question, htmlElement);
+      updateImageDownloadAction(
+        question,
+        htmlElement,
+        fileService,
+        translateService.instant('common.download')
+      );
+    },
+    willUnmount: (question: QuestionFile): void => {
+      const filePreviewQuestion = question as FilePreviewQuestion;
+      filePreviewQuestion.__pdfPreviewObserver?.disconnect();
+      if (
+        filePreviewQuestion.__survey &&
+        filePreviewQuestion.__valueChangedHandler
+      ) {
+        filePreviewQuestion.__survey.onValueChanged.remove(
+          filePreviewQuestion.__valueChangedHandler
+        );
+      }
+      if (filePreviewQuestion.__filePreviewElement) {
+        removePdfPreview(question, filePreviewQuestion.__filePreviewElement);
+        removeImageDownloadAction(filePreviewQuestion.__filePreviewElement);
+      }
+      filePreviewQuestion.__pdfPreviewObserver = undefined;
+      filePreviewQuestion.__filePreviewElement = undefined;
+      filePreviewQuestion.__survey = undefined;
+      filePreviewQuestion.__valueChangedHandler = undefined;
     },
   };
 
