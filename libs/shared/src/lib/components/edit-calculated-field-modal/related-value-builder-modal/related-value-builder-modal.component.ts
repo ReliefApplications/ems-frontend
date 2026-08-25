@@ -79,6 +79,18 @@ const EXCLUDED_FILTER_FIELDS = [
   'lastUpdatedBy',
 ];
 
+/**
+ * Subfields of a linked record (child `resource` field) that cannot be used
+ * to filter the related records: they rely on lookups (users / forms) that
+ * are not available inside the aggregation sub-pipeline.
+ */
+const EXCLUDED_LINKED_SUBFIELDS = [
+  'form',
+  'lastUpdateForm',
+  'createdBy',
+  'lastUpdatedBy',
+];
+
 /** Record-level fields usable to sort the related records */
 const INFO_SORT_FIELDS = ['createdAt', 'modifiedAt', 'incrementalId'];
 
@@ -281,11 +293,24 @@ export class RelatedValueBuilderModalComponent implements OnInit, OnDestroy {
           (x: any) =>
             x.filterable !== false &&
             !EXCLUDED_FILTER_FIELDS.includes(x.name) &&
-            // Sub-fields of linked records are not available inside the
-            // related-record aggregation, so they cannot be filtered on
-            !['resource', 'resources'].includes(x.type)
+            // Multi-select links cannot be joined inside the related-record
+            // aggregation, so their subfields cannot be filtered on
+            x.type !== 'resources'
         )
-        .map((x: any) => ({ ...x }));
+        .map((x: any) =>
+          x.type === 'resource'
+            ? {
+                ...x,
+                // Only keep the linked-record subfields the aggregation can
+                // join & filter on, as the grid filter does
+                fields: (x.fields || []).filter(
+                  (subField: any) =>
+                    subField.filterable !== false &&
+                    !EXCLUDED_LINKED_SUBFIELDS.includes(subField.name)
+                ),
+              }
+            : { ...x }
+        );
     } finally {
       this.filterLoading = false;
     }

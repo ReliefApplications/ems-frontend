@@ -5,7 +5,10 @@
     (save)="onComplete($event)"
   ></shared-form>
   <!-- New record button, once the form has been submitted -->
-  <div *ngIf="completed" class="flex justify-center py-4">
+  <div
+    *ngIf="completed && showNewRecordButton"
+    class="flex justify-center py-4"
+  >
     <ui-button category="secondary" (click)="clearForm()">
       {{ 'models.record.new' | translate }}
     </ui-button>
