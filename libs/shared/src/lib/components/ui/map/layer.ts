@@ -168,6 +168,8 @@ export class Layer implements LayerModel {
 
   /** Map layer */
   private layer: L.Layer | null = null;
+  /** Latest popup request, used to ignore stale responses from previous clicks. */
+  private popupRequest = 0;
 
   // Global properties for the layer
   /** Layer id */
@@ -411,6 +413,32 @@ export class Layer implements LayerModel {
   }
 
   /**
+   * Load popup properties on demand before opening the popup.
+   *
+   * @param features Selected map features.
+   * @param coordinates Popup coordinates.
+   * @param layerToBind Leaflet layer that owns the popup.
+   */
+  private async openPopup(
+    features: Feature<Geometry>[],
+    coordinates: L.LatLng,
+    layerToBind?: L.Layer
+  ) {
+    const popupRequest = ++this.popupRequest;
+    const popupFeatures = await this.layerService.loadPopupData(features);
+    if (popupRequest !== this.popupRequest) {
+      return;
+    }
+    this.popupService.setPopUp(
+      popupFeatures,
+      coordinates,
+      this.popupInfo,
+      this.metaFields,
+      layerToBind
+    );
+  }
+
+  /**
    * Gets the style for a feature
    * If no style is found, returns the default style
    *
@@ -625,17 +653,14 @@ export class Layer implements LayerModel {
         // In order to destroy all event subscriptions and avoid memory leak
         const setPopupListener = () => {
           const center = centroid(feature);
-          // bind this to the popup service
-          this.popupService.setPopUp(
+          this.openPopup(
             [feature],
             L.latLng({
               lat: center.geometry.coordinates[1],
               lng: center.geometry.coordinates[0],
             }),
-            this.popupInfo,
-            this.metaFields,
             layer
-          );
+          ).catch((error) => console.error(error));
         };
         const listener = this.renderer.listen(layer, 'click', setPopupListener);
         this.listeners.push(listener);
@@ -829,11 +854,8 @@ export class Layer implements LayerModel {
                   } else return false;
                 });
 
-                this.popupService.setPopUp(
-                  matchedPoints,
-                  event,
-                  this.popupInfo,
-                  this.metaFields
+                this.openPopup(matchedPoints, event).catch((error) =>
+                  console.error(error)
                 );
               }
             };
@@ -935,12 +957,8 @@ export class Layer implements LayerModel {
                   const children = event.layer
                     .getAllChildMarkers()
                     .map((child: L.Marker) => child.feature);
-                  this.popupService.setPopUp(
-                    children,
-                    event.latlng,
-                    this.popupInfo,
-                    this.metaFields,
-                    event.layer
+                  this.openPopup(children, event.latlng, event.layer).catch(
+                    (error) => console.error(error)
                   );
                 });
 
