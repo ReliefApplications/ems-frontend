@@ -334,7 +334,8 @@ export class FormModalComponent
     );
 
     this.valueChanged = false;
-    this.autoSaveEnabled = this.canAutoSaveDraft;
+    // Programmatic prefill must not create a draft before the user edits.
+    this.autoSaveEnabled = false;
     // Auto-translation is wired centrally in FormBuilderService.createSurvey;
     // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
@@ -406,6 +407,8 @@ export class FormModalComponent
       this.updateButtonLabels();
     });
 
+    this.valueChanged = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
     this.loading = false;
   }
 
@@ -1018,8 +1021,11 @@ export class FormModalComponent
     revision: number,
     resolve: () => void
   ): void {
-    if (errors) {
-      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    if (errors?.length || !savedDraftId) {
+      const message =
+        errors?.[0]?.message ||
+        this.translate.instant('models.form.notifications.savingFailed');
+      this.snackBar.openSnackBar(message, { error: true });
     } else {
       if (savedDraftId) {
         this.lastDraftRecord = savedDraftId;
@@ -1062,18 +1068,34 @@ export class FormModalComponent
   /**
    * Saves the current data as a draft record
    */
-  public saveAsDraft(): void {
-    const callback = (details: any) => {
+  public async saveAsDraft(): Promise<void> {
+    this.saving = true;
+    this.autoSaveEnabled = false;
+    if (this.autoSavePromise) {
+      await this.autoSavePromise;
+    }
+    const revision = this.autoSaveRevision;
+    const callback = (details: { id?: string }) => {
+      const hasNewChanges = this.autoSaveRevision !== revision;
       this.lastDraftRecord = details.id;
-      this.disableSaveAsDraft = true;
-      this.valueChanged = false;
-      this.autoSaveEnabled = true;
+      this.disableSaveAsDraft = !hasNewChanges;
+      this.valueChanged = hasNewChanges;
+      this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
+      if (hasNewChanges) {
+        this.performAutoSave();
+      }
+    };
+    const errorCallback = () => {
+      this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form?.id as string,
       this.lastDraftRecord,
-      callback
+      callback,
+      errorCallback
     );
   }
 

@@ -89,6 +89,8 @@ export class GridComponent
   @Input() widget: any;
   /** If inlineEdition is allowed */
   @Input() editable = false;
+  /** Whether record action buttons are disabled. */
+  @Input() actionsDisabled = false;
   /** If the grid has changes */
   @Input() hasChanges = false;
   /** Input decorator for fields. */
@@ -409,7 +411,7 @@ export class GridComponent
     // Must resolve before the grid's first render: Kendo's sticky position
     // cache snapshots the column list once and never re-includes columns
     // added later, which makes multiple action groups overlap.
-    if (changes['widget']) {
+    if (changes['widget'] || changes['actionsDisabled']) {
       this.buildCustomRowActionGroups();
     }
     if (
@@ -420,7 +422,7 @@ export class GridComponent
         this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
     }
-    if (changes['widget'] || changes['data']) {
+    if (changes['widget'] || changes['data'] || changes['actionsDisabled']) {
       this.updateCustomActionColumnWidths();
     }
     // First load of records, or on page change
@@ -487,6 +489,10 @@ export class GridComponent
    * Called on widget changes and on language change so column titles stay in sync.
    */
   private buildCustomRowActionGroups(): void {
+    if (this.actionsDisabled) {
+      this.customRowActionGroups = [];
+      return;
+    }
     const customRowActions: ActionButton[] = get(
       this.widget,
       'settings.customRowActions',

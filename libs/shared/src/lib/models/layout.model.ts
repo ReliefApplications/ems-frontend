@@ -9,6 +9,8 @@ export interface Layout {
   nameTranslations?: LocalizedString;
   query?: any;
   display?: any;
+  draft?: boolean;
+  allDrafts?: boolean;
 }
 
 /** Model for add layout mutation response */

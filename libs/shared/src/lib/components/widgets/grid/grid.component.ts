@@ -133,7 +133,23 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** @returns list of active grid actions */
   get gridActions() {
+    if (this.recordActionsDisabled) {
+      return [];
+    }
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+  }
+
+  /** @returns True when the selected layout displays draft records. */
+  get isDraftLayout(): boolean {
+    return !!this.layout?.draft;
+  }
+
+  /** @returns True while actions must remain unavailable for the selected layout. */
+  get recordActionsDisabled(): boolean {
+    return (
+      this.isDraftLayout ||
+      (get(this.settings, 'layouts', []).length > 0 && !this.layout)
+    );
   }
 
   /**
@@ -181,6 +197,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
+    delete this.gridSettings.draft;
+    delete this.gridSettings.allDrafts;
     if (this.settings.resource) {
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
@@ -238,6 +256,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               ...this.settings,
               ...this.layout,
               ...{ template: get(this.settings, 'template', null) },
+              draft: !!this.layout?.draft,
+              allDrafts: !!this.layout?.draft && !!this.layout?.allDrafts,
             };
           });
         return;
@@ -331,6 +351,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param options action options.
    */
   public async onGridAction(options: any): Promise<void> {
+    if (this.recordActionsDisabled) {
+      return;
+    }
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -739,6 +762,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       ...this.settings,
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
+      draft: !!this.layout?.draft,
+      allDrafts: !!this.layout?.draft && !!this.layout?.allDrafts,
     };
   }
 

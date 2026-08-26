@@ -766,12 +766,14 @@ export class FormHelpersService {
    * @param formId Form id of the survey
    * @param draftId Draft record id
    * @param callback callback method
+   * @param errorCallback callback method executed when saving fails
    */
   public saveAsDraft(
     survey: SurveyModel,
     formId: string,
     draftId?: string,
-    callback?: DraftSaveCallback
+    callback?: DraftSaveCallback,
+    errorCallback?: () => void
   ): void {
     // Check if a draft has already been loaded
     if (!draftId) {
@@ -785,33 +787,38 @@ export class FormHelpersService {
       });
       mutation.subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            survey.clear(false, true);
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          } else {
-            // localStorage.removeItem(this.storageId);
+          const draftId = data?.addRecord?.id;
+          if (errors?.length || !draftId) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.form.draftRecords.successSave'
-              ),
-              {
-                error: false,
-              }
+              errors?.[0]?.message ||
+                this.translate.instant(
+                  'models.form.notifications.savingFailed'
+                ),
+              { error: true }
             );
+            errorCallback?.();
+            return;
           }
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
           // Callback to emit save but stay in record addition mode
-          if (callback) {
-            callback({
-              id: data?.addRecord.id,
-              save: {
-                completed: false,
-                hideNewRecord: true,
-              },
-            });
-          }
+          callback?.({
+            id: draftId,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
         },
       });
     } else {
@@ -823,11 +830,13 @@ export class FormHelpersService {
           data: survey.data,
         },
       });
-      mutation.subscribe(({ errors }) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
+      mutation.subscribe({
+        next: ({ errors }) => {
+          if (errors?.length) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+            errorCallback?.();
+            return;
+          }
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.draftRecords.successEdit'),
@@ -835,17 +844,20 @@ export class FormHelpersService {
               error: false,
             }
           );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
+          // Callback to emit save but stay in record addition mode
+          callback?.({
             id: draftId,
             save: {
               completed: false,
               hideNewRecord: true,
             },
           });
-        }
+        },
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
+        },
       });
     }
   }

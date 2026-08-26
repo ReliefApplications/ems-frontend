@@ -56,11 +56,12 @@
     (edit)="edit.emit($event)"
     (inlineEdition)="onInlineEdition()"
     [widget]="widget"
-    [canUpdate]="canUpdate"
+    [canUpdate]="canUpdate && !recordActionsDisabled"
     [status]="status"
-    [canCreateRecords]="canCreateRecords"
-    [canDownloadRecords]="canDownloadRecords"
-    [canUploadRecords]="canUploadRecords"
+    [canCreateRecords]="canCreateRecords && !recordActionsDisabled"
+    [canDownloadRecords]="canDownloadRecords && !recordActionsDisabled"
+    [canUploadRecords]="canUploadRecords && !recordActionsDisabled"
+    [actionsDisabled]="recordActionsDisabled"
   ></shared-core-grid>
 </ng-template>
 

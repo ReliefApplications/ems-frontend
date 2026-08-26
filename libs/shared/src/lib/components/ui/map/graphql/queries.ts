@@ -12,6 +12,8 @@ export const GET_LAYOUT = gql`
             query
             createdAt
             display
+            draft
+            allDrafts
           }
         }
       }

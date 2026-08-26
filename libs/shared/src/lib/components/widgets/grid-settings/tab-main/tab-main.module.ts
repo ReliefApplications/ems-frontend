@@ -12,7 +12,6 @@ import {
   IconModule,
   ButtonModule,
   SpinnerModule,
-  CheckboxModule,
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 import {
@@ -41,7 +40,6 @@ import {
     LocalizedInputComponent,
     ButtonModule,
     SpinnerModule,
-    CheckboxModule,
   ],
   exports: [TabMainComponent],
 })

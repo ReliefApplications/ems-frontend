@@ -18,7 +18,8 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from './graphql/queries';
+import { GET_QUERY_TYPES } from '../../../services/query-builder/graphql/queries';
+import { Ability } from '@casl/ability';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   TranslateModule,
@@ -45,6 +46,10 @@ describe('CoreGridComponent', () => {
         UntypedFormBuilder,
         QueryBuilderService,
         TranslateService,
+        {
+          provide: Ability,
+          useValue: { can: jest.fn(), cannot: jest.fn() },
+        },
       ],
       declarations: [CoreGridComponent],
       imports: [
@@ -59,7 +64,9 @@ describe('CoreGridComponent', () => {
         }),
         ApolloTestingModule,
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(CoreGridComponent, { set: { template: '' } })
+      .compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
   });
@@ -67,16 +74,14 @@ describe('CoreGridComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CoreGridComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-
     const op = controller.expectOne(GET_QUERY_TYPES);
 
     op.flush({
       data: {
-        __schema: {
-          types: [],
+        types: {
+          availableQueries: [],
+          userFields: [],
         },
-        fields: [],
       },
     });
   });
@@ -88,5 +93,60 @@ describe('CoreGridComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should disable every record action for a draft layout', () => {
+    component.settings = {
+      template: 'template-id',
+      actions: {
+        addRecord: true,
+        update: true,
+        delete: true,
+        history: true,
+        convert: true,
+        export: true,
+        import: true,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+        inlineEdition: true,
+      },
+    };
+    component.actionsDisabled = true;
+
+    component.configureGrid();
+
+    expect(component.actions).toEqual(
+      expect.objectContaining({
+        add: false,
+        update: false,
+        delete: false,
+        history: false,
+        convert: false,
+        export: false,
+        import: false,
+        showDetails: true,
+        navigateToPage: false,
+        remove: false,
+      })
+    );
+    expect(component.editable).toBe(false);
+  });
+
+  it('should allow details while other draft-layout actions are disabled', () => {
+    component.actionsDisabled = true;
+    const detailsSpy = jest
+      .spyOn(component, 'onShowDetails')
+      .mockResolvedValue();
+    const updateSpy = jest.spyOn(component, 'onUpdate').mockResolvedValue();
+    const resetSpy = jest.spyOn(component, 'resetDefaultLayout');
+
+    component.onAction({ action: 'details', items: [{ id: 'draft-id' }] });
+    component.onAction({ action: 'update', item: { id: 'draft-id' } });
+    component.onAction({ action: 'resetLayout' });
+
+    expect(detailsSpy).toHaveBeenCalledWith([{ id: 'draft-id' }], undefined);
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(resetSpy).toHaveBeenCalled();
   });
 });

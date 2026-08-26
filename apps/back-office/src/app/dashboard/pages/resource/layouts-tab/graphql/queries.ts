@@ -13,6 +13,8 @@ export const GET_RESOURCE_LAYOUTS = gql`
             query
             createdAt
             display
+            draft
+            allDrafts
           }
         }
         pageInfo {

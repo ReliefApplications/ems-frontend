@@ -71,7 +71,7 @@
     </ng-container>
     <ui-button
       *ngIf="showSaveAsDraft"
-      [disabled]="disableSaveAsDraft"
+      [disabled]="disableSaveAsDraft || saving"
       (click)="saveAsDraft()"
       >{{
       'components.form.draftRecords.save' | translate

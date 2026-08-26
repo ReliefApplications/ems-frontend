@@ -138,6 +138,8 @@ export class CoreGridComponent
   @Input() canDownloadRecords = false;
   /** Whether records can be uploaded */
   @Input() canUploadRecords = false;
+  /** Whether all record actions must be disabled. */
+  @Input() actionsDisabled = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -448,21 +450,15 @@ export class CoreGridComponent
     if (!this.status.error) {
       if (changes?.settings) {
         this.configureGrid();
+      } else if (changes?.actionsDisabled) {
+        this.configureActions();
       }
     }
   }
 
-  /**
-   * Configure the grid
-   */
-  public configureGrid(): void {
-    // set context filter
-    this.contextFilters = this.settings.contextFilters
-      ? JSON.parse(this.settings.contextFilters)
-      : this.contextFilters;
-
-    // define row actions
-    this.actions = {
+  /** Applies the configured action policy without rebuilding the data query. */
+  private configureActions(): void {
+    const configuredActions: GridActions = {
       add:
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
@@ -481,7 +477,35 @@ export class CoreGridComponent
       },
       remove: get(this.settings, 'actions.remove', false),
     };
-    this.editable = this.settings.actions?.inlineEdition;
+    this.actions = this.actionsDisabled
+      ? {
+          add: false,
+          update: false,
+          delete: false,
+          history: false,
+          convert: false,
+          export: false,
+          import: false,
+          showDetails: configuredActions.showDetails,
+          navigateToPage: false,
+          navigateSettings: configuredActions.navigateSettings,
+          remove: false,
+        }
+      : configuredActions;
+    this.editable =
+      !this.actionsDisabled && this.settings.actions?.inlineEdition;
+  }
+
+  /**
+   * Configure the grid
+   */
+  public configureGrid(): void {
+    // set context filter
+    this.contextFilters = this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : this.contextFilters;
+
+    this.configureActions();
     if (!isNil(this.settings.actions?.search)) {
       this.searchable = this.settings.actions?.search;
     }
@@ -519,7 +543,9 @@ export class CoreGridComponent
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
             styles: this.style,
-            actions: this.settings.customRowActions || null,
+            actions: this.actionsDisabled
+              ? null
+              : this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
@@ -1039,6 +1065,20 @@ export class CoreGridComponent
     pageUrl?: string;
     html?: string;
   }): void {
+    const disabledActions = [
+      'add',
+      'edit',
+      'save',
+      'goTo',
+      'update',
+      'history',
+      'convert',
+      'delete',
+      'remove',
+    ];
+    if (this.actionsDisabled && disabledActions.includes(event.action)) {
+      return;
+    }
     switch (event.action) {
       case 'add': {
         this.onAdd();

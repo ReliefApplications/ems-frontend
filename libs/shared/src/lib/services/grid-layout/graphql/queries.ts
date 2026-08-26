@@ -31,6 +31,8 @@ export const GET_GRID_RESOURCE_META = gql`
             query
             createdAt
             display
+            draft
+            allDrafts
           }
         }
         pageInfo {
@@ -60,6 +62,8 @@ export const GET_GRID_FORM_META = gql`
             query
             createdAt
             display
+            draft
+            allDrafts
           }
         }
         pageInfo {

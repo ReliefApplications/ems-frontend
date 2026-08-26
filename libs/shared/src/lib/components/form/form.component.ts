@@ -406,6 +406,7 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
+    const publishingDraft = !!this.lastDraftRecord;
     // If is an already saved record, edit it
     if (this.lastDraftRecord) {
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
@@ -463,7 +464,10 @@ export class FormComponent
         }
         this.lastDraftRecord = undefined;
         // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord?.form?.uniqueRecord) {
+        if (
+          !publishingDraft &&
+          (data.editRecord || data.addRecord?.form?.uniqueRecord)
+        ) {
           this.survey.clear(false, false);
           if (data.addRecord) {
             this.record = data.addRecord;
