@@ -1575,6 +1575,8 @@
           },
           "title": "Автоматичне призначення"
         },
+        "autoGrantFieldsAccessibility": "Автоматично надавати доступ на перегляд нових полів",
+        "autoGrantFieldsUpdate": "Автоматично надавати доступ на редагування нових полів",
         "details": {
           "access": {
             "channels": "Доступ до каналів",
@@ -1604,8 +1606,14 @@
       "tooltip": {
         "allowFieldAccessibility": "Дозволити цій ролі бачити поле {{field}}",
         "allowFieldUpdate": "Дозволити цій ролі оновлювати поле {{field}}",
+        "allowSelectedFieldsAccessibility": "Дозволити цій ролі бачити вибраних полів",
+        "allowSelectedFieldsUpdate": "Дозволити цій ролі оновлювати вибраних полів",
+        "autoGrantFieldsAccessibility": "Автоматично надавати доступ на перегляд полів, доданих до цього ресурсу в майбутньому",
+        "autoGrantFieldsUpdate": "Автоматично надавати доступ на редагування полів, доданих до цього ресурсу в майбутньому",
         "disallowFieldAccessibility": "Заборонити цій ролі бачити поле {{field}}",
         "disallowFieldUpdate": "Заборонити цій ролі оновлювати поле {{field}}",
+        "disallowSelectedFieldsAccessibility": "Заборонити цій ролі бачити вибраних полів",
+        "disallowSelectedFieldsUpdate": "Заборонити цій ролі оновлювати вибраних полів",
         "grantAddRecordsPermission": "Надати дозвіл на додавання нових записів",
         "grantDeleteRecordsPermission": "Надати дозвіл на видалення записів",
         "grantDownloadRecordsPermission": "Надати дозвіл на завантаження записів",
