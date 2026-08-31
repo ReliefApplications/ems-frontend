@@ -966,6 +966,9 @@
         "noResource": "Виберіть Ресурс із розкривного списку, щоб відобразити майстер фільтру списку розсилки",
         "noResourceFields": "Вибраний Ресурс не містить жодних полів",
         "noSelectedFields": "Будь ласка, виберіть принаймні 1 поле для збереження цього набору даних",
+        "scheduler": {
+          "invalid": "Error! Please enter a valid cron value"
+        },
         "selectChildFields": "Ви вибрали поле об'єкта/списку. Виберіть принаймні одне дочірнє поле для подальшого продовження та/або попереднього перегляду.",
         "selectedNonEmailFields": "Вибране поле не налаштоване як поле email. Подальші дії можуть призвести до помилок.",
         "subscribeExists": "Помилка! {{message}}",
@@ -1041,6 +1044,18 @@
         "title": "Обмежити підписку користувачів"
       },
       "saveAsDraft": "Зберегти як чернетку",
+      "schedule": {
+        "checkbox": "Click to enable/ disable scheduler",
+        "disable": {
+          "checkbox": "Disable Scheduler",
+          "tooltip": "Click to disable scheduler"
+        },
+        "enable": {
+          "checkbox": "Enable scheduler",
+          "tooltip": "Click to enable scheduler"
+        },
+        "title": "Schedule Alert"
+      },
       "subscribe": {
         "error": {
           "restricted": "Підписку обмежено"

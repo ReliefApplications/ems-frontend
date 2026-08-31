@@ -966,6 +966,9 @@
         "noResource": "******",
         "noResourceFields": "******",
         "noSelectedFields": "******",
+        "scheduler": {
+          "invalid": "******"
+        },
         "selectChildFields": "******",
         "selectedNonEmailFields": "******",
         "subscribeExists": "****** {{message}}",
@@ -1041,6 +1044,17 @@
         "title": "******"
       },
       "saveAsDraft": "******",
+      "schedule": {
+        "disable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "enable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "title": "******"
+      },
       "subscribe": {
         "error": {
           "restricted": "******"
