@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "Load draft record",
+        "cloneNotice": "You are duplicating a draft. Saving will create a new completed record; the original draft will remain unchanged. Use Save as draft to create a separate draft instead.",
         "confirmModal": {
           "confirmDelete": "Do you really want to delete this draft record?",
           "confirmLoad": "Do you really want to load this draft record?",

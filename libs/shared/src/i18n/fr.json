@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "Charger un brouillon",
+        "cloneNotice": "Vous dupliquez un brouillon. L'enregistrement créera un nouvel enregistrement finalisé ; le brouillon d'origine restera inchangé. Utilisez Enregistrer comme brouillon pour créer un autre brouillon.",
         "confirmModal": {
           "confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
           "confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",

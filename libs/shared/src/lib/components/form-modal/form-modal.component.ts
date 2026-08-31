@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   IconModule,
@@ -70,6 +71,7 @@ interface DialogData {
   actionButtonCtx?: boolean;
   draft?: boolean;
   allDrafts?: boolean;
+  isDraftClone?: boolean;
 }
 /**
  * Defines the default Dialog data
@@ -86,6 +88,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['../../style/survey.scss', './form-modal.component.scss'],
   imports: [
     CommonModule,
+    AlertModule,
     IconModule,
     TabsModule,
     RecordSummaryModule,
@@ -158,7 +161,9 @@ export class FormModalComponent
 
   /** @returns True when auto-save can write the current form as a draft. */
   private get canAutoSaveDraft(): boolean {
-    return !this.data.recordId || !!this.lastDraftRecord;
+    return (
+      !this.data.isDraftClone && (!this.data.recordId || !!this.lastDraftRecord)
+    );
   }
 
   /**

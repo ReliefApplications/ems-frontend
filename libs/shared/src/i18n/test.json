@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "******",
+        "cloneNotice": "******",
         "confirmModal": {
           "confirmDelete": "******",
           "confirmLoad": "******",

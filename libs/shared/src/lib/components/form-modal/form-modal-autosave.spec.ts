@@ -21,7 +21,7 @@ describe('FormModalComponent clone auto-save', () => {
     jest.useRealTimers();
   });
 
-  it('should not auto-save programmatically prefilled clone data', async () => {
+  it('should keep manual draft save available after editing a draft clone', async () => {
     const survey = new SurveyModel({
       elements: [{ type: 'text', name: 'title' }],
     });
@@ -54,10 +54,19 @@ describe('FormModalComponent clone auto-save', () => {
         callback: () => void
       ) => callback(),
     } as unknown as AutoTranslateService;
+    const saveAsDraft = jest.fn(
+      (
+        _survey: SurveyModel,
+        _formId: string,
+        _draftId?: string,
+        callback?: (details: { id?: string }) => void
+      ) => callback?.({ id: 'manual-draft-id' })
+    );
     const component = new FormModalComponent(
       {
         template: 'form-id',
         prefillData: { title: 'Cloned draft' },
+        isDraftClone: true,
         askForConfirm: false,
       },
       {} as Dialog,
@@ -66,7 +75,7 @@ describe('FormModalComponent clone auto-save', () => {
       { openSnackBar: jest.fn() } as unknown as SnackbarService,
       {} as AuthService,
       formBuilderService,
-      {} as FormHelpersService,
+      { saveAsDraft } as unknown as FormHelpersService,
       {} as ConfirmService,
       { instant: (key: string) => key } as unknown as TranslateService,
       { run: (callback: () => void) => callback() } as NgZone,
@@ -82,7 +91,14 @@ describe('FormModalComponent clone auto-save', () => {
     survey.setValue('title', 'User edit');
     jest.advanceTimersByTime(600);
 
-    expect(apollo.mutate).toHaveBeenCalledTimes(1);
+    expect(apollo.mutate).not.toHaveBeenCalled();
+    expect(component.disableSaveAsDraft).toBe(false);
+
+    await component.saveAsDraft();
+
+    expect(saveAsDraft).toHaveBeenCalledTimes(1);
+    expect(component.lastDraftRecord).toBe('manual-draft-id');
+    expect(component.disableSaveAsDraft).toBe(true);
 
     component.ngOnDestroy();
   });
