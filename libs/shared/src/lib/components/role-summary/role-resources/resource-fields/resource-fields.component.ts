@@ -16,6 +16,8 @@ type ResourceField = {
   name: string;
   canSee: boolean;
   canUpdate: boolean;
+  canDeleteFiles?: boolean;
+  isFileField?: boolean;
 };
 
 /**
@@ -39,7 +41,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
-    permission: 'canSee' | 'canUpdate';
+    permission: 'canSee' | 'canUpdate' | 'canDeleteFiles';
   }>();
 
   /** Filter template id */
@@ -51,8 +53,10 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public displayedColumns: string[] = ['name', 'actions'];
 
   /** Updated field */
-  private updatedField: { index: number; permission: 'canSee' | 'canUpdate' } =
-    { index: -1, permission: 'canSee' };
+  private updatedField: {
+    index: number;
+    permission: 'canSee' | 'canUpdate' | 'canDeleteFiles';
+  } = { index: -1, permission: 'canSee' };
 
   ngOnInit() {
     this.fields = sortBy(this.resource.fields.map(this.hasFieldAccess), 'name');
@@ -66,8 +70,10 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
       const field = this.fields[this.updatedField.index];
       if (this.updatedField.permission === 'canSee') {
         field.canSee = !field.canSee;
-      } else {
+      } else if (this.updatedField.permission === 'canUpdate') {
         field.canUpdate = !field.canUpdate;
+      } else if (this.updatedField.permission === 'canDeleteFiles') {
+        field.canDeleteFiles = !field.canDeleteFiles;
       }
       this.updatedField.index = -1;
     }
@@ -79,11 +85,20 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * @param field field
    * @returns field with access data
    */
-  private hasFieldAccess = (field: any) => ({
-    name: field.name,
-    canSee: !!field.permissions?.canSee?.includes(this.role.id),
-    canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-  });
+  private hasFieldAccess = (field: any) => {
+    const isFileField = field.type === 'file' || field.meta?.type === 'file';
+    const canDeleteFiles = field.permissions?.canDeleteFiles
+      ? !!field.permissions.canDeleteFiles.includes(this.role.id)
+      : !!field.permissions?.canUpdate?.includes(this.role.id);
+
+    return {
+      name: field.name,
+      canSee: !!field.permissions?.canSee?.includes(this.role.id),
+      canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+      canDeleteFiles,
+      isFileField,
+    };
+  };
 
   /**
    * Filter list of fields by template id
@@ -111,7 +126,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Emits an event to toggle if field is visible / editable.
+   * Emits an event to toggle if field is visible / editable / delete files allowed.
    *
    * @param index Index of the field to toggle permission for.
    * @param field Field to toggle permission for.
@@ -120,7 +135,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public onEditFieldAccess(
     index: number,
     field: ResourceField,
-    permission: 'canSee' | 'canUpdate'
+    permission: 'canSee' | 'canUpdate' | 'canDeleteFiles'
   ) {
     // Save field updated
     this.updatedField = { index, permission };

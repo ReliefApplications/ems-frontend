@@ -1604,8 +1604,10 @@
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
+        "allowFileDelete": "Allow this role to delete files in field {{field}}",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+        "disallowFileDelete": "Disallow this role to delete files in field {{field}}",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",
         "grantDownloadRecordsPermission": "Grant permission to download records",

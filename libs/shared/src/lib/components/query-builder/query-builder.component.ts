@@ -49,6 +49,8 @@ export class QueryBuilderComponent
   @Input() showColumnWidth = false;
   /** Show limit option */
   @Input() showLimit = false;
+  /** Field names that should display file-specific settings. */
+  @Input() fileFieldNames: string[] = [];
   /** Close field event emitter */
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
   /** Is field boolean control */

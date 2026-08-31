@@ -155,6 +155,7 @@ export class GridService {
                 meta: metaData,
                 disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
                 hidden: hidden || cachedField?.hidden || false,
+                showOutdatedFiles: f.showOutdatedFiles,
                 width: cachedField?.width || title.length * 7 + 50,
                 fixedWidth: f.width, // width used to overwrite autocalculation
                 order: cachedField?.order,
@@ -212,6 +213,7 @@ export class GridService {
               meta: metaData,
               disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
               hidden: hidden || cachedField?.hidden || false,
+              showOutdatedFiles: f.showOutdatedFiles,
               width: cachedField?.width || title.length * 7 + 50,
               fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,
@@ -249,6 +251,7 @@ export class GridService {
                 get(metaData, 'isCalculated', false) ||
                 this.isFieldDisabled(metaData),
               hidden: hidden || cachedField?.hidden || false,
+              showOutdatedFiles: f.showOutdatedFiles,
               width: cachedField?.width || title.length * 7 + 50,
               fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,

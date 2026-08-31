@@ -1604,8 +1604,10 @@
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowFileDelete": "****** {{field}}",
         "disallowFieldAccessibility": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowFileDelete": "****** {{field}}",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",

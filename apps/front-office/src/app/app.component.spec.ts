@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { Ability } from '@casl/ability';
+import { SwUpdate } from '@angular/service-worker';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -30,6 +31,15 @@ describe('AppComponent', () => {
         {
           provide: 'environment',
           useValue: environment,
+        },
+        {
+          provide: SwUpdate,
+          useValue: {
+            isEnabled: false,
+            versionUpdates: {
+              subscribe: () => undefined,
+            },
+          },
         },
       ],
     }).compileComponents();

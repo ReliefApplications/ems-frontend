@@ -11,6 +11,11 @@ import {
 } from '@ngx-translate/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { OAuthModule } from 'angular-oauth2-oidc';
+
+import { Ability } from '@casl/ability';
+
 describe('ShareComponent', () => {
   let component: ShareComponent;
   let fixture: ComponentFixture<ShareComponent>;
@@ -19,7 +24,12 @@ describe('ShareComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ShareComponent],
       providers: [
+        Ability,
         TranslateService,
+        {
+          provide: 'environment',
+          useValue: {},
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -28,6 +38,8 @@ describe('ShareComponent', () => {
         },
       ],
       imports: [
+        HttpClientTestingModule,
+        OAuthModule.forRoot(),
         ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {

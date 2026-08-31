@@ -358,6 +358,31 @@ describe('HtmlParserService', () => {
       expect(result).toContain('k-icon k-i-file-pdf');
       expect(result).toContain('report');
     });
+
+    it('can hide outdated file placeholders', () => {
+      const result = service.parseHtml('<p>{{data.documents}}</p>', {
+        data: {
+          documents: [
+            {
+              name: 'old-report.pdf',
+              type: 'application/pdf',
+              content: 'old-file-id',
+              outdated: true,
+            },
+            {
+              name: 'current-report.pdf',
+              type: 'application/pdf',
+              content: 'current-file-id',
+            },
+          ],
+        },
+        fields: [{ name: 'documents', type: 'file', showOutdatedFiles: false }],
+      });
+
+      expect(result).not.toContain('old-report.pdf');
+      expect(result).toContain('current-report.pdf');
+      expect(result).toContain('index="1"');
+    });
   });
   describe('Parse HTML with context data', () => {
     let replaceRecordFields!: any;
