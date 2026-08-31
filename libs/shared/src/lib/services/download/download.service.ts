@@ -319,10 +319,15 @@ export class DownloadService {
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
-        error: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.upload.error'
-          );
+        error: (error: { error?: unknown; message?: unknown }) => {
+          snackBarSpinner.instance.message =
+            typeof error.error === 'string' && error.error
+              ? error.error
+              : typeof error.message === 'string' && error.message
+              ? error.message
+              : this.translate.instant(
+                  'common.notifications.file.upload.error'
+                );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);

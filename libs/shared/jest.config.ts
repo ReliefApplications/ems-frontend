@@ -30,6 +30,7 @@ export default {
   testMatch: [
     '<rootDir>/src/lib/services/auto-translate/*.spec.ts',
     '<rootDir>/src/lib/services/context/*.spec.ts',
+    '<rootDir>/src/lib/services/download/*.spec.ts',
     '<rootDir>/src/lib/services/file/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/services/grid/*.spec.ts',
