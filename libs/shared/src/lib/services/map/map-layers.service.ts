@@ -27,6 +27,7 @@ import {
   LayerQueryResponse,
   LayersQueryResponse,
 } from '../../models/layer.model';
+import { LocalizedString } from '../../models/localized-string.model';
 import { RestService } from '../rest/rest.service';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
@@ -44,7 +45,7 @@ import getReferenceDataAggregationFields from '../../utils/reference-data/aggreg
 import { authType } from '../../models/api-configuration.model';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { AggregationService } from '../aggregation/aggregation.service';
-import { Feature } from '@turf/helpers';
+import { Feature, Geometry } from 'geojson';
 import filterReferenceData from '../../utils/filter/reference-data-filter.util';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
@@ -635,6 +636,9 @@ export class MapLayersService {
     const body = omitBy(
       {
         ...params.layer.datasource,
+        hasPopupData: Boolean(params.layer.popupInfo?.popupElements?.length),
+        popupFields: this.getPopupFields(params.layer),
+        displayFields: this.getDisplayFields(params.layer),
         contextFilters: JSON.stringify(params.contextFilters),
         queryParams: JSON.stringify(
           this.widgetService.replaceReferenceDataQueryParams(
@@ -659,6 +663,127 @@ export class MapLayersService {
         )
     );
   };
+
+  /**
+   * Load complete properties for compact features when their popup is opened.
+   *
+   * @param features Compact map features selected for a popup.
+   * @returns Features with their cached popup properties when available.
+   */
+  public async loadPopupData(
+    features: Feature<Geometry>[]
+  ): Promise<Feature<Geometry>[]> {
+    const popupReferences = features.map((feature) =>
+      this.getPopupReference(feature)
+    );
+    const firstReference = popupReferences[0];
+    if (
+      !firstReference ||
+      popupReferences.some(
+        (reference) => reference?.cacheKey !== firstReference.cacheKey
+      )
+    ) {
+      return features;
+    }
+
+    return lastValueFrom(
+      this.restService
+        .post(`${this.restService.apiUrl}/gis/feature/popup`, {
+          cacheKey: firstReference.cacheKey,
+          featureIndexes: popupReferences.map(
+            (reference) => reference?.featureIndex
+          ),
+        })
+        .pipe(
+          map((response: { features: Feature<Geometry>[] }) =>
+            response.features.length === features.length
+              ? response.features
+              : features
+          ),
+          catchError(() => of(features))
+        )
+    );
+  }
+
+  /**
+   * Get the fields rendered by a map popup.
+   *
+   * @param layer Map layer definition.
+   * @returns Unique popup field paths.
+   */
+  private getPopupFields(layer: LayerModel): string[] {
+    const popupInfo = layer.popupInfo;
+    return Array.from(
+      new Set([
+        ...(popupInfo?.popupElements
+          ?.filter((element) => element.type === 'fields')
+          .flatMap((element) => element.fields || []) || []),
+        ...this.getTemplateFields(popupInfo?.title),
+        ...this.getTemplateFields(popupInfo?.description),
+        ...(popupInfo?.popupElements?.flatMap((element) =>
+          element.type === 'fields'
+            ? [
+                ...this.getTemplateFields(element.title),
+                ...this.getTemplateFields(element.description),
+              ]
+            : this.getTemplateFields(element.text)
+        ) || []),
+      ])
+    );
+  }
+
+  /**
+   * Get field paths referenced by popup template placeholders.
+   *
+   * @param text Localized template text.
+   * @returns Field paths used by the template.
+   */
+  private getTemplateFields(text?: LocalizedString): string[] {
+    const texts = (
+      typeof text === 'string' ? [text] : Object.values(text || {})
+    ).filter((value): value is string => Boolean(value));
+    return texts.flatMap((value) =>
+      (value.match(/{{(.*?)}}/g) || [])
+        .map((placeholder) => placeholder.slice(2, -2).trim())
+        .filter(
+          (placeholder) => placeholder && !placeholder.includes('coordinates')
+        )
+    );
+  }
+
+  /**
+   * Get fields needed before a popup is opened.
+   *
+   * @param layer Map layer definition.
+   * @returns Renderer field paths.
+   */
+  private getDisplayFields(layer: LayerModel): string[] {
+    const rendererField = layer.layerDefinition?.drawingInfo?.renderer?.field1;
+    return [rendererField, layer.datasource?.adminField].filter(
+      (field): field is string => Boolean(field)
+    );
+  }
+
+  /**
+   * Extract an internal popup-cache reference from a compact feature.
+   *
+   * @param feature Map feature.
+   * @returns Popup-cache reference when present.
+   */
+  private getPopupReference(feature: Feature<Geometry>) {
+    const reference = feature.properties?.__oortPopup;
+    if (
+      !reference ||
+      typeof reference !== 'object' ||
+      !('cacheKey' in reference) ||
+      !('featureIndex' in reference) ||
+      typeof reference.cacheKey !== 'string' ||
+      !Number.isInteger(reference.featureIndex)
+    ) {
+      return undefined;
+    }
+    return reference;
+  }
 
   /**
    * Fetches features with aggregation directly from frontend
