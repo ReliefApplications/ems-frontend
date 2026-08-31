@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "******",
+        "cloneNotice": "******",
         "confirmModal": {
           "confirmDelete": "******",
           "confirmLoad": "******",
@@ -2150,6 +2151,12 @@
               "notify": "******",
               "publish": "******"
             }
+          },
+          "drafts": {
+            "all": "******",
+            "allTooltip": "******",
+            "records": "******",
+            "recordsTooltip": "******"
           },
           "hint": {
             "actions": {

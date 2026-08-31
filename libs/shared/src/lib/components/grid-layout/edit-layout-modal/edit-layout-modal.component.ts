@@ -11,7 +11,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  CheckboxModule,
+  DialogModule,
+  FormWrapperModule,
+  IconModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { LocalizedInputComponent } from '../../controls/public-api';
 import {
@@ -45,6 +51,9 @@ interface DialogData {
     ButtonModule,
     LocalizedInputComponent,
     TranslateModule,
+    CheckboxModule,
+    IconModule,
+    TooltipModule,
   ],
   selector: 'shared-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
@@ -67,6 +76,8 @@ export class EditLayoutModalComponent implements AfterViewInit {
     ],
     query: createQueryForm(this.data.layout?.query),
     display: createDisplayForm(this.data.layout?.display),
+    draft: [this.data.layout?.draft ?? false],
+    allDrafts: [this.data.layout?.allDrafts ?? false],
   });
   /**
    * Templates
@@ -90,7 +101,13 @@ export class EditLayoutModalComponent implements AfterViewInit {
     public dialogRef: DialogRef<EditLayoutModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private translate: TranslateService
-  ) {}
+  ) {
+    this.form.get('draft')?.valueChanges.subscribe((draft) => {
+      if (!draft) {
+        this.form.get('allDrafts')?.setValue(false);
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     this.layoutPreviewData = {
@@ -132,6 +149,8 @@ export class EditLayoutModalComponent implements AfterViewInit {
       nameTranslations,
       query: raw.query,
       display: raw.display,
+      draft: raw.draft,
+      allDrafts: raw.draft ? raw.allDrafts : false,
     } as any);
   }
 

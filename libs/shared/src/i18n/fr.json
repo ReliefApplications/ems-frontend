@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "Charger un brouillon",
+        "cloneNotice": "Vous dupliquez un brouillon. L'enregistrement créera un nouvel enregistrement finalisé ; le brouillon d'origine restera inchangé. Utilisez Enregistrer comme brouillon pour créer un autre brouillon.",
         "confirmModal": {
           "confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
           "confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
@@ -2153,6 +2154,12 @@
               "notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
               "publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
             }
+          },
+          "drafts": {
+            "all": "Afficher les brouillons de tous les utilisateurs",
+            "allTooltip": "Si cette option est activée, la grille inclut les brouillons créés par tous les utilisateurs. Sinon, les utilisateurs ne voient que leurs propres brouillons.",
+            "records": "Afficher les brouillons",
+            "recordsTooltip": "Afficher les brouillons au lieu des enregistrements soumis"
           },
           "hint": {
             "actions": {

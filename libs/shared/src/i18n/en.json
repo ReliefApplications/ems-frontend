@@ -1109,6 +1109,7 @@
       },
       "draftRecords": {
         "buttonLoad": "Load draft record",
+        "cloneNotice": "You are duplicating a draft. Saving will create a new completed record; the original draft will remain unchanged. Use Save as draft to create a separate draft instead.",
         "confirmModal": {
           "confirmDelete": "Do you really want to delete this draft record?",
           "confirmLoad": "Do you really want to load this draft record?",
@@ -2150,6 +2151,12 @@
               "notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
               "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
             }
+          },
+          "drafts": {
+            "all": "Show all users' drafts",
+            "allTooltip": "When enabled, the grid includes drafts created by all users. Otherwise users only see their own drafts.",
+            "records": "Show draft records",
+            "recordsTooltip": "Display draft records instead of submitted records"
           },
           "hint": {
             "actions": {

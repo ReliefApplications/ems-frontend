@@ -40,6 +40,8 @@ interface DialogData {
   isTemporary?: boolean;
   temporaryRecordData?: any;
   parentComponent?: CoreGridComponent;
+  draft?: boolean;
+  allDrafts?: boolean;
 }
 
 /**
@@ -157,6 +159,8 @@ export class RecordModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id: this.data.recordId,
+              draft: this.data.draft,
+              allDrafts: this.data.allDrafts,
             },
           })
         ).then(({ data }) => {
@@ -271,6 +275,7 @@ export class RecordModalComponent
       data: {
         template: this.form.id,
         prefillData: this.record?.data,
+        isDraftClone: this.record?.draft === true,
         askForConfirm: false,
       },
       autoFocus: false,
