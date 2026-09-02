@@ -5,6 +5,7 @@ import {
   EditResourceMutationResponse,
   ResourceQueryResponse,
   BreadcrumbService,
+  UniquenessRule,
 } from '@oort-front/shared';
 import { EDIT_RESOURCE } from './graphql/mutations';
 import { GET_RESOURCE_BY_ID } from './graphql/queries';
@@ -136,6 +137,48 @@ export class ResourceComponent implements OnInit {
         variables: {
           id: this.id,
           permissions: e,
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.resource.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.resource.one'),
+                value: '',
+              })
+            );
+            if (data) {
+              this.resource = data.editResource;
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+  }
+
+  /**
+   * Edits the scoped uniqueness rules of the resource.
+   *
+   * @param rules New list of uniqueness rules.
+   */
+  saveUniquenessRules(rules: UniquenessRule[]): void {
+    this.apollo
+      .mutate<EditResourceMutationResponse>({
+        mutation: EDIT_RESOURCE,
+        variables: {
+          id: this.id,
+          uniquenessRules: rules,
         },
       })
       .subscribe({

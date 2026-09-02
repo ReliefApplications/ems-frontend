@@ -9,6 +9,22 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
+      uniquenessRules {
+        name
+        fields
+        severity
+        message
+        condition {
+          field
+          operator
+          value
+        }
+        dateIntersection {
+          startField
+          endField
+          allowAdjacent
+        }
+      }
       metadata {
         name
         canSee
