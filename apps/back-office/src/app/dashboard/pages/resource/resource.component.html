@@ -11,6 +11,13 @@
       *ngIf="resource.canUpdate"
     >
     </shared-access>
+    <shared-uniqueness-rules
+      [rules]="resource.uniquenessRules"
+      [fields]="resource.fields"
+      (save)="saveUniquenessRules($event)"
+      *ngIf="resource.canUpdate"
+    >
+    </shared-uniqueness-rules>
   </div>
   <ui-tabs [selectedIndex]="selectedTab">
     <ui-tab

@@ -2,9 +2,15 @@ import { gql } from 'apollo-angular';
 
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
-  mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
-    addRecord(form: $form, data: $data) {
+  mutation addRecord(
+    $form: ID!
+    $data: JSON!
+    $display: Boolean
+    $skipValidation: Boolean
+  ) {
+    addRecord(form: $form, data: $data, skipValidation: $skipValidation) {
       id
+      incrementalId
       createdAt
       modifiedAt
       createdBy {
@@ -20,6 +26,10 @@ export const ADD_RECORD = gql`
           }
           data
         }
+      }
+      validationErrors {
+        question
+        errors
       }
     }
   }
@@ -47,6 +57,7 @@ export const EDIT_RECORD = gql`
     $template: ID
     $display: Boolean
     $lang: String
+    $skipValidation: Boolean
   ) {
     editRecord(
       id: $id
@@ -54,6 +65,7 @@ export const EDIT_RECORD = gql`
       version: $version
       template: $template
       lang: $lang
+      skipValidation: $skipValidation
     ) {
       id
       incrementalId

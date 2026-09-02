@@ -101,6 +101,7 @@ export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/templates/public-api';
 export * from './lib/components/ui/empty/public-api';
+export * from './lib/components/uniqueness-rules/public-api';
 export * from './lib/components/upload-menu/public-api';
 export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';

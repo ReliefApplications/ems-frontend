@@ -1685,6 +1685,36 @@
         "title": "Template type"
       }
     },
+    "uniquenessRules": {
+      "add": "Add a rule",
+      "condition": {
+        "add": "Add a condition",
+        "equals": "equals",
+        "notEquals": "does not equal",
+        "title": "Only apply when...",
+        "valuePlaceholder": "Value"
+      },
+      "dateIntersection": {
+        "allowAdjacent": "Allow ranges to touch (adjacent periods are not a conflict)",
+        "endField": "End date field",
+        "startField": "Start date field",
+        "title": "Records must not have overlapping date ranges"
+      },
+      "description": "Configure uniqueness rules",
+      "empty": "No uniqueness rule configured. Records can be created and edited freely.",
+      "errors": {
+        "fieldsRequired": "Select at least one field for this rule."
+      },
+      "fields": "Fields",
+      "message": "Message shown to the user",
+      "messagePlaceholder": "A record with the same values already exists.",
+      "name": "Name",
+      "remove": "Remove rule",
+      "severity": "Severity",
+      "severityError": "Block (prevent saving)",
+      "severityWarning": "Warn (let the user save anyway)",
+      "title": "Uniqueness rules"
+    },
     "user": {
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
