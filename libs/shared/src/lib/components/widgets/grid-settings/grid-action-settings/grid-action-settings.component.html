@@ -25,6 +25,29 @@
         {{ 'components.widget.settings.grid.hint.executionOrder' | translate }}
       </ui-alert>
 
+      <div
+        *ngIf="selectedActions.length > 1"
+        cdkDropList
+        class="mb-4"
+        (cdkDropListDropped)="onActionOrderChange($event)"
+      >
+        <div
+          *ngFor="let action of selectedActions"
+          cdkDrag
+          class="flex items-center rounded border border-gray-200 mb-1 px-1"
+        >
+          <ui-button
+            variant="grey"
+            [isIcon]="true"
+            size="small"
+            cdkDragHandle
+            icon="drag_indicator"
+            [uiTooltip]="'common.tooltip.dragDrop' | translate"
+          ></ui-button>
+          <span>{{ actionLabels[action] | translate }}</span>
+        </div>
+      </div>
+
       <!-- Select all records of query -->
       <ui-checkbox formControlName="selectAll">
         <ng-container ngProjectAs="label">{{

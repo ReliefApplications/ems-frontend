@@ -15,6 +15,11 @@ import { ContentType } from '../../../../models/page.model';
 import { WorkflowService } from '../../../../services/workflow/workflow.service';
 import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DistributionModalComponent } from '../../../distribution-lists/components/distribution-modal/distribution-modal.component';
@@ -37,6 +42,10 @@ import {
 } from '@oort-front/ui';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
+import {
+  GridActionExecution,
+  GRID_ACTION_EXECUTION_ORDER,
+} from '../grid-settings.forms';
 
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
@@ -69,6 +78,7 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
     TabsModule,
     AlertModule,
     LocalizedInputComponent,
+    DragDropModule,
   ],
 })
 export class GridActionSettingsComponent
@@ -107,6 +117,46 @@ export class GridActionSettingsComponent
   @Output() loadChannels = new EventEmitter<void>();
   /** Saves if the channels has been fetched */
   public loadedChannel = false;
+
+  /** Translation keys for actions shown in the execution-order list. */
+  public readonly actionLabels: Record<GridActionExecution, string> = {
+    selectAll:
+      'components.widget.settings.grid.buttons.callback.selectAllRecords',
+    selectPage:
+      'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage',
+    autoSave: 'components.widget.settings.grid.buttons.callback.save',
+    attachToRecord: 'components.widget.settings.grid.buttons.callback.attach',
+    prefillForm: 'components.widget.settings.grid.buttons.callback.prefill',
+    modifySelectedRows:
+      'components.widget.settings.grid.buttons.callback.modify',
+    notify: 'components.channel.dropdown.select',
+    publish: 'common.publish',
+    sendMail: 'components.widget.settings.grid.buttons.callback.sendMail',
+    goToNextStep:
+      'components.widget.settings.grid.buttons.callback.workflow.next',
+    goToPreviousStep:
+      'components.widget.settings.grid.buttons.callback.workflow.previous',
+    closeWorkflow:
+      'components.widget.settings.grid.buttons.callback.workflow.close',
+  };
+
+  /**
+   * Actions enabled for this button, in their configured execution order.
+   *
+   * @returns enabled actions
+   */
+  get selectedActions(): GridActionExecution[] {
+    return this.actionOrder.filter(
+      (action) => this.formGroup.get(action)?.value
+    );
+  }
+
+  /** @returns persisted execution order, including disabled actions. */
+  get actionOrder(): GridActionExecution[] {
+    return (
+      this.formGroup.get('actionOrder')?.value ?? GRID_ACTION_EXECUTION_ORDER
+    );
+  }
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -517,5 +567,25 @@ export class GridActionSettingsComponent
       this.loadChannels.emit();
       this.loadedChannel = true;
     }
+  }
+
+  /**
+   * Reorders enabled actions while preserving the relative order of disabled actions.
+   *
+   * @param event drag-and-drop event
+   */
+  public onActionOrderChange(event: CdkDragDrop<GridActionExecution[]>): void {
+    if (event.previousIndex === event.currentIndex) return;
+
+    const selectedActions = [...this.selectedActions];
+    moveItemInArray(selectedActions, event.previousIndex, event.currentIndex);
+
+    const selectedActionSet = new Set(this.selectedActions);
+    const reorderedActions = this.actionOrder.map((action) => {
+      if (!selectedActionSet.has(action)) return action;
+
+      return selectedActions.shift() ?? action;
+    });
+    this.formGroup.get('actionOrder')?.setValue(reorderedActions);
   }
 }
