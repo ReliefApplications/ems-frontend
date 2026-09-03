@@ -7,7 +7,7 @@ import {
   AbilityClass,
   ForcedSubject,
 } from '@casl/ability';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import {
@@ -158,9 +158,15 @@ export class AuthService {
         }
       });
     this.oauthService.events
-      .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
+      .pipe(filter((e: OAuthEvent) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
-        this.oauthService.initLoginFlow();
+        // A stale callback (e.g. coming from a parallel tab) should not restart
+        // the login flow when the user is already authenticated
+        if (this.oauthService.hasValidAccessToken()) {
+          this.cleanOAuthParamsFromUrl();
+        } else {
+          this.oauthService.initLoginFlow();
+        }
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
@@ -218,37 +224,108 @@ export class AuthService {
    * @returns A promise that resolves to void.
    */
   public async initLoginSequence(): Promise<void> {
-    if (!this.oauthService.hasValidAccessToken()) {
-      let environmentUri =
-        this.environment.module === 'backoffice'
-          ? this.environment.backOfficeUri
-          : this.environment.frontOfficeUri;
-      let pathName = '/';
-      // If href starts with environment uri, remove it to get pathname
-      if (location.href.startsWith(environmentUri)) {
-        pathName = location.href.replace(environmentUri, '/');
-      }
-      // else, the href is the environment uri without the trailing '/'
-      // We remove the trailing '/' from the environment uri as we would add it back
-      environmentUri = environmentUri.replace(/\/$/, '');
-      const redirectUri = new URL(pathName, environmentUri);
-      if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        localStorage.setItem(
-          'redirectPath',
-          pathName
-          // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
-        );
-      }
+    // If the user is already authenticated, reuse the existing session:
+    // the OAuth callback (if any) must not be processed again, as the
+    // authorization code has already been redeemed, and the login flow
+    // must not be restarted.
+    if (
+      this.oauthService.hasValidAccessToken() &&
+      this.oauthService.hasValidIdToken()
+    ) {
+      this.cleanOAuthParamsFromUrl();
+      this.isAuthenticated.next(true);
+      this.isDoneLoading.next(true);
+      return;
     }
-    return this.oauthService
-      .loadDiscoveryDocumentAndLogin()
-      .then(() => {
-        this.isDoneLoading.next(true);
-      })
-      .catch((err) => {
-        console.error(err);
-        this.isDoneLoading.next(false);
-      });
+
+    let environmentUri =
+      this.environment.module === 'backoffice'
+        ? this.environment.backOfficeUri
+        : this.environment.frontOfficeUri;
+    let pathName = '/';
+    // If href starts with environment uri, remove it to get pathname
+    if (location.href.startsWith(environmentUri)) {
+      pathName = location.href.replace(environmentUri, '/');
+    }
+    // else, the href is the environment uri without the trailing '/'
+    // We remove the trailing '/' from the environment uri as we would add it back
+    environmentUri = environmentUri.replace(/\/$/, '');
+    const redirectUri = new URL(pathName, environmentUri);
+    if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+      localStorage.setItem(
+        'redirectPath',
+        pathName
+        // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
+      );
+    }
+
+    try {
+      await this.oauthService.loadDiscoveryDocument();
+      // Try to reuse the existing session before asking the user to log in again:
+      // when the access token has expired but a refresh token is still available,
+      // refresh the tokens silently instead of restarting the whole login flow.
+      if (
+        !this.hasOAuthCallbackParams() &&
+        localStorage.getItem('refresh_token')
+      ) {
+        try {
+          await this.oauthService.refreshToken();
+        } catch (refreshError) {
+          console.error(refreshError);
+        }
+      }
+      // Process the authentication callback if there is one (fresh authorization code)
+      if (!this.oauthService.hasValidAccessToken()) {
+        try {
+          await this.oauthService.tryLogin();
+        } catch (loginError) {
+          console.error(loginError);
+        }
+        // No valid session and no callback to process: start a new login flow
+        if (!this.oauthService.hasValidAccessToken()) {
+          this.oauthService.initLoginFlow();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      this.isDoneLoading.next(false);
+      return;
+    }
+    // Remove the OAuth callback parameters from the URL, so that the page can
+    // be safely refreshed without trying to redeem the authorization code again
+    this.cleanOAuthParamsFromUrl();
+    this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
+    this.isDoneLoading.next(true);
+  }
+
+  /**
+   * Removes OAuth callback parameters from the current URL,
+   * so that refreshing the page does not try to redeem the authorization code again.
+   */
+  private cleanOAuthParamsFromUrl(): void {
+    const search = window.location.search
+      .replace(/code=[^&]*&?/, '')
+      .replace(/state=[^&]*&?/, '')
+      .replace(/session_state=[^&]*&?/, '')
+      .replace(/error=[^&]*&?/, '')
+      .replace(/error_description=[^&]*&?/, '')
+      .replace(/^\?&/, '?')
+      .replace(/&$/, '')
+      .replace(/^\?$/, '');
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname + search + window.location.hash
+    );
+  }
+
+  /**
+   * Checks if the current URL contains OAuth callback parameters.
+   *
+   * @returns True if the current URL contains OAuth callback parameters.
+   */
+  private hasOAuthCallbackParams(): boolean {
+    return /[?&](code|state)=/.test(window.location.search);
   }
 
   /**
