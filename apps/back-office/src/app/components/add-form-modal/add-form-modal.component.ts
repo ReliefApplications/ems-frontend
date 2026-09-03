@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ import {
   FormWrapperModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-import { DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   Form,
   ResourceQueryResponse,
@@ -54,7 +54,7 @@ export class AddFormModalComponent implements OnInit {
   public form = this.fb.group({
     name: ['', Validators.required],
     newResource: this.fb.nonNullable.control(true),
-    resource: [null],
+    resource: [null as string | null],
     inheritsTemplate: this.fb.nonNullable.control(false),
     template: null,
   });
@@ -78,11 +78,15 @@ export class AddFormModalComponent implements OnInit {
    * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
+   * @param data Optional resource to associate with the new form
    */
   constructor(
     private fb: FormBuilder,
     public dialogRef: DialogRef<AddFormModalComponent>,
-    private apollo: Apollo
+    private apollo: Apollo,
+    @Optional()
+    @Inject(DIALOG_DATA)
+    public data: { resourceId?: string } | null
   ) {}
 
   /** Load the resources and build the form. */
@@ -127,6 +131,13 @@ export class AddFormModalComponent implements OnInit {
           template: null,
         });
       });
+
+    if (this.data?.resourceId) {
+      this.form.patchValue({
+        newResource: false,
+        resource: this.data.resourceId,
+      });
+    }
   }
 
   /**
@@ -143,8 +154,13 @@ export class AddFormModalComponent implements OnInit {
           id,
         },
       })
-      .subscribe(({ data }) => {
-        this.templates = data.resource.forms || [];
+      .subscribe({
+        next: ({ data }) => {
+          this.templates = data.resource?.forms ?? [];
+        },
+        error: () => {
+          this.templates = [];
+        },
       });
   }
 }
