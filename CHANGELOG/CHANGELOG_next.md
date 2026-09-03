@@ -1,3 +1,9 @@
+# [2.24.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.1...v2.24.0-rc.2) (2026-09-03)
+
+### Bug Fixes
+
+- Download button not appearing for single image fields in forms ([24a5cc9](https://github.com/ReliefApplications/ems-frontend/commit/24a5cc9bb041be6c0a49652c6ad0fd17d4439041)), closes [AB#134011](https://github.com/AB/issues/134011)
+
 # [2.24.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0...v2.24.0-rc.1) (2026-07-29)
 
 ### Bug Fixes
