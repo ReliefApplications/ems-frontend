@@ -22,7 +22,6 @@ export const GET_SHORT_FORMS = gql`
           name
           createdAt
           status
-          fields
           versionsCount
           recordsCount
           core
@@ -37,6 +36,7 @@ export const GET_SHORT_FORMS = gql`
               name
             }
           }
+          isPublic
         }
         cursor
       }

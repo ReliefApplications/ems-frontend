@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "Is core",
+      "isPublic": "Is public",
       "paginator": {
         "ariaLabel": "Select page of forms"
       },
@@ -1241,6 +1242,7 @@
         "to": "to",
         "withValue": "with value"
       },
+      "collapseValue": "Collapse",
       "columns": {
         "action": "Action type",
         "date": "Date",
@@ -1252,6 +1254,7 @@
       },
       "download": "Download history",
       "empty": "No activity detected",
+      "expandValue": "Expand",
       "field": {
         "all": "All fields",
         "select": "Select fields"
@@ -2922,6 +2925,7 @@
         "name": "Field name",
         "usedIn": "Used in"
       },
+      "isPublic": "Public",
       "new": "New form",
       "notifications": {
         "savingFailed": "Saving failed, some fields require your attention."

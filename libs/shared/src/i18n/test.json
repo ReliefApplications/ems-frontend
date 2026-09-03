@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "******",
+      "isPublic": "******",
       "paginator": {
         "ariaLabel": "******"
       },
@@ -1241,6 +1242,7 @@
         "to": "******",
         "withValue": "******"
       },
+      "collapseValue": "******",
       "columns": {
         "action": "******",
         "date": "******",
@@ -1252,6 +1254,7 @@
       },
       "download": "******",
       "empty": "******",
+      "expandValue": "******",
       "field": {
         "all": "******",
         "select": "******"
@@ -2922,6 +2925,7 @@
         "name": "******",
         "usedIn": "******"
       },
+      "isPublic": "******",
       "new": "******",
       "notifications": {
         "savingFailed": "******"

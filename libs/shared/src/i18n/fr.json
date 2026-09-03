@@ -1207,6 +1207,7 @@
     },
     "forms": {
       "isCore": "Est un formulaire source",
+      "isPublic": "Est public",
       "paginator": {
         "ariaLabel": "Sélectionnez la page de formulaires"
       },
@@ -1241,6 +1242,7 @@
         "to": "à",
         "withValue": "avec valeur"
       },
+      "collapseValue": "Réduire",
       "columns": {
         "action": "Type d'action",
         "date": "Date",
@@ -1252,6 +1254,7 @@
       },
       "download": "Télécharger l'historique",
       "empty": "Aucune activité détectée",
+      "expandValue": "Développer",
       "field": {
         "all": "Tous les champs",
         "select": "Sélectionner les champs"
@@ -2925,6 +2928,7 @@
         "name": "Nom du champ",
         "usedIn": "Utilisé par"
       },
+      "isPublic": "Public",
       "new": "Nouveau formulaire",
       "notifications": {
         "savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."

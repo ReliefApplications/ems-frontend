@@ -47,6 +47,7 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
     'status',
     'recordsCount',
     'core',
+    'isPublic',
     '_actions',
   ];
 

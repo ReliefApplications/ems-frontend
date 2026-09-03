@@ -1,3 +1,66 @@
+# [2.24.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0...v2.24.0-rc.1) (2026-07-29)
+
+### Bug Fixes
+
+- add parameter to filter out enriched attributes ([6f3c3c8](https://github.com/ReliefApplications/ems-frontend/commit/6f3c3c889959d7cdfbb3cf0d3edaf194c3f80e68))
+- addition / deletion / edition of records would not always reload dashboard widgets ([#2875](https://github.com/ReliefApplications/ems-frontend/issues/2875)) ([c4e05e1](https://github.com/ReliefApplications/ems-frontend/commit/c4e05e13e2402cfc6ca1e252dbda354f122e6f79)), closes [AB#134282](https://github.com/AB/issues/134282)
+- data consumed by forms could have blank fields due to auto translate feature ([420f7d1](https://github.com/ReliefApplications/ems-frontend/commit/420f7d16c717cb4cfa4469e476416873208c9406))
+- improve custom action column sizing and update logic for dynamic widths ([#2871](https://github.com/ReliefApplications/ems-frontend/issues/2871)) ([98648a9](https://github.com/ReliefApplications/ems-frontend/commit/98648a90a829f9a0c6efb4047aa7b66a812c04da)), closes [AB#133813](https://github.com/AB/issues/133813)
+- Improve PDF & image preview in forms ([#2901](https://github.com/ReliefApplications/ems-frontend/issues/2901)) ([98d2944](https://github.com/ReliefApplications/ems-frontend/commit/98d2944bce02a907e28a1be4e3f499967db0a068)), closes [AB#134011](https://github.com/AB/issues/134011)
+- Improve performance of form in general ([#2878](https://github.com/ReliefApplications/ems-frontend/issues/2878)) ([07c3e0e](https://github.com/ReliefApplications/ems-frontend/commit/07c3e0e7bf53eba0519d97092b486411cad8bb99)), closes [AB#133165](https://github.com/AB/issues/133165)
+- Improve readability of long values in history ([#2910](https://github.com/ReliefApplications/ems-frontend/issues/2910)) ([9ea4864](https://github.com/ReliefApplications/ems-frontend/commit/9ea48645f5a5338a69c793ff7e406993bb07dc3a)), closes [AB#135187](https://github.com/AB/issues/135187)
+- make geospatial field of form builder readonly when required ([#2874](https://github.com/ReliefApplications/ems-frontend/issues/2874)) ([d9814fa](https://github.com/ReliefApplications/ems-frontend/commit/d9814fab2e29057cd29c072a8af7b108d144fada)), closes [AB#134281](https://github.com/AB/issues/134281)
+- meta fields from record not being copied onSelect in resources fields ([#2909](https://github.com/ReliefApplications/ems-frontend/issues/2909)) ([e4aa835](https://github.com/ReliefApplications/ems-frontend/commit/e4aa835873da743885c47a941fdc359f9b327d02)), closes [AB#135075](https://github.com/AB/issues/135075)
+- Multiple issues with full dual language experience ([#2903](https://github.com/ReliefApplications/ems-frontend/issues/2903)) ([081847c](https://github.com/ReliefApplications/ems-frontend/commit/081847c225697b2e6c3ae6f1c3abfcce53cc72fe)), closes [Ab#134863](https://github.com/Ab/issues/134863)
+- placeholders without associated value would stay in html ([1c23795](https://github.com/ReliefApplications/ems-frontend/commit/1c237951cb23dacfc0ceacb1d8e8784d82ca9d3a))
+- preview in html fields of forms now working with variables ([8c7e716](https://github.com/ReliefApplications/ems-frontend/commit/8c7e716cfe12718d360dde4bee7351048f6e6ca9))
+- Radio display issue in forms ([#2896](https://github.com/ReliefApplications/ems-frontend/issues/2896)) ([aebd005](https://github.com/ReliefApplications/ems-frontend/commit/aebd005372338b9f931bce9ba8e90d84397c8e94)), closes [AB#134665](https://github.com/AB/issues/134665)
+- Save buttons expressions of form can now be translated ([75b020c](https://github.com/ReliefApplications/ems-frontend/commit/75b020c47763507dc6fc5dab6cd601aab384ab24))
+- settings always appearing on form builder ([91c5c53](https://github.com/ReliefApplications/ems-frontend/commit/91c5c538fec95e30033238604c62539f3ee4ce6a))
+- Some errors not taken into account before sending form would end up in bad UX ([#2869](https://github.com/ReliefApplications/ems-frontend/issues/2869)) ([4009491](https://github.com/ReliefApplications/ems-frontend/commit/4009491cd2525b2ad24ce6d5a4cf89d426917e9c)), closes [AB#133817](https://github.com/AB/issues/133817)
+- summary card infinite scrolling could block when using resource layout ([19c46e9](https://github.com/ReliefApplications/ems-frontend/commit/19c46e973b63a331354defca124465ceee6fb186))
+- survey not automatically loading in user locale + missing translation for geo fields in survey ([1247e98](https://github.com/ReliefApplications/ems-frontend/commit/1247e98204c58dfee43cb38e114511215a3ec430))
+- text columns could sometimes appear as object object ([d653477](https://github.com/ReliefApplications/ems-frontend/commit/d6534777dabba965cac81d66c0f05d80be59d1ee))
+- Time could break validation during inline edition ([4ec8298](https://github.com/ReliefApplications/ems-frontend/commit/4ec8298561f8ad3aaac4e9b3ab4181d11db91463))
+
+### Features
+
+- Add Excel import support in Front-Office Grid widget ([#2892](https://github.com/ReliefApplications/ems-frontend/issues/2892)) ([81732e7](https://github.com/ReliefApplications/ems-frontend/commit/81732e709e76015837d3aff51d4a6b4546b1a757)), closes [AB#134543](https://github.com/AB/issues/134543)
+- Add text describing how labels can be translated in forms ([#2895](https://github.com/ReliefApplications/ems-frontend/issues/2895)) ([398675f](https://github.com/ReliefApplications/ems-frontend/commit/398675f8494f46d018b611f82258615f79616f52)), closes [AB#134831](https://github.com/AB/issues/134831)
+- Add Ukrainian language ([#2867](https://github.com/ReliefApplications/ems-frontend/issues/2867)) ([b4a79f3](https://github.com/ReliefApplications/ems-frontend/commit/b4a79f30e63d79fe9910abf45ee1415496e4dcdf)), closes [AB#133173](https://github.com/AB/issues/133173)
+- Allow admins to indicate which fields should be read-only during inline edition ([#2905](https://github.com/ReliefApplications/ems-frontend/issues/2905)) ([92a8697](https://github.com/ReliefApplications/ems-frontend/commit/92a8697a5d379fad1eb5911e9deb40d0565546b5)), closes [AB#134987](https://github.com/AB/issues/134987)
+- Auto translated text fields in forms ([#2886](https://github.com/ReliefApplications/ems-frontend/issues/2886)) ([ed9a984](https://github.com/ReliefApplications/ems-frontend/commit/ed9a984a4b30eaa3fda1a187ab8c8972103e8527)), closes [Ab#134348](https://github.com/Ab/issues/134348)
+- Calculated fields now working with related fields ([#2906](https://github.com/ReliefApplications/ems-frontend/issues/2906)) ([11d1a7b](https://github.com/ReliefApplications/ems-frontend/commit/11d1a7b0c78ebc43be5db856e28113fd3ca03f3b)), closes [AB#129357](https://github.com/AB/issues/129357)
+- Can now use calculated fields in contextual dashboard title ([#2904](https://github.com/ReliefApplications/ems-frontend/issues/2904)) ([1a8a2fb](https://github.com/ReliefApplications/ems-frontend/commit/1a8a2fb5c8e124a4a78d387174f25b2ab83fecf3)), closes [AB#134728](https://github.com/AB/issues/134728)
+- Can now use user attributes in filter ([#2907](https://github.com/ReliefApplications/ems-frontend/issues/2907)) ([efa83d0](https://github.com/ReliefApplications/ems-frontend/commit/efa83d0ee537c79805641aa6ba68f775d4ec3afa)), closes [AB#129134](https://github.com/AB/issues/129134)
+- editor & tabs widget can now resize automatically the grid so we removed duplicated scrollbars ([#2893](https://github.com/ReliefApplications/ems-frontend/issues/2893)) ([a20720b](https://github.com/ReliefApplications/ems-frontend/commit/a20720bb1b04fa9a3f1a949353077ddf9c31adf6)), closes [AB#134729](https://github.com/AB/issues/134729)
+- Email notifications now generate in-app messages ([#2888](https://github.com/ReliefApplications/ems-frontend/issues/2888)) ([9906e70](https://github.com/ReliefApplications/ems-frontend/commit/9906e709eaf2792d3af3ac2f5b3ce704e9d029b4)), closes [AB#133554](https://github.com/AB/issues/133554)
+- Enable image & PDF preview in HTML fields in forms ([#2881](https://github.com/ReliefApplications/ems-frontend/issues/2881)) ([3d0d48a](https://github.com/ReliefApplications/ems-frontend/commit/3d0d48ad77aa61948838fa92fbc58d5589179fd4)), closes [AB#134013](https://github.com/AB/issues/134013)
+- Enable image & PDF previews in grids ([#2880](https://github.com/ReliefApplications/ems-frontend/issues/2880)) ([afb8a4b](https://github.com/ReliefApplications/ems-frontend/commit/afb8a4b02d5f93097474928d84fc6a4deb26a42b)), closes [AB#134012](https://github.com/AB/issues/134012)
+- Enable preview of images / PDFs when single file in forms ([#2877](https://github.com/ReliefApplications/ems-frontend/issues/2877)) ([5db5b52](https://github.com/ReliefApplications/ems-frontend/commit/5db5b52d12e6be7a441eed763063ed11403da16d)), closes [AB#134011](https://github.com/AB/issues/134011)
+- Enable translation on widgets / pages of applications ([#2868](https://github.com/ReliefApplications/ems-frontend/issues/2868)) ([848c0c1](https://github.com/ReliefApplications/ems-frontend/commit/848c0c181fecf24cde207a847a7d785e7596660a)), closes [AB#133293](https://github.com/AB/issues/133293)
+- Forms can now be made public ([#2860](https://github.com/ReliefApplications/ems-frontend/issues/2860)) ([b55ee9f](https://github.com/ReliefApplications/ems-frontend/commit/b55ee9f2d764ccd123b0b40e12d59d57d526c58f)), closes [AB#129136](https://github.com/AB/issues/129136)
+- Implement new property to ask for confirm modal when editing records ([#2876](https://github.com/ReliefApplications/ems-frontend/issues/2876)) ([c1b0454](https://github.com/ReliefApplications/ems-frontend/commit/c1b04540f5b48704748ce88b0785a4b44ea3506c)), closes [AB#128987](https://github.com/AB/issues/128987)
+- Translate field choices ([#2890](https://github.com/ReliefApplications/ems-frontend/issues/2890)) ([9d5bf45](https://github.com/ReliefApplications/ems-frontend/commit/9d5bf45154559f8972b5838311572765bfae9f8e)), closes [AB#134288](https://github.com/AB/issues/134288)
+
+# [2.23.0-rc.35](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.34...v2.23.0-rc.35) (2026-07-17)
+
+### Bug Fixes
+
+- Improve readability of long values in history ([#2910](https://github.com/ReliefApplications/ems-frontend/issues/2910)) ([9ea4864](https://github.com/ReliefApplications/ems-frontend/commit/9ea48645f5a5338a69c793ff7e406993bb07dc3a)), closes [AB#135187](https://github.com/AB/issues/135187)
+
+# [2.23.0-rc.34](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.33...v2.23.0-rc.34) (2026-07-17)
+
+### Features
+
+- editor & tabs widget can now resize automatically the grid so we removed duplicated scrollbars ([#2893](https://github.com/ReliefApplications/ems-frontend/issues/2893)) ([a20720b](https://github.com/ReliefApplications/ems-frontend/commit/a20720bb1b04fa9a3f1a949353077ddf9c31adf6)), closes [AB#134729](https://github.com/AB/issues/134729)
+
+# [2.23.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.32...v2.23.0-rc.33) (2026-07-17)
+
+### Bug Fixes
+
+- meta fields from record not being copied onSelect in resources fields ([#2909](https://github.com/ReliefApplications/ems-frontend/issues/2909)) ([e4aa835](https://github.com/ReliefApplications/ems-frontend/commit/e4aa835873da743885c47a941fdc359f9b327d02)), closes [AB#135075](https://github.com/AB/issues/135075)
+
 # [2.23.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0-rc.31...v2.23.0-rc.32) (2026-07-16)
 
 ### Bug Fixes

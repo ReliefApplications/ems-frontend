@@ -96,6 +96,8 @@
       #widgetContent
       [settings]="widget.settings"
       [usePadding]="usePadding"
+      [overflowHidden]="!canUpdate && isBottomWidget"
+      (contentHeightChange)="onContentHeightChange($event)"
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-editor>
@@ -118,6 +120,8 @@
       (edit)="edit.emit($event)"
       [widget]="widget"
       [usePadding]="usePadding"
+      [overflowHidden]="!canUpdate && isBottomWidget"
+      (contentHeightChange)="onContentHeightChange($event)"
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-tabs>

@@ -16,6 +16,7 @@ import {
   SURVEY_PROP_CONFIRM_RECORD_UPDATE,
   SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
 } from '../../utils/survey-confirm-record-update.util';
+import { registerCustomPropertyHelp } from '../localization';
 import { Question } from '../types';
 
 type SurveyPropertyOwner = {
@@ -182,22 +183,44 @@ export const init = (environment: any): void => {
     category: 'general',
     visibleIndex: 49,
     displayName: 'Public form',
-    description:
-      'When enabled, the form is accessible without authentication through the public forms application: anyone with the link can open it and submit records.',
     default: false,
   });
+  registerCustomPropertyHelp(
+    'isPublic',
+    'When enabled, the form is accessible without authentication through the public forms application: anyone with the link can open it and submit records.'
+  );
+
+  // Show the "New record" button displayed after submitting a public form,
+  // letting the user submit another record. Read from the structure by the
+  // public forms application.
+  serializer.addProperty('survey', {
+    name: 'showNewRecordButton:boolean',
+    type: 'boolean',
+    category: 'general',
+    dependsOn: 'isPublic',
+    visibleIf: (obj: any) => Boolean(obj?.isPublic),
+    visibleIndex: 50,
+    displayName: 'Show "New record" button',
+    default: true,
+  });
+  registerCustomPropertyHelp(
+    'showNewRecordButton',
+    'When enabled, a "New record" button is displayed once the public form has been submitted, allowing the user to submit another record.'
+  );
 
   // Require a confirmation modal before updating an existing record.
   serializer.addProperty('survey', {
     name: `${SURVEY_PROP_CONFIRM_RECORD_UPDATE}:boolean`,
     type: 'boolean',
     category: 'general',
-    visibleIndex: 50,
+    visibleIndex: 51,
     displayName: 'Confirm before updating a record',
-    description:
-      'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.',
     default: true,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+    'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.'
+  );
   // Expression overriding the confirmation toggle (evaluated as a boolean).
   serializer.addProperty('survey', {
     name: SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
@@ -205,11 +228,13 @@ export const init = (environment: any): void => {
     category: 'logic',
     visibleIndex: 200,
     displayName: 'Confirm before updating a record (expression)',
-    description:
-      'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.',
     default: '',
     isLocalizable: false,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+    'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.'
+  );
 
   // Add custom label expressions for the form action buttons
   serializer.addProperty('survey', {
@@ -242,14 +267,16 @@ export const init = (environment: any): void => {
     category: 'navigation',
     visibleIndex: 103,
     displayName: 'Modal save label override',
-    description:
-      'Only used when the form is opened in a modal. Falls back to the regular save label if empty.',
     default: '',
     // Localizable so admins can author a per-locale expression; the active
     // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
     isLocalizable: true,
     visibleIf: shouldShowAdvancedNavigationLabelOverrides,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+    'Only used when the form is opened in a modal. Falls back to the regular save label if empty.'
+  );
 };
 
 /**
