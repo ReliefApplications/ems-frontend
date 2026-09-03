@@ -113,11 +113,12 @@ const removeImageDownloadAction = (htmlElement: HTMLElement): void => {
 };
 
 /**
- * Adds a download action to a single image preview in display mode.
+ * Adds a download action floating over a single image preview.
  *
- * SurveyJS keeps the file-name download link in edit mode, but its read-only
- * image rendering does not expose a download icon. The action delegates to the
- * shared file service so both legacy and document-management files are handled.
+ * SurveyJS renders single images without any visible download control (the
+ * file-name link is transparent and stretched over the image), in both edit
+ * and read-only mode. The action delegates to the shared file service so
+ * freshly picked, legacy and document-management files are all handled.
  *
  * @param question File question instance
  * @param htmlElement The question's rendered root HTML element
@@ -132,13 +133,12 @@ const updateImageDownloadAction = (
 ): void => {
   const value = question.value as File[];
   const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
-  const isDisplayMode = (question.survey as SurveyModel)?.mode === 'display';
   const isImage = file
     ? getPreviewKind(file.name, file.type ?? '') === 'image'
     : false;
   const existing = htmlElement.querySelector(`.${IMAGE_DOWNLOAD_CLASS}`);
 
-  if (!isDisplayMode || !file || !isImage) {
+  if (!file || !isImage) {
     removeImageDownloadAction(htmlElement);
     return;
   }

@@ -105,9 +105,28 @@ describe('file widget', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
+  it('downloads a freshly picked image from edit mode', () => {
+    const file = {
+      name: 'identity-document.png',
+      type: 'image/png',
+      content: 'data:image/png;base64,AAAA',
+    };
+    const question = createQuestion('edit', [file]);
+    const element = createElement();
+
+    widget.afterRender(question, element);
+    const button = element.querySelector<HTMLButtonElement>(
+      '.file-image-preview__download'
+    );
+    button?.click();
+
+    expect(button).not.toBeNull();
+    expect(fileService.download).toHaveBeenCalledWith(file);
+  });
+
   it.each([
-    ['edit mode', 'edit', 'image/png'],
     ['a PDF', 'display', 'application/pdf'],
+    ['a PDF in edit mode', 'edit', 'application/pdf'],
   ] as const)(
     'does not add the image download action for %s',
     (_case, mode, type) => {

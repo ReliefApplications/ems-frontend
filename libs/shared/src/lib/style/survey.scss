@@ -257,7 +257,9 @@
     display: inline;
   }
 
-  // Download action for a single image in read-only form details
+  // Download action for a single image in read-only form details, floating
+  // over the bottom-right corner of the image (the top-right corner is where
+  // SurveyJS places its own choose / clear adorner buttons)
   .file-image-preview {
     .sd-file__image-wrapper {
       position: relative;
@@ -265,23 +267,27 @@
 
     .file-image-preview__download {
       @apply absolute
-        top-2
+        bottom-2
         right-2
         flex
         items-center
         justify-center
         w-9
         h-9
-        rounded-md
-        bg-white
+        rounded-full
+        bg-white/90
         text-gray-700
         shadow-md
-        hover:bg-gray-100
+        transition-colors
+        hover:bg-white
+        hover:text-primary-600
         focus-visible:outline
         focus-visible:outline-2
         focus-visible:outline-offset-2
         focus-visible:outline-primary-600;
       border: 1px solid rgb(209 213 219);
+      // Above the transparent full-size file-name link SurveyJS overlays on
+      // single image previews
       z-index: 1;
 
       svg {
