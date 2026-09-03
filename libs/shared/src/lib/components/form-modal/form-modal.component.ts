@@ -41,6 +41,10 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -354,6 +358,7 @@ export class FormModalComponent
       // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
       this.updateButtonLabels();
     });
+    captureFieldChangeInitialData(this.survey);
 
     this.loading = false;
   }
@@ -492,6 +497,7 @@ export class FormModalComponent
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
+        fireFieldChangeTriggersForRecordUpdate(this.survey, true);
         this.updateData(this.data.recordId, survey);
       }
     } else {
