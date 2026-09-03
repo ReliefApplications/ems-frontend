@@ -9,10 +9,11 @@ import {
   DocumentManagementService,
 } from '../../services/document-management/document-management.service';
 import { Question, QuestionFile } from '../types';
-import { Injector } from '@angular/core';
+import { ComponentRef, Injector } from '@angular/core';
 import jsonpath from 'jsonpath';
-import { File, FileService } from '../../services/file/file.service';
-import { TranslateService } from '@ngx-translate/core';
+import { File } from '../../services/file/file.service';
+import { DomService } from '../../services/dom/dom.service';
+import { FileDownloadButtonComponent } from '../components/file-download-button/public-api';
 
 /**
  * Set document properties based on value expressions
@@ -67,15 +68,12 @@ const setDocumentProperties = (
 const PDF_PREVIEW_CLASS = 'file-pdf-preview';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
-/** Class toggled on questions with a downloadable image preview. */
-const IMAGE_PREVIEW_CLASS = 'file-image-preview';
-/** CSS class of the download action injected over image previews. */
-const IMAGE_DOWNLOAD_CLASS = 'file-image-preview__download';
 
 /** File question state retained between widget lifecycle hooks. */
 interface FilePreviewQuestion extends QuestionFile {
   __filePreviewElement?: HTMLElement;
   __pdfPreviewObserver?: MutationObserver;
+  __imageDownloadButton?: ComponentRef<FileDownloadButtonComponent>;
   __survey?: SurveyModel;
   __valueChangedHandler?: (
     sender: SurveyModel,
@@ -103,82 +101,76 @@ const getPreviewKind = (name: string, type: string): 'image' | 'pdf' | null => {
 };
 
 /**
- * Removes the image download action from a rendered file question.
+ * Removes the image download action from a file question, destroying the
+ * injected component.
  *
- * @param htmlElement The question's rendered root HTML element
+ * @param question File question instance
+ * @param domService Shared DOM service
  */
-const removeImageDownloadAction = (htmlElement: HTMLElement): void => {
-  htmlElement.classList.remove(IMAGE_PREVIEW_CLASS);
-  htmlElement.querySelector(`.${IMAGE_DOWNLOAD_CLASS}`)?.remove();
+const removeImageDownloadAction = (
+  question: FilePreviewQuestion,
+  domService: DomService
+): void => {
+  if (question.__imageDownloadButton) {
+    domService.removeComponentFromBody(question.__imageDownloadButton);
+    question.__imageDownloadButton = undefined;
+  }
 };
 
 /**
- * Adds a download action floating over a single image preview.
+ * Injects a download action floating over a single image preview.
  *
  * SurveyJS renders single images without any visible download control (the
  * file-name link is transparent and stretched over the image), in both edit
- * and read-only mode. The action delegates to the shared file service so
- * freshly picked, legacy and document-management files are all handled.
+ * and read-only mode. The action is a UI library button injected inside the
+ * image wrapper, kept in sync with the question value.
+ *
+ * Safe to call repeatedly (it is driven by a MutationObserver): the injected
+ * component is reused while SurveyJS keeps the same wrapper, re-created when
+ * the wrapper is re-rendered, and removed once the value is no longer a
+ * single image.
  *
  * @param question File question instance
  * @param htmlElement The question's rendered root HTML element
- * @param fileService Shared file service
- * @param downloadLabel Localized accessible label for the action
+ * @param domService Shared DOM service
  */
 const updateImageDownloadAction = (
-  question: QuestionFile,
+  question: FilePreviewQuestion,
   htmlElement: HTMLElement,
-  fileService: FileService,
-  downloadLabel: string
+  domService: DomService
 ): void => {
   const value = question.value as File[];
   const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
   const isImage = file
     ? getPreviewKind(file.name, file.type ?? '') === 'image'
     : false;
-  const existing = htmlElement.querySelector(`.${IMAGE_DOWNLOAD_CLASS}`);
-
-  if (!file || !isImage) {
-    removeImageDownloadAction(htmlElement);
-    return;
-  }
-
   const wrapper = htmlElement.querySelector(
     '.sd-file__image-wrapper'
   ) as HTMLElement | null;
-  if (!wrapper || existing) return;
 
-  htmlElement.classList.add(IMAGE_PREVIEW_CLASS);
-  const button = document.createElement('button');
-  const accessibleLabel = `${downloadLabel}: ${file.name}`;
-  button.type = 'button';
-  button.classList.add(IMAGE_DOWNLOAD_CLASS);
-  button.title = accessibleLabel;
-  button.setAttribute('aria-label', accessibleLabel);
+  // Preview slot not rendered yet; the observer will call us again once it is.
+  if (!file || !isImage || !wrapper) {
+    removeImageDownloadAction(question, domService);
+    return;
+  }
 
-  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  icon.setAttribute('viewBox', '0 0 24 24');
-  icon.setAttribute('aria-hidden', 'true');
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  path.setAttribute('d', 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z');
-  icon.appendChild(path);
-  button.appendChild(icon);
-  button.addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const currentValue = question.value as File[];
-    const currentFile =
-      Array.isArray(currentValue) && currentValue.length === 1
-        ? currentValue[0]
-        : null;
-    if (
-      currentFile &&
-      getPreviewKind(currentFile.name, currentFile.type ?? '') === 'image'
-    ) {
-      fileService.download(currentFile);
-    }
-  });
-  wrapper.appendChild(button);
+  let button = question.__imageDownloadButton;
+  // SurveyJS re-rendered the preview: the previous button is orphaned
+  if (button && !wrapper.contains(button.location.nativeElement)) {
+    removeImageDownloadAction(question, domService);
+    button = undefined;
+  }
+  if (!button) {
+    button = domService.appendComponentToBody(
+      FileDownloadButtonComponent,
+      wrapper
+    ) as ComponentRef<FileDownloadButtonComponent>;
+    question.__imageDownloadButton = button;
+  }
+  if (button.instance.file !== file) {
+    button.instance.file = file;
+    button.changeDetectorRef.detectChanges();
+  }
 };
 
 /**
@@ -295,8 +287,7 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection
 ): void => {
   const documentManagementService = injector.get(DocumentManagementService);
-  const fileService = injector.get(FileService);
-  const translateService = injector.get(TranslateService);
+  const domService = injector.get(DomService);
   const widget = {
     name: 'file-widget',
     widgetIsLoaded: (): boolean => true,
@@ -342,22 +333,12 @@ export const init = (
       filePreviewQuestion.__pdfPreviewObserver?.disconnect();
       const observer = new MutationObserver(() => {
         updatePdfPreview(question, htmlElement);
-        updateImageDownloadAction(
-          question,
-          htmlElement,
-          fileService,
-          translateService.instant('common.download')
-        );
+        updateImageDownloadAction(filePreviewQuestion, htmlElement, domService);
       });
       observer.observe(htmlElement, { childList: true, subtree: true });
       filePreviewQuestion.__pdfPreviewObserver = observer;
       updatePdfPreview(question, htmlElement);
-      updateImageDownloadAction(
-        question,
-        htmlElement,
-        fileService,
-        translateService.instant('common.download')
-      );
+      updateImageDownloadAction(filePreviewQuestion, htmlElement, domService);
     },
     willUnmount: (question: QuestionFile): void => {
       const filePreviewQuestion = question as FilePreviewQuestion;
@@ -372,8 +353,8 @@ export const init = (
       }
       if (filePreviewQuestion.__filePreviewElement) {
         removePdfPreview(question, filePreviewQuestion.__filePreviewElement);
-        removeImageDownloadAction(filePreviewQuestion.__filePreviewElement);
       }
+      removeImageDownloadAction(filePreviewQuestion, domService);
       filePreviewQuestion.__pdfPreviewObserver = undefined;
       filePreviewQuestion.__filePreviewElement = undefined;
       filePreviewQuestion.__survey = undefined;

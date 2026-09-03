@@ -1,8 +1,8 @@
-import { Injector } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { ComponentRef, Injector } from '@angular/core';
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
 import { DocumentManagementService } from '../../services/document-management/document-management.service';
-import { FileService } from '../../services/file/file.service';
+import { DomService } from '../../services/dom/dom.service';
+import { FileDownloadButtonComponent } from '../components/file-download-button/public-api';
 import { QuestionFile } from '../types';
 import { init } from './file-widget';
 
@@ -12,20 +12,47 @@ interface FileWidget {
   willUnmount(question: QuestionFile): void;
 }
 
+/** Component reference shape used by the widget. */
+type ButtonRef = Pick<
+  ComponentRef<FileDownloadButtonComponent>,
+  'instance' | 'location' | 'changeDetectorRef'
+>;
+
 describe('file widget', () => {
   let widget: FileWidget;
-  let fileService: Pick<FileService, 'download'>;
+  let domService: Pick<
+    DomService,
+    'appendComponentToBody' | 'removeComponentFromBody'
+  >;
+  const image = {
+    name: 'identity-document.png',
+    type: 'image/png',
+    content: 'stored-file-id',
+  };
 
   beforeEach(() => {
-    fileService = { download: jest.fn() };
-    const documentManagementService = {};
-    const translateService = { instant: jest.fn().mockReturnValue('Download') };
+    domService = {
+      appendComponentToBody: jest.fn(
+        (component: unknown, parent: HTMLElement): ButtonRef => {
+          const nativeElement = document.createElement(
+            'shared-file-download-button'
+          );
+          parent.appendChild(nativeElement);
+          return {
+            instance: {} as FileDownloadButtonComponent,
+            location: { nativeElement },
+            changeDetectorRef: { detectChanges: jest.fn() } as any,
+          };
+        }
+      ) as any,
+      removeComponentFromBody: jest.fn((ref: ButtonRef) =>
+        ref.location.nativeElement.remove()
+      ),
+    };
     const injector = {
       get: (token: unknown): unknown => {
-        if (token === DocumentManagementService)
-          return documentManagementService;
-        if (token === FileService) return fileService;
-        if (token === TranslateService) return translateService;
+        if (token === DocumentManagementService) return {};
+        if (token === DomService) return domService;
         throw new Error('Unexpected injection token');
       },
     } as Injector;
@@ -60,84 +87,78 @@ describe('file widget', () => {
     return element;
   };
 
+  const getButton = (): ButtonRef =>
+    (domService.appendComponentToBody as jest.Mock).mock.results[0].value;
+
   afterEach(() => {
     document.body.innerHTML = '';
   });
 
-  it('downloads a single image from display mode', () => {
-    const file = {
-      name: 'identity-document.png',
-      type: 'image/png',
-      content: 'stored-file-id',
-    };
-    const question = createQuestion('display', [file]);
+  it.each([
+    ['display mode', 'display', image],
+    [
+      'edit mode, for a freshly picked file',
+      'edit',
+      { ...image, content: 'data:image/png;base64,AAAA' },
+    ],
+  ] as const)('injects a download button in %s', (_case, mode, file) => {
+    const question = createQuestion(mode, [file]);
     const element = createElement();
 
     widget.afterRender(question, element);
-    const button = element.querySelector<HTMLButtonElement>(
-      '.file-image-preview__download'
-    );
-    button?.click();
 
-    expect(button?.getAttribute('aria-label')).toBe(
-      'Download: identity-document.png'
+    expect(domService.appendComponentToBody).toHaveBeenCalledWith(
+      FileDownloadButtonComponent,
+      element.querySelector('.sd-file__image-wrapper')
     );
-    expect(fileService.download).toHaveBeenCalledWith(file);
+    expect(getButton().instance.file).toBe(file);
+    expect(getButton().changeDetectorRef.detectChanges).toHaveBeenCalled();
   });
 
-  it('removes the image action when the widget unmounts', () => {
-    const question = createQuestion('display', [
+  it('reuses the button and updates its file on re-render', () => {
+    const question = createQuestion('edit', [image]);
+    const element = createElement();
+    const replacement = { ...image, name: 'other.png' };
+
+    widget.afterRender(question, element);
+    question.value = [replacement];
+    widget.afterRender(question, element);
+
+    expect(domService.appendComponentToBody).toHaveBeenCalledTimes(1);
+    expect(getButton().instance.file).toBe(replacement);
+  });
+
+  it('removes the button when the widget unmounts', () => {
+    const question = createQuestion('display', [image]);
+    const element = createElement();
+
+    widget.afterRender(question, element);
+    widget.willUnmount(question);
+
+    expect(domService.removeComponentFromBody).toHaveBeenCalledWith(
+      getButton()
+    );
+    expect(element.querySelector('shared-file-download-button')).toBeNull();
+    expect(
+      (question.survey as SurveyModel).onValueChanged.remove
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['a PDF', 'display'],
+    ['a PDF in edit mode', 'edit'],
+  ] as const)('does not inject a download button for %s', (_case, mode) => {
+    const question = createQuestion(mode, [
       {
-        name: 'identity-document.png',
-        type: 'image/png',
+        name: 'identity-document.pdf',
+        type: 'application/pdf',
         content: 'stored-file-id',
       },
     ]);
     const element = createElement();
 
     widget.afterRender(question, element);
-    widget.willUnmount(question);
 
-    expect(element.querySelector('.file-image-preview__download')).toBeNull();
-    expect(element.classList.contains('file-image-preview')).toBe(false);
-    expect(
-      (question.survey as SurveyModel).onValueChanged.remove
-    ).toHaveBeenCalledTimes(1);
+    expect(domService.appendComponentToBody).not.toHaveBeenCalled();
   });
-
-  it('downloads a freshly picked image from edit mode', () => {
-    const file = {
-      name: 'identity-document.png',
-      type: 'image/png',
-      content: 'data:image/png;base64,AAAA',
-    };
-    const question = createQuestion('edit', [file]);
-    const element = createElement();
-
-    widget.afterRender(question, element);
-    const button = element.querySelector<HTMLButtonElement>(
-      '.file-image-preview__download'
-    );
-    button?.click();
-
-    expect(button).not.toBeNull();
-    expect(fileService.download).toHaveBeenCalledWith(file);
-  });
-
-  it.each([
-    ['a PDF', 'display', 'application/pdf'],
-    ['a PDF in edit mode', 'edit', 'application/pdf'],
-  ] as const)(
-    'does not add the image download action for %s',
-    (_case, mode, type) => {
-      const question = createQuestion(mode, [
-        { name: 'identity-document', type, content: 'stored-file-id' },
-      ]);
-      const element = createElement();
-
-      widget.afterRender(question, element);
-
-      expect(element.querySelector('.file-image-preview__download')).toBeNull();
-    }
-  );
 });
