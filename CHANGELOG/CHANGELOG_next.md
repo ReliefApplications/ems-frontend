@@ -1,3 +1,9 @@
+# [2.24.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.2...v2.24.0-rc.3) (2026-09-03)
+
+### Features
+
+- Add a new form trigger to capture changes on fields and set value of another field on complete ([#2911](https://github.com/ReliefApplications/ems-frontend/issues/2911)) ([96a4e16](https://github.com/ReliefApplications/ems-frontend/commit/96a4e16fbe2e1be0e2e4caee66cf322f0aeeb507)), closes [AB#134988](https://github.com/AB/issues/134988)
+
 # [2.24.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.1...v2.24.0-rc.2) (2026-09-03)
 
 ### Bug Fixes
