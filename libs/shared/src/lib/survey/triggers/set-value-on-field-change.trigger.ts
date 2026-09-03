@@ -12,10 +12,11 @@ import {
 } from 'survey-creator-core';
 
 /** Type name registered with the SurveyJS Serializer. */
-export const ON_FIELD_UPDATE_TRIGGER_TYPE = 'onfieldupdatetrigger';
+export const SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE =
+  'setvalueonfieldchangetrigger';
 
 /** Survey property used to store the original data snapshot. */
-const ORIGINAL_DATA_PROPERTY = 'onFieldUpdateOriginalData';
+const ORIGINAL_DATA_PROPERTY = 'setValueOnFieldChangeOriginalData';
 /** Trigger property containing the source questions to monitor. */
 const SOURCE_QUESTIONS_PROPERTY = 'sourceQuestions';
 
@@ -119,7 +120,7 @@ const getQuestionChoices = (survey?: SurveyModel): QuestionChoice[] =>
 const sourceQuestionsEditor = {
   fit: (prop: JsonObjectProperty): boolean =>
     prop.name === SOURCE_QUESTIONS_PROPERTY &&
-    prop.classInfo?.name === ON_FIELD_UPDATE_TRIGGER_TYPE,
+    prop.classInfo?.name === SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
   getJSON: (obj: Base): Record<string, unknown> => ({
     type: 'checkbox',
     colCount: 1,
@@ -239,14 +240,14 @@ const hasFieldChanged = (
  * form components during save, after initial data loading and before the record
  * mutation is sent.
  */
-export class SurveyTriggerOnFieldUpdate extends SurveyTriggerSetValue {
+export class SurveyTriggerSetValueOnFieldChange extends SurveyTriggerSetValue {
   /**
    * Identifier used by the SurveyJS Serializer to (de)serialize this trigger.
    *
    * @returns The serializer type name of this trigger
    */
   override getType(): string {
-    return ON_FIELD_UPDATE_TRIGGER_TYPE;
+    return SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE;
   }
 
   /**
@@ -298,12 +299,12 @@ export class SurveyTriggerOnFieldUpdate extends SurveyTriggerSetValue {
 /**
  * Register the custom trigger class with the SurveyJS Serializer.
  */
-export const registerOnFieldUpdateTrigger = (): void => {
+export const registerSetValueOnFieldChangeTrigger = (): void => {
   registerSourceQuestionsEditor();
-  if (Serializer.findClass(ON_FIELD_UPDATE_TRIGGER_TYPE)) return;
+  if (Serializer.findClass(SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE)) return;
 
   Serializer.addClass(
-    ON_FIELD_UPDATE_TRIGGER_TYPE,
+    SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
     [
       { name: 'expression', visible: false },
       {
@@ -313,27 +314,28 @@ export const registerOnFieldUpdateTrigger = (): void => {
       { name: 'setToName:questionvalue', displayName: 'Target question' },
       { name: 'setValue:triggervalue', displayName: 'Value to set' },
     ],
-    () => new SurveyTriggerOnFieldUpdate(),
+    () => new SurveyTriggerSetValueOnFieldChange(),
     'surveytrigger'
   );
 
   const editorEn = editorLocalization.getLocale('en');
   editorEn.triggers = editorEn.triggers || {};
-  editorEn.triggers[ON_FIELD_UPDATE_TRIGGER_TYPE] = 'On field update';
+  editorEn.triggers[SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE] =
+    'Set value on field change';
   const editorFr = editorLocalization.getLocale('fr');
   if (editorFr !== editorEn) {
     editorFr.triggers = editorFr.triggers || {};
-    editorFr.triggers[ON_FIELD_UPDATE_TRIGGER_TYPE] =
-      "À la modification d'un champ";
+    editorFr.triggers[SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE] =
+      "Définir une valeur à la modification d'un champ";
   }
 };
 
 /**
- * Stores the original survey data used by On Field Update triggers.
+ * Stores the original survey data used by Set value on field change triggers.
  *
  * @param survey Survey instance
  */
-export const captureOnFieldUpdateInitialData = (survey: SurveyModel): void => {
+export const captureFieldChangeInitialData = (survey: SurveyModel): void => {
   survey.setPropertyValue(
     ORIGINAL_DATA_PROPERTY,
     cloneDeep((survey.data ?? {}) as SurveyDataSnapshot)
@@ -341,32 +343,34 @@ export const captureOnFieldUpdateInitialData = (survey: SurveyModel): void => {
 };
 
 /**
- * Fire all `onfieldupdatetrigger` instances on the survey.
+ * Fire all `setvalueonfieldchangetrigger` instances on the survey.
  *
  * @param survey Survey instance
  */
-export const fireOnFieldUpdateTriggers = (survey: SurveyModel): void => {
+export const fireFieldChangeTriggers = (survey: SurveyModel): void => {
   const originalData = (survey.getPropertyValue(ORIGINAL_DATA_PROPERTY) ??
     {}) as SurveyDataSnapshot;
   survey.triggers
-    .filter((trigger) => trigger.getType() === ON_FIELD_UPDATE_TRIGGER_TYPE)
+    .filter(
+      (trigger) => trigger.getType() === SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE
+    )
     .forEach((trigger) =>
-      (trigger as SurveyTriggerOnFieldUpdate).fire(survey, originalData)
+      (trigger as SurveyTriggerSetValueOnFieldChange).fire(survey, originalData)
     );
 };
 
 /**
- * Fire On field update triggers only for existing-record updates.
+ * Fire Set value on field change triggers only for existing-record updates.
  *
  * @param survey Survey instance
  * @param isRecordUpdate Whether the current save updates an existing record
  */
-export const fireOnFieldUpdateTriggersForRecordUpdate = (
+export const fireFieldChangeTriggersForRecordUpdate = (
   survey: SurveyModel,
   isRecordUpdate: boolean
 ): void => {
   if (!isRecordUpdate) {
     return;
   }
-  fireOnFieldUpdateTriggers(survey);
+  fireFieldChangeTriggers(survey);
 };

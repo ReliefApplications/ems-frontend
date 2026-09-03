@@ -25,9 +25,9 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import {
-  captureOnFieldUpdateInitialData,
-  fireOnFieldUpdateTriggersForRecordUpdate,
-} from '../../survey/triggers/on-field-update.trigger';
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -213,7 +213,7 @@ export class FormComponent
         fireOnRecordEditionTriggers(this.survey);
       }
     });
-    captureOnFieldUpdateInitialData(this.survey);
+    captureFieldChangeInitialData(this.survey);
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -258,7 +258,7 @@ export class FormComponent
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
-    captureOnFieldUpdateInitialData(this.survey);
+    captureFieldChangeInitialData(this.survey);
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();
     this.save.emit({ completed: false });
@@ -389,7 +389,7 @@ export class FormComponent
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
-    fireOnFieldUpdateTriggersForRecordUpdate(this.survey, isRecordUpdate);
+    fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
     // If is an already saved record, edit it
     if (isRecordUpdate) {
       const recordId = this.record
@@ -491,7 +491,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
-    captureOnFieldUpdateInitialData(this.survey);
+    captureFieldChangeInitialData(this.survey);
     this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage

@@ -42,7 +42,7 @@ import { initLocalization } from './localization';
 // Side-effect import: registers the custom property grid editor used to pick
 // the translation source question (translateField property).
 import './property-editors/translate-source-question.editor';
-import { registerOnFieldUpdateTrigger } from './triggers/on-field-update.trigger';
+import { registerSetValueOnFieldChangeTrigger } from './triggers/set-value-on-field-change.trigger';
 import { registerOnRecordEditionTrigger } from './triggers/on-record-edition.trigger';
 
 /** Name of the custom components we add to the survey */
@@ -158,7 +158,7 @@ export const initCustomSurvey = (
   // set localization
   initLocalization();
   // register custom triggers
-  registerOnFieldUpdateTrigger();
+  registerSetValueOnFieldChangeTrigger();
   registerOnRecordEditionTrigger();
   // load internal functions
   addCustomFunctions(authService);

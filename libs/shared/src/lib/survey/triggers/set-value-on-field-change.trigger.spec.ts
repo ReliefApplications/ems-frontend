@@ -4,39 +4,41 @@ import {
   PropertyGridEditorCollection,
 } from 'survey-creator-core';
 import {
-  captureOnFieldUpdateInitialData,
-  fireOnFieldUpdateTriggers,
-  fireOnFieldUpdateTriggersForRecordUpdate,
-  ON_FIELD_UPDATE_TRIGGER_TYPE,
-  registerOnFieldUpdateTrigger,
-  SurveyTriggerOnFieldUpdate,
-} from './on-field-update.trigger';
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggers,
+  fireFieldChangeTriggersForRecordUpdate,
+  SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
+  registerSetValueOnFieldChangeTrigger,
+  SurveyTriggerSetValueOnFieldChange,
+} from './set-value-on-field-change.trigger';
 
-describe('onfieldupdatetrigger', () => {
+describe('setvalueonfieldchangetrigger', () => {
   beforeAll(() => {
-    registerOnFieldUpdateTrigger();
+    registerSetValueOnFieldChangeTrigger();
   });
 
-  describe('registerOnFieldUpdateTrigger', () => {
+  describe('registerSetValueOnFieldChangeTrigger', () => {
     it('registers the type with the SurveyJS Serializer', () => {
-      expect(Serializer.findClass(ON_FIELD_UPDATE_TRIGGER_TYPE)).toBeTruthy();
+      expect(
+        Serializer.findClass(SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE)
+      ).toBeTruthy();
     });
 
     it('is idempotent (safe to call twice)', () => {
       expect(() => {
-        registerOnFieldUpdateTrigger();
-        registerOnFieldUpdateTrigger();
+        registerSetValueOnFieldChangeTrigger();
+        registerSetValueOnFieldChangeTrigger();
       }).not.toThrow();
     });
 
     it('inherits from surveytrigger', () => {
-      const cls = Serializer.findClass(ON_FIELD_UPDATE_TRIGGER_TYPE);
+      const cls = Serializer.findClass(SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE);
       expect(cls.parentName).toBe('surveytrigger');
     });
 
     it('exposes sourceQuestions, setToName, and setValue properties', () => {
       const propNames = Serializer.getProperties(
-        ON_FIELD_UPDATE_TRIGGER_TYPE
+        SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE
       ).map((p) => p.name);
       expect(propNames).toEqual(
         expect.arrayContaining(['sourceQuestions', 'setToName', 'setValue'])
@@ -45,7 +47,7 @@ describe('onfieldupdatetrigger', () => {
 
     it('hides the inherited condition expression property', () => {
       const expression = Serializer.findProperty(
-        ON_FIELD_UPDATE_TRIGGER_TYPE,
+        SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
         'expression'
       );
       expect(expression?.visible).toBe(false);
@@ -54,7 +56,7 @@ describe('onfieldupdatetrigger', () => {
     it('renders monitored fields as checkbox choices', () => {
       const survey = createSurvey(['source']);
       const prop = Serializer.findProperty(
-        ON_FIELD_UPDATE_TRIGGER_TYPE,
+        SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
         'sourceQuestions'
       );
       const editor = PropertyGridEditorCollection.getEditor(prop);
@@ -74,10 +76,10 @@ describe('onfieldupdatetrigger', () => {
     });
   });
 
-  describe('SurveyTriggerOnFieldUpdate', () => {
+  describe('SurveyTriggerSetValueOnFieldChange', () => {
     it('reports its custom type name', () => {
-      const trigger = new SurveyTriggerOnFieldUpdate();
-      expect(trigger.getType()).toBe(ON_FIELD_UPDATE_TRIGGER_TYPE);
+      const trigger = new SurveyTriggerSetValueOnFieldChange();
+      expect(trigger.getType()).toBe(SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE);
     });
 
     it('deserializes from survey JSON into the custom class', () => {
@@ -88,7 +90,7 @@ describe('onfieldupdatetrigger', () => {
         ],
         triggers: [
           {
-            type: ON_FIELD_UPDATE_TRIGGER_TYPE,
+            type: SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
             sourceQuestions: ['source'],
             setToName: 'target',
             setValue: true,
@@ -97,19 +99,23 @@ describe('onfieldupdatetrigger', () => {
       });
 
       expect(survey.triggers).toHaveLength(1);
-      expect(survey.triggers[0]).toBeInstanceOf(SurveyTriggerOnFieldUpdate);
-      expect(survey.triggers[0].getType()).toBe(ON_FIELD_UPDATE_TRIGGER_TYPE);
+      expect(survey.triggers[0]).toBeInstanceOf(
+        SurveyTriggerSetValueOnFieldChange
+      );
+      expect(survey.triggers[0].getType()).toBe(
+        SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE
+      );
     });
   });
 
-  describe('fireOnFieldUpdateTriggers', () => {
+  describe('fireFieldChangeTriggers', () => {
     it('sets the target value when a monitored field changes', () => {
       const survey = createSurvey(['source']);
       survey.data = { source: 'original', target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'updated');
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(true);
     });
@@ -117,10 +123,10 @@ describe('onfieldupdatetrigger', () => {
     it('does not run for new record creation saves', () => {
       const survey = createSurvey(['source']);
       survey.data = { target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'created value');
-      fireOnFieldUpdateTriggersForRecordUpdate(survey, false);
+      fireFieldChangeTriggersForRecordUpdate(survey, false);
 
       expect(survey.getValue('target')).toBe(false);
     });
@@ -128,10 +134,10 @@ describe('onfieldupdatetrigger', () => {
     it('runs for existing record update saves', () => {
       const survey = createSurvey(['source']);
       survey.data = { source: 'original', target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'updated');
-      fireOnFieldUpdateTriggersForRecordUpdate(survey, true);
+      fireFieldChangeTriggersForRecordUpdate(survey, true);
 
       expect(survey.getValue('target')).toBe(true);
     });
@@ -139,9 +145,9 @@ describe('onfieldupdatetrigger', () => {
     it('does not set the target value when the monitored field is unchanged', () => {
       const survey = createSurvey(['source']);
       survey.data = { source: 'original', target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(false);
     });
@@ -149,11 +155,11 @@ describe('onfieldupdatetrigger', () => {
     it('does not set the target value when the user reverts to the original value', () => {
       const survey = createSurvey(['source']);
       survey.data = { source: 'original', target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'updated');
       survey.setValue('source', 'original');
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(false);
     });
@@ -161,10 +167,10 @@ describe('onfieldupdatetrigger', () => {
     it('supports multiple monitored fields', () => {
       const survey = createSurvey(['sourceA', 'sourceB']);
       survey.data = { sourceA: 'A', sourceB: 'B', target: false };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('sourceB', 'updated');
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(true);
     });
@@ -181,10 +187,10 @@ describe('onfieldupdatetrigger', () => {
         ],
         target: false,
       };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('document', []);
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(true);
     });
@@ -201,7 +207,7 @@ describe('onfieldupdatetrigger', () => {
         ],
         target: false,
       };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('document', [
         {
@@ -210,7 +216,7 @@ describe('onfieldupdatetrigger', () => {
           content: { driveId: 'drive-1', itemId: 'item-2' },
         },
       ]);
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(true);
     });
@@ -227,7 +233,7 @@ describe('onfieldupdatetrigger', () => {
         ],
         target: false,
       };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('document', [
         {
@@ -237,7 +243,7 @@ describe('onfieldupdatetrigger', () => {
           file: { name: 'original.pdf' },
         },
       ]);
-      fireOnFieldUpdateTriggers(survey);
+      fireFieldChangeTriggers(survey);
 
       expect(survey.getValue('target')).toBe(false);
     });
@@ -245,7 +251,7 @@ describe('onfieldupdatetrigger', () => {
     it('does not fire automatically through SurveyJS condition evaluation', () => {
       const survey = createSurvey(['source']);
       survey.data = { source: 'original' };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'updated');
 
@@ -257,24 +263,24 @@ describe('onfieldupdatetrigger', () => {
         elements: [{ type: 'text', name: 'source' }],
         triggers: [
           {
-            type: ON_FIELD_UPDATE_TRIGGER_TYPE,
+            type: SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
             sourceQuestions: ['source'],
             setValue: true,
           },
         ],
       });
       survey.data = { source: 'original' };
-      captureOnFieldUpdateInitialData(survey);
+      captureFieldChangeInitialData(survey);
 
       survey.setValue('source', 'updated');
 
-      expect(() => fireOnFieldUpdateTriggers(survey)).not.toThrow();
+      expect(() => fireFieldChangeTriggers(survey)).not.toThrow();
     });
   });
 });
 
 /**
- * Creates a survey with the On Field Update trigger.
+ * Creates a survey with the Set value on field change trigger.
  *
  * @param sourceNames Monitored source fields
  * @returns Survey model
@@ -289,7 +295,7 @@ const createSurvey = (sourceNames: string[]): Model =>
     ],
     triggers: [
       {
-        type: ON_FIELD_UPDATE_TRIGGER_TYPE,
+        type: SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
         sourceQuestions: sourceNames,
         setToName: 'target',
         setValue: true,
@@ -310,7 +316,7 @@ const createDocumentSurvey = (): Model =>
     ],
     triggers: [
       {
-        type: ON_FIELD_UPDATE_TRIGGER_TYPE,
+        type: SET_VALUE_ON_FIELD_CHANGE_TRIGGER_TYPE,
         sourceQuestions: ['document'],
         setToName: 'target',
         setValue: true,
