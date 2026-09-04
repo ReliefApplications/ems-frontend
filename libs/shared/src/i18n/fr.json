@@ -1421,6 +1421,7 @@
         "title": "Envoyer des champs de courrier électronique séparés"
       },
       "sort": {
+        "add": "Ajouter un champ de tri",
         "ascending": "Croissant",
         "descending": "Décroissant",
         "field": "Filtrer le champ",
