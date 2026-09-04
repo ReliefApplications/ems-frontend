@@ -1,3 +1,9 @@
+# [2.24.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.3...v2.24.0-rc.4) (2026-09-04)
+
+### Bug Fixes
+
+- Some fields could conflict with grid data formatter and generate empty cells in grid widgets ([3d1c9bf](https://github.com/ReliefApplications/ems-frontend/commit/3d1c9bfee6237c924b7933e8e8e985ee53948d41))
+
 # [2.24.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.2...v2.24.0-rc.3) (2026-09-03)
 
 ### Features
