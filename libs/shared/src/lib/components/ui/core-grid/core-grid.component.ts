@@ -25,6 +25,7 @@ import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
   QueryResponse,
+  normalizeQuerySort,
 } from '../../../services/query-builder/query-builder.service';
 import {
   CONVERT_RECORD,
@@ -204,20 +205,40 @@ export class CoreGridComponent
   /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
+  /**
+   * @returns current field used for sorting. Falls back to the query's
+   * saved default sort, which may be the legacy single {field, order}
+   * object or the current array shape (normalized via normalizeQuerySort).
+   */
   get sortField(): string | null {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].field
-      : this.settings.query?.sort && this.settings.query.sort.field
-      ? this.settings.query.sort.field
-      : null;
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].field;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.field ?? null;
   }
 
   /** @returns current sorting order */
   get sortOrder(): string {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].dir
-      : this.settings.query?.sort?.order || '';
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].dir;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.order ?? '';
+  }
+
+  /**
+   * @returns full ordered list of active sort descriptors (multi-column
+   * sort), mapped to the backend's { field, order } shape. Takes precedence
+   * over sortField/sortOrder server-side when non-empty. Falls back to the
+   * query's saved default sort (single object or array) when the user
+   * hasn't interacted with the grid's column headers yet.
+   */
+  get sortFields(): { field: string; order: string }[] {
+    const active = this.sort
+      .filter((s) => s.dir)
+      .map((s) => ({ field: s.field, order: s.dir as string }));
+    return active.length > 0
+      ? active
+      : normalizeQuerySort(this.settings.query?.sort);
   }
 
   /** @returns grid styling rules */
@@ -496,6 +517,8 @@ export class CoreGridComponent
             filter: this.queryFilter,
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
+            sortFields:
+              this.sortFields.length > 0 ? this.sortFields : undefined,
             styles: this.style,
             actions: this.settings.customRowActions || null,
             at: this.settings.at
@@ -1511,6 +1534,7 @@ export class CoreGridComponent
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
+      sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
       format: e.format,
       application: this.applicationService.name,
       fileName: this.fileName,
@@ -1582,6 +1606,7 @@ export class CoreGridComponent
         filter: this.queryFilter,
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
+        sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
         styles: this.style,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),

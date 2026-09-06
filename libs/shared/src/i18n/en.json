@@ -1418,6 +1418,7 @@
         "title": "Send Separate Email Fields"
       },
       "sort": {
+        "add": "Add sort field",
         "ascending": "Ascending",
         "descending": "Descending",
         "field": "Sort field",
