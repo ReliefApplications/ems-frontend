@@ -1,3 +1,9 @@
+# [2.24.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.4...v2.24.0-rc.5) (2026-09-06)
+
+### Features
+
+- Allow sorting query layouts by more than one field ([#2925](https://github.com/ReliefApplications/ems-frontend/issues/2925)) ([d21f710](https://github.com/ReliefApplications/ems-frontend/commit/d21f7105d2fa6493afbc74e414ef8f6fe3997bbd)), closes [AB#135743](https://github.com/AB/issues/135743)
+
 # [2.24.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.3...v2.24.0-rc.4) (2026-09-04)
 
 ### Bug Fixes
