@@ -62,7 +62,7 @@ export class EditUniquenessRulesComponent implements OnInit {
       .map((field) => field.name)
       .filter((name) => !!name);
     this.form = this.fb.group({
-      rules: this.fb.array(
+      rules: new FormArray<FormGroup>(
         (this.data.rules || []).map((rule) => this.createRuleGroup(rule))
       ),
     });
@@ -73,8 +73,8 @@ export class EditUniquenessRulesComponent implements OnInit {
    *
    * @returns the rules form array
    */
-  get rules(): FormArray {
-    return this.form.get('rules') as FormArray;
+  get rules(): FormArray<FormGroup> {
+    return this.form.get('rules') as FormArray<FormGroup>;
   }
 
   /**
@@ -120,7 +120,7 @@ export class EditUniquenessRulesComponent implements OnInit {
       fields: [rule?.fields || [], Validators.required],
       severity: [rule?.severity || 'error', Validators.required],
       message: [rule?.message || ''],
-      condition: this.fb.array(
+      condition: new FormArray<FormGroup>(
         (rule?.condition || []).map((c) => this.createConditionGroup(c))
       ),
       dateIntersectionEnabled: [
@@ -173,8 +173,8 @@ export class EditUniquenessRulesComponent implements OnInit {
    * @param ruleIndex index of the rule
    * @returns the condition form array
    */
-  conditions(ruleIndex: number): FormArray {
-    return this.rules.at(ruleIndex).get('condition') as FormArray;
+  conditions(ruleIndex: number): FormArray<FormGroup> {
+    return this.rules.at(ruleIndex).get('condition') as FormArray<FormGroup>;
   }
 
   /**

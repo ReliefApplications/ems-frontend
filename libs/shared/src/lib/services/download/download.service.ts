@@ -320,8 +320,11 @@ export class DownloadService {
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: (err: any) => {
+          // The auth interceptor unwraps HttpErrorResponse into a plain
+          // Error, moving the backend's message (string or {message}) onto
+          // err.message.
           snackBarSpinner.instance.message =
-            err?.error?.message ||
+            err?.message ||
             this.translate.instant('common.notifications.file.upload.error');
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
