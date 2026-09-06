@@ -1,3 +1,21 @@
+# [2.24.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.3...v2.24.0-rc.4) (2026-09-04)
+
+### Bug Fixes
+
+- Some fields could conflict with grid data formatter and generate empty cells in grid widgets ([3d1c9bf](https://github.com/ReliefApplications/ems-frontend/commit/3d1c9bfee6237c924b7933e8e8e985ee53948d41))
+
+# [2.24.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.2...v2.24.0-rc.3) (2026-09-03)
+
+### Features
+
+- Add a new form trigger to capture changes on fields and set value of another field on complete ([#2911](https://github.com/ReliefApplications/ems-frontend/issues/2911)) ([96a4e16](https://github.com/ReliefApplications/ems-frontend/commit/96a4e16fbe2e1be0e2e4caee66cf322f0aeeb507)), closes [AB#134988](https://github.com/AB/issues/134988)
+
+# [2.24.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.1...v2.24.0-rc.2) (2026-09-03)
+
+### Bug Fixes
+
+- Download button not appearing for single image fields in forms ([24a5cc9](https://github.com/ReliefApplications/ems-frontend/commit/24a5cc9bb041be6c0a49652c6ad0fd17d4439041)), closes [AB#134011](https://github.com/AB/issues/134011)
+
 # [2.24.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0...v2.24.0-rc.1) (2026-07-29)
 
 ### Bug Fixes
