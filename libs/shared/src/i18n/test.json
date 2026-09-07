@@ -1596,6 +1596,7 @@
         "noFilters": "******",
         "noForms": "******",
         "noSteps": "******",
+        "permissionsUpdated": "****** {{resource}} ******",
         "removeFilter": "******",
         "title": "******",
         "users": {

@@ -19,6 +19,9 @@ type ResourceField = {
   canUpdate: boolean;
 };
 
+/** Field permissions that can be granted to a role */
+const FIELD_PERMISSIONS = ['canSee', 'canUpdate'] as const;
+
 /**
  * Component containing table with fields of a resource.
  * In this table, it's possible to toggle if field is visible / editable.
@@ -66,17 +69,38 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public displayedColumns: string[] = ['select', 'name', 'actions'];
   /** Selection model for bulk actions */
   public selection = new SelectionModel<ResourceField>(true, []);
+  /**
+   * Fields auto-grant checkboxes, one control per permission.
+   * A control is used rather than a [checked] binding because ui-checkbox flips
+   * its own internal state on click: only writing through the control forces the
+   * view back in sync when the server state did not change, e.g. after a failed
+   * mutation.
+   */
+  public autoGrant: Record<'canSee' | 'canUpdate', FormControl<boolean>> = {
+    canSee: new FormControl<boolean>(false, { nonNullable: true }),
+    canUpdate: new FormControl<boolean>(false, { nonNullable: true }),
+  };
 
   ngOnInit() {
     this.computeFields(this.filterId.value);
     this.filterId.valueChanges.subscribe((value) => {
       this.computeFields(value);
     });
+    FIELD_PERMISSIONS.forEach((permission) => {
+      this.autoGrant[permission].valueChanges.subscribe(() => {
+        this.onAutoGrantToggle.emit({ resource: this.resource, permission });
+      });
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.resource) {
       this.computeFields(this.filterId.value);
+    }
+    // `disabled` flips back to false as soon as a mutation settles, which is the
+    // only signal available when it failed and left the resource untouched.
+    if (changes.resource || changes.disabled) {
+      this.syncAutoGrantControls();
     }
   }
 
@@ -99,7 +123,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * @param id template id
    */
   private computeFields(id?: string | null) {
-    this.selection.clear();
+    const selectedNames = new Set(this.selection.selected.map((x) => x.name));
     if (id) {
       this.fields = sortBy(
         this.resource.fields
@@ -117,6 +141,28 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
         'name'
       );
     }
+    // Fields are rebuilt as new objects on every refresh, so the selection is
+    // remapped onto them instead of being dropped, keeping the bulk actions
+    // usable across consecutive edits. Fields no longer displayed are removed.
+    this.selection.clear();
+    const stillSelected = this.fields.filter((field) =>
+      selectedNames.has(field.name)
+    );
+    if (stillSelected.length) {
+      this.selection.select(...stillSelected);
+    }
+  }
+
+  /**
+   * Track fields by name, so toggling a permission does not destroy and rebuild
+   * every row of the table.
+   *
+   * @param index index of the field in the table
+   * @param field field of the current row
+   * @returns unique value for all unique inputs
+   */
+  public trackByFieldName(index: number, field: ResourceField): string {
+    return field.name;
   }
 
   /**
@@ -165,7 +211,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    */
   public checkboxLabel(field?: ResourceField): string {
     if (!field) {
-      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
     return `${this.selection.isSelected(field) ? 'deselect' : 'select'} row ${
       field.name
@@ -215,7 +261,9 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
 
   /**
    * Whether the fields auto-grant checkbox for the given permission should be disabled,
-   * i.e. the role has no view / edit permission ( global or filtered ) on the resource.
+   * i.e. the role holds none of the record permissions making it eligible for that
+   * field permission. Mirrors the backend eligibility rule, where the right to create
+   * records also makes a role eligible, so that a create-only role can still opt out.
    *
    * @param permission permission to check
    * @returns true if the role has no matching permission on the resource
@@ -223,18 +271,32 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public isAutoGrantDisabled(permission: 'canSee' | 'canUpdate'): boolean {
     const recordsPermission =
       permission === 'canSee' ? 'canSeeRecords' : 'canUpdateRecords';
-    return !get(this.resource, `rolePermissions.${recordsPermission}`, null);
+    return (
+      !get(this.resource, `rolePermissions.${recordsPermission}`, null) &&
+      !get(this.resource, 'rolePermissions.canCreateRecords', null)
+    );
   }
 
   /**
-   * Emits an event to toggle the fields auto-grant setting for the given permission.
-   *
-   * @param permission permission to toggle
+   * Write the server state of the fields auto-grant settings back into the
+   * checkbox controls, and update their disabled state.
    */
-  public onToggleAutoGrant(permission: 'canSee' | 'canUpdate') {
-    this.onAutoGrantToggle.emit({
-      resource: this.resource,
-      permission,
+  private syncAutoGrantControls(): void {
+    FIELD_PERMISSIONS.forEach((permission) => {
+      const control = this.autoGrant[permission];
+      const disabled = this.disabled || this.isAutoGrantDisabled(permission);
+      if (disabled !== control.disabled) {
+        if (disabled) {
+          control.disable({ emitEvent: false });
+        } else {
+          control.enable({ emitEvent: false });
+        }
+      }
+      // Always written, even when unchanged, to revert an optimistic toggle the
+      // checkbox applied to itself on click.
+      control.setValue(this.isAutoGrantChecked(permission), {
+        emitEvent: false,
+      });
     });
   }
 }

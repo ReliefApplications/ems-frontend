@@ -4,16 +4,15 @@
   (filter)="onFilter($event)"
   [loading]="filterLoading"
 ></shared-role-resources-filter>
+<!-- Saving overlay, rendered through the CDK overlay container over the page container -->
+<ng-template #savingOverlay>
+  <div class="w-full h-full bg-white/70 flex items-center justify-center">
+    <ui-spinner size="large" variant="primary"></ui-spinner>
+  </div>
+</ng-template>
 <!-- Resource Table -->
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg relative">
-  <!-- Saving overlay -->
-  <div
-    *ngIf="updating && !loading"
-    class="absolute inset-0 z-10 bg-white opacity-70 flex items-center justify-center"
-  >
-    <ui-spinner size="medium" variant="primary"></ui-spinner>
-  </div>
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table

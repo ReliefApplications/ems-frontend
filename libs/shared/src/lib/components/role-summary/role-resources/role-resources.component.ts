@@ -1,4 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { DOCUMENT } from '@angular/common';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -66,7 +79,7 @@ interface TableResourceElement {
 })
 export class RoleResourcesComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Role to display */
   @Input() role!: Role; // Opened role
@@ -83,7 +96,33 @@ export class RoleResourcesComponent
 
   // === SINGLE ELEMENT ===
   /** Updating status */
-  public updating = false; // Update of resource
+  /** Update of resource */
+  private _updating = false;
+  /** Saving overlay template, rendered over the page container while updating */
+  @ViewChild('savingOverlay', { static: true })
+  savingOverlayTemplate!: TemplateRef<any>;
+  /** Reference to the saving overlay, once created */
+  private savingOverlayRef?: OverlayRef;
+
+  /** @returns whether a resource is being updated */
+  get updating(): boolean {
+    return this._updating;
+  }
+
+  /**
+   * Set the updating flag, showing or hiding the saving overlay accordingly.
+   *
+   * @param value new updating value
+   */
+  set updating(value: boolean) {
+    this._updating = value;
+    if (value && !this.loading) {
+      this.showSavingOverlay();
+    } else {
+      this.hideSavingOverlay();
+    }
+  }
+
   /** Opened resource */
   public openedResource?: Resource;
 
@@ -110,13 +149,83 @@ export class RoleResourcesComponent
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    * @param translate Angular translate service
+   * @param document Document
+   * @param overlay CDK overlay service
+   * @param viewContainerRef View container reference
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Inject(DOCUMENT) private document: Document,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
   ) {
     super();
+  }
+
+  /** Keep the saving overlay aligned with the page container on resize. */
+  @HostListener('window:resize')
+  onResize(): void {
+    if (this.savingOverlayRef?.hasAttached()) {
+      this.positionSavingOverlay();
+    }
+  }
+
+  /**
+   * Show the saving overlay over the page container ( the content area next to
+   * the sidenav ). It is rendered through the CDK overlay container, at body
+   * level: the tabs panel above this component is transformed, which would make
+   * a fixed element position itself relatively to the panel instead of the viewport.
+   */
+  private showSavingOverlay(): void {
+    if (!this.savingOverlayRef) {
+      this.savingOverlayRef = this.overlay.create({
+        positionStrategy: this.overlay.position().global(),
+        scrollStrategy: this.overlay.scrollStrategies.noop(),
+      });
+    }
+    this.positionSavingOverlay();
+    if (!this.savingOverlayRef.hasAttached()) {
+      this.savingOverlayRef.attach(
+        new TemplatePortal(this.savingOverlayTemplate, this.viewContainerRef)
+      );
+    }
+  }
+
+  /** Hide the saving overlay, if shown. */
+  private hideSavingOverlay(): void {
+    if (this.savingOverlayRef?.hasAttached()) {
+      this.savingOverlayRef.detach();
+    }
+  }
+
+  /**
+   * Size and position the saving overlay on the page container rectangle,
+   * falling back to the whole viewport when there is no layout.
+   */
+  private positionSavingOverlay(): void {
+    if (!this.savingOverlayRef) return;
+    const rect = this.document
+      .getElementById('appPageContainer')
+      ?.getBoundingClientRect();
+    const position = this.overlay.position().global();
+    if (rect) {
+      position.top(`${rect.top}px`).left(`${rect.left}px`);
+      this.savingOverlayRef.updateSize({
+        width: rect.width,
+        height: rect.height,
+      });
+    } else {
+      position.top('0').left('0');
+      this.savingOverlayRef.updateSize({ width: '100%', height: '100%' });
+    }
+    this.savingOverlayRef.updatePositionStrategy(position);
+  }
+
+  override ngOnDestroy(): void {
+    this.savingOverlayRef?.dispose();
+    super.ngOnDestroy();
   }
 
   /** Load the resources. */
@@ -391,9 +500,8 @@ export class RoleResourcesComponent
       this.snackBar.openSnackBar(errors[0].message, { error: true });
     } else if (data?.editResource) {
       this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.resource.one'),
-          value: '',
+        this.translate.instant('components.role.summary.permissionsUpdated', {
+          resource: resource.name ?? '',
         })
       );
     }
@@ -465,18 +573,32 @@ export class RoleResourcesComponent
    */
   onBulkEditFieldAccess(
     resource: Resource,
-    fields: { name: string }[],
+    fields: { name: string; canSee?: boolean; canUpdate?: boolean }[],
     permission: 'canSee' | 'canUpdate',
     grant: boolean
   ): void {
     if (!this.role.id || !fields.length) return;
 
     this.updating = true;
-    const entries = fields.map((field) => ({
-      field: field.name,
-      role: this.role.id as string,
-    }));
-    const updatedPermissions = grant ? { add: entries } : { remove: entries };
+    const role = this.role.id as string;
+    const entry = (field: { name: string }) => ({ field: field.name, role });
+    const fieldsPermissions: Record<string, any> = {
+      [permission]: grant
+        ? { add: fields.map(entry) }
+        : { remove: fields.map(entry) },
+    };
+
+    if (grant && permission === 'canUpdate') {
+      // The backend rejects a canUpdate grant on a field the role cannot see, and
+      // it validates the whole batch before writing anything, so a selection
+      // mixing visible and hidden fields would update none of them. It processes
+      // canSee first and accepts a canUpdate grant backed by a canSee grant of
+      // the same request, so the missing ones are sent along.
+      const missingCanSee = fields.filter((field) => !field.canSee);
+      if (missingCanSee.length) {
+        fieldsPermissions.canSee = { add: missingCanSee.map(entry) };
+      }
+    }
 
     this.apollo
       .mutate<EditResourceMutationResponse>({
@@ -484,9 +606,7 @@ export class RoleResourcesComponent
         variables: {
           id: resource.id,
           role: this.role.id,
-          fieldsPermissions: {
-            [permission]: updatedPermissions,
-          },
+          fieldsPermissions,
         },
       })
       .pipe(takeUntil(this.destroy$))

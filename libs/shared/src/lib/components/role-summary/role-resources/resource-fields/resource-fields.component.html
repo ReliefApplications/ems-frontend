@@ -19,22 +19,18 @@
 <!-- Fields auto-grant toggles -->
 <div class="flex gap-4 items-center mb-3 ml-4">
   <ui-checkbox
-    [checked]="isAutoGrantChecked('canSee')"
-    [disabled]="disabled || isAutoGrantDisabled('canSee')"
+    [formControl]="autoGrant.canSee"
     [uiTooltip]="
       'components.role.tooltip.autoGrantFieldsAccessibility' | translate
     "
-    (change)="onToggleAutoGrant('canSee')"
   >
     <ng-container ngProjectAs="label">{{
       'components.role.summary.autoGrantFieldsAccessibility' | translate
     }}</ng-container>
   </ui-checkbox>
   <ui-checkbox
-    [checked]="isAutoGrantChecked('canUpdate')"
-    [disabled]="disabled || isAutoGrantDisabled('canUpdate')"
+    [formControl]="autoGrant.canUpdate"
     [uiTooltip]="'components.role.tooltip.autoGrantFieldsUpdate' | translate"
-    (change)="onToggleAutoGrant('canUpdate')"
   >
     <ng-container ngProjectAs="label">{{
       'components.role.summary.autoGrantFieldsUpdate' | translate
@@ -49,6 +45,7 @@
       cdk-table
       uiTableWrapper
       [dataSource]="fields"
+      [trackBy]="trackByFieldName"
       *ngIf="fields.length > 0"
     >
       <ng-container cdkColumnDef="select">

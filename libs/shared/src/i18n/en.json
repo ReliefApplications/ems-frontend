@@ -1596,6 +1596,7 @@
         "noFilters": "No access filters detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
+        "permissionsUpdated": "Permissions on {{resource}} were successfully updated.",
         "removeFilter": "Remove filter",
         "title": "Summary",
         "users": {

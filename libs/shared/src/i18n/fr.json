@@ -1599,6 +1599,7 @@
         "noFilters": "Aucun filtre d'accès détecté",
         "noForms": "Aucun formulaire détecté",
         "noSteps": "Aucune étape détectée",
+        "permissionsUpdated": "Les permissions sur {{resource}} ont été mises à jour avec succès.",
         "removeFilter": "Supprimer le filtre",
         "title": "Résumé",
         "users": {
