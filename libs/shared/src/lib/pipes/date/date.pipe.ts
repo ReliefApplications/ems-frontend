@@ -2,6 +2,9 @@ import { DatePipe as AngularDatePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
+/** Default timezone used by explicit date-formatting expressions. */
+export const DEFAULT_DATE_TIMEZONE = 'UTC';
+
 /** Available date formats. */
 export type DateFormat =
   | 'short'
