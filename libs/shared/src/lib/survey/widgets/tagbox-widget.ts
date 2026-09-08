@@ -260,7 +260,7 @@ export const init = (
     (question as any)._componentRef = tagbox;
     const tagboxInstance: MultiSelectComponent = tagbox.instance;
     tagboxInstance.virtual = {
-      itemHeight: 28,
+      itemHeight: 30,
     };
     tagboxInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     tagboxInstance.filterable = true;
