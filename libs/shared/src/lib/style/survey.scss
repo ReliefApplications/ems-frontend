@@ -196,22 +196,6 @@
       }
     }
   }
-  .k-list-ul {
-    @apply shadow-lg
-      ring-black
-      ring-opacity-5
-      focus:outline-none
-      sm:text-sm
-      ease-in-out
-      duration-100
-      w-full
-      overflow-auto
-      rounded-md
-      bg-white
-      text-base
-      max-h-36
-      py-1;
-  }
   // dropdown/tagbox item
   .k-list-item {
     @apply px-2
@@ -227,7 +211,12 @@
   }
   .k-popup,
   .k-list {
-    @apply rounded-md;
+    @apply shadow-lg
+      ring-1
+      ring-black
+      ring-opacity-5
+      bg-white
+      rounded-md;
   }
 
   .sd-root-modern {
