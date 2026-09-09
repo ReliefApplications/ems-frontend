@@ -3133,6 +3133,13 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "La ou les langues suivantes ne seront plus disponibles dans cette application : {{languages}}. Les utilisateurs qui les utilisent actuellement basculeront vers la langue par défaut. Voulez-vous continuer ?",
+            "title": "Retirer la ou les langue(s) supplémentaire(s)"
+          },
+          "text": "Langues supplémentaires"
+        },
         "emailCreated": "Nouvelle notification par e-mail créée",
         "emailDeleted": "Notification par e-mail supprimée avec succès",
         "emailEdited": "Notification par e-mail modifiée avec succès.",

@@ -27,6 +27,8 @@ import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { ApplicationService } from '../../services/application/application.service';
+import { applyAllowedLanguage } from '../../utils/languages';
 
 /**
  * Component for the main layout of the platform
@@ -126,6 +128,12 @@ export class LayoutComponent
   public otherOffice = '';
   /** Environment */
   public environment: any;
+  /**
+   * Languages allowed for the language switch, restricted to the current
+   * application's additional languages in the front office. Null means no
+   * restriction (back office always shows every system language).
+   */
+  public allowedLanguages: string[] | null = null;
 
   // === APP SEARCH ===
   /** Show app search */
@@ -200,6 +208,8 @@ export class LayoutComponent
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
    * @param contextService Shared breadcrumb service
+   * @param applicationService Shared application service, used to restrict
+   * the language switch to the current application's additional languages
    */
   constructor(
     @Inject('environment') environment: any,
@@ -211,7 +221,8 @@ export class LayoutComponent
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private breadcrumbService: BreadcrumbService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private applicationService: ApplicationService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -231,6 +242,27 @@ export class LayoutComponent
       this.otherOffice = 'front office';
     } else {
       this.otherOffice = 'back office';
+    }
+    // Only the front office restricts the language switch to the current
+    // application's additional languages - back office always keeps every
+    // system language available.
+    if (this.environment.module === 'frontoffice') {
+      this.applicationService.application$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((application) => {
+          this.allowedLanguages = application
+            ? [
+                this.translate.defaultLang,
+                ...(application.additionalLanguages ?? []),
+              ]
+            : null;
+          // Re-derive the active language for this application, without
+          // touching localStorage - so navigating between applications with
+          // different language support keeps working in both directions.
+          if (this.allowedLanguages) {
+            applyAllowedLanguage(this.translate, this.allowedLanguages);
+          }
+        });
     }
     this.loadUser();
     this.layoutService.rightSidenav$

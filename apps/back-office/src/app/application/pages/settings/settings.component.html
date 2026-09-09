@@ -6,6 +6,7 @@
       <!-- Access -->
       <shared-access
         [access]="application?.permissions"
+        [application]="application?.id"
         [objectTypeName]="'common.application.one' | translate"
         (save)="saveAccess($event)"
       ></shared-access>
@@ -124,6 +125,20 @@
           ></ui-icon
         ></ng-container>
       </ui-toggle>
+    </div>
+    <!-- Additional languages -->
+    <div uiFormFieldDirective *ngIf="availableLanguages.length > 0">
+      <label>
+        {{ 'pages.application.settings.additionalLanguages.text' | translate }}
+      </label>
+      <ui-select-menu [multiselect]="true" formControlName="additionalLanguages">
+        <ui-select-option
+          *ngFor="let lang of availableLanguages"
+          [value]="lang"
+        >
+          {{ getLanguageNativeName(lang) }}
+        </ui-select-option>
+      </ui-select-menu>
     </div>
   </div>
 </form>

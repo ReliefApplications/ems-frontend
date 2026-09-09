@@ -15,6 +15,7 @@ export const GET_APPLICATION_BY_ID = gql`
       topMenu
       hideMenu
       shortcut
+      additionalLanguages
       createdAt
       status
       templates {

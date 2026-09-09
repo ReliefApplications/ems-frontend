@@ -40,7 +40,7 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
-    <ng-container *ngIf="!applicationId">
+    <ng-container *ngIf="useModal">
       <div uiFormFieldDirective>
         <label>{{ 'components.access.canUpdate' | translate }}</label>
         <ui-select-menu formControlName="canUpdate" [multiselect]="true">
