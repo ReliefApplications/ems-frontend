@@ -18,7 +18,10 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
 import { HtmlParserService } from '../../../services/html-parser/html-parser.service';
 import { addNewField } from '../query-builder-forms';
-import { QueryBuilderComponent } from '../query-builder.component';
+import {
+  LayoutFormFields,
+  QueryBuilderComponent,
+} from '../query-builder.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -35,6 +38,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
+  /** Forms belonging to the current resource. */
+  @Input() layoutForms: LayoutFormFields[] = [];
   /** Should show limit input */
   @Input() showLimit = false;
   /** Is the column width field displayed */
@@ -52,6 +57,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   /** Search on selected fields */
   public searchSelected = '';
+  /** Currently applied form filter. */
+  public selectedFormId = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
   /**
@@ -106,12 +113,54 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   private setSelectedFields() {
     const selectedFields: string[] = this.form.getRawValue().map((x) => x.name);
-    this.availableFields = this.fields
-      .slice()
-      .filter((x) => !selectedFields.includes(x.name));
+    this.availableFields = this.getFilteredFields().filter(
+      (x) => !selectedFields.includes(x.name)
+    );
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
+  }
+
+  /**
+   * Applies the selected form's field order to the available schema fields.
+   *
+   * @returns Fields available under the selected form filter.
+   */
+  private getFilteredFields(): any[] {
+    const selectedForm = this.layoutForms.find(
+      (form) => form.id === this.selectedFormId
+    );
+    if (!selectedForm) return this.fields.slice();
+
+    return selectedForm.fields.reduce<any[]>((result, name) => {
+      const field = this.fields.find((candidate) => candidate.name === name);
+      return field ? [...result, field] : result;
+    }, []);
+  }
+
+  /** Refreshes the available fields after selecting or clearing a form filter. */
+  public onFormChange(): void {
+    this.searchAvailable = '';
+    this.setSelectedFields();
+  }
+
+  /** Adds all currently available fields to the selected fields list. */
+  public addAllFields(): void {
+    const insertionIndex = this.form.length;
+    for (const field of this.availableFields) {
+      this.selectedFields.push(field);
+      this.form.insert(this.form.length, addNewField(field, true));
+      this.droppedFields.emit(field);
+    }
+    this.availableFields = [];
+    if (insertionIndex === 0) this.checkfieldsIsValid();
+  }
+
+  /** Removes every selected field from the layout. */
+  public removeAllFields(): void {
+    this.fieldForm = null;
+    this.form.clear();
+    this.setSelectedFields();
   }
 
   /**

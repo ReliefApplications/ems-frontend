@@ -150,7 +150,8 @@
           <shared-tab-fields
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
-            [fields]="availableFields"
+             [fields]="availableFields"
+             [layoutForms]="layoutForms"
             [showLimit]="true"
             [showColumnWidth]="showColumnWidth"
           ></shared-tab-fields>

@@ -1,27 +1,33 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { TabFieldsComponent } from './tab-fields.component';
-import {
-  ApolloTestingModule,
-  ApolloTestingController,
-} from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../graphql/queries';
+import { EditorService } from '../../../services/editor/editor.service';
+import { HtmlParserService } from '../../../services/html-parser/html-parser.service';
 
 describe('TabFieldsComponent', () => {
   let component: TabFieldsComponent;
   let fixture: ComponentFixture<TabFieldsComponent>;
-  let controller: ApolloTestingController;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService, QueryBuilderService],
+      providers: [
+        UntypedFormBuilder,
+        TranslateService,
+        {
+          provide: EditorService,
+          useValue: { url: '', language: undefined },
+        },
+        {
+          provide: HtmlParserService,
+          useValue: { getDataKeys: () => [], getCalcKeys: () => [] },
+        },
+      ],
       declarations: [TabFieldsComponent],
       imports: [
         TranslateModule.forRoot({
@@ -30,36 +36,71 @@ describe('TabFieldsComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        ApolloTestingModule,
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
-
-    controller = TestBed.inject(ApolloTestingController);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TabFieldsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    const op = controller.expectOne(GET_QUERY_TYPES);
-
-    op.flush({
-      data: {
-        __schema: {
-          types: [],
-        },
-        fields: [],
-      },
-    });
   });
 
   afterEach(() => {
-    controller.verify();
     fixture.destroy();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('filters available fields in the selected form order', () => {
+    component.form = new UntypedFormArray([]);
+    component.fields = [
+      { name: 'first', type: { kind: 'SCALAR' } },
+      { name: 'second', type: { kind: 'SCALAR' } },
+      { name: 'outside', type: { kind: 'SCALAR' } },
+    ];
+    component.layoutForms = [
+      { id: 'form-id', name: 'Form', fields: ['second', 'first'] },
+    ];
+    component.selectedFormId = 'form-id';
+
+    component.onFormChange();
+
+    expect(component.availableFields.map((field) => field.name)).toEqual([
+      'second',
+      'first',
+    ]);
+  });
+
+  it('adds filtered fields in their displayed order and removes all selected fields', () => {
+    component.form = new UntypedFormArray([]);
+    component.fields = [
+      { name: 'first', type: { kind: 'SCALAR' } },
+      { name: 'second', type: { kind: 'SCALAR' } },
+    ];
+    component.layoutForms = [
+      { id: 'form-id', name: 'Form', fields: ['second', 'first'] },
+    ];
+    component.selectedFormId = 'form-id';
+    component.onFormChange();
+
+    component.addAllFields();
+
+    expect(component.form.getRawValue().map((field) => field.name)).toEqual([
+      'second',
+      'first',
+    ]);
+    expect(component.availableFields).toEqual([]);
+
+    component.removeAllFields();
+
+    expect(component.form.length).toBe(0);
+    expect(component.availableFields.map((field) => field.name)).toEqual([
+      'second',
+      'first',
+    ]);
   });
 });

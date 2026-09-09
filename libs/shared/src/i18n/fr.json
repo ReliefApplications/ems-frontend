@@ -1383,13 +1383,16 @@
       "fields": {
         "available": "Champs disponibles",
         "column": "Largeur de la colonne (px)",
+        "filterByForm": "Filtrer par formulaire",
         "format": {
           "info": "Laissez vide pour utiliser le mode classique",
           "title": "Mode d'affichage"
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
-        "title": "Champs"
+        "title": "Champs",
+        "transferAllFrom": "Supprimer tous les champs",
+        "transferAllTo": "Ajouter tous les champs"
       },
       "filter": {
         "and": "Et",

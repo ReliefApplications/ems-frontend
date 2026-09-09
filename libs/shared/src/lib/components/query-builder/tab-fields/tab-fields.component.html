@@ -12,6 +12,18 @@
   <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
+    <div *ngIf="layoutForms.length > 0" uiFormFieldDirective class="!w-full">
+      <label>{{ 'components.queryBuilder.fields.filterByForm' | translate }}</label>
+      <ui-select-menu [(ngModel)]="selectedFormId" (ngModelChange)="onFormChange()">
+        <ui-select-option value="">
+          {{ 'common.all' | translate }}
+        </ui-select-option>
+        <ui-select-option *ngFor="let layoutForm of layoutForms" [value]="layoutForm.id">
+          {{ layoutForm.name }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+
     <!-- Search through fields -->
     <div uiFormFieldDirective class="!w-full">
       <label>{{ 'components.queryBuilder.fields.search' | translate }}</label>
@@ -54,6 +66,23 @@
         </ng-container>
       </div>
     </div>
+  </div>
+
+  <div class="flex flex-col justify-center gap-2" *ngIf="!fieldForm">
+    <ui-button
+      [isIcon]="true"
+      icon="keyboard_double_arrow_right"
+      (click)="addAllFields()"
+      [disabled]="disabled || availableFields.length === 0"
+      [uiTooltip]="'components.queryBuilder.fields.transferAllTo' | translate"
+    ></ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="keyboard_double_arrow_left"
+      (click)="removeAllFields()"
+      [disabled]="disabled || selectedFields.length === 0"
+      [uiTooltip]="'components.queryBuilder.fields.transferAllFrom' | translate"
+    ></ui-button>
   </div>
 
   <!-- Selected fields -->
