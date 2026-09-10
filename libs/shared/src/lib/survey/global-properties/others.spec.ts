@@ -1,5 +1,6 @@
 import { JsonObjectProperty, Serializer } from 'survey-core';
 import { SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL } from '../../utils/survey-form-action-labels.util';
+import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
 import { init } from './others';
 
 type SurveyPropertyOwner = {
@@ -44,6 +45,20 @@ describe('survey global navigation properties', () => {
 
     expect(modalSaveButtonProperty).toBeTruthy();
     expect(modalSaveButtonProperty.category).toBe('navigation');
+  });
+
+  it('registers the record creation read-only setting in the data category', () => {
+    const property = Serializer.getProperty(
+      'survey',
+      SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION
+    );
+
+    expect(property).toBeTruthy();
+    expect(property.category).toBe('data');
+    expect(property.defaultValue).toBe(false);
+    expect(property.displayName).toBe(
+      'Keep read-only fields locked\nwhen creating a record'
+    );
   });
 
   it('hides modal override properties by default', () => {

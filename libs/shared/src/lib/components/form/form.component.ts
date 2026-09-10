@@ -39,6 +39,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 
 /**
  * This component is used to display forms
@@ -164,9 +165,11 @@ export class FormComponent
       this.onComplete();
     });
 
-    // Unset readOnly fields if it's the record creation
-    // It's a requirement to let all fields been editable during addition of records
-    if (!isNil(this.record)) {
+    // Read-only fields stay editable during creation unless the form opts in to locking them.
+    if (
+      !isNil(this.record) ||
+      shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+    ) {
       this.form.fields?.forEach((field) => {
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
