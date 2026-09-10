@@ -272,7 +272,10 @@ export const ADD_EMAIL_NOTIFICATION = gql`
         navigateSettings
       }
       modifiedAt
-      schedule
+      schedule {
+        scheduleEnabled
+        cronValue
+      }
       createdBy
       emailLayout
       id
@@ -330,7 +333,10 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       subscriptionList
       restrictSubscription
       status
-      schedule
+      schedule {
+        scheduleEnabled
+        cronValue
+      }
       modifiedAt
       emailLayout
       lastExecution
