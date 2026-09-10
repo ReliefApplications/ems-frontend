@@ -37,6 +37,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
 
 /**
  * Array containing the different types of questions.
@@ -245,6 +246,28 @@ export class FormBuilderComponent
     this.surveyCreator.onPropertyGridSurveyCreated.add(
       (_: any, options: any) => {
         const grid: SurveyModel = options.survey;
+        grid.onAfterRenderQuestion.add((__, questionOptions) => {
+          if (
+            questionOptions.question.name !==
+            SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION
+          ) {
+            return;
+          }
+          // SurveyJS ignores line breaks in boolean property labels by default.
+          questionOptions.htmlElement
+            .querySelectorAll<HTMLElement>('label, label *')
+            .forEach((element) => {
+              element.style.setProperty('white-space', 'pre-line', 'important');
+            });
+          questionOptions.htmlElement
+            .querySelector<HTMLElement>('label')
+            ?.style.setProperty('align-items', 'center');
+          questionOptions.htmlElement
+            .querySelectorAll<HTMLElement>('.sd-question__description')
+            .forEach((element) => {
+              element.style.setProperty('margin-top', '16px');
+            });
+        });
         const toggle = grid.getQuestionByName(
           SURVEY_PROP_CONFIRM_RECORD_UPDATE
         );

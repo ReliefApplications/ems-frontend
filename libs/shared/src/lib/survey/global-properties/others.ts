@@ -16,6 +16,7 @@ import {
   SURVEY_PROP_CONFIRM_RECORD_UPDATE,
   SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
 } from '../../utils/survey-confirm-record-update.util';
+import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
 import { registerCustomPropertyHelp } from '../localization';
 import { Question } from '../types';
 
@@ -128,6 +129,19 @@ export const init = (environment: any): void => {
     visible: false,
     isSerializable: false,
   });
+
+  // Preserve legacy record creation behavior unless explicitly enabled.
+  serializer.addProperty('survey', {
+    name: `${SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION}:boolean`,
+    type: 'boolean',
+    category: 'data',
+    displayName: 'Keep read-only fields locked\nwhen creating a record',
+    default: false,
+  });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION,
+    'By default, fields marked as read-only can be edited while a new record is being created and only become locked when an existing record is edited. Enable this option to keep them read-only during record creation as well.'
+  );
 
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
