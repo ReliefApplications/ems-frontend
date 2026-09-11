@@ -204,18 +204,11 @@ export class TabFieldsComponent implements OnInit, OnChanges {
           this.searchSelected,
           event.previousIndex
         );
-        if (this.form.at(index).errors?.invalid) {
-          this.form.removeAt(index);
-          this.selectedFields.splice(index, 1);
-        } else {
-          transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            index,
-            event.currentIndex
-          );
-          this.form.removeAt(index);
-        }
+        // Remove the field from the form, then rebuild both lists so the
+        // field goes back to the available fields ( in current filter order ),
+        // or disappears if it does not exist in the schema anymore
+        this.form.removeAt(index);
+        this.setSelectedFields();
       } else {
         const index = this.getItemIndex(
           this.availableFields,

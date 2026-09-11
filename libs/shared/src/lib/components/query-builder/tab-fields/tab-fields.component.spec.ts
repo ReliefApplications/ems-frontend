@@ -74,6 +74,38 @@ describe('TabFieldsComponent', () => {
     ]);
   });
 
+  it('moves an invalid nested field back to the available fields when a form filter is active', () => {
+    component.form = new UntypedFormArray([]);
+    component.fields = [
+      { name: 'first', type: { kind: 'SCALAR' } },
+      {
+        name: 'nested',
+        type: { kind: 'LIST', ofType: { name: 'Nested' } },
+      },
+    ];
+    component.layoutForms = [
+      { id: 'form-id', name: 'Form', fields: ['nested', 'first'] },
+    ];
+    component.onFormChange('form-id');
+    // Adds the nested field, which is invalid until sub-fields are selected
+    component.addAllFields();
+    expect(component.form.at(0).errors?.invalid).toBe(true);
+
+    component.drop({
+      previousContainer: { data: component.selectedFields },
+      container: { data: component.availableFields },
+      previousIndex: 0,
+      currentIndex: 0,
+    } as any);
+
+    expect(component.form.getRawValue().map((field) => field.name)).toEqual([
+      'first',
+    ]);
+    expect(component.availableFields.map((field) => field.name)).toEqual([
+      'nested',
+    ]);
+  });
+
   it('adds filtered fields in their displayed order and removes all selected fields', () => {
     component.form = new UntypedFormArray([]);
     component.fields = [
