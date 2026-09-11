@@ -6,7 +6,6 @@
       <!-- Access -->
       <shared-access
         [access]="application?.permissions"
-        [application]="application?.id"
         [objectTypeName]="'common.application.one' | translate"
         (save)="saveAccess($event)"
       ></shared-access>
