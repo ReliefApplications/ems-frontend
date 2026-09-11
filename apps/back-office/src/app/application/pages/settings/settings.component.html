@@ -131,7 +131,10 @@
       <label>
         {{ 'pages.application.settings.additionalLanguages.text' | translate }}
       </label>
-      <ui-select-menu [multiselect]="true" formControlName="additionalLanguages">
+      <ui-select-menu
+        [multiselect]="true"
+        formControlName="additionalLanguages"
+      >
         <ui-select-option
           *ngFor="let lang of availableLanguages"
           [value]="lang"
