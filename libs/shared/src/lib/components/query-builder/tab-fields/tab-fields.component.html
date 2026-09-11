@@ -2,6 +2,15 @@
 <ui-alert class="mb-4">
   {{ 'components.queryBuilder.hint.fields' | translate }}
 </ui-alert>
+<!-- Filter available fields by form -->
+<shared-form-filter
+  *ngIf="showFormFilter && !fieldForm"
+  [forms]="layoutForms"
+  [loading]="layoutFormsLoading"
+  [disabled]="disabled"
+  [selectedFormId]="selectedFormId"
+  (selectedFormIdChange)="onFormChange($event)"
+></shared-form-filter>
 <!-- Field selection -->
 <div
   cdkDropListGroup
@@ -54,6 +63,26 @@
         </ng-container>
       </div>
     </div>
+  </div>
+
+  <!-- Actions to move all fields at once -->
+  <div class="flex flex-col justify-center gap-2" *ngIf="!fieldForm">
+    <ui-button
+      [isIcon]="true"
+      category="tertiary"
+      icon="keyboard_double_arrow_right"
+      (click)="addAllFields()"
+      [disabled]="disabled || availableFields.length === 0"
+      [uiTooltip]="'components.queryBuilder.fields.transferAllTo' | translate"
+    ></ui-button>
+    <ui-button
+      [isIcon]="true"
+      category="tertiary"
+      icon="keyboard_double_arrow_left"
+      (click)="removeAllFields()"
+      [disabled]="disabled || selectedFields.length === 0"
+      [uiTooltip]="'components.queryBuilder.fields.transferAllFrom' | translate"
+    ></ui-button>
   </div>
 
   <!-- Selected fields -->

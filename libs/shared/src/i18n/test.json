@@ -1380,13 +1380,16 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",

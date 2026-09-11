@@ -1380,13 +1380,16 @@
       "fields": {
         "available": "Available fields",
         "column": "Column width (px)",
+        "filterByForm": "Filter by form",
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
-        "title": "Fields"
+        "title": "Fields",
+        "transferAllFrom": "Remove all fields",
+        "transferAllTo": "Add all fields"
       },
       "filter": {
         "and": "And",
