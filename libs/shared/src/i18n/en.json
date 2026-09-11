@@ -1380,13 +1380,16 @@
       "fields": {
         "available": "Available fields",
         "column": "Column width (px)",
+        "filterByForm": "Filter by form",
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
-        "title": "Fields"
+        "title": "Fields",
+        "transferAllFrom": "Remove all fields",
+        "transferAllTo": "Add all fields"
       },
       "filter": {
         "and": "And",
@@ -1576,6 +1579,8 @@
           },
           "title": "Automatic assignment"
         },
+        "autoGrantFieldsAccessibility": "Auto-grant view access to new fields",
+        "autoGrantFieldsUpdate": "Auto-grant edit access to new fields",
         "details": {
           "access": {
             "channels": "Channels access",
@@ -1594,6 +1599,7 @@
         "noFilters": "No access filters detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
+        "permissionsUpdated": "Permissions on {{resource}} were successfully updated.",
         "removeFilter": "Remove filter",
         "title": "Summary",
         "users": {
@@ -1605,8 +1611,14 @@
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
+        "allowSelectedFieldsAccessibility": "Allow this role to see the selected fields",
+        "allowSelectedFieldsUpdate": "Allow this role to update the selected fields",
+        "autoGrantFieldsAccessibility": "Automatically grant view access to fields added to this resource in the future",
+        "autoGrantFieldsUpdate": "Automatically grant edit access to fields added to this resource in the future",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+        "disallowSelectedFieldsAccessibility": "Disallow this role to see the selected fields",
+        "disallowSelectedFieldsUpdate": "Disallow this role to update the selected fields",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",
         "grantDownloadRecordsPermission": "Grant permission to download records",

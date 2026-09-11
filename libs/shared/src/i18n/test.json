@@ -1380,13 +1380,16 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",
@@ -1576,6 +1579,8 @@
           },
           "title": "******"
         },
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "details": {
           "access": {
             "channels": "******",
@@ -1594,6 +1599,7 @@
         "noFilters": "******",
         "noForms": "******",
         "noSteps": "******",
+        "permissionsUpdated": "****** {{resource}} ******",
         "removeFilter": "******",
         "title": "******",
         "users": {
@@ -1605,8 +1611,14 @@
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsUpdate": "******",
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",

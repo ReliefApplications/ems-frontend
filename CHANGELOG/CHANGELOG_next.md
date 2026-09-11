@@ -1,3 +1,15 @@
+# [2.24.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.6...v2.24.0-rc.7) (2026-09-10)
+
+### Bug Fixes
+
+- Localize button text in edit action button modal ([#2935](https://github.com/ReliefApplications/ems-frontend/issues/2935)) ([8a7a637](https://github.com/ReliefApplications/ems-frontend/commit/8a7a637b4dbc4b5092027773a0e39c462c0b941e)), closes [AB#137623](https://github.com/AB/issues/137623)
+
+# [2.24.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.5...v2.24.0-rc.6) (2026-09-07)
+
+### Features
+
+- Roles can now automatically grant permissions on new fields ([#2914](https://github.com/ReliefApplications/ems-frontend/issues/2914)) ([17f15b0](https://github.com/ReliefApplications/ems-frontend/commit/17f15b042ce4e41bb4dc1ae2e11b059a00aea46b)), closes [AB#135264](https://github.com/AB/issues/135264)
+
 # [2.24.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.4...v2.24.0-rc.5) (2026-09-06)
 
 ### Features
