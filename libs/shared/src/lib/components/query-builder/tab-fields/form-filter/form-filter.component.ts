@@ -74,7 +74,7 @@ export class FormFilterComponent implements OnChanges {
    * @param formId Selected form id.
    */
   public onSelectionChange(formId: string): void {
-    this.selectedFormId = formId ?? '';
-    this.selectedFormIdChange.emit(this.selectedFormId);
+    this.selectedFormId = formId;
+    this.selectedFormIdChange.emit(formId);
   }
 }

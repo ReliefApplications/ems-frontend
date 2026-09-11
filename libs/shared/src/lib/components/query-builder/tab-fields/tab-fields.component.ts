@@ -153,19 +153,15 @@ export class TabFieldsComponent implements OnInit, OnChanges {
 
   /** Adds all currently available fields to the selected fields list. */
   public addAllFields(): void {
-    const insertionIndex = this.form.length;
     for (const field of this.availableFields) {
-      this.selectedFields.push(field);
-      this.form.insert(this.form.length, addNewField(field, true));
+      this.form.push(addNewField(field, true));
       this.droppedFields.emit(field);
     }
-    this.availableFields = [];
-    if (insertionIndex === 0) this.checkfieldsIsValid();
+    this.setSelectedFields();
   }
 
   /** Removes every selected field from the layout. */
   public removeAllFields(): void {
-    this.fieldForm = null;
     this.form.clear();
     this.setSelectedFields();
   }

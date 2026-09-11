@@ -89,7 +89,7 @@ describe('TabFieldsComponent', () => {
     component.onFormChange('form-id');
     // Adds the nested field, which is invalid until sub-fields are selected
     component.addAllFields();
-    expect(component.form.at(0).errors?.invalid).toBe(true);
+    expect(component.form.at(0).invalid).toBe(true);
 
     component.drop({
       previousContainer: { data: component.selectedFields },

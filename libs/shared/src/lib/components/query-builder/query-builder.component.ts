@@ -246,9 +246,7 @@ export class QueryBuilderComponent
         this.layoutForms = forms as LayoutFormFields[];
       }
     } catch {
-      if (this.form?.value.name === queryName) {
-        this.layoutForms = [];
-      }
+      // Forms stay empty when they cannot be loaded
     } finally {
       // Only the request matching the current dataset controls the loading state
       if (this.form?.value.name === queryName) {
