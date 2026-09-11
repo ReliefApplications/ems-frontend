@@ -1,3 +1,9 @@
+# [2.24.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.6...v2.24.0-rc.7) (2026-09-10)
+
+### Bug Fixes
+
+- Localize button text in edit action button modal ([#2935](https://github.com/ReliefApplications/ems-frontend/issues/2935)) ([8a7a637](https://github.com/ReliefApplications/ems-frontend/commit/8a7a637b4dbc4b5092027773a0e39c462c0b941e)), closes [AB#137623](https://github.com/AB/issues/137623)
+
 # [2.24.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.5...v2.24.0-rc.6) (2026-09-07)
 
 ### Features

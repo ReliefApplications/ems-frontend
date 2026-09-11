@@ -104,13 +104,13 @@
               <div>
                 <!-- Button preview -->
                 <ui-button
-                  *ngIf="form.value.general.buttonText"
+                  *ngIf="form.value.general.buttonText | sharedLocalize"
                   class="w-fit mx-auto mt-3"
                   [category]="form.value.general.category || 'secondary'"
                   [variant]="form.value.general.variant || 'primary'"
                   (click)="preview()"
                 >
-                  {{ form.value.general.buttonText }}
+                  {{ form.value.general.buttonText | sharedLocalize }}
                 </ui-button>
               </div>
             </div>
