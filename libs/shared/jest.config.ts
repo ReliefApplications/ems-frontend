@@ -34,6 +34,7 @@ export default {
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/services/grid/*.spec.ts',
     '<rootDir>/src/lib/services/grid-data-formatter/*.spec.ts',
+    '<rootDir>/src/lib/services/download/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
     '<rootDir>/src/lib/pipes/readable-history-value/*.spec.ts',
