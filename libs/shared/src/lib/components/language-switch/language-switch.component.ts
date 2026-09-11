@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -42,9 +48,18 @@ interface LanguageOption {
 })
 export class LanguageSwitchComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
-  /** Languages available */
+  /**
+   * Restricts the languages shown in the switcher to this list (plus the
+   * default language, which is always available). When not set (null), all
+   * system languages are shown - this is the back-office behavior, where
+   * every language must always remain selectable.
+   */
+  @Input() allowedLanguages: string[] | null = null;
+  /** All languages known to the system (unfiltered). */
+  private allLanguages: string[] = [];
+  /** Languages available, after applying the allowedLanguages restriction */
   public languages: string[] = [];
   /** Current active language. */
   public currentLanguage = '';
@@ -65,7 +80,8 @@ export class LanguageSwitchComponent
   }
 
   ngOnInit(): void {
-    this.languages = this.translate.getLangs();
+    this.allLanguages = this.translate.getLangs();
+    this.updateLanguages();
     this.setCurrentLanguage(
       this.translate.currentLang || this.translate.defaultLang
     );
@@ -74,6 +90,35 @@ export class LanguageSwitchComponent
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ lang }) => this.setCurrentLanguage(lang));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // allowedLanguages can resolve asynchronously (e.g. once the current
+    // application or form has finished loading), so re-derive the list
+    // whenever it changes after the initial binding.
+    if (
+      changes['allowedLanguages'] &&
+      !changes['allowedLanguages'].firstChange
+    ) {
+      this.updateLanguages();
+      this.setCurrentLanguage(this.currentLanguage);
+    }
+  }
+
+  /**
+   * Recomputes the selectable language list from allLanguages, applying the
+   * allowedLanguages restriction when set. The default language is always
+   * kept available.
+   */
+  private updateLanguages(): void {
+    if (this.allowedLanguages) {
+      const defaultLang = this.translate.defaultLang;
+      this.languages = this.allLanguages.filter(
+        (code) => code === defaultLang || this.allowedLanguages?.includes(code)
+      );
+    } else {
+      this.languages = this.allLanguages;
+    }
   }
 
   /**

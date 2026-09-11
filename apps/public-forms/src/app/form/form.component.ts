@@ -1,11 +1,15 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
+  applyAllowedLanguage,
   Form,
   FormComponent as SharedFormComponent,
   RestService,
+  toI18nLocale,
 } from '@oort-front/shared';
+import { Model } from 'survey-core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HeaderService } from '../services/header/header.service';
@@ -59,13 +63,15 @@ export class FormComponent implements OnInit, OnDestroy {
    * @param restService Used to fetch the form from the public REST endpoint
    * @param headerService Used to display the form name in the application header
    * @param dialog Used to open the captcha modal when submitting the form
+   * @param translate Used to restrict/restore the active language based on the form's supported languages
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private restService: RestService,
     private headerService: HeaderService,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -94,8 +100,20 @@ export class FormComponent implements OnInit, OnDestroy {
         try {
           const structure = JSON.parse(form.structure || '{}');
           this.showNewRecordButton = structure.showNewRecordButton !== false;
+          // Restrict the language switch to the languages actually used by
+          // this form, never adding more than the system's own languages.
+          const usedLocales = new Model(structure).getUsedLocales();
+          const formLanguages = usedLocales
+            .map((locale) => toI18nLocale(locale))
+            .filter((lang) => environment.availableLanguages.includes(lang));
+          this.headerService.setFormLanguages(formLanguages);
+          applyAllowedLanguage(this.translate, [
+            this.translate.defaultLang,
+            ...formLanguages,
+          ]);
         } catch {
           this.showNewRecordButton = true;
+          this.headerService.setFormLanguages(null);
         }
       },
       error: () => {
@@ -141,5 +159,6 @@ export class FormComponent implements OnInit, OnDestroy {
   /** On destroy, restore the default application header title. */
   ngOnDestroy(): void {
     this.headerService.setFormTitle(null);
+    this.headerService.setFormLanguages(null);
   }
 }

@@ -3142,6 +3142,14 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "The following language(s) will no longer be available in this application: {{languages}}. Users currently using them will be switched back to the default language. Do you want to continue?",
+            "title": "Remove additional language(s)"
+          },
+          "info": "Selected languages are shown in the language selector of the front-office. In the back-office, all languages always remain available in the dropdown.",
+          "text": "Additional languages"
+        },
         "emailCreated": "New email notification created",
         "emailDeleted": "Email notification deleted successfully",
         "emailEdited": "Email notification edited successfully",
