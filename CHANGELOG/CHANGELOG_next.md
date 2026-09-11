@@ -1,3 +1,9 @@
+# [2.24.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.7...v2.24.0-rc.8) (2026-09-11)
+
+### Features
+
+- In Layout, add possibility to quickly add all fields to a grid, in the order they appear in a form ([#2934](https://github.com/ReliefApplications/ems-frontend/issues/2934)) ([6a66149](https://github.com/ReliefApplications/ems-frontend/commit/6a66149cbd4e3304aeac329ef3aeb53f47c6d335)), closes [AB#137662](https://github.com/AB/issues/137662)
+
 # [2.24.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.6...v2.24.0-rc.7) (2026-09-10)
 
 ### Bug Fixes
