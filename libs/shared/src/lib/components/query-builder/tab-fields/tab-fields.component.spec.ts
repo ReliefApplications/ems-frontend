@@ -65,9 +65,8 @@ describe('TabFieldsComponent', () => {
     component.layoutForms = [
       { id: 'form-id', name: 'Form', fields: ['second', 'first'] },
     ];
-    component.selectedFormId = 'form-id';
 
-    component.onFormChange();
+    component.onFormChange('form-id');
 
     expect(component.availableFields.map((field) => field.name)).toEqual([
       'second',
@@ -84,8 +83,7 @@ describe('TabFieldsComponent', () => {
     component.layoutForms = [
       { id: 'form-id', name: 'Form', fields: ['second', 'first'] },
     ];
-    component.selectedFormId = 'form-id';
-    component.onFormChange();
+    component.onFormChange('form-id');
 
     component.addAllFields();
 

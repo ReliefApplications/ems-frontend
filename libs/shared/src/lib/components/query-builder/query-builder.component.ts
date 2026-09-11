@@ -14,13 +14,7 @@ import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.compo
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { RestService } from '../../services/rest/rest.service';
-
-/** Form option and ordered fields returned by the layout REST endpoint. */
-export interface LayoutFormFields {
-  id: string;
-  name: string;
-  fields: string[];
-}
+import { LayoutFormFields } from './tab-fields/form-filter/form-filter.component';
 
 /** GraphQL metadata source response. */
 interface QuerySourceResponse {
@@ -80,6 +74,8 @@ export class QueryBuilderComponent
   public selectedTextFields: any[] = [];
   /** Forms available for filtering fields in layouts. */
   public layoutForms: LayoutFormFields[] = [];
+  /** Whether the layout forms are being loaded. */
+  public layoutFormsLoading = false;
 
   /**
    * Getter for the available scalar fields
@@ -196,6 +192,7 @@ export class QueryBuilderComponent
             } else {
               this.availableFields = [];
               this.layoutForms = [];
+              this.layoutFormsLoading = false;
               setFormBuilderControls();
             }
             this.filteredQueries = this.filterQueries(value);
@@ -232,6 +229,7 @@ export class QueryBuilderComponent
     const sourceQuery = this.queryBuilder.sourceQuery(queryName);
     if (!sourceQuery) return;
 
+    this.layoutFormsLoading = true;
     try {
       const sourceResult = (await firstValueFrom(sourceQuery)) as {
         data: Record<string, QuerySourceResponse>;
@@ -242,7 +240,7 @@ export class QueryBuilderComponent
       if (!source || this.form?.value.name !== queryName) return;
 
       const forms = await firstValueFrom(
-        this.restService.get(`/layouts/resources/${source}/forms`)
+        this.restService.get(`/resources/${source}/forms`)
       );
       if (this.form?.value.name === queryName && Array.isArray(forms)) {
         this.layoutForms = forms as LayoutFormFields[];
@@ -250,6 +248,11 @@ export class QueryBuilderComponent
     } catch {
       if (this.form?.value.name === queryName) {
         this.layoutForms = [];
+      }
+    } finally {
+      // Only the request matching the current dataset controls the loading state
+      if (this.form?.value.name === queryName) {
+        this.layoutFormsLoading = false;
       }
     }
   }

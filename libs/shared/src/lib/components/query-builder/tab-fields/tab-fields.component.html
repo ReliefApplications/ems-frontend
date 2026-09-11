@@ -2,6 +2,15 @@
 <ui-alert class="mb-4">
   {{ 'components.queryBuilder.hint.fields' | translate }}
 </ui-alert>
+<!-- Filter available fields by form -->
+<shared-form-filter
+  *ngIf="showFormFilter && !fieldForm"
+  [forms]="layoutForms"
+  [loading]="layoutFormsLoading"
+  [disabled]="disabled"
+  [selectedFormId]="selectedFormId"
+  (selectedFormIdChange)="onFormChange($event)"
+></shared-form-filter>
 <!-- Field selection -->
 <div
   cdkDropListGroup
@@ -11,18 +20,6 @@
   <!-- Available fields -->
   <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
-
-    <div *ngIf="layoutForms.length > 0" uiFormFieldDirective class="!w-full">
-      <label>{{ 'components.queryBuilder.fields.filterByForm' | translate }}</label>
-      <ui-select-menu [(ngModel)]="selectedFormId" (ngModelChange)="onFormChange()">
-        <ui-select-option value="">
-          {{ 'common.all' | translate }}
-        </ui-select-option>
-        <ui-select-option *ngFor="let layoutForm of layoutForms" [value]="layoutForm.id">
-          {{ layoutForm.name }}
-        </ui-select-option>
-      </ui-select-menu>
-    </div>
 
     <!-- Search through fields -->
     <div uiFormFieldDirective class="!w-full">

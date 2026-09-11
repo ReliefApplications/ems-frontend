@@ -18,10 +18,8 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
 import { HtmlParserService } from '../../../services/html-parser/html-parser.service';
 import { addNewField } from '../query-builder-forms';
-import {
-  LayoutFormFields,
-  QueryBuilderComponent,
-} from '../query-builder.component';
+import { QueryBuilderComponent } from '../query-builder.component';
+import { LayoutFormFields } from './form-filter/form-filter.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -38,8 +36,12 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
+  /** Should display the form filter above the available fields */
+  @Input() showFormFilter = false;
   /** Forms belonging to the current resource. */
   @Input() layoutForms: LayoutFormFields[] = [];
+  /** Whether the forms of the current resource are being loaded. */
+  @Input() layoutFormsLoading = false;
   /** Should show limit input */
   @Input() showLimit = false;
   /** Is the column width field displayed */
@@ -138,8 +140,13 @@ export class TabFieldsComponent implements OnInit, OnChanges {
     }, []);
   }
 
-  /** Refreshes the available fields after selecting or clearing a form filter. */
-  public onFormChange(): void {
+  /**
+   * Refreshes the available fields after selecting or clearing a form filter.
+   *
+   * @param formId Selected form id, empty string to clear the filter.
+   */
+  public onFormChange(formId: string): void {
+    this.selectedFormId = formId;
     this.searchAvailable = '';
     this.setSelectedFields();
   }
