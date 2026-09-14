@@ -135,7 +135,7 @@ export const init = (environment: any): void => {
     name: `${SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION}:boolean`,
     type: 'boolean',
     category: 'data',
-    displayName: 'Keep read-only fields locked\nwhen creating a record',
+    displayName: 'Lock read-only fields on record creation',
     default: false,
   });
   registerCustomPropertyHelp(

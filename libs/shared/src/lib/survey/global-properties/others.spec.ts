@@ -57,7 +57,7 @@ describe('survey global navigation properties', () => {
     expect(property.category).toBe('data');
     expect(property.defaultValue).toBe(false);
     expect(property.displayName).toBe(
-      'Keep read-only fields locked\nwhen creating a record'
+      'Lock read-only fields on record creation'
     );
   });
 

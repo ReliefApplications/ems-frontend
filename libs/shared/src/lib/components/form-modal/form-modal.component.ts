@@ -347,8 +347,6 @@ export class FormModalComponent
         }
         addCustomFunctions(this.authService);
         this.survey.showCompletedPage = false;
-        // Fire once now that the existing record's data is in the survey
-        fireOnRecordEditionTriggers(this.survey);
       }
 
       if (
@@ -359,6 +357,11 @@ export class FormModalComponent
           if (field.readOnly && this.survey.getQuestionByName(field.name))
             this.survey.getQuestionByName(field.name).readOnly = true;
         });
+      }
+
+      if (this.isUpdate) {
+        // Fire once now that the existing record's data is in the survey
+        fireOnRecordEditionTriggers(this.survey);
       }
 
       // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
