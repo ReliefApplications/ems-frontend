@@ -52,6 +52,7 @@ import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
@@ -346,11 +347,19 @@ export class FormModalComponent
         }
         addCustomFunctions(this.authService);
         this.survey.showCompletedPage = false;
+      }
+
+      if (
+        this.isUpdate ||
+        shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+      ) {
         this.form?.fields?.forEach((field) => {
           if (field.readOnly && this.survey.getQuestionByName(field.name))
             this.survey.getQuestionByName(field.name).readOnly = true;
         });
+      }
 
+      if (this.isUpdate) {
         // Fire once now that the existing record's data is in the survey
         fireOnRecordEditionTriggers(this.survey);
       }
