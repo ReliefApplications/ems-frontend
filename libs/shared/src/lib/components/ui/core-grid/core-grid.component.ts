@@ -58,11 +58,23 @@ import { DashboardService } from '../../../services/dashboard/dashboard.service'
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
+import {
+  GridColumnConfigurationService,
+  GridConfigurableField,
+} from '../../../services/grid-layout/grid-column-configuration.service';
 
 /**
  * Default file name when exporting grid data.
  */
 const DEFAULT_FILE_NAME = 'Records';
+
+/** Column state emitted by the rendered Kendo grid. */
+interface RenderedGridColumn {
+  field: string;
+  hidden: boolean;
+  width?: number | string;
+  order: number;
+}
 
 /**
  * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
@@ -90,10 +102,28 @@ export class CoreGridComponent
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
+  /** Dashboard owning the grid widget. */
+  @Input() dashboardId?: string;
+  /** Stable position of the widget within its dashboard. */
+  @Input() widgetIndex?: number;
+  /** Date the selected admin-defined layout was last modified. */
+  @Input() layoutModifiedAt?: string;
 
   /** @returns current grid layout */
   get layout(): any {
     return this.grid?.layout;
+  }
+
+  /** @returns storage key unique to the dashboard, widget, and selected layout. */
+  private get columnConfigurationKey(): string | null {
+    const widgetId =
+      this.widgetIndex !== undefined && this.widgetIndex >= 0
+        ? this.widgetIndex.toString()
+        : this.widget?.id || this.widget?._id;
+    const layoutId = this.settings?.id;
+    return this.dashboardId && widgetId && layoutId
+      ? `${this.dashboardId}:${widgetId}:${layoutId}`
+      : null;
   }
 
   /**
@@ -315,6 +345,8 @@ export class CoreGridComponent
   // === LAYOUT CHANGES ===
   /** Whether the layout has changes. */
   public hasLayoutChanges = false;
+  /** Whether user-defined column sizing should replace automatic sizing. */
+  public hasCustomColumnConfiguration = false;
 
   // === ACTIONS ON SELECTION ===
   /** Selected rows index array */
@@ -371,6 +403,10 @@ export class CoreGridComponent
   private environment: any;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Cancels grid requests when the layout changes or the component is destroyed. */
+  private gridRefresh$ = merge(this.cancelRefresh$, this.destroy$);
+  /** Identifies callbacks belonging to the currently selected layout. */
+  private configurationVersion = 0;
 
   /**
    * Main Grid data component to display Records.
@@ -392,6 +428,7 @@ export class CoreGridComponent
    * @param router Angular Router
    * @param el Element reference
    * @param dashboardService Dashboard service
+   * @param gridColumnConfigurationService Grid column configuration service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -409,7 +446,8 @@ export class CoreGridComponent
     private contextService: ContextService,
     private router: Router,
     private el: ElementRef,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private gridColumnConfigurationService: GridColumnConfigurationService
   ) {
     super();
     this.environment = environment;
@@ -444,10 +482,8 @@ export class CoreGridComponent
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (!this.status.error) {
-      if (changes?.settings) {
-        this.configureGrid();
-      }
+    if (changes?.settings) {
+      this.configureGrid();
     }
   }
 
@@ -455,6 +491,10 @@ export class CoreGridComponent
    * Configure the grid
    */
   public configureGrid(): void {
+    this.cancelRefresh$.next();
+    this.skip = 0;
+    this.status = { error: false };
+    const configurationVersion = ++this.configurationVersion;
     // set context filter
     this.contextFilters = this.settings.contextFilters
       ? JSON.parse(this.settings.contextFilters)
@@ -534,7 +574,7 @@ export class CoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+        this.metaQuery.pipe(takeUntil(this.gridRefresh$)).subscribe({
           next: async ({ data }: any) => {
             this.status = {
               error: false,
@@ -546,6 +586,9 @@ export class CoreGridComponent
                   await this.gridService.populateMetaFields(this.metaFields);
                 } catch (err) {
                   console.error(err);
+                }
+                if (configurationVersion !== this.configurationVersion) {
+                  return;
                 }
                 const fields = this.settings?.query?.fields || [];
                 const defaultLayoutFields = this.defaultLayout.fields || {};
@@ -561,6 +604,15 @@ export class CoreGridComponent
                     readOnlyFields:
                       this.settings?.actions?.readOnlyFields || [],
                   }
+                );
+                this.hasCustomColumnConfiguration =
+                  this.gridColumnConfigurationService.restore(
+                    this.columnConfigurationKey,
+                    this.fields,
+                    this.layoutModifiedAt
+                  );
+                this.fields.sort(
+                  (first, second) => (first.order ?? 0) - (second.order ?? 0)
                 );
                 // Scroll to left
                 if (this.grid) {
@@ -886,7 +938,7 @@ export class CoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      this.dataQuery.valueChanges.pipe(takeUntil(this.gridRefresh$)).subscribe({
         next: ({ data }) => {
           this.loading = false;
           this.status = {
@@ -905,6 +957,23 @@ export class CoreGridComponent
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
+                const temporaryRecordsCount =
+                  this.settings.query.temporaryRecords?.length || 0;
+                const lastPageSkip = Math.max(
+                  (Math.ceil(
+                    (this.totalCount + temporaryRecordsCount) / this.pageSize
+                  ) -
+                    1) *
+                    this.pageSize,
+                  0
+                );
+                if (this.skip > lastPageSkip) {
+                  this.onPageChange({
+                    skip: lastPageSkip,
+                    take: this.pageSize,
+                  });
+                  return;
+                }
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -983,8 +1052,7 @@ export class CoreGridComponent
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
-    // TODO = check what to do there
-    this.onPageChange({ skip: 0, take: this.pageSize });
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
     // this.selectedRows = [];
     // this.updatedItems = [];
     this.refresh$.next(true);
@@ -1613,7 +1681,7 @@ export class CoreGridComponent
         }),
       })
     )
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.gridRefresh$))
       .subscribe(() => (this.loading = false));
   }
 
@@ -1670,6 +1738,22 @@ export class CoreGridComponent
    * Detects fields changes.
    */
   onColumnChange(): void {
+    const fields = (
+      Object.values(this.layout?.fields || {}) as RenderedGridColumn[]
+    ).map(
+      (field): GridConfigurableField => ({
+        name: field.field,
+        hidden: field.hidden,
+        width: field.width,
+        order: field.order,
+      })
+    );
+    this.gridColumnConfigurationService.save(
+      this.columnConfigurationKey,
+      fields,
+      this.layoutModifiedAt
+    );
+    this.hasCustomColumnConfiguration = true;
     this.saveLocalLayout();
   }
 
@@ -1695,6 +1779,8 @@ export class CoreGridComponent
    * Reset the currently cached layout to the default one
    */
   resetDefaultLayout(): void {
+    this.gridColumnConfigurationService.remove(this.columnConfigurationKey);
+    this.hasCustomColumnConfiguration = false;
     this.defaultLayoutReset.emit();
   }
 

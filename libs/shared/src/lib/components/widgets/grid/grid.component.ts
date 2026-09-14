@@ -73,6 +73,10 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** Data */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable position of the widget within its dashboard. */
+  @Input() widgetIndex?: number;
 
   /** Permission to create records */
   public canCreateRecords = false;

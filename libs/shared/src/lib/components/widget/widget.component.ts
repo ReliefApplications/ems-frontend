@@ -34,6 +34,10 @@ import { FileExplorerWidgetComponent } from '../file-explorer/file-explorer-widg
 export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /** Current widget definition */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable position of the widget within its dashboard. */
+  @Input() widgetIndex?: number;
   /** Is widget in fullscreen mode */
   @Input() header = true;
   /** Can user update widget */

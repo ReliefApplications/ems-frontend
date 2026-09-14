@@ -7,6 +7,7 @@ export interface Layout {
   id?: string;
   name?: string;
   nameTranslations?: LocalizedString;
+  modifiedAt?: string;
   query?: any;
   display?: any;
 }

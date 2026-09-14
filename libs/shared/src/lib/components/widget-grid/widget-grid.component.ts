@@ -30,6 +30,9 @@ import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
 import { WidgetType } from '../../models/dashboard.model';
 
+/** Gridster item annotated with its stable dashboard structure position. */
+type DashboardWidget = GridsterItem & { _dashboardWidgetIndex?: number };
+
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
 
@@ -54,6 +57,8 @@ export class WidgetGridComponent
   @Input() loading = false;
   /** Widgets */
   @Input() widgets: any[] = [];
+  /** Dashboard owning the displayed widgets. */
+  @Input() dashboardId?: string;
   /** Update permission */
   @Input() canUpdate = false;
   /** Additional grid configuration */
@@ -383,6 +388,18 @@ export class WidgetGridComponent
   }
 
   /**
+   * Gets the stable position of a widget in the dashboard structure.
+   * Visible widgets can be cloned while filtering empty widgets, so reference
+   * equality alone is not sufficient.
+   *
+   * @param widget Widget displayed in the grid.
+   * @returns Index in the dashboard widget structure.
+   */
+  public getWidgetIndex(widget: DashboardWidget): number {
+    return widget._dashboardWidgetIndex ?? this.widgets.indexOf(widget);
+  }
+
+  /**
    * Open settings component for widget edition.
    * Emits addition event if edition should be saved.
    *
@@ -510,7 +527,10 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
-    this._widgets = cloneDeep(this.widgets);
+    this._widgets = cloneDeep(this.widgets).map((widget, index) => ({
+      ...widget,
+      _dashboardWidgetIndex: index,
+    }));
     this.setVisibleWidgets();
   }
 

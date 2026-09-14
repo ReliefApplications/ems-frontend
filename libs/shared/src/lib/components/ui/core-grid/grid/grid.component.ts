@@ -26,6 +26,7 @@ import { SnackbarService, TooltipDirective } from '@oort-front/ui';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import {
   ColumnComponent,
+  ColumnResizeArgs,
   GridDataResult,
   GridComponent as KendoGridComponent,
   PageChangeEvent,
@@ -133,6 +134,8 @@ export class GridComponent
   @Input() hasDetails = true;
   /** Resizable status */
   @Input() resizable = true;
+  /** Whether columns should be sized automatically from their content. */
+  @Input() autoSizeColumns = true;
   /** Resizable status */
   @Input() reorderable = true;
   /** Add permission */
@@ -849,12 +852,20 @@ export class GridComponent
   /**
    * Sets and emits new grid configuration after column resize event.
    *
-   * @param event Resize event containing the resize origin column
+   * @param event Resize event containing the resized columns
    */
-  onColumnResize(event: any): void {
-    const columnField = event[0].column.field;
+  onColumnResize(event: ColumnResizeArgs[]): void {
+    event.forEach(({ column, newWidth }) => {
+      if (newWidth !== undefined) {
+        column.width = newWidth;
+      }
+    });
+    const columnField = (event[0]?.column as ColumnComponent | undefined)
+      ?.field;
     // Update the button display for all the cells of this column on resize
-    this.updateColumnShowFullScreenButton(columnField);
+    if (columnField) {
+      this.updateColumnShowFullScreenButton(columnField);
+    }
     this.columnChange.emit();
   }
 
@@ -1296,6 +1307,7 @@ export class GridComponent
    * Automatically set the width of each column
    */
   private setColumnsWidth() {
+    if (!this.autoSizeColumns) return;
     const gridElement = this.gridRef.nativeElement;
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};
