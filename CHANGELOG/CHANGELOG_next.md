@@ -1,3 +1,57 @@
+# [2.24.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.9...v2.24.0-rc.10) (2026-09-14)
+
+### Features
+
+- Enable Read only fields to not be editable when creating a new record ([#2936](https://github.com/ReliefApplications/ems-frontend/issues/2936)) ([a2fcf3a](https://github.com/ReliefApplications/ems-frontend/commit/a2fcf3a8cb5ddb6d2f8f5eeb2ac82b5d34c8350a)), closes [AB#137743](https://github.com/AB/issues/137743)
+
+# [2.24.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.8...v2.24.0-rc.9) (2026-09-14)
+
+### Bug Fixes
+
+- show actual upload error message instead of a generic one ([#2937](https://github.com/ReliefApplications/ems-frontend/issues/2937)) ([af9fadc](https://github.com/ReliefApplications/ems-frontend/commit/af9fadcb9dc24c206c860cbdecb0aaddc42b5d61)), closes [AB#137745](https://github.com/AB/issues/137745)
+
+# [2.24.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.7...v2.24.0-rc.8) (2026-09-11)
+
+### Features
+
+- In Layout, add possibility to quickly add all fields to a grid, in the order they appear in a form ([#2934](https://github.com/ReliefApplications/ems-frontend/issues/2934)) ([6a66149](https://github.com/ReliefApplications/ems-frontend/commit/6a66149cbd4e3304aeac329ef3aeb53f47c6d335)), closes [AB#137662](https://github.com/AB/issues/137662)
+
+# [2.24.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.6...v2.24.0-rc.7) (2026-09-10)
+
+### Bug Fixes
+
+- Localize button text in edit action button modal ([#2935](https://github.com/ReliefApplications/ems-frontend/issues/2935)) ([8a7a637](https://github.com/ReliefApplications/ems-frontend/commit/8a7a637b4dbc4b5092027773a0e39c462c0b941e)), closes [AB#137623](https://github.com/AB/issues/137623)
+
+# [2.24.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.5...v2.24.0-rc.6) (2026-09-07)
+
+### Features
+
+- Roles can now automatically grant permissions on new fields ([#2914](https://github.com/ReliefApplications/ems-frontend/issues/2914)) ([17f15b0](https://github.com/ReliefApplications/ems-frontend/commit/17f15b042ce4e41bb4dc1ae2e11b059a00aea46b)), closes [AB#135264](https://github.com/AB/issues/135264)
+
+# [2.24.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.4...v2.24.0-rc.5) (2026-09-06)
+
+### Features
+
+- Allow sorting query layouts by more than one field ([#2925](https://github.com/ReliefApplications/ems-frontend/issues/2925)) ([d21f710](https://github.com/ReliefApplications/ems-frontend/commit/d21f7105d2fa6493afbc74e414ef8f6fe3997bbd)), closes [AB#135743](https://github.com/AB/issues/135743)
+
+# [2.24.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.3...v2.24.0-rc.4) (2026-09-04)
+
+### Bug Fixes
+
+- Some fields could conflict with grid data formatter and generate empty cells in grid widgets ([3d1c9bf](https://github.com/ReliefApplications/ems-frontend/commit/3d1c9bfee6237c924b7933e8e8e985ee53948d41))
+
+# [2.24.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.2...v2.24.0-rc.3) (2026-09-03)
+
+### Features
+
+- Add a new form trigger to capture changes on fields and set value of another field on complete ([#2911](https://github.com/ReliefApplications/ems-frontend/issues/2911)) ([96a4e16](https://github.com/ReliefApplications/ems-frontend/commit/96a4e16fbe2e1be0e2e4caee66cf322f0aeeb507)), closes [AB#134988](https://github.com/AB/issues/134988)
+
+# [2.24.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.1...v2.24.0-rc.2) (2026-09-03)
+
+### Bug Fixes
+
+- Download button not appearing for single image fields in forms ([24a5cc9](https://github.com/ReliefApplications/ems-frontend/commit/24a5cc9bb041be6c0a49652c6ad0fd17d4439041)), closes [AB#134011](https://github.com/AB/issues/134011)
+
 # [2.24.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0...v2.24.0-rc.1) (2026-07-29)
 
 ### Bug Fixes

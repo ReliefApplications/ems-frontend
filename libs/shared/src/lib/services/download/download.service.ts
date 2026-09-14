@@ -320,18 +320,34 @@ export class DownloadService {
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: (err: any) => {
-          // The auth interceptor unwraps HttpErrorResponse into a plain
-          // Error, moving the backend's message (string or {message}) onto
-          // err.message.
-          snackBarSpinner.instance.message =
-            err?.message ||
-            this.translate.instant('common.notifications.file.upload.error');
+          snackBarSpinner.instance.message = this.getUploadErrorMessage(err);
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       })
     );
+  }
+
+  /**
+   * Get the message to display for a failed file upload: the backend's own
+   * translated error text when available (the auth interceptor carries it
+   * through as `error.message`), falling back to a generic message for
+   * network-level failures that carry no usable text (e.g. offline, CORS).
+   *
+   * @param err error thrown by the upload request
+   * @returns message to display to the user
+   */
+  private getUploadErrorMessage(err: any): string {
+    const backendMessage = err?.message;
+    if (
+      typeof backendMessage === 'string' &&
+      backendMessage.trim().length > 0 &&
+      !backendMessage.startsWith('[object ')
+    ) {
+      return backendMessage;
+    }
+    return this.translate.instant('common.notifications.file.upload.error');
   }
 
   /**

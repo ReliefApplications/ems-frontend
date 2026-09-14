@@ -40,6 +40,7 @@ export interface Application {
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
   shortcut?: string;
+  additionalLanguages?: string[];
 }
 
 /** Model for application query response object */

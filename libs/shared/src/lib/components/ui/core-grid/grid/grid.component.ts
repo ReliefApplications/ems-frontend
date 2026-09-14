@@ -31,6 +31,7 @@ import {
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
+  SortSettings,
 } from '@progress/kendo-angular-grid';
 import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import {
@@ -154,8 +155,19 @@ export class GridComponent
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   /** Searchable status */
   @Input() searchable = true;
-  /** Sortable status */
-  @Input() sortable = true;
+  /**
+   * Sortable status. Defaults to multi-column sort: a plain click still
+   * replaces the sort (unchanged behavior), shift/ctrl-click adds a
+   * secondary/tertiary sort key. `multiSortKey` must stay explicit here —
+   * Kendo's own default ('none') makes every plain click cumulative instead
+   * of replacing, which would be a regression from today's single-click
+   * behavior.
+   */
+  @Input() sortable: SortSettings = {
+    mode: 'multiple',
+    showIndexes: true,
+    multiSortKey: 'shift',
+  };
   /** Grid don't uses layout (uses aggregation or reference data) */
   @Input() noLayout = false;
   /** Sort descriptor */
@@ -436,7 +448,7 @@ export class GridComponent
         this.grid?.columns.forEach((column) => {
           this.updateColumnShowFullScreenButton((column as any).field);
         });
-        // OnPush: mutating dataItem.showFullScreenButton inside a timeout does
+        // OnPush: mutating dataItem._display.showFullScreenButton in a timeout does
         // not trigger change detection on its own.
         this.cdr.markForCheck();
       }, 0);
@@ -936,10 +948,10 @@ export class GridComponent
     );
     this.data.data.forEach((element) => {
       const relatedTooltipElement = updatableTooltips.find(
-        (tooltip) => tooltip.uiTooltip === element.text[columnField]
+        (tooltip) => tooltip.uiTooltip === element._display.text[columnField]
       );
       if (relatedTooltipElement) {
-        element.showFullScreenButton[columnField] =
+        element._display.showFullScreenButton[columnField] =
           relatedTooltipElement.elementRef.nativeElement.offsetWidth <
           relatedTooltipElement.elementRef.nativeElement.scrollWidth;
       }

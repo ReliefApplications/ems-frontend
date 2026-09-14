@@ -1388,13 +1388,16 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",
@@ -1426,6 +1429,7 @@
         "title": "******"
       },
       "sort": {
+        "add": "******",
         "ascending": "******",
         "descending": "******",
         "field": "******",
@@ -1583,6 +1587,8 @@
           },
           "title": "******"
         },
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "details": {
           "access": {
             "channels": "******",
@@ -1601,6 +1607,7 @@
         "noFilters": "******",
         "noForms": "******",
         "noSteps": "******",
+        "permissionsUpdated": "****** {{resource}} ******",
         "removeFilter": "******",
         "title": "******",
         "users": {
@@ -1612,8 +1619,14 @@
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsUpdate": "******",
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",
@@ -3175,6 +3188,14 @@
       },
       "settings": {
         "actions": "******",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "****** {{languages}} ******",
+            "title": "******"
+          },
+          "info": "******",
+          "text": "******"
+        },
         "emailCreated": "******",
         "emailDeleted": "******",
         "emailEdited": "******",

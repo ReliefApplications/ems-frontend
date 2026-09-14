@@ -67,6 +67,8 @@ export interface Resource {
     canDeleteRecords: any;
     canDownloadRecords: any;
     canUploadRecords: any;
+    autoGrantFieldsCanSee: boolean;
+    autoGrantFieldsCanUpdate: boolean;
   };
   metadata?: Metadata[];
   canCreateRecords?: boolean;
