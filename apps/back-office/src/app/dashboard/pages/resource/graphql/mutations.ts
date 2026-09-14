@@ -32,6 +32,8 @@ export const EDIT_RESOURCE = gql`
         fields
         severity
         message
+        active
+        showMatches
         condition {
           field
           operator

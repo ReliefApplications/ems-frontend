@@ -9,12 +9,7 @@ import {
   PaginatorModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
-import {
-  AccessModule,
-  DateModule,
-  UniquenessRulesModule,
-  UploadMenuModule,
-} from '@oort-front/shared';
+import { AccessModule, DateModule, UploadMenuModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -29,7 +24,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
     IconModule,
     MenuModule,
     AccessModule,
-    UniquenessRulesModule,
     PaginatorModule,
     TranslateModule,
     OverlayModule,

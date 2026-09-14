@@ -14,6 +14,8 @@ export const GET_RESOURCE_BY_ID = gql`
         fields
         severity
         message
+        active
+        showMatches
         condition {
           field
           operator

@@ -4,6 +4,7 @@
     "accessDenied": "Accès refusé",
     "account": "Compte",
     "actions": "Actions",
+    "active": "Active",
     "activity": {
       "few": "Activités",
       "none": "Aucune activité",
@@ -173,6 +174,7 @@
     "deleteObject": "Supprimer {{name}}",
     "deleted": "Supprimé",
     "desc": "Décroissant",
+    "discard": "Ignorer",
     "dismiss": "Fermer",
     "display": "Afficher",
     "distributionList": {
@@ -241,6 +243,7 @@
     "hide": "Cacher",
     "history": "Historique",
     "id": "Id",
+    "inactive": "Inactive",
     "input": {
       "dateRange": "Intervalle de dates",
       "none": "-- Aucun --",
@@ -552,6 +555,11 @@
       "few": "Utilisateurs",
       "none": "Aucun utilisateur",
       "one": "Utilisateur"
+    },
+    "validation": {
+      "few": "Validation",
+      "none": "Aucune validation",
+      "one": "Validation"
     },
     "value": {
       "few": "Valeurs",
@@ -1688,6 +1696,43 @@
         "title": "Type de modèle"
       }
     },
+    "uniquenessRules": {
+      "active": "Active",
+      "add": "Ajouter une règle",
+      "condition": {
+        "add": "Ajouter une condition",
+        "equals": "est égal à",
+        "notEquals": "n'est pas égal à",
+        "title": "Appliquer uniquement si...",
+        "valuePlaceholder": "Valeur"
+      },
+      "dateIntersection": {
+        "allowAdjacent": "Autoriser les périodes contiguës (les périodes adjacentes ne sont pas un conflit)",
+        "endField": "Champ de date de fin",
+        "startField": "Champ de date de début",
+        "title": "Les enregistrements ne doivent pas avoir de périodes qui se chevauchent"
+      },
+      "delete": {
+        "confirmationMessage": "Confirmez-vous la suppression de la règle {{name}} ?"
+      },
+      "description": "Configurer les règles d'unicité",
+      "edit": "Modifier la règle",
+      "empty": "Aucune règle d'unicité configurée. Les enregistrements peuvent être créés et modifiés librement.",
+      "errors": {
+        "fieldsRequired": "Sélectionnez au moins un champ pour cette règle."
+      },
+      "fields": "Champs",
+      "message": "Message affiché à l'utilisateur",
+      "messagePlaceholder": "Un enregistrement avec les mêmes valeurs existe déjà.",
+      "messageTokensHint": "Jetons :",
+      "name": "Nom",
+      "remove": "Supprimer la règle",
+      "severity": "Gravité",
+      "severityError": "Bloquer (empêcher l'enregistrement)",
+      "severityWarning": "Avertir (laisser l'utilisateur enregistrer quand même)",
+      "showMatches": "Afficher les enregistrements correspondants à l'utilisateur (selon ses droits de lecture)",
+      "title": "Règles d'unicité"
+    },
     "user": {
       "delete": {
         "confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
@@ -1972,6 +2017,7 @@
         },
         "validation": {
           "help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
+          "hiddenMatches": "+ {{count}} de plus (accès non autorisé)",
           "questionTitle": "Erreurs sur le champ {{question}}:",
           "subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
           "title": "L'enregistrement du document {{record}} a échoué"

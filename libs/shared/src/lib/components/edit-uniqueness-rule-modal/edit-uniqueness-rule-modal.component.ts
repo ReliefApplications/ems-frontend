@@ -1,14 +1,32 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  ButtonModule,
+  CheckboxModule,
+  DialogModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import {
   UniquenessCondition,
   UniquenessRule,
-} from '../../../models/resource.model';
+} from '../../models/resource.model';
 
-/** Data passed to the edit uniqueness rules modal */
-export interface EditUniquenessRulesData {
-  rules: UniquenessRule[];
+/** Data passed to the edit uniqueness rule modal */
+export interface EditUniquenessRuleModalData {
+  rule?: UniquenessRule;
   fields: any[];
 }
 
@@ -28,66 +46,76 @@ const coerceConditionValue = (raw: string): any => {
 };
 
 /**
- * Modal used to add, edit and remove the scoped uniqueness rules of a
- * resource. Each rule lists one or more fields that must be unique
- * (alone, or in combination) across all records of the resource, and
+ * Modal used to add or edit a single scoped uniqueness rule of a resource.
+ * A rule lists one or more fields that must be unique (alone, or in
+ * combination) across all records of the resource, optionally restricted
+ * to records matching a condition or checked as a date-range overlap, and
  * whether a violation should block saving or only warn the user.
  */
 @Component({
-  selector: 'shared-edit-uniqueness-rules',
-  templateUrl: './edit-uniqueness-rules.component.html',
-  styleUrls: ['./edit-uniqueness-rules.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    ButtonModule,
+    CheckboxModule,
+    DialogModule,
+    FormWrapperModule,
+    IconModule,
+    SelectMenuModule,
+    TooltipModule,
+  ],
+  selector: 'shared-edit-uniqueness-rule-modal',
+  templateUrl: './edit-uniqueness-rule-modal.component.html',
+  styleUrls: ['./edit-uniqueness-rule-modal.component.scss'],
 })
-export class EditUniquenessRulesComponent implements OnInit {
-  /** Reactive form, wrapping the rules form array */
-  public form!: FormGroup;
+export class EditUniquenessRuleModalComponent {
   /** Names of the fields available on the resource */
-  public fieldNames: string[] = [];
+  public fieldNames: string[] = (this.data.fields || [])
+    .map((field: any) => field.name)
+    .filter((name: string) => !!name);
+
+  /** Reactive form for the rule */
+  public form: FormGroup = this.createRuleGroup(this.data.rule);
 
   /**
-   * EditUniquenessRulesComponent constructor.
+   * EditUniquenessRuleModalComponent constructor.
    *
    * @param fb Used to build the reactive form.
    * @param dialogRef Reference to the current dialog.
-   * @param data Data passed to the modal (current rules and resource fields).
+   * @param data Data passed to the modal (the rule being edited, if any, and the resource fields).
    */
   constructor(
     private fb: FormBuilder,
-    public dialogRef: DialogRef<UniquenessRule[]>,
-    @Inject(DIALOG_DATA) public data: EditUniquenessRulesData
+    public dialogRef: DialogRef<UniquenessRule>,
+    @Inject(DIALOG_DATA) public data: EditUniquenessRuleModalData
   ) {}
 
-  ngOnInit(): void {
-    this.fieldNames = (this.data.fields || [])
-      .map((field) => field.name)
-      .filter((name) => !!name);
-    this.form = this.fb.group({
-      rules: new FormArray<FormGroup>(
-        (this.data.rules || []).map((rule) => this.createRuleGroup(rule))
-      ),
-    });
+  /**
+   * The 'only apply when' conditions form array.
+   *
+   * @returns the condition form array
+   */
+  get conditions(): FormArray<FormGroup> {
+    return this.form.get('condition') as FormArray<FormGroup>;
   }
 
   /**
-   * The form array holding one group per rule.
+   * The rule, formatted for saving.
    *
-   * @returns the rules form array
+   * @returns the uniqueness rule
    */
-  get rules(): FormArray<FormGroup> {
-    return this.form.get('rules') as FormArray<FormGroup>;
-  }
-
-  /**
-   * The rules, formatted for saving.
-   *
-   * @returns the list of uniqueness rules
-   */
-  get value(): UniquenessRule[] {
-    return this.rules.value.map((rule: any) => ({
+  get value(): UniquenessRule {
+    const rule = this.form.getRawValue();
+    return {
       name: rule.name || undefined,
       fields: rule.fields,
       severity: rule.severity,
       message: rule.message || undefined,
+      active: rule.active,
+      showMatches: rule.showMatches,
       condition: rule.condition?.length
         ? rule.condition.map((c: any) => ({
             field: c.field,
@@ -105,13 +133,13 @@ export class EditUniquenessRulesComponent implements OnInit {
               allowAdjacent: !!rule.dateIntersection.allowAdjacent,
             }
           : undefined,
-    }));
+    };
   }
 
   /**
-   * Builds a form group for a single rule.
+   * Builds the reactive form for the rule.
    *
-   * @param rule existing rule to populate the group with, if any
+   * @param rule existing rule to populate the form with, if any
    * @returns the form group
    */
   private createRuleGroup(rule?: UniquenessRule): FormGroup {
@@ -120,6 +148,8 @@ export class EditUniquenessRulesComponent implements OnInit {
       fields: [rule?.fields || [], Validators.required],
       severity: [rule?.severity || 'error', Validators.required],
       message: [rule?.message || ''],
+      active: [rule?.active !== false],
+      showMatches: [!!rule?.showMatches],
       condition: new FormArray<FormGroup>(
         (rule?.condition || []).map((c) => this.createConditionGroup(c))
       ),
@@ -153,51 +183,22 @@ export class EditUniquenessRulesComponent implements OnInit {
     });
   }
 
-  /** Adds a new, empty rule to the list */
-  addRule(): void {
-    this.rules.push(this.createRuleGroup());
+  /** Adds a new, empty condition. */
+  addCondition(): void {
+    this.conditions.push(this.createConditionGroup());
   }
 
   /**
-   * Removes a rule from the list.
+   * Removes a condition.
    *
-   * @param index index of the rule to remove
+   * @param index index of the condition to remove
    */
-  removeRule(index: number): void {
-    this.rules.removeAt(index);
+  removeCondition(index: number): void {
+    this.conditions.removeAt(index);
   }
 
-  /**
-   * The 'only apply when' conditions of a given rule.
-   *
-   * @param ruleIndex index of the rule
-   * @returns the condition form array
-   */
-  conditions(ruleIndex: number): FormArray<FormGroup> {
-    return this.rules.at(ruleIndex).get('condition') as FormArray<FormGroup>;
-  }
-
-  /**
-   * Adds a new, empty condition to a rule.
-   *
-   * @param ruleIndex index of the rule
-   */
-  addCondition(ruleIndex: number): void {
-    this.conditions(ruleIndex).push(this.createConditionGroup());
-  }
-
-  /**
-   * Removes a condition from a rule.
-   *
-   * @param ruleIndex index of the rule
-   * @param conditionIndex index of the condition to remove
-   */
-  removeCondition(ruleIndex: number, conditionIndex: number): void {
-    this.conditions(ruleIndex).removeAt(conditionIndex);
-  }
-
-  /** Closes the modal without saving any change. */
-  onClose(): void {
-    this.dialogRef.close();
+  /** Closes the modal, sending the rule back to the caller. */
+  onSubmit(): void {
+    this.dialogRef.close(this.value);
   }
 }

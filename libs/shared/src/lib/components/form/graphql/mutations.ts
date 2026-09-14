@@ -30,6 +30,11 @@ export const ADD_RECORD = gql`
       validationErrors {
         question
         errors
+        matches {
+          id
+          incrementalId
+        }
+        hiddenMatchCount
       }
     }
   }
@@ -78,6 +83,11 @@ export const EDIT_RECORD = gql`
       validationErrors {
         question
         errors
+        matches {
+          id
+          incrementalId
+        }
+        hiddenMatchCount
       }
     }
   }

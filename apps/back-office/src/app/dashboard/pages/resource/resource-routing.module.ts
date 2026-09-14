@@ -85,6 +85,18 @@ const routes: Routes = [
           },
         },
       },
+      {
+        path: 'validation',
+        loadChildren: () =>
+          import('./validation-tab/validation-tab.module').then(
+            (m) => m.ValidationTabModule
+          ),
+        data: {
+          breadcrumb: {
+            key: 'common.validation.few',
+          },
+        },
+      },
     ],
   },
 ];

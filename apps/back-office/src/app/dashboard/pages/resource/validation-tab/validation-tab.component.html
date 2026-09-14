@@ -1,0 +1,119 @@
+<ng-container *ngIf="rules.length">
+  <ng-container *ngTemplateOutlet="newRule"> </ng-container>
+</ng-container>
+<ng-template #newRule>
+  <div class="self-end">
+    <ui-button
+      variant="primary"
+      class="actions"
+      category="secondary"
+      icon="add"
+      [disabled]="!resource.canUpdate"
+      (click)="onAddRule()"
+    >
+      {{ 'components.uniquenessRules.add' | translate }}</ui-button
+    >
+  </div>
+</ng-template>
+<ng-container *ngIf="rules.length; else emptyTmpl">
+  <div class="overflow-x-hidden shadow-2lg">
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="rules">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'components.uniquenessRules.name' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element" class="max-w-[20vw]">
+            {{ element.name || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="fields">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'components.uniquenessRules.fields' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+            {{ element.fields.join(', ') }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="severity">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'components.uniquenessRules.severity' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            <div uiChipList>
+              <ui-chip
+                class="!rounded-lg"
+                [variant]="element.severity === 'warning' ? 'warning' : 'danger'"
+              >
+                {{
+                  (element.severity === 'warning'
+                    ? 'components.uniquenessRules.severityWarning'
+                    : 'components.uniquenessRules.severityError'
+                  ) | translate
+                }}
+              </ui-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="active">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'components.uniquenessRules.active' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            <div uiChipList>
+              <ui-chip
+                class="!rounded-lg"
+                [variant]="element.active !== false ? 'success' : 'grey'"
+              >
+                {{
+                  (element.active !== false
+                    ? 'common.active'
+                    : 'common.inactive'
+                  ) | translate
+                }}
+              </ui-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="ruleMenu"
+              (click)="$event.stopPropagation()"
+              [disabled]="!resource.canUpdate"
+              [uiTooltip]="'common.actions' | translate"
+            >
+            </ui-button>
+            <ui-menu #ruleMenu>
+              <button uiMenuItem (click)="onEditRule(element)">
+                <ui-icon icon="edit" variant="grey"></ui-icon>
+                {{ 'common.edit' | translate }}
+              </button>
+              <ui-divider class="py-1"></ui-divider>
+              <button uiMenuItem (click)="onDeleteRule(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>
+<ng-template #emptyTmpl>
+  <shared-empty
+    [title]="'components.uniquenessRules.empty' | translate"
+    [footerTemplate]="newRule"
+  ></shared-empty>
+</ng-template>

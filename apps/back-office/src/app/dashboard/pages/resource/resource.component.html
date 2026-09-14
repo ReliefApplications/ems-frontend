@@ -11,13 +11,6 @@
       *ngIf="resource.canUpdate"
     >
     </shared-access>
-    <shared-uniqueness-rules
-      [rules]="resource.uniquenessRules"
-      [fields]="resource.fields"
-      (save)="saveUniquenessRules($event)"
-      *ngIf="resource.canUpdate"
-    >
-    </shared-uniqueness-rules>
   </div>
   <ui-tabs [selectedIndex]="selectedTab">
     <ui-tab
@@ -63,6 +56,15 @@
     >
       <ng-container ngProjectAs="label">{{
         'common.record.few' | translate
+      }}</ng-container>
+    </ui-tab>
+    <ui-tab
+      (click)="selectedTab = 5"
+      routerLink="./validation"
+      [state]="{ resource }"
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.validation.few' | translate
       }}</ng-container>
     </ui-tab>
   </ui-tabs>

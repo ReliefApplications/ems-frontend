@@ -4,6 +4,7 @@
     "accessDenied": "Access denied",
     "account": "Account",
     "actions": "Actions",
+    "active": "Active",
     "activity": {
       "few": "Activities",
       "none": "No activity",
@@ -173,6 +174,7 @@
     "deleteObject": "Delete {{name}}",
     "deleted": "Deleted",
     "desc": "Descending",
+    "discard": "Discard",
     "dismiss": "Dismiss",
     "display": "Display",
     "distributionList": {
@@ -241,6 +243,7 @@
     "hide": "Hide",
     "history": "History",
     "id": "Id",
+    "inactive": "Inactive",
     "input": {
       "dateRange": "Date range",
       "none": "-- None --",
@@ -552,6 +555,11 @@
       "few": "Users",
       "none": "No user",
       "one": "User"
+    },
+    "validation": {
+      "few": "Validation",
+      "none": "No validation",
+      "one": "Validation"
     },
     "value": {
       "few": "Values",
@@ -1686,6 +1694,7 @@
       }
     },
     "uniquenessRules": {
+      "active": "Active",
       "add": "Add a rule",
       "condition": {
         "add": "Add a condition",
@@ -1700,7 +1709,11 @@
         "startField": "Start date field",
         "title": "Records must not have overlapping date ranges"
       },
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the rule {{name}}?"
+      },
       "description": "Configure uniqueness rules",
+      "edit": "Edit rule",
       "empty": "No uniqueness rule configured. Records can be created and edited freely.",
       "errors": {
         "fieldsRequired": "Select at least one field for this rule."
@@ -1708,11 +1721,13 @@
       "fields": "Fields",
       "message": "Message shown to the user",
       "messagePlaceholder": "A record with the same values already exists.",
+      "messageTokensHint": "Tokens:",
       "name": "Name",
       "remove": "Remove rule",
       "severity": "Severity",
       "severityError": "Block (prevent saving)",
       "severityWarning": "Warn (let the user save anyway)",
+      "showMatches": "Show matching records to the user (subject to their read permissions)",
       "title": "Uniqueness rules"
     },
     "user": {
@@ -1999,6 +2014,7 @@
         },
         "validation": {
           "help": "Please edit the record using the 'update' button for more details.",
+          "hiddenMatches": "+ {{count}} more (no access)",
           "questionTitle": "Errors on field {{question}}:",
           "subtitle": "These errors where found while saving changes:",
           "title": "Validation failed for record {{record}}"
