@@ -19,6 +19,7 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { HtmlParserService } from '../../../services/html-parser/html-parser.service';
 import { addNewField } from '../query-builder-forms';
 import { QueryBuilderComponent } from '../query-builder.component';
+import { LayoutFormFields } from './form-filter/form-filter.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -35,6 +36,12 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
+  /** Should display the form filter above the available fields */
+  @Input() showFormFilter = false;
+  /** Forms belonging to the current resource. */
+  @Input() layoutForms: LayoutFormFields[] = [];
+  /** Whether the forms of the current resource are being loaded. */
+  @Input() layoutFormsLoading = false;
   /** Should show limit input */
   @Input() showLimit = false;
   /** Is the column width field displayed */
@@ -52,6 +59,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   /** Search on selected fields */
   public searchSelected = '';
+  /** Currently applied form filter. */
+  public selectedFormId = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
   /**
@@ -106,12 +115,55 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   private setSelectedFields() {
     const selectedFields: string[] = this.form.getRawValue().map((x) => x.name);
-    this.availableFields = this.fields
-      .slice()
-      .filter((x) => !selectedFields.includes(x.name));
+    this.availableFields = this.getFilteredFields().filter(
+      (x) => !selectedFields.includes(x.name)
+    );
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
+  }
+
+  /**
+   * Applies the selected form's field order to the available schema fields.
+   *
+   * @returns Fields available under the selected form filter.
+   */
+  private getFilteredFields(): any[] {
+    const selectedForm = this.layoutForms.find(
+      (form) => form.id === this.selectedFormId
+    );
+    if (!selectedForm) return this.fields.slice();
+
+    return selectedForm.fields.reduce<any[]>((result, name) => {
+      const field = this.fields.find((candidate) => candidate.name === name);
+      return field ? [...result, field] : result;
+    }, []);
+  }
+
+  /**
+   * Refreshes the available fields after selecting or clearing a form filter.
+   *
+   * @param formId Selected form id, empty string to clear the filter.
+   */
+  public onFormChange(formId: string): void {
+    this.selectedFormId = formId;
+    this.searchAvailable = '';
+    this.setSelectedFields();
+  }
+
+  /** Adds all currently available fields to the selected fields list. */
+  public addAllFields(): void {
+    for (const field of this.availableFields) {
+      this.form.push(addNewField(field, true));
+      this.droppedFields.emit(field);
+    }
+    this.setSelectedFields();
+  }
+
+  /** Removes every selected field from the layout. */
+  public removeAllFields(): void {
+    this.form.clear();
+    this.setSelectedFields();
   }
 
   /**
@@ -148,18 +200,11 @@ export class TabFieldsComponent implements OnInit, OnChanges {
           this.searchSelected,
           event.previousIndex
         );
-        if (this.form.at(index).errors?.invalid) {
-          this.form.removeAt(index);
-          this.selectedFields.splice(index, 1);
-        } else {
-          transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            index,
-            event.currentIndex
-          );
-          this.form.removeAt(index);
-        }
+        // Remove the field from the form, then rebuild both lists so the
+        // field goes back to the available fields ( in current filter order ),
+        // or disappears if it does not exist in the schema anymore
+        this.form.removeAt(index);
+        this.setSelectedFields();
       } else {
         const index = this.getItemIndex(
           this.availableFields,
