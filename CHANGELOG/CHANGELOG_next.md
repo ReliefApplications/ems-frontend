@@ -1,3 +1,15 @@
+# [2.24.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.9...v2.24.0-rc.10) (2026-09-14)
+
+### Features
+
+- Enable Read only fields to not be editable when creating a new record ([#2936](https://github.com/ReliefApplications/ems-frontend/issues/2936)) ([a2fcf3a](https://github.com/ReliefApplications/ems-frontend/commit/a2fcf3a8cb5ddb6d2f8f5eeb2ac82b5d34c8350a)), closes [AB#137743](https://github.com/AB/issues/137743)
+
+# [2.24.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.8...v2.24.0-rc.9) (2026-09-14)
+
+### Bug Fixes
+
+- show actual upload error message instead of a generic one ([#2937](https://github.com/ReliefApplications/ems-frontend/issues/2937)) ([af9fadc](https://github.com/ReliefApplications/ems-frontend/commit/af9fadcb9dc24c206c860cbdecb0aaddc42b5d61)), closes [AB#137745](https://github.com/AB/issues/137745)
+
 # [2.24.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.7...v2.24.0-rc.8) (2026-09-11)
 
 ### Features
