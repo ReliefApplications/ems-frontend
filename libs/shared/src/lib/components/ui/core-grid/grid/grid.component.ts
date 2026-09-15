@@ -170,6 +170,17 @@ export class GridComponent
   @Input() showFilter = false;
   /** Filter descriptor */
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+
+  /** @returns whether at least one user-applied filter is active. */
+  get hasActiveFilters(): boolean {
+    const hasFilters = (filter: CompositeFilterDescriptor): boolean =>
+      filter.filters.some((descriptor) =>
+        'filters' in descriptor ? hasFilters(descriptor) : true
+      );
+
+    return this.filterable && hasFilters(this.filter);
+  }
+
   /** Searchable status */
   @Input() searchable = true;
   /**
@@ -821,6 +832,11 @@ export class GridComponent
       this.filter = filter;
       this.filterChange.emit(filter);
     }
+  }
+
+  /** Clears all filters applied through the grid UI. */
+  public clearFilters(): void {
+    this.onFilterChange({ logic: 'and', filters: [] });
   }
 
   /**

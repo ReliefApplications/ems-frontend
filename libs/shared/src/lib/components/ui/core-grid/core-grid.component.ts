@@ -94,6 +94,8 @@ export class CoreGridComponent
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
+  /** Whether the grid is being used to edit the admin-defined layout. */
+  @Input() layoutEditable = false;
   /** Dashboard owning the grid widget. */
   @Input() dashboardId?: string;
   /** Stable path of the widget within its dashboard (nested widgets append their container). */
@@ -268,6 +270,11 @@ export class CoreGridComponent
   // === FILTERING ===
   /** Array of filter descriptors for filtering data. */
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  /** Filters defined by the selected admin layout. */
+  private layoutFilter: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
   /** Context filters array */
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
@@ -280,7 +287,7 @@ export class CoreGridComponent
 
   /** @returns current grid filter, from grid settings and grid layout */
   get queryFilter(): CompositeFilterDescriptor {
-    const gridFilters = [this.filter];
+    const gridFilters = [this.layoutFilter, this.filter];
     if (this.settings?.query?.filter) {
       gridFilters.push(this.settings?.query?.filter);
     }
@@ -473,7 +480,7 @@ export class CoreGridComponent
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (changes?.settings) {
+    if (changes?.settings || changes?.defaultLayout) {
       this.configureGrid();
     }
   }
@@ -487,6 +494,13 @@ export class CoreGridComponent
     this.status = { error: false };
     this.hasCustomColumnConfiguration = false;
     this.columnConfiguration = {};
+    this.filter = this.layoutEditable
+      ? this.defaultLayout?.filter || { logic: 'and', filters: [] }
+      : { logic: 'and', filters: [] };
+    this.layoutFilter =
+      !this.layoutEditable && this.defaultLayout?.filter
+        ? this.defaultLayout.filter
+        : { logic: 'and', filters: [] };
     const configurationVersion = ++this.configurationVersion;
     // set context filter
     this.contextFilters = this.settings.contextFilters
@@ -522,9 +536,6 @@ export class CoreGridComponent
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
       : true;
-    if (this.defaultLayout?.filter) {
-      this.filter = this.defaultLayout.filter;
-    }
     if (this.defaultLayout?.sort) {
       this.sort = this.defaultLayout.sort;
     }
