@@ -36,6 +36,10 @@ export class TabsComponent
   @Input() settings: any;
   /** Widget definition */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard. */
+  @Input() widgetKey?: string;
   /** Editable widget */
   @Input() canUpdate = false;
   /** Should show padding */

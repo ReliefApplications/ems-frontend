@@ -76,6 +76,10 @@ export class SummaryCardComponent
 {
   /** Widget definition */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard. */
+  @Input() widgetKey?: string;
   /** Widget settings */
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */

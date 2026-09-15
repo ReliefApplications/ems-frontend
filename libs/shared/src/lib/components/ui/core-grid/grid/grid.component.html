@@ -1297,9 +1297,15 @@
     </ng-container>
     <!-- CUSTOM ROW ACTIONS -->
     <kendo-grid-column
-      *ngFor="let group of customRowActionGroups; trackBy: trackByGroupLabel"
+      #customActionColumn
+      *ngFor="
+        let group of customRowActionGroups;
+        let i = index;
+        trackBy: trackByGroupLabel
+      "
       [columnMenu]="false"
-      [width]="group.width"
+      [width]="getColumnWidth(customActionColumnName(i), group.width)"
+      [hidden]="isColumnHidden(customActionColumnName(i))"
       [resizable]="true"
       [title]="group.label"
       [sticky]="true"
@@ -1331,9 +1337,11 @@
     </kendo-grid-column>
     <!-- ROW DETAILS -->
     <kendo-grid-column
+      #detailsColumn
       *ngIf="hasDetails && actions.showDetails"
       [columnMenu]="false"
       [width]="68"
+      [hidden]="isColumnHidden(detailsColumnName)"
       [resizable]="false"
       [title]="'components.widget.grid.actions.details' | translate"
       [sticky]="true"
@@ -1359,9 +1367,11 @@
     </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
     <kendo-grid-column
+      #navigateColumn
       *ngIf="actions.navigateToPage"
       [columnMenu]="false"
-      [width]="54"
+      [width]="getColumnWidth(navigateColumnName, 54)"
+      [hidden]="isColumnHidden(navigateColumnName)"
       [resizable]="true"
       [title]="(actions.navigateSettings?.title | sharedLocalize) ?? ''"
       [sticky]="true"

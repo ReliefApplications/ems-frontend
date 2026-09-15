@@ -178,6 +178,7 @@
     class="flex-1"
     [loading]="loading"
     [widgets]="widgets"
+    [dashboardId]="dashboard?.id"
     [options]="gridOptions"
     [canUpdate]="(canUpdate && editionActive) || false"
     (edit)="onEditTile($event)"
