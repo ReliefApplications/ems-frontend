@@ -1,3 +1,9 @@
+# [2.24.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.10...v2.24.0-rc.11) (2026-09-15)
+
+### Features
+
+- Automatically save grid configuration in browser ([#2938](https://github.com/ReliefApplications/ems-frontend/issues/2938)) ([459f38d](https://github.com/ReliefApplications/ems-frontend/commit/459f38d78a2ddf43cdeec01c6dd2c25ceb59ebe6)), closes [AB#137744](https://github.com/AB/issues/137744)
+
 # [2.24.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.9...v2.24.0-rc.10) (2026-09-14)
 
 ### Features
