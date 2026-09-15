@@ -49,6 +49,11 @@ export interface EditRecordMutationResponse {
   editRecord: Record;
 }
 
+/** Model for clone record with new id graphql mutation response */
+export interface CloneRecordWithNewIdMutationResponse {
+  cloneRecordWithNewId: Record;
+}
+
 /** Model for edit draft record graphql mutation response */
 export interface EditDraftRecordMutationResponse {
   editDraftRecord: DraftRecord;

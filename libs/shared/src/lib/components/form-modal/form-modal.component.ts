@@ -20,6 +20,7 @@ import {
 } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import isNil from 'lodash/isNil';
+import omit from 'lodash/omit';
 import omitBy from 'lodash/omitBy';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
@@ -27,6 +28,7 @@ import { SurveyModel } from 'survey-core';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
+  CloneRecordWithNewIdMutationResponse,
   EditRecordMutationResponse,
   EditRecordsMutationResponse,
   Record,
@@ -48,7 +50,13 @@ import {
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
+import {
+  ADD_RECORD,
+  CLONE_RECORD_WITH_NEW_ID,
+  EDIT_RECORD,
+  EDIT_RECORDS,
+} from './graphql/mutations';
+import { getChangedConditionalIdSourceField } from '../../utils/get-changed-conditional-id-source-field.util';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
@@ -252,8 +260,16 @@ export class FormModalComponent
         ).then(({ data }) => {
           this.form = data.form;
           if (this.data.prefillData) {
-            // Prefill with cloned data
-            this.prefillClonedData = this.data.prefillData;
+            // Prefill with cloned data, but never carry over conditionalId
+            // values (e.g. cecis_number) - they are system-generated and the
+            // new record must get its own on save.
+            const conditionalIdFieldNames = (this.form.fields || [])
+              .filter((field: any) => field.type === 'conditionalid')
+              .map((field: any) => field.name);
+            this.prefillClonedData = omit(
+              this.data.prefillData,
+              conditionalIdFieldNames
+            );
           } else if (
             this.data.prefillRecords &&
             this.data.prefillRecords.length > 0
@@ -566,6 +582,36 @@ export class FormModalComponent
    * @param survey current survey.
    */
   public updateData(id: any, survey: any): void {
+    // A conditionalId field's source boolean (e.g. cecis_case) is immutable on
+    // an existing record: changing it must clone the record with a new id
+    // rather than editing it in place.
+    const changedConditionalIdField = getChangedConditionalIdSourceField(
+      this.form?.fields || [],
+      this.record?.data,
+      survey.data
+    );
+    if (changedConditionalIdField) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant(
+          'components.form.update.conditionalIdCloneConfirmTitle'
+        ),
+        content: this.translate.instant(
+          'components.form.update.conditionalIdCloneConfirmMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'primary',
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.cloneRecordWithNewId(id, survey);
+          } else {
+            this.saving = false;
+          }
+        });
+      return;
+    }
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -578,6 +624,37 @@ export class FormModalComponent
       .subscribe({
         next: ({ errors, data }) => {
           this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.saving = false;
+        },
+      });
+  }
+
+  /**
+   * Clones a record with freshly generated conditionalId field values,
+   * archiving the source record. Used when a conditionalId's source boolean
+   * field (e.g. cecis_case) changes.
+   *
+   * @param id record id.
+   * @param survey current survey.
+   */
+  private cloneRecordWithNewId(id: any, survey: any): void {
+    this.apollo
+      .mutate<CloneRecordWithNewIdMutationResponse>({
+        mutation: CLONE_RECORD_WITH_NEW_ID,
+        variables: {
+          id,
+          data: survey.data,
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          this.handleRecordMutationResponse(
+            { data, errors },
+            'cloneRecordWithNewId'
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -633,7 +710,7 @@ export class FormModalComponent
    */
   private handleRecordMutationResponse(
     response: { data: any; errors: any },
-    responseType: 'editRecords' | 'editRecord'
+    responseType: 'editRecords' | 'editRecord' | 'cloneRecordWithNewId'
   ) {
     const { data, errors } = response;
     const type =

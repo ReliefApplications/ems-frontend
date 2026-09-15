@@ -1148,6 +1148,8 @@
         "modifiedBy": "Last modified by {{user}} on {{date}}"
       },
       "update": {
+        "conditionalIdCloneConfirmMessage": "Changing this field requires cloning the record with a new id. The current record will be archived. Do you want to continue?",
+        "conditionalIdCloneConfirmTitle": "Confirm Record Clone",
         "confirmActionTitle": {
           "create": "Confirm Record Creation",
           "update": "Confirm Record Update"

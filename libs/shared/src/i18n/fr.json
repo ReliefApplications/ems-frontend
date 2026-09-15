@@ -1148,6 +1148,8 @@
         "modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
       },
       "update": {
+        "conditionalIdCloneConfirmMessage": "Changer ce champ nécessite de cloner l'enregistrement avec un nouvel identifiant. L'enregistrement actuel sera archivé. Voulez-vous continuer ?",
+        "conditionalIdCloneConfirmTitle": "Confirmer le clonage de l'enregistrement",
         "confirmActionTitle": {
           "create": "Confirmer la création de l'enregistrement",
           "update": "Confirmer la mise à jour de l'enregistrement"

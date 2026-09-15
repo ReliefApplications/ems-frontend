@@ -60,6 +60,27 @@ export const ADD_RECORD = gql`
   }
 `;
 
+// === CLONE RECORD WITH NEW ID ===
+/**
+ * Graphql request to clone a record with freshly generated conditionalId
+ * field values, used when a conditionalId's source boolean field changes.
+ * Archives the source record.
+ */
+export const CLONE_RECORD_WITH_NEW_ID = gql`
+  mutation cloneRecordWithNewId($id: ID!, $data: JSON!) {
+    cloneRecordWithNewId(id: $id, data: $data) {
+      id
+      incrementalId
+      data
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;
+
 // === EDIT RECORDS ===
 /** Graphql request for editing multiple records by their ids */
 export const EDIT_RECORDS = gql`
