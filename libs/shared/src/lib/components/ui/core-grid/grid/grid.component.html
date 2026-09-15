@@ -141,6 +141,17 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
+    <button
+      *ngIf="hasActiveFilters"
+      [uiTooltip]="'common.filter.clearAll' | translate"
+      kendoButton
+      icon="filter-clear"
+      [disabled]="loadingRecords"
+      (click)="clearFilters()"
+      class="export-hide"
+    >
+      {{ 'common.filter.clearAll' | translate }}
+    </button>
     <!-- Reset default layout -->
     <button
       kendoTooltip
