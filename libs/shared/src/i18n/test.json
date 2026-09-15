@@ -4,6 +4,7 @@
     "accessDenied": "******",
     "account": "******",
     "actions": "******",
+    "active": "******",
     "activity": {
       "few": "******",
       "none": "******",
@@ -173,6 +174,7 @@
     "deleteObject": "****** {{name}}",
     "deleted": "******",
     "desc": "******",
+    "discard": "******",
     "dismiss": "******",
     "display": "******",
     "distributionList": {
@@ -241,6 +243,7 @@
     "hide": "******",
     "history": "******",
     "id": "******",
+    "inactive": "******",
     "input": {
       "dateRange": "******",
       "none": "******",
@@ -549,6 +552,11 @@
     "uploadObject": "****** {{name}}",
     "user": {
       "current": "******",
+      "few": "******",
+      "none": "******",
+      "one": "******"
+    },
+    "validation": {
       "few": "******",
       "none": "******",
       "one": "******"
@@ -1698,6 +1706,43 @@
         "title": "******"
       }
     },
+    "uniquenessRules": {
+      "active": "******",
+      "add": "******",
+      "condition": {
+        "add": "******",
+        "equals": "******",
+        "notEquals": "******",
+        "title": "******",
+        "valuePlaceholder": "******"
+      },
+      "dateIntersection": {
+        "allowAdjacent": "******",
+        "endField": "******",
+        "startField": "******",
+        "title": "******"
+      },
+      "delete": {
+        "confirmationMessage": "****** {{name}} ******"
+      },
+      "description": "******",
+      "edit": "******",
+      "empty": "******",
+      "errors": {
+        "fieldsRequired": "******"
+      },
+      "fields": "******",
+      "message": "******",
+      "messagePlaceholder": "******",
+      "messageTokensHint": "******",
+      "name": "******",
+      "remove": "******",
+      "severity": "******",
+      "severityError": "******",
+      "severityWarning": "******",
+      "showMatches": "******",
+      "title": "******"
+    },
     "user": {
       "delete": {
         "confirmationMessage": "****** {{name}} ******",
@@ -1982,6 +2027,7 @@
         },
         "validation": {
           "help": "******",
+          "hiddenMatches": "****** {{count}} ******",
           "questionTitle": "****** {{question}} ******",
           "subtitle": "******",
           "title": "****** {{record}}"

@@ -1,0 +1,213 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (data.rule
+          ? 'components.uniquenessRules.edit'
+          : 'components.uniquenessRules.add'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex flex-col gap-4">
+      <ui-checkbox formControlName="active">
+        <ng-container ngProjectAs="label">{{
+          'components.uniquenessRules.active' | translate
+        }}</ng-container>
+      </ui-checkbox>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.uniquenessRules.name' | translate }}</label>
+        <input type="text" formControlName="name" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.uniquenessRules.fields' | translate }}</label>
+        <ui-select-menu formControlName="fields" [multiselect]="true">
+          <ui-select-option
+            *ngFor="let fieldName of fieldNames"
+            [value]="fieldName"
+          >
+            {{ fieldName }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          *ngIf="form.get('fields')?.invalid"
+          icon="error"
+          variant="danger"
+          uiSuffix
+          [uiTooltip]="
+            'components.uniquenessRules.errors.fieldsRequired' | translate
+          "
+        ></ui-icon>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.uniquenessRules.severity' | translate }}</label>
+        <ui-select-menu formControlName="severity">
+          <ui-select-option value="error">
+            {{ 'components.uniquenessRules.severityError' | translate }}
+          </ui-select-option>
+          <ui-select-option value="warning">
+            {{ 'components.uniquenessRules.severityWarning' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.uniquenessRules.message' | translate }}</label>
+        <input
+          type="text"
+          formControlName="message"
+          [placeholder]="
+            'components.uniquenessRules.messagePlaceholder' | translate
+          "
+        />
+        <p class="mt-1 text-xs text-gray-500">
+          {{ 'components.uniquenessRules.messageTokensHint' | translate }}
+          <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{
+            '{fields}'
+          }}</span>
+          <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{
+            '{scope}'
+          }}</span>
+          <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{
+            '{matchCount}'
+          }}</span>
+        </p>
+      </div>
+      <ui-checkbox formControlName="showMatches">
+        <ng-container ngProjectAs="label">{{
+          'components.uniquenessRules.showMatches' | translate
+        }}</ng-container>
+      </ui-checkbox>
+
+      <!-- Only apply when... conditions -->
+      <div class="flex flex-col gap-2">
+        <h3 class="m-0 text-sm font-semibold">
+          {{ 'components.uniquenessRules.condition.title' | translate }}
+        </h3>
+        <div formArrayName="condition" class="flex flex-col gap-2">
+          <div
+            *ngFor="let cond of conditions.controls; let i = index"
+            [formGroupName]="i"
+            class="flex items-end gap-2"
+          >
+            <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+              <label>{{ 'common.field.one' | translate }}</label>
+              <ui-select-menu formControlName="field">
+                <ui-select-option
+                  *ngFor="let fieldName of fieldNames"
+                  [value]="fieldName"
+                >
+                  {{ fieldName }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <div uiFormFieldDirective [defaultMargin]="false" class="w-40">
+              <label>{{
+                'components.queryBuilder.filter.operator' | translate
+              }}</label>
+              <ui-select-menu formControlName="operator">
+                <ui-select-option value="eq">
+                  {{ 'components.uniquenessRules.condition.equals' | translate }}
+                </ui-select-option>
+                <ui-select-option value="ne">
+                  {{
+                    'components.uniquenessRules.condition.notEquals' | translate
+                  }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <div uiFormFieldDirective [defaultMargin]="false" class="flex-1">
+              <label>{{ 'common.value.one' | translate }}</label>
+              <input
+                type="text"
+                formControlName="value"
+                [placeholder]="
+                  'components.uniquenessRules.condition.valuePlaceholder'
+                    | translate
+                "
+              />
+            </div>
+            <ui-button
+              [isIcon]="true"
+              icon="delete"
+              variant="danger"
+              [uiTooltip]="'components.uniquenessRules.remove' | translate"
+              (click)="removeCondition(i)"
+            ></ui-button>
+          </div>
+        </div>
+        <ui-button
+          class="w-max"
+          icon="add"
+          category="tertiary"
+          (click)="addCondition()"
+        >
+          {{ 'components.uniquenessRules.condition.add' | translate }}
+        </ui-button>
+      </div>
+
+      <!-- Date range overlap check -->
+      <div class="flex flex-col gap-2">
+        <ui-checkbox formControlName="dateIntersectionEnabled">
+          <ng-container ngProjectAs="label">{{
+            'components.uniquenessRules.dateIntersection.title' | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <div
+          *ngIf="form.get('dateIntersectionEnabled')?.value"
+          formGroupName="dateIntersection"
+          class="flex items-end gap-2"
+        >
+          <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+            <label>{{
+              'components.uniquenessRules.dateIntersection.startField'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="startField">
+              <ui-select-option
+                *ngFor="let fieldName of fieldNames"
+                [value]="fieldName"
+              >
+                {{ fieldName }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+          <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+            <label>{{
+              'components.uniquenessRules.dateIntersection.endField'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="endField">
+              <ui-select-option
+                *ngFor="let fieldName of fieldNames"
+                [value]="fieldName"
+              >
+                {{ fieldName }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+          <ui-checkbox formControlName="allowAdjacent" class="pb-2">
+            <ng-container ngProjectAs="label">{{
+              'components.uniquenessRules.dateIntersection.allowAdjacent'
+                | translate
+            }}</ng-container>
+          </ui-checkbox>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="form.invalid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

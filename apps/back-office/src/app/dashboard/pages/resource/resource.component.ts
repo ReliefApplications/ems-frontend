@@ -20,6 +20,7 @@ const ROUTE_TABS: string[] = [
   'aggregations',
   'calculated-fields',
   'records',
+  'validation',
 ];
 
 /**

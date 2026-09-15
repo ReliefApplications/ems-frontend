@@ -1,6 +1,6 @@
 import { DraftRecord } from './draft-record.model';
 import { Form } from './form.model';
-import { Resource } from './resource.model';
+import { Resource, UniquenessMatch } from './resource.model';
 import { User } from './user.model';
 
 /** Model for version attributes. */
@@ -26,7 +26,12 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
-  validationErrors?: { question: string; errors: string[] }[];
+  validationErrors?: {
+    question: string;
+    errors: string[];
+    matches?: UniquenessMatch[];
+    hiddenMatchCount?: number;
+  }[];
 }
 
 /** Model for record graphql query response */

@@ -319,7 +319,7 @@ export class DownloadService {
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
-        error: (err) => {
+        error: (err: any) => {
           snackBarSpinner.instance.message = this.getUploadErrorMessage(err);
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;

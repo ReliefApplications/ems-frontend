@@ -6,6 +6,42 @@ import { Layout } from './layout.model';
 import { Metadata } from './metadata.model';
 import { Record } from './record.model';
 
+/** Severity of a uniqueness rule violation */
+export type UniquenessRuleSeverity = 'error' | 'warning';
+
+/** A single 'only apply when' condition of a uniqueness rule. */
+export interface UniquenessCondition {
+  field: string;
+  operator: 'eq' | 'ne';
+  value: any;
+}
+
+/** A single matching record surfaced by a violated uniqueness rule. */
+export interface UniquenessMatch {
+  id: string;
+  incrementalId?: string;
+}
+
+/** Model for a scoped uniqueness rule configured on a resource. */
+export interface UniquenessRule {
+  name?: string;
+  fields: string[];
+  severity: UniquenessRuleSeverity;
+  message?: string;
+  /** Whether the rule is enforced. Defaults to true. */
+  active?: boolean;
+  /** Whether to surface the actual matching records to the user (subject to their read permissions). */
+  showMatches?: boolean;
+  /** Restricts the rule to records matching all these conditions. */
+  condition?: UniquenessCondition[];
+  /** When set, checks for overlapping date ranges instead of an exact value match. */
+  dateIntersection?: {
+    startField: string;
+    endField: string;
+    allowAdjacent?: boolean;
+  };
+}
+
 /** Model for Resource object. */
 export interface Resource {
   id?: string;
@@ -17,6 +53,7 @@ export interface Resource {
   createdAt?: Date;
   records?: Connection<Record>;
   fields?: any;
+  uniquenessRules?: UniquenessRule[];
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;

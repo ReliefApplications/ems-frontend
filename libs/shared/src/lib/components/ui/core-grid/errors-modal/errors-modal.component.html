@@ -34,6 +34,20 @@
                     {{ error }}
                   </li>
                 </ul>
+                <ul
+                  *ngIf="element.matches?.length || element.hiddenMatchCount"
+                  class="text-sm text-gray-500 mt-1"
+                >
+                  <li *ngFor="let match of element.matches">
+                    {{ match.incrementalId || match.id }}
+                  </li>
+                  <li *ngIf="element.hiddenMatchCount">
+                    {{
+                      'components.widget.grid.validation.hiddenMatches'
+                        | translate : { count: element.hiddenMatchCount }
+                    }}
+                  </li>
+                </ul>
               </td>
             </ng-container>
 
