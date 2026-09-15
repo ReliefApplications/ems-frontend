@@ -39,7 +39,7 @@
           #widgetElement
           [widget]="widget"
           [dashboardId]="dashboardId"
-          [widgetIndex]="getWidgetIndex(widget)"
+          [widgetKey]="getWidgetKey(widget)"
           (changeStep)="triggerChangeStepAction($event)"
           (edit)="onEditWidget($event)"
           [canUpdate]="canUpdate"

@@ -59,22 +59,14 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
 import {
+  GridColumnConfigurationMap,
   GridColumnConfigurationService,
-  GridConfigurableField,
 } from '../../../services/grid-layout/grid-column-configuration.service';
 
 /**
  * Default file name when exporting grid data.
  */
 const DEFAULT_FILE_NAME = 'Records';
-
-/** Column state emitted by the rendered Kendo grid. */
-interface RenderedGridColumn {
-  field: string;
-  hidden: boolean;
-  width?: number | string;
-  order: number;
-}
 
 /**
  * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
@@ -104,8 +96,8 @@ export class CoreGridComponent
   @Input() defaultLayout: GridLayout = {};
   /** Dashboard owning the grid widget. */
   @Input() dashboardId?: string;
-  /** Stable position of the widget within its dashboard. */
-  @Input() widgetIndex?: number;
+  /** Stable path of the widget within its dashboard (nested widgets append their container). */
+  @Input() widgetKey?: string;
   /** Date the selected admin-defined layout was last modified. */
   @Input() layoutModifiedAt?: string;
 
@@ -116,10 +108,7 @@ export class CoreGridComponent
 
   /** @returns storage key unique to the dashboard, widget, and selected layout. */
   private get columnConfigurationKey(): string | null {
-    const widgetId =
-      this.widgetIndex !== undefined && this.widgetIndex >= 0
-        ? this.widgetIndex.toString()
-        : this.widget?.id || this.widget?._id;
+    const widgetId = this.widgetKey || this.widget?.id || this.widget?._id;
     const layoutId = this.settings?.id;
     return this.dashboardId && widgetId && layoutId
       ? `${this.dashboardId}:${widgetId}:${layoutId}`
@@ -347,6 +336,8 @@ export class CoreGridComponent
   public hasLayoutChanges = false;
   /** Whether user-defined column sizing should replace automatic sizing. */
   public hasCustomColumnConfiguration = false;
+  /** User column configuration of the selected layout, keyed by column name. */
+  public columnConfiguration: GridColumnConfigurationMap = {};
 
   // === ACTIONS ON SELECTION ===
   /** Selected rows index array */
@@ -494,6 +485,8 @@ export class CoreGridComponent
     this.cancelRefresh$.next();
     this.skip = 0;
     this.status = { error: false };
+    this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
     const configurationVersion = ++this.configurationVersion;
     // set context filter
     this.contextFilters = this.settings.contextFilters
@@ -605,12 +598,14 @@ export class CoreGridComponent
                       this.settings?.actions?.readOnlyFields || [],
                   }
                 );
-                this.hasCustomColumnConfiguration =
+                const restoredColumns =
                   this.gridColumnConfigurationService.restore(
                     this.columnConfigurationKey,
                     this.fields,
                     this.layoutModifiedAt
                   );
+                this.hasCustomColumnConfiguration = !!restoredColumns;
+                this.columnConfiguration = restoredColumns ?? {};
                 this.fields.sort(
                   (first, second) => (first.order ?? 0) - (second.order ?? 0)
                 );
@@ -1738,21 +1733,14 @@ export class CoreGridComponent
    * Detects fields changes.
    */
   onColumnChange(): void {
-    const fields = (
-      Object.values(this.layout?.fields || {}) as RenderedGridColumn[]
-    ).map(
-      (field): GridConfigurableField => ({
-        name: field.field,
-        hidden: field.hidden,
-        width: field.width,
-        order: field.order,
-      })
-    );
-    this.gridColumnConfigurationService.save(
+    const savedColumns = this.gridColumnConfigurationService.save(
       this.columnConfigurationKey,
-      fields,
+      this.grid?.configurableColumns || [],
       this.layoutModifiedAt
     );
+    if (savedColumns) {
+      this.columnConfiguration = savedColumns;
+    }
     this.hasCustomColumnConfiguration = true;
     this.saveLocalLayout();
   }
@@ -1781,6 +1769,7 @@ export class CoreGridComponent
   resetDefaultLayout(): void {
     this.gridColumnConfigurationService.remove(this.columnConfigurationKey);
     this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
     this.defaultLayoutReset.emit();
   }
 

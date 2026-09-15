@@ -36,8 +36,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Input() widget: any;
   /** Dashboard owning the widget. */
   @Input() dashboardId?: string;
-  /** Stable position of the widget within its dashboard. */
-  @Input() widgetIndex?: number;
+  /** Stable path of the widget within its dashboard. */
+  @Input() widgetKey?: string;
   /** Is widget in fullscreen mode */
   @Input() header = true;
   /** Can user update widget */

@@ -59,6 +59,8 @@ export class WidgetGridComponent
   @Input() widgets: any[] = [];
   /** Dashboard owning the displayed widgets. */
   @Input() dashboardId?: string;
+  /** Key of the widget containing this grid, when widgets are nested (tabs widget). */
+  @Input() widgetKeyPrefix?: string;
   /** Update permission */
   @Input() canUpdate = false;
   /** Additional grid configuration */
@@ -388,15 +390,19 @@ export class WidgetGridComponent
   }
 
   /**
-   * Gets the stable position of a widget in the dashboard structure.
+   * Gets the stable key of a widget, from its position in the dashboard
+   * structure, prefixed by the key of the containing widget when nested.
    * Visible widgets can be cloned while filtering empty widgets, so reference
    * equality alone is not sufficient.
    *
    * @param widget Widget displayed in the grid.
-   * @returns Index in the dashboard widget structure.
+   * @returns Key of the widget within its dashboard.
    */
-  public getWidgetIndex(widget: DashboardWidget): number {
-    return widget._dashboardWidgetIndex ?? this.widgets.indexOf(widget);
+  public getWidgetKey(widget: DashboardWidget): string {
+    const index = widget._dashboardWidgetIndex ?? this.widgets.indexOf(widget);
+    return this.widgetKeyPrefix
+      ? `${this.widgetKeyPrefix}:${index}`
+      : index.toString();
   }
 
   /**

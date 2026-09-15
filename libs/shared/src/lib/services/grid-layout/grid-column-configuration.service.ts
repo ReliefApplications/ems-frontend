@@ -11,7 +11,7 @@ export interface GridColumnConfiguration {
 interface PersistedGridColumnConfiguration {
   savedAt: string;
   layoutModifiedAt?: number;
-  columns: Record<string, GridColumnConfiguration>;
+  columns: GridColumnConfigurationMap;
 }
 
 /** Stored columns are intentionally limited to properties controlled by users. */
@@ -22,6 +22,12 @@ export interface GridConfigurableField {
   order?: number;
   canSee?: boolean;
 }
+
+/** Stored columns keyed by column name. */
+export type GridColumnConfigurationMap = Record<
+  string,
+  GridColumnConfiguration
+>;
 
 /** Handles browser storage for grid column customizations. */
 @Injectable({
@@ -34,21 +40,23 @@ export class GridColumnConfigurationService {
   /**
    * Applies a valid, non-stale stored configuration to the available fields.
    * Missing fields are left untouched so new admin-defined columns use defaults.
+   * Columns that are not layout fields (details, custom actions, etc.) are
+   * returned to the caller so the grid can apply them to its own columns.
    *
    * @param key Unique dashboard, widget, and layout storage key.
    * @param fields Fields defined by the current layout.
    * @param layoutModifiedAt Last modification date supplied by the layout.
-   * @returns Whether a saved configuration was restored.
+   * @returns Restored columns, or null when nothing valid was stored.
    */
   public restore(
     key: string | null,
     fields: GridConfigurableField[],
     layoutModifiedAt?: string | Date
-  ): boolean {
-    if (!key) return false;
+  ): GridColumnConfigurationMap | null {
+    if (!key) return null;
 
     const storedConfiguration = this.get(key);
-    if (!storedConfiguration) return false;
+    if (!storedConfiguration) return null;
 
     const modifiedAt = this.parseTimestamp(layoutModifiedAt);
     const savedAt = new Date(storedConfiguration.savedAt).getTime();
@@ -60,7 +68,7 @@ export class GridColumnConfigurationService {
         : Number.isNaN(savedAt) || modifiedAt > savedAt)
     ) {
       this.remove(key);
-      return false;
+      return null;
     }
 
     fields.forEach((field) => {
@@ -75,24 +83,25 @@ export class GridColumnConfigurationService {
         field.order = storedField.order;
       }
     });
-    return true;
+    return storedConfiguration.columns;
   }
 
   /**
    * Stores the current column configuration.
    *
    * @param key Unique dashboard, widget, and layout storage key.
-   * @param fields Current grid fields.
+   * @param fields Current grid columns.
    * @param layoutModifiedAt Last modification date supplied by the layout.
+   * @returns Saved columns, or null when the grid cannot be identified.
    */
   public save(
     key: string | null,
     fields: GridConfigurableField[],
     layoutModifiedAt?: string | Date
-  ): void {
-    if (!key) return;
+  ): GridColumnConfigurationMap | null {
+    if (!key) return null;
 
-    const columns = fields.reduce<Record<string, GridColumnConfiguration>>(
+    const columns = fields.reduce<GridColumnConfigurationMap>(
       (configuration, field, index) => {
         const width = Number.parseFloat(String(field.width));
         return {
@@ -113,6 +122,7 @@ export class GridColumnConfigurationService {
       ...(!Number.isNaN(modifiedAt) && { layoutModifiedAt: modifiedAt }),
       columns,
     });
+    return columns;
   }
 
   /**

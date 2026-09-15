@@ -81,7 +81,7 @@
       (edit)="edit.emit($event)"
       [widget]="widget"
       [dashboardId]="dashboardId"
-      [widgetIndex]="widgetIndex"
+      [widgetKey]="widgetKey"
       [canUpdate]="canUpdate"
       class="flex-1 overflow-hidden gridster-item-content"
     ></shared-grid-widget>
@@ -110,6 +110,8 @@
       [settings]="widget.settings"
       (edit)="edit.emit($event)"
       [widget]="widget"
+      [dashboardId]="dashboardId"
+      [widgetKey]="widgetKey"
       [usePadding]="usePadding"
       class="flex-1 overflow-hidden gridster-item-content"
     >
@@ -121,6 +123,8 @@
       [settings]="widget.settings"
       (edit)="edit.emit($event)"
       [widget]="widget"
+      [dashboardId]="dashboardId"
+      [widgetKey]="widgetKey"
       [usePadding]="usePadding"
       [overflowHidden]="!canUpdate && isBottomWidget"
       (contentHeightChange)="onContentHeightChange($event)"
