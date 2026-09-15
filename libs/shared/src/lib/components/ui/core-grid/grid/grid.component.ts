@@ -285,6 +285,8 @@ export class GridComponent
   private columnOrderTimeoutListener?: ReturnType<typeof setTimeout>;
   /** Kendo emits reorder events while saved positions are restored; those must not be saved again */
   private restoringColumnOrder = false;
+  /** Incremented each time the fields input is replaced, so columns are recreated per layout */
+  private fieldsGeneration = 0;
   /** Custom row action button groups */
   public customRowActionGroups: {
     label: string;
@@ -377,7 +379,10 @@ export class GridComponent
         name,
         hidden: column.hidden,
         width: column.width,
-        order: column.orderIndex,
+        // Displayed position rather than kendo's orderIndex: kendo only assigns
+        // indices after a drag, so on a freshly rendered grid they are all 0 and
+        // saving them would discard the restored order.
+        order: configurableColumns.length,
       });
     };
     this.sortedColumns().forEach((column: any) => {
@@ -496,6 +501,9 @@ export class GridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (changes['fields']) {
+      this.fieldsGeneration++;
+    }
     if (
       !isEqual(
         changes['actions']?.previousValue,
@@ -692,16 +700,18 @@ export class GridComponent
   }
 
   /**
-   * Track-by for the fields *ngFor so Kendo does not tear down and recreate
-   * every column (and its templates) on each change-detection pass.
+   * Track-by for the field columns. Columns are reused while the same fields
+   * array is displayed, and recreated when a new one is set (layout change):
+   * kendo columns keep state written directly on them (visibility from the
+   * column chooser, resized width, drag order), which must not leak from one
+   * layout into another sharing a field name.
    *
    * @param _index Index in the loop.
    * @param field The grid field.
-   * @returns A stable identity for the field.
+   * @returns A stable identity for the field within the current fields array.
    */
-  public trackByFieldName(_index: number, field: any): string {
-    return field?.name ?? _index;
-  }
+  public trackByFieldName = (_index: number, field: any): string =>
+    `${this.fieldsGeneration}:${field?.name ?? _index}`;
 
   /**
    * Track-by for the custom row action group columns.
