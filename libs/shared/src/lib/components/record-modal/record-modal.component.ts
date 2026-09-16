@@ -10,9 +10,6 @@ import {
   RecordQueryResponse,
 } from '../../models/record.model';
 import { GET_RECORD_BY_ID, GET_FORM_STRUCTURE } from './graphql/queries';
-import addCustomFunctions from '../../utils/custom-functions';
-import { AuthService } from '../../services/auth/auth.service';
-import { DatePipe } from '../../pipes/date/date.pipe';
 import { EDIT_RECORD } from './graphql/mutations';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
@@ -105,24 +102,20 @@ export class RecordModalComponent
    * @param data This is the data that is passed to the modal when it is opened.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param dialog This is the Dialog service
-   * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service to handle forms.
    * @param translate This is the service that allows us to translate the text in the modal.
-   * @param datePipe Shared date pipe
    */
   constructor(
     public dialogRef: DialogRef<RecordModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public dialog: Dialog,
-    private authService: AuthService,
     private snackBar: SnackbarService,
     private formBuilderService: FormBuilderService,
     private formHelpersService: FormHelpersService,
-    private translate: TranslateService,
-    private datePipe: DatePipe
+    private translate: TranslateService
   ) {
     super();
   }
@@ -238,7 +231,6 @@ export class RecordModalComponent
         }
       );
     }
-    addCustomFunctions(this.authService, this.datePipe);
     this.loading = false;
   }
 
