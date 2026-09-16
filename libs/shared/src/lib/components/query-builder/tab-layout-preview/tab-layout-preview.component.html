@@ -6,7 +6,6 @@
     class="h-96"
     [defaultLayout]="data?.defaultLayout || {}"
     [settings]="gridSettings"
-    [layoutEditable]="true"
     (layoutChanged)="onGridLayoutChange($event)"
     (pageSizeChanged)="onPageSizeChange($event)"
   >

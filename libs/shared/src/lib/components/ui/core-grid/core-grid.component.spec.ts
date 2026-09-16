@@ -34,36 +34,12 @@ describe('CoreGridComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should keep layout filters out of the user filter state', () => {
+  it('should load layout filters into the user filter state', () => {
     const layoutFilter: CompositeFilterDescriptor = {
       logic: 'and',
       filters: [{ field: 'status', operator: 'eq', value: 'active' }],
     };
     component.defaultLayout = { filter: layoutFilter };
-    component.settings = {};
-
-    component.configureGrid();
-
-    expect(component.filter).toEqual({ logic: 'and', filters: [] });
-    expect(component.queryFilter).toEqual({
-      logic: 'and',
-      filters: [
-        {
-          logic: 'and',
-          filters: [layoutFilter, { logic: 'and', filters: [] }],
-        },
-        { logic: 'and', filters: [] },
-      ],
-    });
-  });
-
-  it('should expose layout filters when editing an admin layout', () => {
-    const layoutFilter: CompositeFilterDescriptor = {
-      logic: 'and',
-      filters: [{ field: 'status', operator: 'eq', value: 'active' }],
-    };
-    component.defaultLayout = { filter: layoutFilter };
-    component.layoutEditable = true;
     component.settings = {};
 
     component.configureGrid();
@@ -71,10 +47,27 @@ describe('CoreGridComponent', () => {
     expect(component.filter).toEqual(layoutFilter);
   });
 
-  it('should clear user filters, keep layout filters, and return to page one', () => {
+  it('should reset the user filter state when the layout has no filter', () => {
+    component.filter = {
+      logic: 'and',
+      filters: [{ field: 'name', operator: 'contains', value: 'test' }],
+    };
+    component.defaultLayout = {};
+    component.settings = {};
+
+    component.configureGrid();
+
+    expect(component.filter).toEqual({ logic: 'and', filters: [] });
+  });
+
+  it('should clear layout and user filters, keep query filters, and return to page one', () => {
     const layoutFilter: CompositeFilterDescriptor = {
       logic: 'and',
       filters: [{ field: 'status', operator: 'eq', value: 'active' }],
+    };
+    const queryFilter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [{ field: 'archived', operator: 'eq', value: false }],
     };
     const pageChangeSpy = jest
       .spyOn(component, 'onPageChange')
@@ -82,11 +75,8 @@ describe('CoreGridComponent', () => {
     component.defaultLayout = { filter: layoutFilter };
     component.settings = {};
     component.configureGrid();
+    component.settings = { query: { filter: queryFilter } };
     component.skip = 20;
-    component.filter = {
-      logic: 'and',
-      filters: [{ field: 'name', operator: 'contains', value: 'test' }],
-    };
 
     component.onFilterChange({ logic: 'and', filters: [] });
 
@@ -101,7 +91,7 @@ describe('CoreGridComponent', () => {
       filters: [
         {
           logic: 'and',
-          filters: [layoutFilter, { logic: 'and', filters: [] }],
+          filters: [{ logic: 'and', filters: [] }, queryFilter],
         },
         { logic: 'and', filters: [] },
       ],
