@@ -56,10 +56,14 @@
     (edit)="edit.emit($event)"
     (inlineEdition)="onInlineEdition()"
     [widget]="widget"
+    [dashboardId]="dashboardId"
+    [widgetKey]="widgetKey"
+    [layoutModifiedAt]="layout?.modifiedAt"
     [canUpdate]="canUpdate"
     [status]="status"
     [canCreateRecords]="canCreateRecords"
     [canDownloadRecords]="canDownloadRecords"
+    [canUploadRecords]="canUploadRecords"
   ></shared-core-grid>
 </ng-template>
 

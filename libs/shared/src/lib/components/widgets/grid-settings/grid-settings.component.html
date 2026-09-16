@@ -51,7 +51,11 @@
       ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-tab-actions [formGroup]="widgetFormGroup" [fields]="fields">
+      <shared-tab-actions
+        [formGroup]="widgetFormGroup"
+        [fields]="fields"
+        [layouts]="selectedLayouts"
+      >
         <!-- Custom row actions, injected in ng-content -->
         <shared-custom-row-actions
           [formGroup]="widgetFormGroup"

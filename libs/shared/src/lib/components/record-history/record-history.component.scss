@@ -40,6 +40,85 @@
   margin-top: 0.7rem;
 }
 
+.history-value,
+::ng-deep .history-value {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+table td {
+  padding-bottom: 1.25rem;
+  padding-top: 1.25rem;
+  vertical-align: top;
+}
+
+.history-value-container {
+  position: relative;
+}
+
+.history-value-container-expandable {
+  padding-bottom: 3rem;
+}
+
+.history-value-container-collapsed {
+  max-height: 6rem;
+  overflow: hidden;
+  // Fade the content itself instead of overlaying a solid color, so the
+  // effect matches any row background (striped or hovered rows included)
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 3rem),
+    rgb(0 0 0 / 0.05) calc(100% - 1.2rem),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 3rem),
+    rgb(0 0 0 / 0.05) calc(100% - 1.2rem),
+    transparent
+  );
+}
+
+.history-value-cell-old {
+  position: relative;
+}
+
+.history-value-toggle {
+  bottom: 0.5rem;
+  position: absolute;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+::ng-deep .history-value-toggle button.ui-button-icon {
+  align-items: center;
+  @apply bg-white border border-primary-400;
+  border-radius: 9999px;
+  box-shadow: none;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+}
+
+::ng-deep .history-value-highlight {
+  border-radius: 0.2rem;
+  color: inherit;
+  padding: 0 0.1rem;
+}
+
+::ng-deep .history-value-highlight-added {
+  @apply bg-green-100;
+}
+
+::ng-deep .history-value-highlight-removed {
+  @apply bg-red-100;
+  text-decoration: line-through;
+  text-decoration-thickness: 0.08em;
+}
+
 ui-expansion-panel {
   display: flex;
   flex-direction: column;

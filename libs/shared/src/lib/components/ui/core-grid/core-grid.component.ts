@@ -25,6 +25,7 @@ import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
   QueryResponse,
+  normalizeQuerySort,
 } from '../../../services/query-builder/query-builder.service';
 import {
   CONVERT_RECORD,
@@ -40,7 +41,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
-import { get, isEqual, isNil } from 'lodash';
+import { get, isEqual, isNil, omit } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -57,6 +58,10 @@ import { DashboardService } from '../../../services/dashboard/dashboard.service'
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
+import {
+  GridColumnConfigurationMap,
+  GridColumnConfigurationService,
+} from '../../../services/grid-layout/grid-column-configuration.service';
 
 /**
  * Default file name when exporting grid data.
@@ -89,10 +94,25 @@ export class CoreGridComponent
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
+  /** Dashboard owning the grid widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard (nested widgets append their container). */
+  @Input() widgetKey?: string;
+  /** Date the selected admin-defined layout was last modified. */
+  @Input() layoutModifiedAt?: string;
 
   /** @returns current grid layout */
   get layout(): any {
     return this.grid?.layout;
+  }
+
+  /** @returns storage key unique to the dashboard, widget, and selected layout. */
+  private get columnConfigurationKey(): string | null {
+    const widgetId = this.widgetKey || this.widget?.id || this.widget?._id;
+    const layoutId = this.settings?.id;
+    return this.dashboardId && widgetId && layoutId
+      ? `${this.dashboardId}:${widgetId}:${layoutId}`
+      : null;
   }
 
   /**
@@ -130,6 +150,8 @@ export class CoreGridComponent
   @Input() canCreateRecords = false;
   /** Whether records can be downloaded */
   @Input() canDownloadRecords = false;
+  /** Whether records can be uploaded */
+  @Input() canUploadRecords = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -202,20 +224,40 @@ export class CoreGridComponent
   /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
+  /**
+   * @returns current field used for sorting. Falls back to the query's
+   * saved default sort, which may be the legacy single {field, order}
+   * object or the current array shape (normalized via normalizeQuerySort).
+   */
   get sortField(): string | null {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].field
-      : this.settings.query?.sort && this.settings.query.sort.field
-      ? this.settings.query.sort.field
-      : null;
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].field;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.field ?? null;
   }
 
   /** @returns current sorting order */
   get sortOrder(): string {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].dir
-      : this.settings.query?.sort?.order || '';
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].dir;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.order ?? '';
+  }
+
+  /**
+   * @returns full ordered list of active sort descriptors (multi-column
+   * sort), mapped to the backend's { field, order } shape. Takes precedence
+   * over sortField/sortOrder server-side when non-empty. Falls back to the
+   * query's saved default sort (single object or array) when the user
+   * hasn't interacted with the grid's column headers yet.
+   */
+  get sortFields(): { field: string; order: string }[] {
+    const active = this.sort
+      .filter((s) => s.dir)
+      .map((s) => ({ field: s.field, order: s.dir as string }));
+    return active.length > 0
+      ? active
+      : normalizeQuerySort(this.settings.query?.sort);
   }
 
   /** @returns grid styling rules */
@@ -244,7 +286,10 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      // `id` is the Mongo ObjectId — not a useful regex search target.
+      // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+      // so it must remain searchable.
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [
@@ -255,7 +300,20 @@ export class CoreGridComponent
             operator: 'contains',
             value: searchFilters(
               this.search,
-              this.fields.map((field) => field.meta),
+              this.fields
+                // Search visible columns only; composite columns (records
+                // lists, reference data) and related record ids are out of
+                // the search scope
+                .filter(
+                  (field) =>
+                    !field.hidden &&
+                    !field.subFields?.length &&
+                    !field.name.endsWith('.id')
+                )
+                // The grid field name (dotted for related-resource subfields,
+                // e.g. `emergency.name`) must win over the bare meta name, so
+                // that the backend can resolve the record lookup
+                .map((field) => ({ ...field.meta, name: field.name })),
               skippedFields
             ),
           },
@@ -276,6 +334,10 @@ export class CoreGridComponent
   // === LAYOUT CHANGES ===
   /** Whether the layout has changes. */
   public hasLayoutChanges = false;
+  /** Whether user-defined column sizing should replace automatic sizing. */
+  public hasCustomColumnConfiguration = false;
+  /** User column configuration of the selected layout, keyed by column name. */
+  public columnConfiguration: GridColumnConfigurationMap = {};
 
   // === ACTIONS ON SELECTION ===
   /** Selected rows index array */
@@ -332,6 +394,10 @@ export class CoreGridComponent
   private environment: any;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Cancels grid requests when the layout changes or the component is destroyed. */
+  private gridRefresh$ = merge(this.cancelRefresh$, this.destroy$);
+  /** Identifies callbacks belonging to the currently selected layout. */
+  private configurationVersion = 0;
 
   /**
    * Main Grid data component to display Records.
@@ -353,6 +419,7 @@ export class CoreGridComponent
    * @param router Angular Router
    * @param el Element reference
    * @param dashboardService Dashboard service
+   * @param gridColumnConfigurationService Grid column configuration service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -370,7 +437,8 @@ export class CoreGridComponent
     private contextService: ContextService,
     private router: Router,
     private el: ElementRef,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private gridColumnConfigurationService: GridColumnConfigurationService
   ) {
     super();
     this.environment = environment;
@@ -405,10 +473,8 @@ export class CoreGridComponent
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (!this.status.error) {
-      if (changes?.settings) {
-        this.configureGrid();
-      }
+    if (changes?.settings || changes?.defaultLayout) {
+      this.configureGrid();
     }
   }
 
@@ -416,6 +482,15 @@ export class CoreGridComponent
    * Configure the grid
    */
   public configureGrid(): void {
+    this.cancelRefresh$.next();
+    this.skip = 0;
+    this.status = { error: false };
+    this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
+    // Layout filters are a starting point the user can edit or clear.
+    // Only filters stored in the query itself (settings.query.filter) are fixed.
+    this.filter = this.defaultLayout?.filter || { logic: 'and', filters: [] };
+    const configurationVersion = ++this.configurationVersion;
     // set context filter
     this.contextFilters = this.settings.contextFilters
       ? JSON.parse(this.settings.contextFilters)
@@ -431,6 +506,7 @@ export class CoreGridComponent
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
+      import: get(this.settings, 'actions.import', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
@@ -449,9 +525,6 @@ export class CoreGridComponent
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
       : true;
-    if (this.defaultLayout?.filter) {
-      this.filter = this.defaultLayout.filter;
-    }
     if (this.defaultLayout?.sort) {
       this.sort = this.defaultLayout.sort;
     }
@@ -477,6 +550,8 @@ export class CoreGridComponent
             filter: this.queryFilter,
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
+            sortFields:
+              this.sortFields.length > 0 ? this.sortFields : undefined,
             styles: this.style,
             actions: this.settings.customRowActions || null,
             at: this.settings.at
@@ -492,7 +567,7 @@ export class CoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+        this.metaQuery.pipe(takeUntil(this.gridRefresh$)).subscribe({
           next: async ({ data }: any) => {
             this.status = {
               error: false,
@@ -505,13 +580,34 @@ export class CoreGridComponent
                 } catch (err) {
                   console.error(err);
                 }
+                if (configurationVersion !== this.configurationVersion) {
+                  return;
+                }
                 const fields = this.settings?.query?.fields || [];
                 const defaultLayoutFields = this.defaultLayout.fields || {};
                 this.fields = this.gridService.getFields(
                   fields,
                   this.metaFields,
                   defaultLayoutFields,
-                  ''
+                  '',
+                  {
+                    disabled: false,
+                    hidden: false,
+                    filter: true,
+                    readOnlyFields:
+                      this.settings?.actions?.readOnlyFields || [],
+                  }
+                );
+                const restoredColumns =
+                  this.gridColumnConfigurationService.restore(
+                    this.columnConfigurationKey,
+                    this.fields,
+                    this.layoutModifiedAt
+                  );
+                this.hasCustomColumnConfiguration = !!restoredColumns;
+                this.columnConfiguration = restoredColumns ?? {};
+                this.fields.sort(
+                  (first, second) => (first.order ?? 0) - (second.order ?? 0)
                 );
                 // Scroll to left
                 if (this.grid) {
@@ -596,16 +692,24 @@ export class CoreGridComponent
       const index = this.updatedItems.findIndex((x) => x.id === item.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
-      this.updatedItems.push({ id: item.id, ...value });
+      updatedItem = { id: item.id, ...value };
+      this.updatedItems.push(updatedItem);
     }
+    // Reflect pending changes on the raw value immediately, so reopening the
+    // inline editor ( seeded from the raw value ) shows them without waiting
+    // for the draft edition round-trip.
+    this.applyPendingChangesToRaw(item, updatedItem);
 
-    // Use the draft option to apply triggers, and then update the data
+    // Use the draft option to apply triggers, and then update the data.
+    // Send all pending ( unsaved ) changes of the row, not only the last
+    // edition, so triggers & display values are computed from the same state
+    // the user sees.
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data: value,
+          data: omit(updatedItem, 'id'),
           draft: true,
         },
       })
@@ -649,16 +753,20 @@ export class CoreGridComponent
                       );
                       // Update data item element
                       Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
+                      // Update data item raw value ( used by inline edition ),
+                      // re-applying pending changes on top in case another
+                      // edition happened while this draft was in flight.
+                      dataItem._meta = { ...dataItem._meta, raw: editedData };
+                      this.applyPendingChangesToRaw(
+                        dataItem,
+                        this.updatedItems.find((x) => x.id === item.id) ?? {}
                       );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
+                      item.saved = false;
+                      // updatedItems deliberately keeps only the fields the
+                      // user edited: raw record values ( as returned by the
+                      // draft edition ) can have a different shape than the
+                      // display values, and updatedItems is re-applied on top
+                      // of the displayed rows after each data fetch.
                       this.loadItems();
                     });
                 }
@@ -666,6 +774,31 @@ export class CoreGridComponent
             });
         }
       });
+  }
+
+  /**
+   * Merges pending ( unsaved ) inline changes into the raw value of the given
+   * row, so the inline editor ( which is seeded from the raw value ) opens on
+   * the pending values instead of the last saved ones.
+   * Time fields are skipped: their form value is a timezone-shifted Date that
+   * would be shifted again when seeding the next form group.
+   * The `_meta` object is replaced instead of mutated, as it can be shared
+   * with the `originalItems` backup used to cancel inline changes.
+   *
+   * @param item Grid row item to update.
+   * @param changes Pending changes of the row ( `id` key ignored ).
+   */
+  private applyPendingChangesToRaw(item: any, changes: any): void {
+    const timeFields = this.fields
+      .filter((x) => x.type === 'Time')
+      .map((x) => x.name);
+    item._meta = {
+      ...item._meta,
+      raw: {
+        ...item._meta?.raw,
+        ...omit(changes, ['id', ...timeFields]),
+      },
+    };
   }
 
   /**
@@ -766,7 +899,7 @@ export class CoreGridComponent
       const data = Object.assign({}, item);
       delete data.id;
       for (const field of this.fields) {
-        if (field.type === 'Time') {
+        if (field.type === 'Time' && data[field.name] instanceof Date) {
           data[field.name] = data[field.name].toLocaleTimeString('en', {
             hour: '2-digit',
             minute: '2-digit',
@@ -800,7 +933,7 @@ export class CoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      this.dataQuery.valueChanges.pipe(takeUntil(this.gridRefresh$)).subscribe({
         next: ({ data }) => {
           this.loading = false;
           this.status = {
@@ -819,6 +952,23 @@ export class CoreGridComponent
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
+                const temporaryRecordsCount =
+                  this.settings.query.temporaryRecords?.length || 0;
+                const lastPageSkip = Math.max(
+                  (Math.ceil(
+                    (this.totalCount + temporaryRecordsCount) / this.pageSize
+                  ) -
+                    1) *
+                    this.pageSize,
+                  0
+                );
+                if (this.skip > lastPageSkip) {
+                  this.onPageChange({
+                    skip: lastPageSkip,
+                    take: this.pageSize,
+                  });
+                  return;
+                }
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -829,6 +979,10 @@ export class CoreGridComponent
                   );
                   if (item) {
                     Object.assign(item, updatedItem);
+                    // Fetched raw values only reflect the last saved state:
+                    // re-apply pending changes so the inline editor ( seeded
+                    // from the raw value ) opens on them.
+                    this.applyPendingChangesToRaw(item, updatedItem);
                     item.saved = false;
                   }
                 }
@@ -893,8 +1047,7 @@ export class CoreGridComponent
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
-    // TODO = check what to do there
-    this.onPageChange({ skip: 0, take: this.pageSize });
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
     // this.selectedRows = [];
     // this.updatedItems = [];
     this.refresh$.next(true);
@@ -1063,7 +1216,7 @@ export class CoreGridComponent
           ({ EditorModalComponent }) => {
             this.dialog.open(EditorModalComponent, {
               data: {
-                html: event.item.text[event.field.name],
+                html: event.item._display.text[event.field.name],
                 title: event.field.title,
               },
             });
@@ -1444,6 +1597,7 @@ export class CoreGridComponent
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
+      sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
       format: e.format,
       application: this.applicationService.name,
       fileName: this.fileName,
@@ -1515,13 +1669,14 @@ export class CoreGridComponent
         filter: this.queryFilter,
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
+        sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
         styles: this.style,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
         }),
       })
     )
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.gridRefresh$))
       .subscribe(() => (this.loading = false));
   }
 
@@ -1578,6 +1733,15 @@ export class CoreGridComponent
    * Detects fields changes.
    */
   onColumnChange(): void {
+    const savedColumns = this.gridColumnConfigurationService.save(
+      this.columnConfigurationKey,
+      this.grid?.configurableColumns || [],
+      this.layoutModifiedAt
+    );
+    if (savedColumns) {
+      this.columnConfiguration = savedColumns;
+    }
+    this.hasCustomColumnConfiguration = true;
     this.saveLocalLayout();
   }
 
@@ -1603,6 +1767,9 @@ export class CoreGridComponent
    * Reset the currently cached layout to the default one
    */
   resetDefaultLayout(): void {
+    this.gridColumnConfigurationService.remove(this.columnConfigurationKey);
+    this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
     this.defaultLayoutReset.emit();
   }
 

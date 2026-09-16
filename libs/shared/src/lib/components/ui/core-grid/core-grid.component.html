@@ -3,6 +3,8 @@
   [data]="gridData"
   [loadingRecords]="settings.query && loading"
   [loadingSettings]="loadingSettings"
+  [autoSizeColumns]="!hasCustomColumnConfiguration"
+  [columnConfiguration]="columnConfiguration"
   [status]="status"
   [pageSize]="pageSize"
   [skip]="skip"
@@ -30,6 +32,7 @@
   [canUpdate]="canUpdate"
   [canAdd]="canCreateRecords"
   [canDownload]="canDownloadRecords"
+  [canUpload]="canUploadRecords"
   [searchable]="searchable"
   (reload)="reloadData()"
 >

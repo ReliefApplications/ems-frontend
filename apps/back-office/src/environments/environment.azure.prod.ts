@@ -34,6 +34,7 @@ export const environment: Environment = {
   subscriptionApiUrl: 'wss://hems.who.int/api',
   frontOfficeUri: 'https://hems.who.int/apps/',
   backOfficeUri: 'https://hems.who.int/backoffice/',
+  publicFormsUri: 'https://hems.who.int/submit/',
   module: 'backoffice',
   availableLanguages: ['en', 'uk'],
   authConfig,

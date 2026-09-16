@@ -22,7 +22,7 @@ import jsonpath from 'jsonpath';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** List of disabled fields */
-const DISABLED_FIELDS = [
+export const DISABLED_FIELDS = [
   'id',
   'incrementalId',
   'createdAt',
@@ -89,6 +89,7 @@ export class GridService {
    * @param options.disabled disable the grid
    * @param options.hidden hide the grid
    * @param options.filter filter options for the grid
+   * @param options.readOnlyFields names of fields forced to read-only during inline edition
    * @returns The list of fields formatted for a grid component
    */
   public getFields(
@@ -96,10 +97,17 @@ export class GridService {
     metaFields: any,
     layoutFields: any,
     prefix?: string,
-    options: { disabled?: boolean; hidden?: boolean; filter: boolean } = {
+    options: {
+      disabled?: boolean;
+      hidden?: boolean;
+      filter: boolean;
+      /** Names of fields forced to read-only during inline edition, regardless of permissions */
+      readOnlyFields?: string[];
+    } = {
       disabled: false,
       hidden: false,
       filter: true,
+      readOnlyFields: [],
     }
   ): any[] {
     return flatDeep(
@@ -110,7 +118,10 @@ export class GridService {
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
-        const disabled: boolean = options.disabled || !canUpdate;
+        const disabled: boolean =
+          options.disabled ||
+          !canUpdate ||
+          (options.readOnlyFields || []).includes(fullName);
 
         switch (f.kind) {
           case 'OBJECT': {
@@ -334,13 +345,13 @@ export class GridService {
     /**
      * Fetches choices, cache them and set meta.
      *
-     * @param fieldName Field name to update meta.
-     * @param meta Meta to expand. Corresponding to fieldName.
+     * @param path Path of the field in metaFields (dotted for nested fields).
+     * @param meta Meta to expand. Corresponding to path.
      * @param key cache key
      * @returns A promise to execute everything.
      */
     const fetchChoicesAndSetMeta = async (
-      fieldName: string,
+      path: string,
       meta: IMeta,
       key: string
     ): Promise<void> => {
@@ -367,7 +378,7 @@ export class GridService {
 
         const choices = this.extractChoices(value, meta);
         setWithExpiry(key, choices);
-        metaFields[fieldName] = {
+        metaFields[path] = {
           ...meta,
           choices,
         };
@@ -378,7 +389,7 @@ export class GridService {
         );
         const choices = this.extractChoices(value, meta);
         setWithExpiry(key, choices);
-        metaFields[fieldName] = {
+        metaFields[path] = {
           ...meta,
           choices,
         };
@@ -418,7 +429,7 @@ export class GridService {
                 getWithExpiry(key).then(
                   (choices: { value: string; text: string }[] | null) => {
                     if (choices === null) {
-                      return fetchChoicesAndSetMeta(fieldName, meta, key);
+                      return fetchChoicesAndSetMeta(path, meta, key);
                     } else {
                       metaFields[path] = {
                         ...meta,
@@ -430,9 +441,8 @@ export class GridService {
                 )
               );
             } else {
-              promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
+              promises.push(fetchChoicesAndSetMeta(path, meta, key));
             }
-            promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
           } else if (meta.choices) {
             metaFields[path] = {
               ...meta,

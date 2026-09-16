@@ -4,6 +4,12 @@
   (filter)="onFilter($event)"
   [loading]="filterLoading"
 ></shared-role-resources-filter>
+<!-- Saving overlay, rendered through the CDK overlay container over the page container -->
+<ng-template #savingOverlay>
+  <div class="w-full h-full bg-white/70 flex items-center justify-center">
+    <ui-spinner size="large" variant="primary"></ui-spinner>
+  </div>
+</ng-template>
 <!-- Resource Table -->
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
@@ -111,6 +117,17 @@
                     $event.field,
                     $event.permission
                   )
+                "
+                (onBulkToggle)="
+                  onBulkEditFieldAccess(
+                    $event.resource,
+                    $event.fields,
+                    $event.permission,
+                    $event.grant
+                  )
+                "
+                (onAutoGrantToggle)="
+                  onEditFieldsAutoGrant($event.resource, $event.permission)
                 "
               ></shared-resource-fields>
             </ng-container>

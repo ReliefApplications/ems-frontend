@@ -20,4 +20,6 @@ export class FilterComponent {
   @Input() canUseContext = false;
   /** Email Notification Check */
   @Input() isEmailNotification = false;
+  /** Enables attribute filters to switch between field and literal values */
+  @Input() enableAttributeValueSource = false;
 }

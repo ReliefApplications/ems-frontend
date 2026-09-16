@@ -20,6 +20,11 @@ export interface Environment {
   subscriptionApiUrl: string;
   frontOfficeUri: string;
   backOfficeUri: string;
+  /**
+   * Base URL of the public-forms application. When set, the form builder
+   * displays actions to copy / open the public link of forms marked as public.
+   */
+  publicFormsUri?: string;
   availableLanguages: string[];
   authConfig: AuthConfig;
   esriApiKey: string;

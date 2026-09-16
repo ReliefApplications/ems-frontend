@@ -8,6 +8,7 @@ export const EDIT_FORM_FIELDS = gql`
     createdAt
     status
     core
+    isPublic
     fields
     permissions {
       canSee {

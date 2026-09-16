@@ -23,6 +23,8 @@ interface QueryVariables {
   filter?: any;
   sortField?: string;
   sortOrder?: string;
+  /** Ordered list of sort descriptors, takes precedence over sortField/sortOrder when non-empty */
+  sortFields?: { field: string; order: string }[];
   display?: boolean;
   styles?: any;
   actions?: any;
@@ -62,17 +64,41 @@ export interface QueryField {
   ofType?: any;
 }
 
+/** A single sort descriptor row: logical field name + direction. */
+export interface SortDescriptor {
+  field?: string;
+  order?: 'asc' | 'desc';
+}
+
 /** Query interface definition */
 interface Query {
   name: string;
   fields: QueryField[];
   filter?: CompositeFilterDescriptor;
-  sort?: {
-    field?: string;
-    order?: 'asc' | 'desc';
-  };
+  // Legacy queries stored a single sort object; current queries store an
+  // ordered array. Read via normalizeQuerySort() to support both.
+  sort?: SortDescriptor | SortDescriptor[];
   style?: any;
 }
+
+/**
+ * Normalizes a query's sort value into an ordered array of descriptors,
+ * accepting either the legacy single {field, order} object (older saved
+ * Layouts) or the current array shape.
+ *
+ * @param sort Raw sort value from a query definition
+ * @returns Ordered array of sort descriptors
+ */
+export const normalizeQuerySort = (
+  sort: SortDescriptor | SortDescriptor[] | null | undefined
+): { field: string; order: string }[] => {
+  if (Array.isArray(sort)) {
+    return sort
+      .filter((s) => !!s?.field)
+      .map((s) => ({ field: s.field as string, order: s.order || 'asc' }));
+  }
+  return sort?.field ? [{ field: sort.field, order: sort.order || 'asc' }] : [];
+};
 
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
@@ -381,12 +407,13 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $sortFields: JSON, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date) {
       ${name}(
       first: $first
       skip: $skip
       sortField: $sortField
       sortOrder: $sortOrder
+      sortFields: $sortFields
       filter: $filter
       display: $display
       styles: $styles

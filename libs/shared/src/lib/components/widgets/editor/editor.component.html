@@ -1,11 +1,14 @@
 <div
-  class="h-full overflow-auto"
+  #scrollContainer
+  class="h-full"
   [ngClass]="{
+    'overflow-auto': !overflowHidden,
+    'overflow-hidden': overflowHidden,
     'p-[14px]': usePadding
   }"
   (click)="onClick($event)"
 >
-  <div *ngIf="!loading; else loadingTmpl" class="w-full h-fit">
+  <div #contentWrapper *ngIf="!loading; else loadingTmpl" class="w-full h-fit">
     <shared-html-widget-content
       [html]="formattedHtml"
       [style]="formattedStyle"

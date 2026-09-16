@@ -33,6 +33,12 @@ module.exports = {
       },
     ],
     [
+      '@semantic-release/exec',
+      {
+        prepareCmd: `npx prettier --write ${changelog}`,
+      },
+    ],
+    [
       '@semantic-release/npm',
       {
         npmPublish: false,

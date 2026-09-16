@@ -1,21 +1,34 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { QueryField } from '../../services/query-builder/query-builder.service';
+import {
+  QueryField,
+  normalizeQuerySort,
+} from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
 import { FILTER_OPERATORS } from '../filter/filter.const';
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
 
+type CreateFilterGroupOptions = {
+  includeValueSource?: boolean;
+};
+
 /**
  * Builds a filter form
  *
  * @param filter Initial filter
+ * @param options Optional form controls to include
  * @returns Filter form
  */
-export const createFilterGroup = (filter: any) => {
+export const createFilterGroup = (
+  filter: any,
+  options: CreateFilterGroupOptions = {}
+) => {
   if (filter?.filters) {
-    const filters = filter.filters.map((x: any) => createFilterGroup(x));
+    const filters = filter.filters.map((x: any) =>
+      createFilterGroup(x, options)
+    );
     return formBuilder.group({
       logic: filter.logic || 'and',
       filters: formBuilder.array(filters),
@@ -26,6 +39,9 @@ export const createFilterGroup = (filter: any) => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+      ...(options.includeValueSource
+        ? { valueSource: get(filter, 'valueSource', 'field') }
+        : {}),
       // todo: fix this regression introduced by changes done in emails
       inTheLast: formBuilder.group({
         number: [1],
@@ -137,14 +153,27 @@ export const createDefaultField = (name: string): QueryField => ({
 });
 
 /**
+ * Builds a single sort row form ({ field, order }).
+ *
+ * @param value Initial row value
+ * @returns Sort row form
+ */
+export const createSortRowForm = (value: any) =>
+  formBuilder.group({
+    field: [get(value, 'field', '')],
+    order: [get(value, 'order', 'asc')],
+  });
+
+/**
  * Builds a query form.
  *
  * @param value Initial value
  * @param validators Enables or not the validators of the form
  * @returns Query form
  */
-export const createQueryForm = (value: any, validators = true) =>
-  formBuilder.group({
+export const createQueryForm = (value: any, validators = true) => {
+  const sortRows = normalizeQuerySort(get(value, 'sort', null));
+  return formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],
     pageSize: [get(value, 'pageSize', 10)],
@@ -152,15 +181,17 @@ export const createQueryForm = (value: any, validators = true) =>
       get(value, 'fields', []).map((x: any) => addNewField(x)),
       validators ? Validators.required : null
     ),
-    sort: formBuilder.group({
-      field: [get(value, 'sort.field', '')],
-      order: [get(value, 'sort.order', 'asc')],
-    }),
+    sort: formBuilder.array(
+      sortRows.length > 0
+        ? sortRows.map((s) => createSortRowForm(s))
+        : [createSortRowForm(null)]
+    ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       get(value, 'style', []).map((x: any) => createStyleForm(x))
     ),
   });
+};
 
 /**
  * Creates a display form.

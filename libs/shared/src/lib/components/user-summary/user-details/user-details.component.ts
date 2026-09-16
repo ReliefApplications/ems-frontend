@@ -81,7 +81,10 @@ export class UserDetailsComponent implements OnInit {
       const manualCreation = get(config, 'attributes.local', true);
       this.restService
         .get('/permissions/attributes')
-        .subscribe((attributes: any) => {
+        .subscribe((allAttributes: any) => {
+          // Skip derived attributes (e.g. enriched country / region
+          // metadata), which are never edited manually
+          const attributes = allAttributes.filter((x: any) => !x.readonly);
           this.form.addControl(
             'attributes',
             this.fb.group(

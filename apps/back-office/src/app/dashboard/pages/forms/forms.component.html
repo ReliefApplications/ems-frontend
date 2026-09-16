@@ -92,6 +92,7 @@
         <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
       </ng-container>
 
+      <!-- Is form core -->
       <ng-container cdkColumnDef="core">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
@@ -102,6 +103,22 @@
           <div uiChipList *ngIf="element.core">
             <ui-chip class="!rounded-lg" variant="primary">{{
               'models.form.core' | translate
+            }}</ui-chip>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Is form public -->
+      <ng-container cdkColumnDef="isPublic">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'components.forms.isPublic' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList *ngIf="element.isPublic">
+            <ui-chip class="!rounded-lg" variant="primary">{{
+              'models.form.isPublic' | translate
             }}</ui-chip>
           </div>
         </td>
@@ -194,6 +211,7 @@
         'common.history',
         'common.record.few',
         'components.forms.isCore',
+        'components.forms.isPublic',
         'components.forms.parent'
       ]"
       [actions]="true"

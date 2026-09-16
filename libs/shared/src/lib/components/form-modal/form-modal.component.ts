@@ -42,6 +42,10 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -49,6 +53,7 @@ import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 
 /**
@@ -345,11 +350,19 @@ export class FormModalComponent
         }
         addCustomFunctions(this.authService, this.datePipe);
         this.survey.showCompletedPage = false;
+      }
+
+      if (
+        this.isUpdate ||
+        shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+      ) {
         this.form?.fields?.forEach((field) => {
           if (field.readOnly && this.survey.getQuestionByName(field.name))
             this.survey.getQuestionByName(field.name).readOnly = true;
         });
+      }
 
+      if (this.isUpdate) {
         // Fire once now that the existing record's data is in the survey
         fireOnRecordEditionTriggers(this.survey);
       }
@@ -357,6 +370,7 @@ export class FormModalComponent
       // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
       this.updateButtonLabels();
     });
+    captureFieldChangeInitialData(this.survey);
 
     this.loading = false;
   }
@@ -495,6 +509,7 @@ export class FormModalComponent
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
+        fireFieldChangeTriggersForRecordUpdate(this.survey, true);
         this.updateData(this.data.recordId, survey);
       }
     } else {

@@ -11,7 +11,11 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import {
+  ADD_RECORD,
+  ADD_RECORD_PUBLIC,
+  EDIT_RECORD,
+} from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
@@ -20,6 +24,10 @@ import {
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { AuthService } from '../../services/auth/auth.service';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -32,6 +40,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 
 /**
  * This component is used to display forms
@@ -49,6 +58,12 @@ export class FormComponent
   @Input() form!: Form;
   /** Record input, optional */
   @Input() record?: RecordModel;
+  /**
+   * When set, called before creating a record to get a captcha token, sent
+   * with the record creation so unauthenticated users can add records to
+   * public forms. The submission is cancelled if no token is returned.
+   */
+  @Input() requestCaptchaToken?: () => Promise<string | null>;
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
@@ -153,9 +168,11 @@ export class FormComponent
       this.onComplete();
     });
 
-    // Unset readOnly fields if it's the record creation
-    // It's a requirement to let all fields been editable during addition of records
-    if (!isNil(this.record)) {
+    // Read-only fields stay editable during creation unless the form opts in to locking them.
+    if (
+      !isNil(this.record) ||
+      shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+    ) {
       this.form.fields?.forEach((field) => {
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
@@ -202,6 +219,7 @@ export class FormComponent
         fireOnRecordEditionTriggers(this.survey);
       }
     });
+    captureFieldChangeInitialData(this.survey);
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -246,6 +264,7 @@ export class FormComponent
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
+    captureFieldChangeInitialData(this.survey);
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();
     this.save.emit({ completed: false });
@@ -337,6 +356,18 @@ export class FormComponent
     let mutation: any;
     this.surveyActive = false;
 
+    // Ask for a captcha token before saving, when required ( e.g. public forms )
+    let captchaToken: string | null = null;
+    if (!this.record && !this.form.uniqueRecord && this.requestCaptchaToken) {
+      captchaToken = await this.requestCaptchaToken();
+      if (!captchaToken) {
+        // Submission cancelled: let the user submit again
+        this.survey.clear(false, true);
+        this.surveyActive = true;
+        return;
+      }
+    }
+
     try {
       await this.formHelpersService.uploadFiles(
         this.survey,
@@ -363,8 +394,10 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
+    const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
+    fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
     // If is an already saved record, edit it
-    if (this.record || this.form.uniqueRecord) {
+    if (isRecordUpdate) {
       const recordId = this.record
         ? this.record.id
         : this.form.uniqueRecord?.id;
@@ -380,10 +413,13 @@ export class FormComponent
       // Else create a new one
     } else {
       mutation = this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
+        // As unauthenticated users cannot read the other record fields, only
+        // make sure the record has been created when submitting with a captcha
+        mutation: captchaToken ? ADD_RECORD_PUBLIC : ADD_RECORD,
         variables: {
           form: this.form.id,
           data: this.survey.data,
+          ...(captchaToken && { captchaToken }),
         },
       });
     }
@@ -414,7 +450,7 @@ export class FormComponent
           );
         }
         // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
+        if (data.editRecord || data.addRecord.form?.uniqueRecord) {
           this.survey.clear(false, false);
           if (data.addRecord) {
             this.record = data.addRecord;
@@ -431,7 +467,7 @@ export class FormComponent
         );
         this.save.emit({
           completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
           record: data.addRecord || data.editRecord,
         });
       }
@@ -461,6 +497,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
+    captureFieldChangeInitialData(this.survey);
     this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage

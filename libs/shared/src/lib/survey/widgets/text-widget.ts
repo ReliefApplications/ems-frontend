@@ -20,6 +20,7 @@ import {
 } from '../components/utils/create-picker-instance';
 import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
 import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
+import { toI18nLocale } from '../../utils/languages';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -161,7 +162,8 @@ export const init = (
             question.inputType as DateInputFormat,
             pickerDiv,
             domService,
-            question.calendarType || 'infinite'
+            question.calendarType || 'infinite',
+            toI18nLocale((question.survey as SurveyModel)?.locale || 'en')
           );
 
           if (pickerInstance) {

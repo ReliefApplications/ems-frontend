@@ -20,6 +20,7 @@ export type CalcFunctionCategory =
   | 'string'
   | 'array'
   | 'conversion'
+  | 'related'
   | 'misc';
 
 /** Static metadata describing a calc function for the reference panel. */
@@ -239,6 +240,62 @@ export const CALC_FUNCTIONS_META: CalcFunctionMeta[] = [
     signature: 'toLong( value )',
     description: 'Converts `value` to a long integer.',
     category: 'conversion',
+  },
+
+  // Related records — aggregations over records of another resource that
+  // link back to the current record through a reverse link (relatedName).
+  // The optional filter is a JSON filter on the related records, e.g.
+  // '{"field":"active","operator":"eq","value":true}'.
+  {
+    name: 'relatedValue',
+    signature:
+      "relatedValue( 'relatedName' ; 'valueField' ; 'sortField' ; 'sortOrder' ; 'filter'? )",
+    description:
+      'Value of one field of a single related record, picked by sorting the related records by `sortField` (`asc` or `desc`) and taking the first one — e.g. the latest or earliest entry.',
+    example:
+      "{{calc.relatedValue('grades' ; 'grade' ; 'modifieddate' ; 'desc')}}",
+    category: 'related',
+  },
+  {
+    name: 'relatedCount',
+    signature: "relatedCount( 'relatedName' ; 'filter'? )",
+    description:
+      'Number of related records, optionally restricted by a JSON filter.',
+    example:
+      '{{calc.relatedCount(\'teams\' ; \'{"field":"active","operator":"eq","value":true}\')}}',
+    category: 'related',
+  },
+  {
+    name: 'relatedExists',
+    signature: "relatedExists( 'relatedName' ; 'filter'? )",
+    description:
+      'True when at least one related record exists, optionally restricted by a JSON filter.',
+    example: "{{calc.relatedExists('assignments')}}",
+    category: 'related',
+  },
+  {
+    name: 'relatedSum',
+    signature: "relatedSum( 'relatedName' ; 'valueField' ; 'filter'? )",
+    description: 'Sum of a field across all related records.',
+    category: 'related',
+  },
+  {
+    name: 'relatedMin',
+    signature: "relatedMin( 'relatedName' ; 'valueField' ; 'filter'? )",
+    description: 'Smallest value of a field across all related records.',
+    category: 'related',
+  },
+  {
+    name: 'relatedMax',
+    signature: "relatedMax( 'relatedName' ; 'valueField' ; 'filter'? )",
+    description: 'Largest value of a field across all related records.',
+    category: 'related',
+  },
+  {
+    name: 'relatedAvg',
+    signature: "relatedAvg( 'relatedName' ; 'valueField' ; 'filter'? )",
+    description: 'Average value of a field across all related records.',
+    category: 'related',
   },
 
   // Misc

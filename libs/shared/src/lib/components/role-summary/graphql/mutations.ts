@@ -97,6 +97,20 @@ export const EDIT_RESOURCE_FIELD_PERMISSION = gql`
   ${SHORT_RESOURCE_FIELDS}
 `;
 
+/** Edits the fields auto-grant settings for a role on a resource */
+export const EDIT_RESOURCE_FIELDS_AUTO_GRANT = gql`
+  mutation editResourceFieldsAutoGrant(
+    $id: ID!
+    $fieldsAutoGrant: JSON
+    $role: ID!
+  ) {
+    editResource(id: $id, fieldsAutoGrant: $fieldsAutoGrant) {
+      ...ShortResourceFields
+    }
+  }
+  ${SHORT_RESOURCE_FIELDS}
+`;
+
 /** Edit Role auto assignment mutation */
 export const EDIT_ROLE_AUTO_ASSIGNMENT = gql`
   mutation editRole($id: ID!, $autoAssignment: JSON) {

@@ -39,6 +39,8 @@ export const environment: Environment = {
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'https://hems-test.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
+  // Default port of a locally served public-forms app (see README)
+  publicFormsUri: 'http://localhost:4200/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr', 'test', 'uk'],
   authConfig,

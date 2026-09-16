@@ -26,6 +26,8 @@ import { GridRowActionsModule } from '../row-actions/row-actions.module';
 import { GridToolbarModule } from '../toolbar/toolbar.module';
 import { GridComponent } from './grid.component';
 import { ActionButtonComponent } from '../../../action-button/action-button.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { UploadMenuModule } from '../../../upload-menu/upload-menu.module';
 
 /** Module for the grid component */
 @NgModule({
@@ -65,6 +67,8 @@ import { ActionButtonComponent } from '../../../action-button/action-button.comp
     StripHtmlPipe,
     LocalizePipe,
     ActionButtonComponent,
+    OverlayModule,
+    UploadMenuModule,
   ],
   exports: [GridComponent],
 })

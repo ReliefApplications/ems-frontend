@@ -73,11 +73,17 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** Data */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard. */
+  @Input() widgetKey?: string;
 
   /** Permission to create records */
   public canCreateRecords = false;
   /** Permission to download records */
   public canDownloadRecords = false;
+  /** Permission to upload records */
+  public canUploadRecords = false;
 
   /** Cached configuration */
   public layout: Layout | null = null;
@@ -202,6 +208,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             this.canDownloadRecords = get(
               data,
               'resource.canDownloadRecords',
+              false
+            );
+            this.canUploadRecords = get(
+              data,
+              'resource.canUploadRecords',
               false
             );
           }

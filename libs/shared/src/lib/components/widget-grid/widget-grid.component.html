@@ -33,11 +33,13 @@
       <gridster-item
         [item]="widget"
         class="max-w-full"
-        *ngFor="let widget of visibleWidgets; let i = index"
+        *ngFor="let widget of visibleWidgets"
       >
         <shared-widget
           #widgetElement
           [widget]="widget"
+          [dashboardId]="dashboardId"
+          [widgetKey]="getWidgetKey(widget)"
           (changeStep)="triggerChangeStepAction($event)"
           (edit)="onEditWidget($event)"
           [canUpdate]="canUpdate"

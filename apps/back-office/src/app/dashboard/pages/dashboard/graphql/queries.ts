@@ -86,30 +86,12 @@ export const GET_DASHBOARDS_NAMES = gql`
   }
 `;
 
-/** Graphql query for getting records of a resource */
-export const GET_RESOURCE_RECORDS = gql`
-  query GetResourceRecords(
-    $id: ID!
-    $afterCursor: ID
-    $first: Int
-    $filter: JSON
-  ) {
+/** Graphql query for getting the query name of a resource */
+export const GET_RESOURCE_QUERY_NAME = gql`
+  query GetResourceQueryName($id: ID!) {
     resource(id: $id) {
-      records(first: $first, afterCursor: $afterCursor, filter: $filter) {
-        edges {
-          node {
-            id
-            incrementalId
-            data
-          }
-          cursor
-        }
-        totalCount
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
+      id
+      queryName
     }
   }
 `;

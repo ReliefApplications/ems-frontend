@@ -5,7 +5,11 @@ export enum Permission {
   UPDATE = 'canUpdateRecords',
   DELETE = 'canDeleteRecords',
   DOWNLOAD = 'canDownloadRecords',
+  UPLOAD = 'canUploadRecords',
 }
+
+export type AccessValueSource = 'field' | 'literal';
+
 /** Role access interface */
 export interface Access {
   logic: string;
@@ -13,7 +17,8 @@ export interface Access {
     | {
         field: string;
         operator: string;
-        value?: string;
+        value?: any;
+        valueSource?: AccessValueSource;
       }
     | Access
   )[];

@@ -29,6 +29,8 @@ import { isEqual } from 'lodash';
 import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { environment } from '../../../../environments/environment';
 
 /** Default snackbar config for after request complete  */
 const REQUEST_SNACKBAR_CONF = {
@@ -78,6 +80,16 @@ export class FormBuilderComponent implements OnInit {
   private deactivating = false;
 
   /**
+   * @returns Link to the form in the public-forms application, or empty string when no
+   * public-forms URL is configured in the environment.
+   */
+  get publicFormUrl(): string {
+    return environment.publicFormsUri
+      ? `${environment.publicFormsUri}${this.id}`
+      : '';
+  }
+
+  /**
    * Form builder page
    *
    * @param apollo Apollo service
@@ -90,6 +102,7 @@ export class FormBuilderComponent implements OnInit {
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
    * @param overlay Angular overlay service
+   * @param clipboard Angular clipboard service
    */
   constructor(
     private apollo: Apollo,
@@ -101,7 +114,8 @@ export class FormBuilderComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private clipboard: Clipboard
   ) {}
 
   /**
@@ -205,6 +219,23 @@ export class FormBuilderComponent implements OnInit {
       // redirect to default screen if error
       this.router.navigate(['/forms']);
     }
+  }
+
+  /**
+   * Copy the public form link to the clipboard.
+   */
+  copyPublicFormLink(): void {
+    this.clipboard.copy(this.publicFormUrl);
+    this.snackBar.openSnackBar(
+      this.translate.instant('pages.formBuilder.publicForm.linkCopied')
+    );
+  }
+
+  /**
+   * Open the public form in a new tab.
+   */
+  openPublicForm(): void {
+    window.open(this.publicFormUrl, '_blank');
   }
 
   /**

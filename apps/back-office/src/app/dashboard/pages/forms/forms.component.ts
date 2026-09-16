@@ -50,6 +50,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     'versionsCount',
     'recordsCount',
     'core',
+    'isPublic',
     'parentForm',
     'actions',
   ];

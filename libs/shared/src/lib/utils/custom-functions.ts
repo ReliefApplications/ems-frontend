@@ -278,7 +278,6 @@ const addCustomFunctions = (
           const record = this.survey.getPropertyValue('record') as
             | Record
             | undefined;
-          console.log(record);
           return record?.incrementalId ?? '';
         },
       },
