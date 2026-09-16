@@ -1,3 +1,9 @@
+# [2.24.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.12...v2.24.0-rc.13) (2026-09-16)
+
+### Features
+
+- Add flexible date formatter in forms ([#2900](https://github.com/ReliefApplications/ems-frontend/issues/2900)) ([84607d5](https://github.com/ReliefApplications/ems-frontend/commit/84607d51062b55cf4d2f17c82e72eeb770ad1396)), closes [AB#134845](https://github.com/AB/issues/134845)
+
 # [2.24.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.11...v2.24.0-rc.12) (2026-09-16)
 
 ### Features
