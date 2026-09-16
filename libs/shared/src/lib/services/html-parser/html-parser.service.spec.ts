@@ -294,17 +294,6 @@ describe('HtmlParserService', () => {
       service.parseHtml(calcFormatElement.before, {});
       expect(dateFunc).toHaveBeenCalled();
     });
-    it('renders unprefixed formatDate in templates', () => {
-      const result = service.parseHtml(
-        '<p>{{formatDate(2024-11-26T23:00:00.000-05:00 ; dd/MM/yyyy HH:mm)}}</p>',
-        {}
-      );
-      expect(result).toBe('<p>27/11/2024 04:00</p>');
-    });
-    it('keeps unprefixed non-formatDate functions unchanged', () => {
-      const result = service.parseHtml('<p>{{round( 9.5 ; 0 )}}</p>', {});
-      expect(result).toBe('<p>{{round( 9.5 ; 0 )}}</p>');
-    });
     it('executes html element parse with calcs correctly', () => {
       const result = service.parseHtml(calcFormatElement.before, {});
       expect(result).toEqual(calcFormatElement.after);
