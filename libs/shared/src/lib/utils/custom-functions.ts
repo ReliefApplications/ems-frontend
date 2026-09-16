@@ -1,6 +1,6 @@
 import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
-import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../pipes/date/date.pipe';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { AuthService } from '../services/auth/auth.service';
 import {
   FunctionFactory,
@@ -103,12 +103,12 @@ export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
     example: 'now() = 2024-06-12T14:23:30.123Z',
     category: 'date',
   },
-  /** Formats a date value using Angular DatePipe. Defaults to UTC timezone. */
+  /** Formats a date value using Angular DatePipe. Defaults to the browser timezone. */
   {
     name: 'formatDate',
     signature: 'formatDate(value, format, timezone?)',
     description:
-      'Formats a date using Angular DatePipe. Timezone is optional and defaults to UTC.',
+      'Formats a date using Angular DatePipe. Timezone is optional and defaults to the browser timezone.',
     example: "formatDate({created_at}, 'dd/MM/yyyy HH:mm', 'UTC')",
     category: 'date',
   },
@@ -176,8 +176,7 @@ const addCustomFunctions = (
   datePipe: DatePipe
 ): void => {
   const formatDateValue = (params: unknown[]): string => {
-    const [value, format = 'mediumDate', timezone = DEFAULT_DATE_TIMEZONE] =
-      params;
+    const [value, format = 'mediumDate', timezone] = params;
     if (isNil(value) || value === '') {
       return '';
     }
@@ -187,7 +186,7 @@ const addCustomFunctions = (
         datePipe.transform(
           value as string | number | Date,
           `${format}`,
-          `${timezone || DEFAULT_DATE_TIMEZONE}`
+          timezone ? `${timezone}` : undefined
         ) || ''
       );
     } catch {
@@ -552,7 +551,7 @@ const addCustomFunctions = (
         /**
          * Format a date or datetime value using Angular DatePipe.
          *
-         * @param params Date value, Angular date format, optional timezone
+         * @param params Date value, Angular date format, optional timezone (defaults to the browser timezone)
          * @returns Formatted date or empty string when invalid
          */
         function: (params: unknown[]) => formatDateValue(params),

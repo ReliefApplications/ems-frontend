@@ -25,7 +25,7 @@ import {
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
-import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../../pipes/date/date.pipe';
+import { DatePipe } from '../../pipes/date/date.pipe';
 
 /** Survey question with input type metadata. */
 type InputTypeQuestion = {
@@ -759,7 +759,7 @@ export class FormHelpersService {
       return null;
     }
 
-    const [value, format = 'mediumDate', timezone = DEFAULT_DATE_TIMEZONE] =
+    const [value, format = 'mediumDate', timezone] =
       this.splitFunctionArguments(match[1]).map((argument) =>
         argument.replace(/^['"](.*)['"]$/, '$1')
       );
@@ -769,11 +769,7 @@ export class FormHelpersService {
 
     try {
       return (
-        this.datePipe.transform(
-          value,
-          format,
-          timezone || DEFAULT_DATE_TIMEZONE
-        ) || ''
+        this.datePipe.transform(value, format, timezone || undefined) || ''
       );
     } catch {
       return '';

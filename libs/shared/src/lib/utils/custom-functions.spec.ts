@@ -274,7 +274,7 @@ describe('addCustomFunctions', () => {
   });
 
   describe('formatDate', () => {
-    it('formats dates using Angular DatePipe and UTC by default', () => {
+    it('formats dates using Angular DatePipe and the local timezone by default (UTC in tests)', () => {
       expect(
         runFn('formatDate', [
           '2024-11-26T23:00:00.000-05:00',

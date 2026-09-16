@@ -11,7 +11,7 @@ import {
   replaceAggregationData,
   replacePages,
 } from './html-parser-helper';
-import { DEFAULT_DATE_TIMEZONE, DatePipe } from '../../pipes/date/date.pipe';
+import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
 import { TranslateService } from '@ngx-translate/core';
@@ -288,13 +288,13 @@ export class HtmlParserService {
    *
    * @param value Date value to format
    * @param format Angular date format
-   * @param timezone Optional timezone. Defaults to UTC.
+   * @param timezone Optional timezone. Defaults to the browser timezone.
    * @returns Formatted date or an empty string when invalid
    */
   private formatDate(
     value = '',
     format = 'mediumDate',
-    timezone = DEFAULT_DATE_TIMEZONE
+    timezone?: string
   ): string {
     try {
       const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
@@ -303,7 +303,7 @@ export class HtmlParserService {
       const formattedDate = this.datePipe.transform(
         new Date(valueToFormat),
         format,
-        timezone || DEFAULT_DATE_TIMEZONE
+        timezone || undefined
       ) as string;
       // Replace original value inside the span tag with the formatted value.
       if (!isNil(spanContent)) {

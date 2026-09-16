@@ -209,7 +209,7 @@ describe('HtmlParserService', () => {
         });
       });
 
-      it('uses UTC as default timezone', () => {
+      it('uses the local timezone by default (UTC in tests)', () => {
         const result = dateFunc.call(
           '2024-11-26T23:00:00.000-05:00',
           'dd/MM/yyyy HH:mm'
