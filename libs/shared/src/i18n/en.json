@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
