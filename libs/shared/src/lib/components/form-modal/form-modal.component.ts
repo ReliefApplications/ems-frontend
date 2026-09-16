@@ -32,7 +32,6 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { AuthService } from '../../services/auth/auth.service';
 import {
   ConfirmDialogData,
   ConfirmService,
@@ -40,7 +39,6 @@ import {
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
-import addCustomFunctions from '../../utils/custom-functions';
 import {
   captureFieldChangeInitialData,
   fireFieldChangeTriggersForRecordUpdate,
@@ -142,7 +140,6 @@ export class FormModalComponent
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -156,7 +153,6 @@ export class FormModalComponent
     public dialogRef: DialogRef<FormModalComponent>,
     private apollo: Apollo,
     protected snackBar: SnackbarService,
-    private authService: AuthService,
     private formBuilderService: FormBuilderService,
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
@@ -345,7 +341,6 @@ export class FormModalComponent
             this.survey.setValue(question, cleanedData[question]);
           });
         }
-        addCustomFunctions(this.authService);
         this.survey.showCompletedPage = false;
       }
 

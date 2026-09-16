@@ -23,13 +23,11 @@ import {
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
 import {
   captureFieldChangeInitialData,
   fireFieldChangeTriggersForRecordUpdate,
 } from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -111,7 +109,6 @@ export class FormComponent
    * @param dialog This is the Angular Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
-   * @param authService This is the service that handles authentication.
    * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
@@ -122,7 +119,6 @@ export class FormComponent
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
@@ -132,10 +128,8 @@ export class FormComponent
     super();
   }
 
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  /** It creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService);
-
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
       structure.completedHtml = `<h3>${this.translate.instant(
