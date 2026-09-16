@@ -271,6 +271,7 @@ export class RecordModalComponent
       data: {
         template: this.form.id,
         prefillData: this.record?.data,
+        cloneRecordId: this.record?.id,
         askForConfirm: false,
       },
       autoFocus: false,
