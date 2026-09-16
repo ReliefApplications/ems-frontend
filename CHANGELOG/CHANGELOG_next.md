@@ -1,3 +1,9 @@
+# [2.24.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.11...v2.24.0-rc.12) (2026-09-16)
+
+### Features
+
+- Button to remove all filters ([#2939](https://github.com/ReliefApplications/ems-frontend/issues/2939)) ([a1c2fbd](https://github.com/ReliefApplications/ems-frontend/commit/a1c2fbdfa723bce45825cfdd595ed5a555185043)), closes [AB#137748](https://github.com/AB/issues/137748)
+
 # [2.24.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.10...v2.24.0-rc.11) (2026-09-15)
 
 ### Features
