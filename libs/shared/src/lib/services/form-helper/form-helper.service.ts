@@ -573,13 +573,6 @@ export class FormHelpersService {
     survey: SurveyModel,
     options: { name: string; value: any; isExists: boolean }
   ): void => {
-    const formattedDate = this.resolveFormatDate(options.name);
-    if (!isNil(formattedDate)) {
-      options.value = formattedDate;
-      options.isExists = true;
-      return;
-    }
-
     const question =
       survey.getQuestionByValueName(options.name) ||
       survey.getQuestionByName(options.name);
@@ -745,65 +738,6 @@ export class FormHelpersService {
       default:
         return null;
     }
-  }
-
-  /**
-   * Resolves formatDate placeholders in SurveyJS HTML dynamic text.
-   *
-   * @param expression Placeholder name provided by SurveyJS
-   * @returns Formatted date, empty string for invalid values, or null when not a formatDate call
-   */
-  private resolveFormatDate(expression: string): string | null {
-    const match = expression.match(/^formatDate\((.*)\)$/);
-    if (!match) {
-      return null;
-    }
-
-    const [value, format = 'mediumDate', timezone] =
-      this.splitFunctionArguments(match[1]).map((argument) =>
-        argument.replace(/^['"](.*)['"]$/, '$1')
-      );
-    if (isNil(value) || value === '') {
-      return '';
-    }
-
-    try {
-      return (
-        this.datePipe.transform(value, format, timezone || undefined) || ''
-      );
-    } catch {
-      return '';
-    }
-  }
-
-  /**
-   * Splits function arguments without breaking quoted date formats containing commas.
-   *
-   * @param args Raw function arguments
-   * @returns Split arguments
-   */
-  private splitFunctionArguments(args: string): string[] {
-    const result: string[] = [];
-    let current = '';
-    let quote: string | null = null;
-
-    for (const char of args) {
-      if ((char === "'" || char === '"') && !quote) {
-        quote = char;
-      } else if (char === quote) {
-        quote = null;
-      }
-
-      if (char === ',' && !quote) {
-        result.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-
-    result.push(current.trim());
-    return result;
   }
 
   /**
