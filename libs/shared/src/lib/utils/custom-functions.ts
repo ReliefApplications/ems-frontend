@@ -29,6 +29,8 @@ export interface CustomFunctionMeta {
   signature: string;
   description: string;
   example?: string;
+  /** Optional external documentation link shown in the reference panel. */
+  docsUrl?: string;
   category: CustomFunctionCategory;
 }
 
@@ -108,8 +110,9 @@ export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
     name: 'formatDate',
     signature: 'formatDate(value, format, timezone?)',
     description:
-      'Formats a date using Angular DatePipe. Timezone is optional and defaults to the browser timezone.',
+      'Formats a date using Angular DatePipe. Timezone is optional and defaults to the browser timezone. See the Angular DatePipe documentation for available formats.',
     example: "formatDate({created_at}, 'dd/MM/yyyy HH:mm', 'UTC')",
+    docsUrl: 'https://angular.dev/api/common/DatePipe#usage-notes',
     category: 'date',
   },
   /** Rows of a matrix where the column equals the given value. */
