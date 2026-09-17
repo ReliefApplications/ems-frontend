@@ -165,7 +165,7 @@ export const init = (
     (question as any)._componentRef = dropdown;
     const dropdownInstance: ComboBoxComponent = dropdown.instance;
     dropdownInstance.virtual = {
-      itemHeight: 28,
+      itemHeight: 30,
     };
     dropdownInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     dropdownInstance.filterable = true;
