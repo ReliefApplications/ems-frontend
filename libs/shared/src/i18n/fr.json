@@ -1259,11 +1259,15 @@
         "all": "Tous les champs",
         "select": "Sélectionner les champs"
       },
+      "fieldRequired": "Sélectionnez un champ pour la question Historique du champ",
+      "loadError": "Impossible de charger l'historique",
+      "noHistoryYet": "Aucun historique pour le moment",
       "preview": "Prévisualiser et revenir",
       "range": {
         "clear": "Effacer la plage de données"
       },
       "renderError": "Impossible d'afficher ce changement",
+      "unknownField": "Champ inconnu",
       "useTableMode": "Afficher en table"
     },
     "icon": {

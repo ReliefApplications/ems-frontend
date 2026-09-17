@@ -9,6 +9,7 @@ import { DomService } from '../services/dom/dom.service';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
 import * as EditorComponent from './components/editor';
+import * as FieldHistoryComponent from './components/field-history';
 import * as GeospatialComponent from './components/geospatial';
 import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
@@ -55,6 +56,7 @@ const CUSTOM_COMPONENTS = [
   'people-tagbox',
   'geospatial',
   'editor',
+  'field-history',
 ];
 
 /**
@@ -141,6 +143,7 @@ export const initCustomSurvey = (
     PeopleComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     EditorComponent.init(injector, ComponentCollection.Instance);
+    FieldHistoryComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties

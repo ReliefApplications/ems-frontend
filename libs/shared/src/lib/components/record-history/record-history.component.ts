@@ -2,6 +2,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   OnInit,
   Output,
@@ -10,8 +11,8 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { Subject } from 'rxjs';
-import { map, scan, switchMap, takeUntil } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { DownloadService } from '../../services/download/download.service';
@@ -128,6 +129,19 @@ export class RecordHistoryComponent
   @Input() refresh$?: Subject<boolean> = new Subject<boolean>();
   /** Boolean indicating whether the dialog is resizable. */
   @Input() resizable = false;
+  /** When set, renders only this field without full-history controls. */
+  @Input() fieldOnly?: string;
+
+  /**
+   * Adjusts host sizing when history is embedded in a form question.
+   *
+   * @returns Whether the component is embedded in a Field history question
+   */
+  @HostBinding('class.field-history-host')
+  get fieldHistoryHost(): boolean {
+    return !!this.fieldOnly;
+  }
+
   /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
@@ -141,8 +155,12 @@ export class RecordHistoryComponent
   public loading = true;
   /** Loading state for the "load more" pagination action */
   public loadingMore = false;
+  /** Whether the latest history request failed. */
+  public loadError = false;
   /** Emits history page load requests; 'reload' restarts from the first page */
   private page$ = new Subject<'reload' | 'next'>();
+  /** Last history page loaded successfully. */
+  private currentPage = 0;
   /** Whether more history entries can be loaded */
   public hasMoreHistory = false;
   /** Show more state */
@@ -153,7 +171,7 @@ export class RecordHistoryComponent
   public filters = new FormGroup({
     startDate: new FormControl(''),
     endDate: new FormControl(''),
-    fields: new FormControl([]),
+    fields: new FormControl<string[]>([]),
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
@@ -219,47 +237,69 @@ export class RecordHistoryComponent
   }
 
   ngOnInit(): void {
+    if (this.fieldOnly) {
+      this.filters.get('fields')?.setValue([this.fieldOnly], {
+        emitEvent: false,
+      });
+      this.displayedColumnsHistory = [
+        'date',
+        'time',
+        'person',
+        'action',
+        'originalValue',
+        'modifiedValue',
+      ];
+    }
     // Load history pages through a single stream: switchMap cancels any
     // in-flight request whenever a new page load is triggered
     this.page$
       .pipe(
-        scan((page, action) => (action === 'reload' ? 1 : page + 1), 0),
-        switchMap((page) =>
-          this.queryHistoryPage(page).pipe(map((result) => ({ page, result })))
-        ),
+        switchMap((action) => {
+          const page = action === 'reload' ? 1 : this.currentPage + 1;
+          return this.queryHistoryPage(page).pipe(
+            map((result) => ({ page, result })),
+            catchError((error: Error) => of({ page, error }))
+          );
+        }),
         takeUntil(this.destroy$)
       )
-      .subscribe(({ page, result: { errors, data } }) => {
-        this.loadingMore = false;
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.history.error', {
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          if (page === 1) {
-            this.cancel.emit(true);
+      .subscribe({
+        next: (response) => {
+          const { page } = response;
+          this.loadingMore = false;
+          if ('error' in response) {
+            this.handleLoadError(response.error.message, page);
+            return;
           }
-        } else {
-          this.appendHistoryPage(data.recordHistory);
-          this.loading = false;
-        }
+          const { errors, data } = response.result;
+          if (errors) {
+            this.handleLoadError(errors[0].message, page);
+          } else {
+            this.currentPage = page;
+            this.appendHistoryPage(data.recordHistory);
+            this.loading = false;
+          }
+        },
       });
 
     const setSubscription = () => {
-      this.apollo
-        .query<RecordQueryResponse>({
-          query: GET_RECORD_BY_ID_FOR_HISTORY,
-          variables: {
-            id: this.id,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.record = data.record;
-          this.sortedFields = this.sortFields(this.getFields());
-        });
+      if (!this.fieldOnly) {
+        this.apollo
+          .query<RecordQueryResponse>({
+            query: GET_RECORD_BY_ID_FOR_HISTORY,
+            variables: {
+              id: this.id,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ data }) => {
+              this.record = data.record;
+              this.sortedFields = this.sortFields(this.getFields());
+            },
+            error: (error: Error) => this.handleLoadError(error.message, 1),
+          });
+      }
 
       this.reloadHistory();
     };
@@ -286,10 +326,36 @@ export class RecordHistoryComponent
    */
   private reloadHistory(): void {
     this.loading = true;
+    this.loadError = false;
     // A reload cancels any in-flight "load more" request
     this.loadingMore = false;
     this.history = [];
+    this.hasMoreHistory = false;
+    this.currentPage = 0;
     this.page$.next('reload');
+  }
+
+  /**
+   * Applies a failed request state without preventing the surrounding form from working.
+   *
+   * @param message Error message returned by Apollo
+   * @param page Requested page number
+   */
+  private handleLoadError(message: string, page: number): void {
+    this.loading = false;
+    this.loadingMore = false;
+    this.loadError = page === 1;
+    if (!this.fieldOnly) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.history.error', {
+          error: message,
+        }),
+        { error: true }
+      );
+      if (page === 1) {
+        this.cancel.emit(true);
+      }
+    }
   }
 
   /**
@@ -311,6 +377,7 @@ export class RecordHistoryComponent
         fromDate,
         toDate,
       },
+      ...(this.fieldOnly && { fetchPolicy: 'no-cache' }),
     });
   }
 

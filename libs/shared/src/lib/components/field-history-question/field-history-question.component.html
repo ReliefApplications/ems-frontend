@@ -1,0 +1,17 @@
+<shared-record-history
+  *ngIf="historyLoaded && recordId && field; else unavailableTmpl"
+  [id]="recordId"
+  [fieldOnly]="field"
+  [refresh$]="historyRefresh$"
+></shared-record-history>
+
+<ng-template #unavailableTmpl>
+  <shared-empty
+    [title]="
+      (field
+        ? 'components.history.noHistoryYet'
+        : 'components.history.unknownField'
+      ) | translate
+    "
+  ></shared-empty>
+</ng-template>

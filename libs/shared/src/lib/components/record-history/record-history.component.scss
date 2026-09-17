@@ -5,6 +5,15 @@
   position: relative;
 }
 
+:host .field-history-mode {
+  height: auto;
+  padding: 0.5rem 0;
+}
+
+:host.field-history-host {
+  height: auto;
+}
+
 .history-user {
   @apply bg-sky-200;
   border-radius: 10px;

@@ -20,13 +20,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ResizableModule } from 'angular-resizable-element';
 import { ReadableHistoryValuePipe } from '../../pipes/readable-history-value/readable-history-value.pipe';
+import { FieldHistoryQuestionComponent } from '../field-history-question/field-history-question.component';
 
 /**
  * RecordHistoryModule is a class used to manage all the modules and components
  * related to the history of records.
  */
 @NgModule({
-  declarations: [RecordHistoryComponent],
+  declarations: [RecordHistoryComponent, FieldHistoryQuestionComponent],
   imports: [
     CommonModule,
     ExpansionPanelModule,

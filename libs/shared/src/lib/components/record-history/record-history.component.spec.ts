@@ -20,8 +20,9 @@ import {
 } from '@ngx-translate/core';
 import { MenuModule } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Change } from '../../models/records-history.model';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 /** Number of history entries fetched per page, mirrors the component's own constant */
 const HISTORY_PAGE_SIZE = 20;
@@ -70,6 +71,7 @@ describe('RecordHistoryComponent', () => {
         }),
         MenuModule,
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
 
@@ -84,6 +86,45 @@ describe('RecordHistoryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('queries only the selected field in field-only mode', () => {
+    apolloQueryMock.mockClear();
+    const fieldFixture = TestBed.createComponent(RecordHistoryComponent);
+    fieldFixture.componentInstance.id = 'record-id';
+    fieldFixture.componentInstance.fieldOnly = 'status';
+
+    fieldFixture.detectChanges();
+
+    expect(apolloQueryMock).toHaveBeenCalledTimes(1);
+    expect(apolloQueryMock.mock.calls[0][0].variables).toEqual(
+      expect.objectContaining({
+        id: 'record-id',
+        fields: ['status'],
+        first: HISTORY_PAGE_SIZE,
+        skip: 0,
+      })
+    );
+    expect(apolloQueryMock.mock.calls[0][0].fetchPolicy).toBe('no-cache');
+    expect(
+      fieldFixture.componentInstance.displayedColumnsHistory
+    ).not.toContain('variable');
+    expect(
+      fieldFixture.nativeElement.querySelector('.field-history-mode').classList
+    ).not.toContain('lg:w-[80vw]');
+  });
+
+  it('keeps an embedded history request failure inside the widget', () => {
+    apolloQueryMock.mockClear();
+    apolloQueryMock.mockReturnValue(throwError(() => new Error('Unavailable')));
+    const fieldFixture = TestBed.createComponent(RecordHistoryComponent);
+    fieldFixture.componentInstance.id = 'record-id';
+    fieldFixture.componentInstance.fieldOnly = 'status';
+
+    fieldFixture.detectChanges();
+
+    expect(fieldFixture.componentInstance.loading).toBe(false);
+    expect(fieldFixture.componentInstance.loadError).toBe(true);
   });
 
   describe('getHTMLFromChange', () => {
@@ -313,6 +354,46 @@ describe('RecordHistoryComponent', () => {
   });
 
   describe('loadMoreHistory', () => {
+    it('preserves loaded history when the next page fails', () => {
+      component.history = [
+        {
+          createdAt: new Date(),
+          createdBy: 'tester',
+          changes: [
+            {
+              type: 'modify',
+              field: 'x',
+              displayName: 'X',
+              old: '1',
+              new: '2',
+            },
+          ],
+        },
+      ];
+      const existingHistory = component.history;
+      component.hasMoreHistory = true;
+      apolloQueryMock.mockClear();
+      apolloQueryMock.mockReturnValueOnce(
+        throwError(() => new Error('Unavailable'))
+      );
+
+      component.loadMoreHistory();
+
+      apolloQueryMock.mockReturnValueOnce(of({ data: { recordHistory: [] } }));
+      component.loadMoreHistory();
+
+      expect(component.history).toEqual(existingHistory);
+      expect(component.loadError).toBe(false);
+      expect(component.loadingMore).toBe(false);
+      expect(apolloQueryMock).toHaveBeenCalledTimes(2);
+      expect(apolloQueryMock.mock.calls[0][0].variables.skip).toBe(
+        HISTORY_PAGE_SIZE
+      );
+      expect(apolloQueryMock.mock.calls[1][0].variables.skip).toBe(
+        HISTORY_PAGE_SIZE
+      );
+    });
+
     it('appends the next page and keeps hasMoreHistory true on a full page', () => {
       component.history = [];
       component.hasMoreHistory = true;

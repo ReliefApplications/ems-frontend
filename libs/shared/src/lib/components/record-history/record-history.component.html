@@ -1,6 +1,7 @@
 <div
+  [class.field-history-mode]="fieldOnly"
   [ngClass]="{
-    'w-screen lg:w-[80vw] p-6': showHeader
+    'w-screen lg:w-[80vw] p-6': showHeader && !fieldOnly
   }"
   mwlResizable
   (resizing)="onResizing($event)"
@@ -13,7 +14,11 @@
     mwlResizeHandle
     [resizeEdges]="{ left: true }"
   ></div>
-  <div class="items-center border-b pb-4" [formGroup]="filters">
+  <div
+    *ngIf="!fieldOnly"
+    class="items-center border-b pb-4"
+    [formGroup]="filters"
+  >
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-2" *ngIf="showHeader">
       <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
@@ -108,29 +113,37 @@
     </div>
   </div>
   <ng-container *ngIf="!loading; else loadingTmpl">
-    <div class="text-sm my-4">ID : {{ record?.incrementalId }}</div>
-    <ng-container *ngIf="filterHistory.length; else emptyTmpl">
-      <!-- HISTORY CHANGES -->
-      <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
-        <ng-container *ngTemplateOutlet="tableTmpl"></ng-container>
-      </ng-container>
-      <!-- LOAD MORE -->
-      <div class="text-center mt-4" *ngIf="hasMoreHistory">
-        <ui-button
-          category="tertiary"
-          variant="primary"
-          [disabled]="loadingMore"
-          [loading]="loadingMore"
-          (click)="loadMoreHistory()"
-        >
-          {{ 'common.pagination.loadMore' | translate }}
-        </ui-button>
+    <shared-empty
+      *ngIf="loadError; else historyTmpl"
+      [title]="'components.history.loadError' | translate"
+    ></shared-empty>
+    <ng-template #historyTmpl>
+      <div class="text-sm my-4" *ngIf="!fieldOnly">
+        ID : {{ record?.incrementalId }}
       </div>
-    </ng-container>
-    <ng-template #emptyTmpl>
-      <shared-empty
-        [title]="'components.history.empty' | translate"
-      ></shared-empty>
+      <ng-container *ngIf="filterHistory.length; else emptyTmpl">
+        <!-- HISTORY CHANGES -->
+        <ng-container *ngIf="viewAsTable.value; else cardsTmpl">
+          <ng-container *ngTemplateOutlet="tableTmpl"></ng-container>
+        </ng-container>
+        <!-- LOAD MORE -->
+        <div class="text-center mt-4" *ngIf="hasMoreHistory">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            [disabled]="loadingMore"
+            [loading]="loadingMore"
+            (click)="loadMoreHistory()"
+          >
+            {{ 'common.pagination.loadMore' | translate }}
+          </ui-button>
+        </div>
+      </ng-container>
+      <ng-template #emptyTmpl>
+        <shared-empty
+          [title]="'components.history.empty' | translate"
+        ></shared-empty>
+      </ng-template>
     </ng-template>
   </ng-container>
   <ng-template #loadingTmpl>
