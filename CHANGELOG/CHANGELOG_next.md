@@ -1,3 +1,9 @@
+# [2.24.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.13...v2.24.0-rc.14) (2026-09-17)
+
+### Bug Fixes
+
+- In Safari, tagbox & dropdowns would not show option text ([#2932](https://github.com/ReliefApplications/ems-frontend/issues/2932)) ([bc84c8a](https://github.com/ReliefApplications/ems-frontend/commit/bc84c8af65c6e805bc9f3945209d207a6b295ef4)), closes [AB#137621](https://github.com/AB/issues/137621)
+
 # [2.24.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.12...v2.24.0-rc.13) (2026-09-16)
 
 ### Features
