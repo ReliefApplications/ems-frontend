@@ -208,6 +208,23 @@ describe('HtmlParserService', () => {
           expect(result).toBe(testCase.result);
         });
       });
+
+      it('uses the local timezone by default (UTC in tests)', () => {
+        const result = dateFunc.call(
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm'
+        );
+        expect(result).toBe('27/11/2024 04:00');
+      });
+
+      it('supports an explicit timezone', () => {
+        const result = dateFunc.call(
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm',
+          '-0500'
+        );
+        expect(result).toBe('26/11/2024 23:00');
+      });
     });
     describe('handles date calculation errors gracefully', () => {
       const fixedDate = new Date(

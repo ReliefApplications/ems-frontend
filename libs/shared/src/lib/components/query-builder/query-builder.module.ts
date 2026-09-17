@@ -21,6 +21,7 @@ import { FilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorControlComponent } from '../controls/editor-control/editor-control.component';
 import { LocalizedInputComponent } from '../controls/public-api';
+import { FormFilterComponent } from './tab-fields/form-filter/form-filter.component';
 import {
   MenuModule,
   TooltipModule,
@@ -77,6 +78,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     AlertModule,
     EditorControlComponent,
     LocalizedInputComponent,
+    FormFilterComponent,
     RadioModule,
     ButtonModule,
     TableModule,

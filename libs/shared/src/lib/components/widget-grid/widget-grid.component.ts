@@ -30,6 +30,9 @@ import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
 import { WidgetType } from '../../models/dashboard.model';
 
+/** Gridster item annotated with its stable dashboard structure position. */
+type DashboardWidget = GridsterItem & { _dashboardWidgetIndex?: number };
+
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
 
@@ -54,6 +57,10 @@ export class WidgetGridComponent
   @Input() loading = false;
   /** Widgets */
   @Input() widgets: any[] = [];
+  /** Dashboard owning the displayed widgets. */
+  @Input() dashboardId?: string;
+  /** Key of the widget containing this grid, when widgets are nested (tabs widget). */
+  @Input() widgetKeyPrefix?: string;
   /** Update permission */
   @Input() canUpdate = false;
   /** Additional grid configuration */
@@ -383,6 +390,22 @@ export class WidgetGridComponent
   }
 
   /**
+   * Gets the stable key of a widget, from its position in the dashboard
+   * structure, prefixed by the key of the containing widget when nested.
+   * Visible widgets can be cloned while filtering empty widgets, so reference
+   * equality alone is not sufficient.
+   *
+   * @param widget Widget displayed in the grid.
+   * @returns Key of the widget within its dashboard.
+   */
+  public getWidgetKey(widget: DashboardWidget): string {
+    const index = widget._dashboardWidgetIndex ?? this.widgets.indexOf(widget);
+    return this.widgetKeyPrefix
+      ? `${this.widgetKeyPrefix}:${index}`
+      : index.toString();
+  }
+
+  /**
    * Open settings component for widget edition.
    * Emits addition event if edition should be saved.
    *
@@ -510,7 +533,10 @@ export class WidgetGridComponent
           this.sortWidgets();
         }
       });
-    this._widgets = cloneDeep(this.widgets);
+    this._widgets = cloneDeep(this.widgets).map((widget, index) => ({
+      ...widget,
+      _dashboardWidgetIndex: index,
+    }));
     this.setVisibleWidgets();
   }
 

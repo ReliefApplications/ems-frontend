@@ -6,13 +6,20 @@ import {
   Output,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { Form } from '../../models/form.model';
 import { createFilterGroup, createSortRowForm } from './query-builder-forms';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { RestService } from '../../services/rest/rest.service';
+import { LayoutFormFields } from './tab-fields/form-filter/form-filter.component';
+
+/** GraphQL metadata source response. */
+interface QuerySourceResponse {
+  _source?: string;
+}
 
 /**
  * Main query builder component.
@@ -49,6 +56,8 @@ export class QueryBuilderComponent
   @Input() showColumnWidth = false;
   /** Show limit option */
   @Input() showLimit = false;
+  /** Enables form-based field filtering for layout configuration. */
+  @Input() enableFormFieldFilter = false;
   /** Close field event emitter */
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
   /** Is field boolean control */
@@ -63,6 +72,10 @@ export class QueryBuilderComponent
   public filteredQueries: any[] = [];
   /** Selected text fields */
   public selectedTextFields: any[] = [];
+  /** Forms available for filtering fields in layouts. */
+  public layoutForms: LayoutFormFields[] = [];
+  /** Whether the layout forms are being loaded. */
+  public layoutFormsLoading = false;
 
   /**
    * Getter for the available scalar fields
@@ -81,10 +94,12 @@ export class QueryBuilderComponent
    *
    * @param fb This is the Angular FormBuilder service.
    * @param queryBuilder This is the service that will be used to build the query.
+   * @param restService Service used to load resource forms.
    */
   constructor(
     private fb: FormBuilder,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private restService: RestService
   ) {
     super();
   }
@@ -145,6 +160,9 @@ export class QueryBuilderComponent
           this.availableFields = this.queryBuilder.getFields(
             this.form?.value.name
           );
+          if (this.enableFormFieldFilter) {
+            void this.loadLayoutForms(this.form?.value.name);
+          }
           this.form?.setControl(
             'filter',
             createFilterGroup(this.form?.value.filter)
@@ -167,9 +185,14 @@ export class QueryBuilderComponent
           if (value !== this.form?.value.name) {
             if (this.allQueries.find((x) => x === value)) {
               this.availableFields = this.queryBuilder.getFields(value);
+              if (this.enableFormFieldFilter) {
+                void this.loadLayoutForms(value);
+              }
               setFormBuilderControls(true);
             } else {
               this.availableFields = [];
+              this.layoutForms = [];
+              this.layoutFormsLoading = false;
               setFormBuilderControls();
             }
             this.filteredQueries = this.filterQueries(value);
@@ -193,6 +216,43 @@ export class QueryBuilderComponent
   setForm(newForm: FormGroup): void {
     this.form = newForm;
     this.buildSettings();
+  }
+
+  /**
+   * Loads the forms associated with the resource behind the selected dataset.
+   * The endpoint returns pre-ordered fields, avoiding client-side form parsing.
+   *
+   * @param queryName Current dataset query name.
+   */
+  private async loadLayoutForms(queryName: string): Promise<void> {
+    this.layoutForms = [];
+    const sourceQuery = this.queryBuilder.sourceQuery(queryName);
+    if (!sourceQuery) return;
+
+    this.layoutFormsLoading = true;
+    try {
+      const sourceResult = (await firstValueFrom(sourceQuery)) as {
+        data: Record<string, QuerySourceResponse>;
+      };
+      const source = Object.values(sourceResult.data).find(
+        (value) => value._source
+      )?._source;
+      if (!source || this.form?.value.name !== queryName) return;
+
+      const forms = await firstValueFrom(
+        this.restService.get(`/resources/${source}/forms`)
+      );
+      if (this.form?.value.name === queryName && Array.isArray(forms)) {
+        this.layoutForms = forms as LayoutFormFields[];
+      }
+    } catch {
+      // Forms stay empty when they cannot be loaded
+    } finally {
+      // Only the request matching the current dataset controls the loading state
+      if (this.form?.value.name === queryName) {
+        this.layoutFormsLoading = false;
+      }
+    }
   }
 
   /**

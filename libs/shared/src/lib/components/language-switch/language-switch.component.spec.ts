@@ -72,4 +72,38 @@ describe('LanguageSwitchComponent', () => {
     ]);
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should restrict the list to allowedLanguages plus the default language', () => {
+    component.allowedLanguages = ['fr'];
+    component.ngOnChanges({
+      allowedLanguages: {
+        previousValue: null,
+        currentValue: ['fr'],
+        firstChange: false,
+        isFirstChange: () => false,
+      },
+    });
+    expect(component.languages).toEqual(['en', 'fr']);
+    expect(component.languageOptions.map((option) => option.code)).toEqual([
+      'fr',
+    ]);
+  });
+
+  it('should show every language when allowedLanguages is not set', () => {
+    expect(component.allowedLanguages).toBeNull();
+    expect(component.languages).toEqual(['en', 'fr', 'test']);
+  });
+
+  it('should hide the switcher when only the default language is allowed', () => {
+    component.allowedLanguages = [];
+    component.ngOnChanges({
+      allowedLanguages: {
+        previousValue: null,
+        currentValue: [],
+        firstChange: false,
+        isFirstChange: () => false,
+      },
+    });
+    expect(component.languages).toEqual(['en']);
+  });
 });

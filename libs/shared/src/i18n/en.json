@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
@@ -1380,13 +1381,16 @@
       "fields": {
         "available": "Available fields",
         "column": "Column width (px)",
+        "filterByForm": "Filter by form",
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
-        "title": "Fields"
+        "title": "Fields",
+        "transferAllFrom": "Remove all fields",
+        "transferAllTo": "Add all fields"
       },
       "filter": {
         "and": "And",
@@ -3139,6 +3143,14 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "The following language(s) will no longer be available in this application: {{languages}}. Users currently using them will be switched back to the default language. Do you want to continue?",
+            "title": "Remove additional language(s)"
+          },
+          "info": "Selected languages are shown in the language selector of the front-office. In the back-office, all languages always remain available in the dropdown.",
+          "text": "Additional languages"
+        },
         "emailCreated": "New email notification created",
         "emailDeleted": "Email notification deleted successfully",
         "emailEdited": "Email notification edited successfully",
@@ -3182,6 +3194,7 @@
         "builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
         "custom": "Custom functions",
         "docs": "Open SurveyJS docs",
+        "functionDocs": "Open documentation",
         "noResults": "No functions match your search.",
         "open": "Function reference",
         "searchPlaceholder": "Filter by name or description...",

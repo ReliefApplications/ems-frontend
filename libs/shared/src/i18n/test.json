@@ -220,6 +220,7 @@
     "filter": {
       "apply": "******",
       "clear": "******",
+      "clearAll": "******",
       "empty": "******",
       "few": "******",
       "hide": "******",
@@ -1380,13 +1381,16 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",
@@ -3139,6 +3143,14 @@
       },
       "settings": {
         "actions": "******",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "****** {{languages}} ******",
+            "title": "******"
+          },
+          "info": "******",
+          "text": "******"
+        },
         "emailCreated": "******",
         "emailDeleted": "******",
         "emailEdited": "******",
@@ -3182,6 +3194,7 @@
         "builtinHint": "******",
         "custom": "******",
         "docs": "******",
+        "functionDocs": "******",
         "noResults": "******",
         "open": "******",
         "searchPlaceholder": "******",

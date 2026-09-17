@@ -25,7 +25,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService, TooltipDirective } from '@oort-front/ui';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import {
+  ColumnBase,
   ColumnComponent,
+  ColumnResizeArgs,
   GridDataResult,
   GridComponent as KendoGridComponent,
   PageChangeEvent,
@@ -57,7 +59,18 @@ import {
 import { ActionButton } from '../../../widgets/grid/action-button.type';
 import { resolveLocalizedString } from '../../../../models/localized-string.model';
 import { File, FileService } from '../../../../services/file/file.service';
+import {
+  GridColumnConfigurationMap,
+  GridConfigurableField,
+} from '../../../../services/grid-layout/grid-column-configuration.service';
 import { DownloadService } from '../../../../services/download/download.service';
+
+/** Stored name of the row details column. */
+const DETAILS_COLUMN_NAME = '_details';
+/** Stored name of the navigate to page column. */
+const NAVIGATE_COLUMN_NAME = '_navigate';
+/** Stored name prefix of the custom row action columns. */
+const CUSTOM_ACTION_COLUMN_PREFIX = '_customActions:';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -133,6 +146,10 @@ export class GridComponent
   @Input() hasDetails = true;
   /** Resizable status */
   @Input() resizable = true;
+  /** Whether columns should be sized automatically from their content. */
+  @Input() autoSizeColumns = true;
+  /** User column configuration, keyed by column name. Applied to columns that are not layout fields. */
+  @Input() columnConfiguration: GridColumnConfigurationMap = {};
   /** Resizable status */
   @Input() reorderable = true;
   /** Add permission */
@@ -153,6 +170,17 @@ export class GridComponent
   @Input() showFilter = false;
   /** Filter descriptor */
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+
+  /** @returns whether at least one user-applied filter is active. */
+  get hasActiveFilters(): boolean {
+    const hasFilters = (filter: CompositeFilterDescriptor): boolean =>
+      filter.filters.some((descriptor) =>
+        'filters' in descriptor ? hasFilters(descriptor) : true
+      );
+
+    return this.filterable && hasFilters(this.filter);
+  }
+
   /** Searchable status */
   @Input() searchable = true;
   /**
@@ -205,6 +233,17 @@ export class GridComponent
   @ViewChild(KendoGridComponent, { read: ElementRef }) gridRef!: ElementRef;
   /** Reference to kendo columns */
   @ViewChildren(ColumnComponent) columns!: QueryList<ColumnComponent>;
+  /** Row details column */
+  @ViewChild('detailsColumn') detailsColumn?: ColumnComponent;
+  /** Navigate to page column */
+  @ViewChild('navigateColumn') navigateColumn?: ColumnComponent;
+  /** Custom row action columns, in the order of the custom row action groups */
+  @ViewChildren('customActionColumn')
+  customActionColumns?: QueryList<ColumnComponent>;
+  /** Stored name of the row details column, for the template. */
+  public readonly detailsColumnName = DETAILS_COLUMN_NAME;
+  /** Stored name of the navigate to page column, for the template. */
+  public readonly navigateColumnName = NAVIGATE_COLUMN_NAME;
   /** Reference to tooltips */
   @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
   /** Array of multi-select types. */
@@ -253,6 +292,12 @@ export class GridComponent
   private columnChooserRef: PopupRef | null = null;
   /** Prevent next column reset */
   private preventColumnResize = false;
+  /** Timer deferring column order restoration until kendo registered the columns */
+  private columnOrderTimeoutListener?: ReturnType<typeof setTimeout>;
+  /** Kendo emits reorder events while saved positions are restored; those must not be saved again */
+  private restoringColumnOrder = false;
+  /** Incremented each time the fields input is replaced, so columns are recreated per layout */
+  private fieldsGeneration = 0;
   /** Custom row action button groups */
   public customRowActionGroups: {
     label: string;
@@ -330,6 +375,69 @@ export class GridComponent
   }
 
   /**
+   * Columns users can customize, including columns that are not layout fields
+   * (row details, navigation, custom row actions), in their rendered order.
+   *
+   * @returns Configurable columns of the grid.
+   */
+  get configurableColumns(): GridConfigurableField[] {
+    const configurableColumns: GridConfigurableField[] = [];
+    const names = new Set<string>();
+    const add = (column: ColumnBase, name: string | null) => {
+      if (!name || names.has(name)) return;
+      names.add(name);
+      configurableColumns.push({
+        name,
+        hidden: column.hidden,
+        width: column.width,
+        // Displayed position rather than kendo's orderIndex: kendo only assigns
+        // indices after a drag, so on a freshly rendered grid they are all 0 and
+        // saving them would discard the restored order.
+        order: configurableColumns.length,
+      });
+    };
+    this.sortedColumns().forEach((column: any) => {
+      if (column.hasChildren) {
+        column.childrenArray.forEach((child: any) => add(child, child.field));
+      } else {
+        add(column, this.getColumnName(column));
+      }
+    });
+    return configurableColumns;
+  }
+
+  /**
+   * Gets the stored name of a custom row action column.
+   *
+   * @param index Index of the custom row action group.
+   * @returns Stored column name.
+   */
+  public customActionColumnName(index: number): string {
+    return `${CUSTOM_ACTION_COLUMN_PREFIX}${index}`;
+  }
+
+  /**
+   * Gets the user-defined visibility of a column that is not a layout field.
+   *
+   * @param name Stored column name.
+   * @returns Whether the column is hidden.
+   */
+  public isColumnHidden(name: string): boolean {
+    return this.columnConfiguration[name]?.hidden ?? false;
+  }
+
+  /**
+   * Gets the user-defined width of a column that is not a layout field.
+   *
+   * @param name Stored column name.
+   * @param defaultWidth Width used when the user never resized the column.
+   * @returns Column width.
+   */
+  public getColumnWidth(name: string, defaultWidth: number): number {
+    return this.columnConfiguration[name]?.width ?? defaultWidth;
+  }
+
+  /**
    * Core grid element
    *
    * @param widgetComponent parent widget component ( optional )
@@ -404,6 +512,9 @@ export class GridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (changes['fields']) {
+      this.fieldsGeneration++;
+    }
     if (
       !isEqual(
         changes['actions']?.previousValue,
@@ -463,6 +574,7 @@ export class GridComponent
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.restoringColumnOrder) return;
       if (this.columnChangeTimeoutListener) {
         clearTimeout(this.columnChangeTimeoutListener);
       }
@@ -479,12 +591,20 @@ export class GridComponent
         // outside any template event.
         this.cdr.markForCheck();
       });
+    // Columns are (re)created when fields or custom actions change
+    this.columns.changes
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.scheduleColumnOrderRestoration());
+    this.scheduleColumnOrderRestoration();
   }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     if (this.columnChangeTimeoutListener) {
       clearTimeout(this.columnChangeTimeoutListener);
+    }
+    if (this.columnOrderTimeoutListener) {
+      clearTimeout(this.columnOrderTimeoutListener);
     }
     if (this.displayFullScreenButtonTimeoutListener) {
       clearTimeout(this.displayFullScreenButtonTimeoutListener);
@@ -591,16 +711,18 @@ export class GridComponent
   }
 
   /**
-   * Track-by for the fields *ngFor so Kendo does not tear down and recreate
-   * every column (and its templates) on each change-detection pass.
+   * Track-by for the field columns. Columns are reused while the same fields
+   * array is displayed, and recreated when a new one is set (layout change):
+   * kendo columns keep state written directly on them (visibility from the
+   * column chooser, resized width, drag order), which must not leak from one
+   * layout into another sharing a field name.
    *
    * @param _index Index in the loop.
    * @param field The grid field.
-   * @returns A stable identity for the field.
+   * @returns A stable identity for the field within the current fields array.
    */
-  public trackByFieldName(_index: number, field: any): string {
-    return field?.name ?? _index;
-  }
+  public trackByFieldName = (_index: number, field: any): string =>
+    `${this.fieldsGeneration}:${field?.name ?? _index}`;
 
   /**
    * Track-by for the custom row action group columns.
@@ -710,6 +832,11 @@ export class GridComponent
       this.filter = filter;
       this.filterChange.emit(filter);
     }
+  }
+
+  /** Clears all filters applied through the grid UI. */
+  public clearFilters(): void {
+    this.onFilterChange({ logic: 'and', filters: [] });
   }
 
   /**
@@ -847,14 +974,102 @@ export class GridComponent
   }
 
   /**
+   * Gets the stored name of a column.
+   *
+   * @param column Kendo column.
+   * @returns Column name, or null when users cannot configure the column.
+   */
+  private getColumnName(column: ColumnBase): string | null {
+    const field = (column as ColumnComponent).field;
+    if (field) return field;
+    if (column === this.detailsColumn) return DETAILS_COLUMN_NAME;
+    if (column === this.navigateColumn) return NAVIGATE_COLUMN_NAME;
+    const customActionIndex =
+      this.customActionColumns?.toArray().indexOf(column as ColumnComponent) ??
+      -1;
+    return customActionIndex >= 0
+      ? this.customActionColumnName(customActionIndex)
+      : null;
+  }
+
+  /**
+   * Gets the root columns of the kendo grid, in their displayed order.
+   *
+   * @returns Sorted root columns.
+   */
+  private sortedColumns(): ColumnBase[] {
+    return (this.grid?.columns.toArray() || [])
+      .filter((column) => !column.parent)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
+  }
+
+  /**
+   * Restores the saved position of columns once kendo registered the columns.
+   */
+  private scheduleColumnOrderRestoration(): void {
+    if (this.columnOrderTimeoutListener) {
+      clearTimeout(this.columnOrderTimeoutListener);
+    }
+    this.columnOrderTimeoutListener = setTimeout(() => {
+      this.restoreColumnOrder();
+      // OnPush: kendo reorders columns outside any template event.
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Moves columns that are not layout fields back to their saved position.
+   * Field columns are already rendered in their saved order, but details and
+   * action columns are always rendered last.
+   */
+  private restoreColumnOrder(): void {
+    const grid = this.grid;
+    if (!grid) return;
+    const savedOrder = (column: ColumnBase): number | undefined => {
+      const name = this.getColumnName(column);
+      return name ? this.columnConfiguration[name]?.order : undefined;
+    };
+    const movedColumns = this.sortedColumns()
+      .filter(
+        (column) =>
+          !(column as ColumnComponent).field && savedOrder(column) !== undefined
+      )
+      .sort((a, b) => (savedOrder(a) as number) - (savedOrder(b) as number));
+    this.restoringColumnOrder = true;
+    try {
+      movedColumns.forEach((column) => {
+        const order = savedOrder(column) as number;
+        const columns = this.sortedColumns();
+        // Place the column before the first column saved after it
+        const targetIndex = columns.findIndex(
+          (other) => other !== column && (savedOrder(other) ?? -1) > order
+        );
+        if (targetIndex < 0 || columns[targetIndex - 1] === column) return;
+        // Synchronous: kendo updates the column indices before returning
+        grid.reorderColumn(column, targetIndex, { before: true });
+      });
+    } finally {
+      this.restoringColumnOrder = false;
+    }
+  }
+
+  /**
    * Sets and emits new grid configuration after column resize event.
    *
-   * @param event Resize event containing the resize origin column
+   * @param event Resize event containing the resized columns
    */
-  onColumnResize(event: any): void {
-    const columnField = event[0].column.field;
+  onColumnResize(event: ColumnResizeArgs[]): void {
+    event.forEach(({ column, newWidth }) => {
+      if (newWidth !== undefined) {
+        column.width = newWidth;
+      }
+    });
+    const columnField = (event[0]?.column as ColumnComponent | undefined)
+      ?.field;
     // Update the button display for all the cells of this column on resize
-    this.updateColumnShowFullScreenButton(columnField);
+    if (columnField) {
+      this.updateColumnShowFullScreenButton(columnField);
+    }
     this.columnChange.emit();
   }
 
@@ -1296,6 +1511,7 @@ export class GridComponent
    * Automatically set the width of each column
    */
   private setColumnsWidth() {
+    if (!this.autoSizeColumns) return;
     const gridElement = this.gridRef.nativeElement;
     // Stores the columns width percentage
     const activeColumns: { [key: string]: number } = {};

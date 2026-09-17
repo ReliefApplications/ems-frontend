@@ -1,3 +1,45 @@
+# [2.24.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.12...v2.24.0-rc.13) (2026-09-16)
+
+### Features
+
+- Add flexible date formatter in forms ([#2900](https://github.com/ReliefApplications/ems-frontend/issues/2900)) ([84607d5](https://github.com/ReliefApplications/ems-frontend/commit/84607d51062b55cf4d2f17c82e72eeb770ad1396)), closes [AB#134845](https://github.com/AB/issues/134845)
+
+# [2.24.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.11...v2.24.0-rc.12) (2026-09-16)
+
+### Features
+
+- Button to remove all filters ([#2939](https://github.com/ReliefApplications/ems-frontend/issues/2939)) ([a1c2fbd](https://github.com/ReliefApplications/ems-frontend/commit/a1c2fbdfa723bce45825cfdd595ed5a555185043)), closes [AB#137748](https://github.com/AB/issues/137748)
+
+# [2.24.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.10...v2.24.0-rc.11) (2026-09-15)
+
+### Features
+
+- Automatically save grid configuration in browser ([#2938](https://github.com/ReliefApplications/ems-frontend/issues/2938)) ([459f38d](https://github.com/ReliefApplications/ems-frontend/commit/459f38d78a2ddf43cdeec01c6dd2c25ceb59ebe6)), closes [AB#137744](https://github.com/AB/issues/137744)
+
+# [2.24.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.9...v2.24.0-rc.10) (2026-09-14)
+
+### Features
+
+- Enable Read only fields to not be editable when creating a new record ([#2936](https://github.com/ReliefApplications/ems-frontend/issues/2936)) ([a2fcf3a](https://github.com/ReliefApplications/ems-frontend/commit/a2fcf3a8cb5ddb6d2f8f5eeb2ac82b5d34c8350a)), closes [AB#137743](https://github.com/AB/issues/137743)
+
+# [2.24.0-rc.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.8...v2.24.0-rc.9) (2026-09-14)
+
+### Bug Fixes
+
+- show actual upload error message instead of a generic one ([#2937](https://github.com/ReliefApplications/ems-frontend/issues/2937)) ([af9fadc](https://github.com/ReliefApplications/ems-frontend/commit/af9fadcb9dc24c206c860cbdecb0aaddc42b5d61)), closes [AB#137745](https://github.com/AB/issues/137745)
+
+# [2.24.0-rc.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.7...v2.24.0-rc.8) (2026-09-11)
+
+### Features
+
+- In Layout, add possibility to quickly add all fields to a grid, in the order they appear in a form ([#2934](https://github.com/ReliefApplications/ems-frontend/issues/2934)) ([6a66149](https://github.com/ReliefApplications/ems-frontend/commit/6a66149cbd4e3304aeac329ef3aeb53f47c6d335)), closes [AB#137662](https://github.com/AB/issues/137662)
+
+# [2.24.0-rc.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.6...v2.24.0-rc.7) (2026-09-10)
+
+### Bug Fixes
+
+- Localize button text in edit action button modal ([#2935](https://github.com/ReliefApplications/ems-frontend/issues/2935)) ([8a7a637](https://github.com/ReliefApplications/ems-frontend/commit/8a7a637b4dbc4b5092027773a0e39c462c0b941e)), closes [AB#137623](https://github.com/AB/issues/137623)
+
 # [2.24.0-rc.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.5...v2.24.0-rc.6) (2026-09-07)
 
 ### Features
