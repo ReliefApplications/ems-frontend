@@ -33,6 +33,29 @@ const NON_DATA_QUESTION_TYPES = new Set([
   'image',
 ]);
 
+/**
+ * Properties shown in the form builder for a Field history question. The
+ * question only displays the history of another field and never stores a value,
+ * so data, validation, required, read-only & default value options are hidden.
+ */
+export const FIELD_HISTORY_ALLOWED_PROPERTIES = [
+  'name',
+  'title',
+  'description',
+  'field',
+  'visible',
+  'visibleIf',
+  'tooltip',
+  'page',
+  'state',
+  'startWithNewLine',
+  'descriptionLocation',
+  'indent',
+  'width',
+  'minWidth',
+  'maxWidth',
+];
+
 /** Field history custom question properties used during rendering. */
 interface FieldHistoryQuestion extends SurveyQuestion {
   field?: string;
@@ -161,8 +184,11 @@ export const resolveFieldHistoryField = (
 export const configureFieldHistoryQuestion = (
   question: FieldHistoryQuestion
 ): void => {
-  question.readOnly = true;
+  // A read-only question gets a disabled title in editable surveys, unlike
+  // panels in the same state
+  question.readOnly = false;
   question.isRequired = false;
+  question.hideNumber = true;
   question.titleLocation = 'top';
   if (question.state === 'default') {
     question.state = 'collapsed';
@@ -183,7 +209,7 @@ export const isFieldHistoryNeutral = (
 ): boolean => !!survey?.isDesignMode || !record;
 
 /**
- * Registers the read-only field history SurveyJS question.
+ * Registers the field history SurveyJS question.
  *
  * @param injector Parent Angular injector
  * @param componentCollection SurveyJS custom component collection

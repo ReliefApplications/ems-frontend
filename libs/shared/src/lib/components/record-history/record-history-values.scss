@@ -1,0 +1,43 @@
+// Styles of the rendered history values, shared by the table & cards displays
+::ng-deep .modify-field,
+::ng-deep .add-field,
+::ng-deep .remove-field {
+  border-radius: 10px;
+  padding: 5px;
+  margin-right: 0.5em;
+}
+
+::ng-deep .modify-field {
+  @apply bg-amber-200;
+}
+
+::ng-deep .add-field {
+  @apply bg-green-200;
+}
+
+::ng-deep .remove-field {
+  @apply bg-red-200;
+}
+
+.history-value,
+::ng-deep .history-value {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+::ng-deep .history-value-highlight {
+  border-radius: 0.2rem;
+  color: inherit;
+  padding: 0 0.1rem;
+}
+
+::ng-deep .history-value-highlight-added {
+  @apply bg-green-100;
+}
+
+::ng-deep .history-value-highlight-removed {
+  @apply bg-red-100;
+  text-decoration: line-through;
+  text-decoration-thickness: 0.08em;
+}

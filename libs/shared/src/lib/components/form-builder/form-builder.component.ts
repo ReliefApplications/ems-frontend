@@ -37,7 +37,10 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
-import { FIELD_HISTORY_QUESTION_TYPE } from '../../survey/components/field-history';
+import {
+  FIELD_HISTORY_ALLOWED_PROPERTIES,
+  FIELD_HISTORY_QUESTION_TYPE,
+} from '../../survey/components/field-history';
 
 /**
  * Array containing the different types of questions.
@@ -349,7 +352,7 @@ export class FormBuilderComponent
     this.surveyCreator.onShowingProperty.add((_, options) => {
       if (
         options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE &&
-        ['isRequired', 'readOnly', 'valueName'].includes(options.property.name)
+        !FIELD_HISTORY_ALLOWED_PROPERTIES.includes(options.property.name)
       ) {
         options.canShow = false;
       }

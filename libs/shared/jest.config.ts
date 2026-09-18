@@ -43,6 +43,8 @@ export default {
     '<rootDir>/src/lib/components/layout/layout.component.spec.ts',
     '<rootDir>/src/lib/components/language-switch/language-switch.component.spec.ts',
     '<rootDir>/src/lib/components/record-history/*.spec.ts',
+    '<rootDir>/src/lib/components/record-history/record-history-table/*.spec.ts',
+    '<rootDir>/src/lib/components/record-history/record-history-cards/*.spec.ts',
     '<rootDir>/src/lib/components/field-history-question/*.spec.ts',
     '<rootDir>/src/lib/components/form/form.component.spec.ts',
     '<rootDir>/src/lib/components/widgets/common/tab-actions/*.spec.ts',

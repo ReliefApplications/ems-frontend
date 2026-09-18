@@ -1,6 +1,7 @@
 import { Question as SurveyQuestion, SurveyModel } from 'survey-core';
 import {
   applyFieldHistoryPanelDom,
+  FIELD_HISTORY_ALLOWED_PROPERTIES,
   configureFieldHistoryQuestion,
   getFieldHistoryChoices,
   isFieldHistoryNeutral,
@@ -128,8 +129,39 @@ describe('field history question', () => {
 
     expect(fieldHistory.titleLocation).toBe('top');
     expect(fieldHistory.state).toBe('collapsed');
-    expect(fieldHistory.readOnly).toBe(true);
+    expect(fieldHistory.readOnly).toBe(false);
     expect(fieldHistory.isRequired).toBe(false);
+    expect(fieldHistory.hideNumber).toBe(true);
+  });
+
+  it('never renders as read-only, so its title is not disabled', () => {
+    const fieldHistory = {
+      state: 'collapsed',
+      readOnly: true,
+    } as SurveyQuestion;
+
+    configureFieldHistoryQuestion(fieldHistory);
+
+    expect(fieldHistory.readOnly).toBe(false);
+  });
+
+  it('hides options related to a stored value in the form builder', () => {
+    [
+      'valueName',
+      'defaultValue',
+      'defaultValueExpression',
+      'correctAnswer',
+      'clearIfInvisible',
+      'isRequired',
+      'requiredIf',
+      'requiredErrorText',
+      'readOnly',
+      'enableIf',
+      'validators',
+    ].forEach((property) =>
+      expect(FIELD_HISTORY_ALLOWED_PROPERTIES).not.toContain(property)
+    );
+    expect(FIELD_HISTORY_ALLOWED_PROPERTIES).toContain('field');
   });
 
   it('preserves an explicitly expanded panel state', () => {
