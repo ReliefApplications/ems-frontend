@@ -473,7 +473,7 @@ export class CoreGridComponent
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (changes?.settings) {
+    if (changes?.settings || changes?.defaultLayout) {
       this.configureGrid();
     }
   }
@@ -487,6 +487,9 @@ export class CoreGridComponent
     this.status = { error: false };
     this.hasCustomColumnConfiguration = false;
     this.columnConfiguration = {};
+    // Layout filters are a starting point the user can edit or clear.
+    // Only filters stored in the query itself (settings.query.filter) are fixed.
+    this.filter = this.defaultLayout?.filter || { logic: 'and', filters: [] };
     const configurationVersion = ++this.configurationVersion;
     // set context filter
     this.contextFilters = this.settings.contextFilters
@@ -522,9 +525,6 @@ export class CoreGridComponent
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
       : true;
-    if (this.defaultLayout?.filter) {
-      this.filter = this.defaultLayout.filter;
-    }
     if (this.defaultLayout?.sort) {
       this.sort = this.defaultLayout.sort;
     }

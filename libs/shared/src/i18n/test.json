@@ -220,6 +220,7 @@
     "filter": {
       "apply": "******",
       "clear": "******",
+      "clearAll": "******",
       "empty": "******",
       "few": "******",
       "hide": "******",
@@ -3193,6 +3194,7 @@
         "builtinHint": "******",
         "custom": "******",
         "docs": "******",
+        "functionDocs": "******",
         "noResults": "******",
         "open": "******",
         "searchPlaceholder": "******",
