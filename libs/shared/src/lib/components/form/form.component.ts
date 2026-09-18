@@ -22,7 +22,7 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import {
   captureFieldChangeInitialData,
   fireFieldChangeTriggersForRecordUpdate,
@@ -38,6 +38,7 @@ import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
 /**
  * This component is used to display forms
@@ -96,6 +97,8 @@ export class FormComponent
   public saveButtonLabel = '';
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
+  /** Invalidates field history widgets after this form saves a new version. */
+  private fieldHistoryRefresh$ = new Subject<string | undefined>();
   /** As we save the draft record in the db, the local storage is no longer used */
   /** ID for local storage */
   // private storageId = '';
@@ -140,7 +143,11 @@ export class FormComponent
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       this.form.metadata,
-      this.record
+      this.record || this.form.uniqueRecord
+    );
+    this.survey.setPropertyValue(
+      FIELD_HISTORY_REFRESH_PROPERTY,
+      this.fieldHistoryRefresh$
     );
 
     this.survey.showCompletedPage = false;
@@ -456,6 +463,15 @@ export class FormComponent
         this.snackBar.openSnackBar(
           this.translate.instant('components.form.display.submissionMessage')
         );
+        const savedRecord = data.addRecord || data.editRecord;
+        const currentRecord = this.survey.getPropertyValue('record') as
+          | RecordModel
+          | undefined;
+        this.survey.setPropertyValue('record', {
+          ...currentRecord,
+          ...savedRecord,
+        });
+        this.fieldHistoryRefresh$.next(savedRecord?.id);
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
@@ -570,6 +586,7 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    this.fieldHistoryRefresh$.complete();
     // Auto-translation timers are cleared by the dispose() patch installed in
     // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();

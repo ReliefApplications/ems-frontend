@@ -1260,11 +1260,15 @@
         "all": "All fields",
         "select": "Select fields"
       },
+      "fieldRequired": "Select a field for the Field history question",
+      "loadError": "History could not be loaded",
+      "noHistoryYet": "No history yet",
       "preview": "Preview and revert",
       "range": {
         "clear": "Clear range"
       },
       "renderError": "Unable to display this change",
+      "unknownField": "Unknown field",
       "useTableMode": "Use table mode"
     },
     "icon": {

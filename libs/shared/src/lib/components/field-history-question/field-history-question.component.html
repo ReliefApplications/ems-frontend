@@ -1,0 +1,46 @@
+<ng-container *ngIf="historyLoaded && recordId && field; else unavailableTmpl">
+  <ui-spinner *ngIf="loading; else loadedTmpl" class="flex justify-center p-4">
+  </ui-spinner>
+  <ng-template #loadedTmpl>
+    <shared-empty
+      *ngIf="loadError; else historyTmpl"
+      [title]="'components.history.loadError' | translate"
+    ></shared-empty>
+  </ng-template>
+  <ng-template #historyTmpl>
+    <ng-container *ngIf="history.length; else emptyTmpl">
+      <shared-record-history-table
+        [history]="history"
+        [displayedColumns]="displayedColumns"
+      ></shared-record-history-table>
+      <!-- LOAD MORE -->
+      <div class="text-center mt-4" *ngIf="hasMoreHistory">
+        <ui-button
+          category="tertiary"
+          variant="primary"
+          [disabled]="loadingMore"
+          [loading]="loadingMore"
+          (click)="loadMoreHistory()"
+        >
+          {{ 'common.pagination.loadMore' | translate }}
+        </ui-button>
+      </div>
+    </ng-container>
+    <ng-template #emptyTmpl>
+      <shared-empty
+        [title]="'components.history.empty' | translate"
+      ></shared-empty>
+    </ng-template>
+  </ng-template>
+</ng-container>
+
+<ng-template #unavailableTmpl>
+  <shared-empty
+    [title]="
+      (field
+        ? 'components.history.noHistoryYet'
+        : 'components.history.unknownField'
+      ) | translate
+    "
+  ></shared-empty>
+</ng-template>

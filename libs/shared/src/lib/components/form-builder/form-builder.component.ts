@@ -37,6 +37,10 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import {
+  FIELD_HISTORY_ALLOWED_PROPERTIES,
+  FIELD_HISTORY_QUESTION_TYPE,
+} from '../../survey/components/field-history';
 
 /**
  * Array containing the different types of questions.
@@ -65,6 +69,9 @@ const QUESTION_TYPES = [
   'panel',
   'paneldynamic',
 ];
+
+/** Form builder representation of a Field history question. */
+type FieldHistoryQuestion = Question & { field?: string };
 
 /**
  * Allowed properties for a core question in a child form.
@@ -337,6 +344,19 @@ export class FormBuilderComponent
         options.allowEdit = true;
       }
     );
+    this.surveyCreator.onElementAllowOperations.add((_, options) => {
+      if (options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE) {
+        options.allowChangeRequired = false;
+      }
+    });
+    this.surveyCreator.onShowingProperty.add((_, options) => {
+      if (
+        options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE &&
+        !FIELD_HISTORY_ALLOWED_PROPERTIES.includes(options.property.name)
+      ) {
+        options.canShow = false;
+      }
+    });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -571,9 +591,12 @@ export class FormBuilderComponent
       );
       if (verifiedQuestions) {
         // If questions verified, search for duplicated value names
+        const dataQuestions = page.questions.filter(
+          (question) => question.getType() !== FIELD_HISTORY_QUESTION_TYPE
+        );
         const duplicatedFields = difference(
-          page.questions,
-          uniqBy(page.questions, 'valueName')
+          dataQuestions,
+          uniqBy(dataQuestions, 'valueName')
         );
         if (duplicatedFields.length > 0) {
           this.snackBar.openSnackBar(
@@ -608,6 +631,16 @@ export class FormBuilderComponent
    * @returns if question name and additional required fields are valid
    */
   private setQuestionNames(question: Question, page: PageModel): boolean {
+    if (question.getType() === FIELD_HISTORY_QUESTION_TYPE) {
+      if ((question as FieldHistoryQuestion).field) {
+        return true;
+      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.history.fieldRequired'),
+        { error: true, duration: 15000 }
+      );
+      return false;
+    }
     // Create the valueName of the element in snake case.
     const valueNameChecked = this.formHelpersService.setValueName(
       question,

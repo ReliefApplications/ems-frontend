@@ -19,7 +19,8 @@ import { EmptyModule } from '../ui/empty/empty.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ResizableModule } from 'angular-resizable-element';
-import { ReadableHistoryValuePipe } from '../../pipes/readable-history-value/readable-history-value.pipe';
+import { RecordHistoryTableComponent } from './record-history-table/record-history-table.component';
+import { RecordHistoryCardsComponent } from './record-history-cards/record-history-cards.component';
 
 /**
  * RecordHistoryModule is a class used to manage all the modules and components
@@ -45,7 +46,8 @@ import { ReadableHistoryValuePipe } from '../../pipes/readable-history-value/rea
     TableModule,
     ToggleModule,
     ResizableModule,
-    ReadableHistoryValuePipe,
+    RecordHistoryTableComponent,
+    RecordHistoryCardsComponent,
   ],
   exports: [RecordHistoryComponent],
 })
