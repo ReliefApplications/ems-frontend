@@ -270,15 +270,16 @@ export class HtmlParserService {
       },
     },
     date: {
-      signature: 'date( value ; format )',
-      call: (value, format) => {
+      signature: 'date( value ; format ; timezone )',
+      call: (value, format, timezone) => {
         try {
           const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
           const spanContent = spanRegex.exec(value)?.[1]?.trim();
           const valueToFormat = !isNil(spanContent) ? spanContent : value;
           const formattedDate = this.datePipe.transform(
             new Date(valueToFormat),
-            format
+            format,
+            timezone || undefined
           ) as string;
           // Replace original value inside the span tag with the formatted value
           if (!isNil(spanContent)) {

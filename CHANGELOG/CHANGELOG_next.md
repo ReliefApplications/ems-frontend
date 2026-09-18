@@ -1,3 +1,27 @@
+# [2.24.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.14...v2.24.0-rc.15) (2026-09-18)
+
+### Bug Fixes
+
+- Cloned records now copy history from original record ([#2941](https://github.com/ReliefApplications/ems-frontend/issues/2941)) ([10a1899](https://github.com/ReliefApplications/ems-frontend/commit/10a18992988246e95bb17aa8e90553398b5f895e)), closes [AB#134832](https://github.com/AB/issues/134832)
+
+# [2.24.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.13...v2.24.0-rc.14) (2026-09-17)
+
+### Bug Fixes
+
+- In Safari, tagbox & dropdowns would not show option text ([#2932](https://github.com/ReliefApplications/ems-frontend/issues/2932)) ([bc84c8a](https://github.com/ReliefApplications/ems-frontend/commit/bc84c8af65c6e805bc9f3945209d207a6b295ef4)), closes [AB#137621](https://github.com/AB/issues/137621)
+
+# [2.24.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.12...v2.24.0-rc.13) (2026-09-16)
+
+### Features
+
+- Add flexible date formatter in forms ([#2900](https://github.com/ReliefApplications/ems-frontend/issues/2900)) ([84607d5](https://github.com/ReliefApplications/ems-frontend/commit/84607d51062b55cf4d2f17c82e72eeb770ad1396)), closes [AB#134845](https://github.com/AB/issues/134845)
+
+# [2.24.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.11...v2.24.0-rc.12) (2026-09-16)
+
+### Features
+
+- Button to remove all filters ([#2939](https://github.com/ReliefApplications/ems-frontend/issues/2939)) ([a1c2fbd](https://github.com/ReliefApplications/ems-frontend/commit/a1c2fbdfa723bce45825cfdd595ed5a555185043)), closes [AB#137748](https://github.com/AB/issues/137748)
+
 # [2.24.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.10...v2.24.0-rc.11) (2026-09-15)
 
 ### Features

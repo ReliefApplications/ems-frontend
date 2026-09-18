@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
@@ -3197,6 +3198,7 @@
         "builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
         "custom": "Custom functions",
         "docs": "Open SurveyJS docs",
+        "functionDocs": "Open documentation",
         "noResults": "No functions match your search.",
         "open": "Function reference",
         "searchPlaceholder": "Filter by name or description...",
