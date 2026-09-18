@@ -37,8 +37,13 @@ export const EDIT_RECORD = gql`
 // === ADD RECORD ===
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
-  mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
-    addRecord(form: $form, data: $data) {
+  mutation addRecord(
+    $form: ID!
+    $data: JSON!
+    $display: Boolean
+    $cloneRecordId: ID
+  ) {
+    addRecord(form: $form, data: $data, cloneRecordId: $cloneRecordId) {
       id
       createdAt
       modifiedAt

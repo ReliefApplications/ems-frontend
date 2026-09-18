@@ -61,6 +61,7 @@ interface DialogData {
   recordId?: string | [];
   prefillRecords?: Record[];
   prefillData?: any;
+  cloneRecordId?: string;
   askForConfirm?: boolean;
   recordData?: any;
   actionButtonCtx?: boolean;
@@ -511,6 +512,7 @@ export class FormModalComponent
           variables: {
             form: this.data.template,
             data: survey.data,
+            cloneRecordId: this.data.cloneRecordId,
           },
         })
         .subscribe({
