@@ -1,3 +1,9 @@
+# [2.24.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.15...v2.24.0-rc.16) (2026-09-18)
+
+### Features
+
+- View the history of changes to a specific field in forms ([#2942](https://github.com/ReliefApplications/ems-frontend/issues/2942)) ([f5433c9](https://github.com/ReliefApplications/ems-frontend/commit/f5433c9dd72ca04292e0d5c1dd127873de65a040)), closes [AB#137751](https://github.com/AB/issues/137751)
+
 # [2.24.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.14...v2.24.0-rc.15) (2026-09-18)
 
 ### Bug Fixes
