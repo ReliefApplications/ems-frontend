@@ -1,3 +1,9 @@
+# [2.24.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.14...v2.24.0-rc.15) (2026-09-18)
+
+### Bug Fixes
+
+- Cloned records now copy history from original record ([#2941](https://github.com/ReliefApplications/ems-frontend/issues/2941)) ([10a1899](https://github.com/ReliefApplications/ems-frontend/commit/10a18992988246e95bb17aa8e90553398b5f895e)), closes [AB#134832](https://github.com/AB/issues/134832)
+
 # [2.24.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.13...v2.24.0-rc.14) (2026-09-17)
 
 ### Bug Fixes
