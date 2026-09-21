@@ -222,7 +222,7 @@ export const init = (
 
   SvgRegistry.registerIconFromSvg(
     FIELD_HISTORY_QUESTION_TYPE,
-    '<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18"><path d="M13 3a9 9 0 1 0 8.49 6h-2.12A7 7 0 1 1 13 5a6.96 6.96 0 0 1 4.95 2.05L15 10h7V3l-2.63 2.63A8.96 8.96 0 0 0 13 3Zm-1 4v6l5 3 .75-1.23-4.25-2.52V7H12Z"/></svg>'
+    '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 8.49 6h-2.12A7 7 0 1 1 12 5a6.96 6.96 0 0 1 4.95 2.05L14 10h7V3l-2.63 2.63A8.96 8.96 0 0 0 12 3Zm-1 4v6l5 3 .75-1.23-4.25-2.52V7H11Z"/></svg>'
   );
 
   const component = {
