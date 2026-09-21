@@ -1,3 +1,9 @@
+# [2.24.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.16...v2.24.0-rc.17) (2026-09-21)
+
+### Features
+
+- Improve resource question, adding option to use calculated fields ([#2944](https://github.com/ReliefApplications/ems-frontend/issues/2944)) ([295e0d2](https://github.com/ReliefApplications/ems-frontend/commit/295e0d20c36f12aafdba7096bbb7e69f05bda9a5)), closes [AB#133920](https://github.com/AB/issues/133920)
+
 # [2.24.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.15...v2.24.0-rc.16) (2026-09-18)
 
 ### Features
