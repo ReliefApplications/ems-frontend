@@ -112,7 +112,7 @@ describe('dropdown widget with a choices loader', () => {
       loading: true,
       disabled: true,
       filterChange: new Subject<string>(),
-      open: new Subject<void>(),
+      opened: new Subject<void>(),
       registerOnChange: jest.fn(),
       wrapper: { nativeElement: { querySelector: () => null } },
     };

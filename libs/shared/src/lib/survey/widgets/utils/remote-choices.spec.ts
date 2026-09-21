@@ -15,12 +15,36 @@ const createFakeWidget = () => ({
   data: [] as any[],
   loading: true,
   disabled: true,
-  open: new Subject<void>(),
+  opened: new Subject<void>(),
+  virtual: { skip: 0 },
   optionsList: {
-    pageChange: new Subject<{ skip: number; take: number }>(),
-    content: { nativeElement: { scrollTop: 0 } },
+    content: { nativeElement: document.createElement('div') },
   },
 });
+
+/**
+ * Scrolls the list of a fake widget.
+ *
+ * @param widget Fake widget
+ * @param scroll Scroll metrics of the list
+ * @param scroll.scrollTop Scroll position
+ * @param scroll.clientHeight Visible height
+ * @param scroll.scrollHeight Total height
+ */
+const scrollList = (
+  widget: ReturnType<typeof createFakeWidget>,
+  scroll: { scrollTop: number; clientHeight: number; scrollHeight: number }
+) => {
+  const content = widget.optionsList.content.nativeElement;
+  Object.entries(scroll).forEach(([key, value]) =>
+    Object.defineProperty(content, key, {
+      value,
+      configurable: true,
+      writable: true,
+    })
+  );
+  content.dispatchEvent(new Event('scroll'));
+};
 
 /**
  * Builds a fake select question, exposing what the remote choices rely on.
@@ -176,10 +200,17 @@ describe('remote choices', () => {
     const question = createFakeQuestion(loader);
 
     setupRemoteChoices(widget as any, question, new Subject<void>());
-    widget.open.next();
-    jest.runOnlyPendingTimers();
+    widget.opened.next();
 
-    widget.optionsList.pageChange.next({ skip: 0, take: 10 });
+    // Far from the end of the list: nothing to load
+    scrollList(widget, { scrollTop: 0, clientHeight: 200, scrollHeight: 1500 });
+    expect(loader.load).toHaveBeenCalledTimes(1);
+
+    scrollList(widget, {
+      scrollTop: 1300,
+      clientHeight: 200,
+      scrollHeight: 1500,
+    });
 
     expect(loader.load).toHaveBeenLastCalledWith({
       search: '',
@@ -189,8 +220,43 @@ describe('remote choices', () => {
     expect(widget.data).toEqual([...firstPage, ...secondPage]);
 
     // Everything is loaded: no more query
-    widget.optionsList.pageChange.next({ skip: 0, take: 10 });
+    scrollList(widget, {
+      scrollTop: 2800,
+      clientHeight: 200,
+      scrollHeight: 3000,
+    });
     expect(loader.load).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps the rendered choices of the list when a page is appended', () => {
+    const loader = createFakeLoader(
+      [[{ value: '1', text: 'One' }], [{ value: '2', text: 'Two' }]],
+      3
+    );
+    const widget = createFakeWidget();
+    const question = createFakeQuestion(loader);
+
+    setupRemoteChoices(widget as any, question, new Subject<void>());
+    widget.opened.next();
+    widget.virtual.skip = 44;
+    // The widget restarts from the first choice when its data changes
+    let data: any[] = [];
+    Object.defineProperty(widget, 'data', {
+      get: () => data,
+      set: (value: any[]) => {
+        data = value;
+        widget.virtual.skip = 0;
+      },
+    });
+
+    scrollList(widget, {
+      scrollTop: 2800,
+      clientHeight: 200,
+      scrollHeight: 3000,
+    });
+
+    expect(widget.data).toHaveLength(2);
+    expect(widget.virtual.skip).toBe(44);
   });
 
   it('reloads the choices when the loader of the question changes', () => {

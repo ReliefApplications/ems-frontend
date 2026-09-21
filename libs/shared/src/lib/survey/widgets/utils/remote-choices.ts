@@ -1,5 +1,5 @@
 import { isNil } from 'lodash';
-import { Observable, Subscription, takeUntil } from 'rxjs';
+import { Observable, Subscription, fromEvent, takeUntil } from 'rxjs';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
 import {
   CHOICES_LOADER_VERSION_PROPERTY,
@@ -10,6 +10,8 @@ import {
 
 /** Number of choices loaded per page */
 export const REMOTE_CHOICES_PAGE_SIZE = 50;
+/** Distance to the end of the list, in pixels, from which the next page is loaded */
+const NEXT_PAGE_SCROLL_THRESHOLD = 90;
 /** Key of the loader change callback registered on the question */
 const LOADER_CHANGE_CALLBACK_KEY = 'remoteChoices';
 
@@ -19,10 +21,12 @@ export interface RemoteChoicesWidget {
   data: any;
   loading: boolean;
   disabled: boolean;
-  /** Emits when the popup opens */
-  open: Observable<any>;
+  /** Emits once the popup is opened, whatever opened it */
+  opened: Observable<any>;
   /** List rendered in the popup, when open */
   optionsList?: any;
+  /** Virtualization settings, with the index of the first rendered choice */
+  virtual?: { skip?: number } | null;
 }
 
 /** Handle on the remote choices of a select widget */
@@ -110,7 +114,6 @@ export const setupRemoteChoices = (
   let totalCount = 0;
   let loading = false;
   let requestId = 0;
-  let dataLength = 0;
   const pendingValues = new Set<string>();
   let listSubscription: Subscription | null = null;
 
@@ -123,7 +126,6 @@ export const setupRemoteChoices = (
       ...pinnedItems.filter((x) => !pageKeys.has(keyOf(x.value))),
       ...pageItems,
     ];
-    dataLength = data.length;
     widget.data = data;
     widget.loading = loading;
     widget.disabled = question.isReadOnly;
@@ -195,13 +197,18 @@ export const setupRemoteChoices = (
 
   /**
    * Publishes the data after a page was appended, keeping the scroll
-   * position of the list, as the widget restarts from the top otherwise.
+   * position of the list and its rendered choices, as the widget restarts
+   * from the top otherwise.
    */
   const appendPage = () => {
     const content: HTMLElement | undefined =
       widget.optionsList?.content?.nativeElement;
     const scrollTop = content?.scrollTop;
+    const skip = widget.virtual?.skip;
     publish();
+    if (widget.virtual && skip) {
+      widget.virtual.skip = skip;
+    }
     if (content && scrollTop) {
       setTimeout(() => {
         content.scrollTop = scrollTop;
@@ -262,22 +269,25 @@ export const setupRemoteChoices = (
 
   /**
    * Loads the next page when the end of the list is reached.
+   * The scroll of the list is used instead of its page change event, as the
+   * widget only pages through the data it already has: it never asks for more
+   * than what is loaded.
    */
   const listenToList = () => {
     listSubscription?.unsubscribe();
     listSubscription = null;
-    const list = widget.optionsList;
-    if (!list?.pageChange?.pipe) {
+    const content: HTMLElement | undefined =
+      widget.optionsList?.content?.nativeElement;
+    if (!content) {
       return;
     }
-    listSubscription = list.pageChange
+    listSubscription = fromEvent(content, 'scroll')
       .pipe(takeUntil(destroy$))
-      .subscribe(({ skip, take }: { skip: number; take: number }) => {
-        if (
-          !loading &&
-          pageItems.length < totalCount &&
-          skip + take >= dataLength
-        ) {
+      .subscribe(() => {
+        const endReached =
+          content.scrollTop + content.clientHeight >=
+          content.scrollHeight - NEXT_PAGE_SCROLL_THRESHOLD;
+        if (endReached && !loading && pageItems.length < totalCount) {
           loadPage(false);
         }
       });
@@ -294,9 +304,7 @@ export const setupRemoteChoices = (
   };
 
   // The list is created each time the popup opens
-  widget.open.pipe(takeUntil(destroy$)).subscribe(() => {
-    setTimeout(() => listenToList());
-  });
+  widget.opened.pipe(takeUntil(destroy$)).subscribe(() => listenToList());
 
   // Reload when the question loader changes ( e.g. filters update )
   const onLoaderChange = () => reload();
