@@ -21,10 +21,7 @@ import {
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { DomService } from '../../services/dom/dom.service';
-import {
-  GET_RESOURCE_BY_ID,
-  GET_SHORT_RESOURCE_BY_ID,
-} from '../graphql/queries';
+import { GET_SHORT_RESOURCE_BY_ID } from '../graphql/queries';
 import { GET_RECORD_BY_ID } from '../../components/widgets/grid/graphql/queries';
 import { QuestionResource } from '../types';
 import {
@@ -36,6 +33,7 @@ import {
 } from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import { setupResourceChoicesLoader } from './utils/resource-records-loader';
 import {
   addGridTeardown,
   destroyGrid,
@@ -77,36 +75,6 @@ export const init = (
         id,
       },
     });
-
-  const mapQuestionChoices = (data: any, question: any) => {
-    return (
-      data.resource.records?.edges?.map((x: any) => {
-        return {
-          value: x.node?.id,
-          text: x.node?.data[question.displayField || 'id'],
-        };
-      }) || []
-    );
-  };
-
-  /**
-   * Fetch records of resource
-   *
-   * @param question Current question
-   * @returns Resource records query
-   */
-  const getResourceRecordsById = (question: any) => {
-    return apollo.query<ResourceQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
-      variables: {
-        id: question.resource, // id of the resource
-        ...(question.filters && {
-          filter: question.filters,
-        }),
-      },
-      fetchPolicy: 'no-cache',
-    });
-  };
 
   /**
    * Update question filter based on survey data
@@ -467,37 +435,48 @@ export const init = (
       }
       // If question is valid
       if (question.resource) {
+        const hasCustomFilter =
+          !!question.customFilter && question.customFilter.trim().length > 0;
+        // Get the records query name & display field definition of the resource
         getResourceById(question.resource).subscribe(({ data }) => {
-          // const choices = mapQuestionChoices(data, question);
-          // question.contentQuestion.choices = choices;
+          const resource = data?.resource;
+          if (!resource) {
+            return;
+          }
+          question._resourceInfo = {
+            queryName: resource.queryName,
+            field: (resource.fields || []).find(
+              (x: any) => x.name === question.displayField
+            ),
+          };
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
-              'Select a record from ' + data.resource.name + '...';
+              'Select a record from ' + resource.name + '...';
+          }
+          // Load question choices
+          if (!question.displayAsGrid) {
+            if (hasCustomFilter) {
+              question.filters = this.buildQuestionFilters(question);
+            }
+            this.populateChoices(question);
           }
         });
-        if (question.customFilter && question.customFilter.trim().length > 0) {
+        if (hasCustomFilter) {
           // Subscribe to survey value changes
           question.survey?.onValueChanged.add(() => {
             this.getQuestionFilters(question);
           });
-        } else {
-          // Load question choices
-          if (!question.displayAsGrid) {
-            this.populateChoices(question);
-          }
         }
       }
     },
     /**
-     * Populate question choices
+     * Populate question choices: records are searched on the server, and
+     * fetched page by page with their display field only.
      *
      * @param question Current question
      */
     populateChoices: (question: any): void => {
-      getResourceRecordsById(question).subscribe(({ data }) => {
-        const choices = mapQuestionChoices(data, question);
-        question.contentQuestion.choices = choices;
-      });
+      setupResourceChoicesLoader(apollo, question);
     },
     /**
      * Update question properties when the resource property is changed
@@ -515,26 +494,36 @@ export const init = (
       }
     },
     /**
-     * Get question filters
+     * Build the question filters, from the custom filter and the survey data
      *
      * @param question Current question
+     * @returns Question filters
      */
-    getQuestionFilters(question: QuestionResource): void {
-      const surveyData = (question.survey as SurveyModel).data;
+    buildQuestionFilters(question: QuestionResource): any {
+      const surveyData = (question.survey as SurveyModel)?.data;
       const customFilter = JSON.parse(question.customFilter);
       if (Array.isArray(customFilter)) {
-        question.filters = {
+        return {
           logic: 'and',
           filters: customFilter
             .map((x) => updateFilter(surveyData, x))
             .filter((x) => !isNil(x)),
         };
-      } else {
-        question.filters = updateFilter(surveyData, customFilter);
       }
+      return updateFilter(surveyData, customFilter);
+    },
+    /**
+     * Get question filters, and reload the choices when they change
+     *
+     * @param question Current question
+     */
+    getQuestionFilters(question: QuestionResource): void {
+      const filters = this.buildQuestionFilters(question);
+      const changed = !isEqual(filters, question.filters);
+      question.filters = filters;
 
-      // Load question choices
-      if (!question.displayAsGrid) {
+      // Reload question choices when the filters change
+      if (changed && !question.displayAsGrid) {
         this.populateChoices(question);
       }
     },

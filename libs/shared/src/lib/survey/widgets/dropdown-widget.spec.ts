@@ -1,5 +1,7 @@
+import { Subject, of } from 'rxjs';
 import { init as initDropdown } from './dropdown-widget';
 import { init as initTagbox } from './tagbox-widget';
+import { setChoicesLoader } from './utils/choices-loader';
 
 /**
  * Captures the widget object passed to a custom widget collection so its
@@ -69,5 +71,74 @@ describe('select widgets willUnmount', () => {
       expect(() => widget.willUnmount(question)).not.toThrow();
       expect(question._componentRef).toBeUndefined();
     });
+  });
+});
+
+describe('dropdown widget with a choices loader', () => {
+  /**
+   * Builds a fake dropdown question, exposing what the widget relies on.
+   *
+   * @returns Fake question
+   */
+  const createFakeQuestion = () => {
+    const callbacks: Record<string, () => void> = {};
+    const properties: Record<string, any> = {};
+    return {
+      value: null,
+      isReadOnly: false,
+      isPrimitiveValue: true,
+      visibleChoices: [],
+      choices: [],
+      placeholder: '',
+      survey: { locale: '' },
+      registerFunctionOnPropertyValueChanged: jest.fn(
+        (name: string, func: () => void) => {
+          callbacks[name] = func;
+        }
+      ),
+      unRegisterFunctionOnPropertyValueChanged: jest.fn(),
+      getPropertyValue: (name: string) => properties[name],
+      setPropertyValue: (name: string, value: any) => {
+        properties[name] = value;
+        callbacks[name]?.();
+      },
+    } as any;
+  };
+
+  it('switches to server-side choices when the loader is set after the render', () => {
+    const { widget, domService } = captureWidget(initDropdown as any);
+    const combobox: any = {
+      data: [],
+      loading: true,
+      disabled: true,
+      filterChange: new Subject<string>(),
+      open: new Subject<void>(),
+      registerOnChange: jest.fn(),
+      wrapper: { nativeElement: { querySelector: () => null } },
+    };
+    domService.appendComponentToBody = jest.fn(() => ({ instance: combobox }));
+    const question = createFakeQuestion();
+    const parent = document.createElement('div');
+    const el = document.createElement('div');
+    parent.appendChild(el);
+
+    // Rendered before the resource of the question is known
+    widget.afterRender(question, el);
+    expect(question._remoteChoices).toBeUndefined();
+    expect(combobox.disabled).toBe(true);
+
+    const loader = {
+      load: jest.fn(() =>
+        of({ items: [{ value: '1', text: 'One' }], totalCount: 1 })
+      ),
+      loadByValues: jest.fn(() => of([])),
+    };
+    setChoicesLoader(question, loader);
+
+    expect(question._remoteChoices).toBeDefined();
+    expect(loader.load).toHaveBeenCalledTimes(1);
+    expect(combobox.data).toEqual([{ value: '1', text: 'One' }]);
+    expect(combobox.disabled).toBe(false);
+    expect(combobox.loading).toBe(false);
   });
 });

@@ -5,6 +5,11 @@ import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { has, isArray, isEqual, isObject } from 'lodash';
 import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import {
+  CHOICES_LOADER_VERSION_PROPERTY,
+  getChoicesLoader,
+} from './utils/choices-loader';
+import { setupRemoteChoices } from './utils/remote-choices';
 
 /**
  * Init dropdown widget
@@ -58,6 +63,27 @@ export const init = (
         }
       });
 
+      /**
+       * Switches to server-side choices when the question has a choices
+       * loader. The loader can be set after the first render ( e.g. once the
+       * resource of a resource question is loaded ).
+       */
+      const useRemoteChoices = () => {
+        if (!question._remoteChoices && getChoicesLoader(question)) {
+          question._remoteChoices = setupRemoteChoices(
+            dropdownInstance,
+            question,
+            question.destroy$
+          );
+        }
+      };
+      useRemoteChoices();
+      question._loaderChangeCallback = useRemoteChoices;
+      question.registerFunctionOnPropertyValueChanged(
+        CHOICES_LOADER_VERSION_PROPERTY,
+        question._loaderChangeCallback
+      );
+
       // We subscribe to whatever you write on the field so we can filter the data accordingly
       dropdownInstance.filterChange
         .pipe(
@@ -68,11 +94,20 @@ export const init = (
         )
         .subscribe((searchValue: string) => {
           currentSearchValue = searchValue;
-          updateChoices(dropdownInstance, question, searchValue);
+          if (question._remoteChoices) {
+            // Choices are searched on the server
+            question._remoteChoices.search(searchValue);
+          } else {
+            updateChoices(dropdownInstance, question, searchValue);
+          }
         });
 
       question._propertyValueChangedVirtual = () => {
-        updateChoices(dropdownInstance, question, currentSearchValue);
+        if (question._remoteChoices) {
+          question._remoteChoices.syncQuestionChoices();
+        } else {
+          updateChoices(dropdownInstance, question, currentSearchValue);
+        }
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -88,6 +123,8 @@ export const init = (
         }
       );
       question.registerFunctionOnPropertyValueChanged('value', () => {
+        // Make sure the selected value can be displayed when choices are loaded from the server
+        question._remoteChoices?.ensureSelected();
         // We need this line for resource select
         if (question.isPrimitiveValue) {
           dropdownInstance.value = question.value;
@@ -112,7 +149,7 @@ export const init = (
           dropdownInstance.disabled = value;
         }
       );
-      if (question.visibleChoices.length) {
+      if (!question._remoteChoices && question.visibleChoices.length) {
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
       question._instance = dropdownInstance;
@@ -122,6 +159,15 @@ export const init = (
       question.destroy$?.next();
       question.destroy$?.complete();
       question.abortSignal?.abort();
+      question._remoteChoices?.dispose();
+      question._remoteChoices = undefined;
+      if (question._loaderChangeCallback) {
+        question.unRegisterFunctionOnPropertyValueChanged(
+          CHOICES_LOADER_VERSION_PROPERTY,
+          question._loaderChangeCallback
+        );
+        question._loaderChangeCallback = undefined;
+      }
       // Destroy the Kendo component created through DomService. Without this it
       // stays attached to the Angular ApplicationRef: it leaks and keeps being
       // change-detected on every tick, degrading the whole app over time.

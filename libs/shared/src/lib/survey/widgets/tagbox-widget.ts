@@ -9,6 +9,11 @@ import {
 } from 'survey-core';
 import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import {
+  CHOICES_LOADER_VERSION_PROPERTY,
+  getChoicesLoader,
+} from './utils/choices-loader';
+import { setupRemoteChoices } from './utils/remote-choices';
 
 /**
  * Init tagbox question
@@ -50,6 +55,13 @@ export const init = (
       'useSummaryTagMode',
       question._useSummaryTagModeChangeCallback
     );
+    if (question._loaderChangeCallback) {
+      question.unRegisterFunctionOnPropertyValueChanged(
+        CHOICES_LOADER_VERSION_PROPERTY,
+        question._loaderChangeCallback
+      );
+      question._loaderChangeCallback = undefined;
+    }
   };
   const componentName = 'tagbox';
   const widget = {
@@ -143,6 +155,27 @@ export const init = (
         question.value = value;
       });
 
+      /**
+       * Switches to server-side choices when the question has a choices
+       * loader. The loader can be set after the first render ( e.g. once the
+       * resource of a resources question is loaded ).
+       */
+      const useRemoteChoices = () => {
+        if (!question._remoteChoices && getChoicesLoader(question)) {
+          question._remoteChoices = setupRemoteChoices(
+            tagboxInstance,
+            question,
+            question.destroy$
+          );
+        }
+      };
+      useRemoteChoices();
+      question._loaderChangeCallback = useRemoteChoices;
+      question.registerFunctionOnPropertyValueChanged(
+        CHOICES_LOADER_VERSION_PROPERTY,
+        question._loaderChangeCallback
+      );
+
       // We subscribe to whatever you write on the field so we can filter the data accordingly
       tagboxInstance.filterChange
         .pipe(
@@ -153,10 +186,19 @@ export const init = (
         )
         .subscribe((searchValue: string) => {
           currentSearchValue = searchValue;
-          updateChoices(tagboxInstance, question, searchValue);
+          if (question._remoteChoices) {
+            // Choices are searched on the server
+            question._remoteChoices.search(searchValue);
+          } else {
+            updateChoices(tagboxInstance, question, searchValue);
+          }
         });
       question._propertyValueChangedVirtual = () => {
-        updateChoices(tagboxInstance, question, currentSearchValue);
+        if (question._remoteChoices) {
+          question._remoteChoices.syncQuestionChoices();
+        } else {
+          updateChoices(tagboxInstance, question, currentSearchValue);
+        }
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -174,6 +216,8 @@ export const init = (
       );
 
       question._valueChangeCallback = () => {
+        // Make sure the selected values can be displayed when choices are loaded from the server
+        question._remoteChoices?.ensureSelected();
         if (!question.isPrimitiveValue) {
           tagboxInstance.value = question.value;
           updateChoices(tagboxInstance, question, currentSearchValue);
@@ -207,7 +251,7 @@ export const init = (
         question._useSummaryTagModeChangeCallback
       );
 
-      if (question.visibleChoices.length) {
+      if (!question._remoteChoices && question.visibleChoices.length) {
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
       question._instance = tagboxInstance;
@@ -216,6 +260,8 @@ export const init = (
     willUnmount: (question: any): void => {
       question.destroy$?.next();
       question.destroy$?.complete();
+      question._remoteChoices?.dispose();
+      question._remoteChoices = undefined;
       // Destroy the Kendo component created through DomService. Without this it
       // stays attached to the Angular ApplicationRef: it leaks and keeps being
       // change-detected on every tick, degrading the whole app over time.
