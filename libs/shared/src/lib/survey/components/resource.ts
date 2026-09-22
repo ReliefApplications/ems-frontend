@@ -487,10 +487,13 @@ export const init = (
       }
       // If question is valid
       if (question.resource) {
-        // Expose the selected record as survey variables
+        // Expose the selected record as survey variables.
+        // The new value is taken from the callback: the question value is
+        // read from the content question, which is only updated afterwards.
         question.registerFunctionOnPropertyValueChanged(
           'value',
-          () => addRecordToSurveyContext(apollo, question, question.value),
+          (newValue: string | null | undefined) =>
+            addRecordToSurveyContext(apollo, question, newValue),
           'resourceContext'
         );
         addRecordToSurveyContext(apollo, question, question.value);

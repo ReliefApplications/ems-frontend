@@ -51,7 +51,7 @@ const createComponent = (apollo: any) => {
  */
 const createFakeQuestion = (overrides: any = {}) => {
   const variables: Record<string, any> = {};
-  const callbacks: Record<string, () => void> = {};
+  const callbacks: Record<string, (newValue?: any) => void> = {};
   const survey = {
     data: {},
     getVariableNames: jest.fn(() => Object.keys(variables)),
@@ -75,7 +75,7 @@ const createFakeQuestion = (overrides: any = {}) => {
     survey,
     contentQuestion,
     registerFunctionOnPropertyValueChanged: jest.fn(
-      (name: string, func: () => void) => {
+      (name: string, func: (newValue?: any) => void) => {
         callbacks[name] = func;
       }
     ),
@@ -86,13 +86,15 @@ const createFakeQuestion = (overrides: any = {}) => {
     survey,
     variables,
     /**
-     * Sets the question value, as SurveyJS would.
+     * Sets the question value, as SurveyJS would: the value callback runs
+     * before the content question ( which the question value is read from )
+     * is updated, so the question value is still the previous one.
      *
      * @param value New value
      */
     setValue: (value: any) => {
+      callbacks['value']?.(value);
       question.value = value;
-      callbacks['value']?.();
     },
   };
 };
