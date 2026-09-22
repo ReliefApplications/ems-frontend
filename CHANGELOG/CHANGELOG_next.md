@@ -1,3 +1,9 @@
+# [2.24.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.18...v2.24.0-rc.19) (2026-09-22)
+
+### Bug Fixes
+
+- addRecordToSurveyContext not detecting correct new values ([b77dce6](https://github.com/ReliefApplications/ems-frontend/commit/b77dce661d8d9d94f8bde1eca2b7f2bed251b08e))
+
 # [2.24.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.17...v2.24.0-rc.18) (2026-09-21)
 
 ### Features
