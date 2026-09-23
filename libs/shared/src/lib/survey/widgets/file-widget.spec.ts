@@ -325,15 +325,19 @@ describe('file widget', () => {
       expect(getItems()[1].instance.permanentRemoval).toBe(false);
     });
 
-    it('keeps the removal when the field does not allow outdated files', () => {
-      const question = createQuestion('edit', [stored], {
-        canDeleteFiles: false,
-      });
-      const element = createElement();
+    it('hides the removal of stored files from roles not allowed to delete files, even without the outdated option', () => {
+      const question = createQuestion(
+        'edit',
+        [stored, { ...stored, content: 'data:x' }],
+        { allowMultiple: true, canDeleteFiles: false }
+      );
+      const element = createElement(2);
 
       widget.afterRender(question, element);
 
-      expect(getItems()[0].instance.canRemove).toBe(true);
+      expect(getItems()[0].instance.canRemove).toBe(false);
+      expect(getItems()[0].instance.canOutdate).toBe(false);
+      expect(getItems()[1].instance.canRemove).toBe(true);
     });
 
     it('keeps the plain removal on files not stored yet', () => {

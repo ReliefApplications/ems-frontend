@@ -405,9 +405,11 @@ const updateFileItems = (
     instance.canDownload = singleImage;
     instance.canOutdate = !readOnly && permanentRemoval;
     instance.permanentRemoval = permanentRemoval;
-    // Permanent removal of stored files is a per-field role permission
+    // Removing a stored file is a per-field role permission, whether or not
+    // the question allows outdated files. Files not saved yet can always be
+    // removed.
     instance.canRemove =
-      !readOnly && (!permanentRemoval || question.canDeleteFiles !== false);
+      !readOnly && (!isStoredFile(file) || question.canDeleteFiles !== false);
     instance.toggleOutdated = () => toggleOutdatedFile(question, index);
     instance.removeFile = () => removeFilePermanently(question, index);
     ref.changeDetectorRef.detectChanges();
