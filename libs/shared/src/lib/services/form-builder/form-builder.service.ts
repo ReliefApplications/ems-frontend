@@ -14,6 +14,7 @@ import {
   settings,
   surveyLocalization,
 } from 'survey-core';
+import { QuestionFile } from '../../survey/types';
 import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
@@ -132,6 +133,10 @@ export class FormBuilderService {
             question.delete();
           } else {
             question.readOnly = disabled || !editable;
+            // File questions: per-field permission to permanently remove files
+            if (f.canDeleteFiles !== undefined) {
+              (question as QuestionFile).canDeleteFiles = !!f.canDeleteFiles;
+            }
           }
         }
       }

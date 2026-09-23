@@ -515,29 +515,36 @@ export class RoleResourcesComponent
    * @param field.name the name of the field to be edited
    * @param field.canSee whether the field can be seen
    * @param field.canUpdate whether the field can be edited
+   * @param field.canDeleteFiles whether the files of the field can be deleted
    * @param action the permission to be edited
    */
   onEditFieldAccess(
     resource: Resource,
-    field: { name: string; canSee: boolean; canUpdate: boolean },
-    action: 'canSee' | 'canUpdate'
+    field: {
+      name: string;
+      canSee: boolean;
+      canUpdate: boolean;
+      canDeleteFiles?: boolean;
+    },
+    action: 'canSee' | 'canUpdate' | 'canDeleteFiles'
   ): void {
     if (!this.role.id) return;
 
     this.updating = true;
-    const updatedPermissions: {
-      add?: { field: string; role: string };
-      remove?: { field: string; role: string };
-    } = {};
-
-    if (field[action]) {
-      Object.assign(updatedPermissions, {
-        remove: { field: field.name, role: this.role.id },
-      });
-    } else
-      Object.assign(updatedPermissions, {
-        add: { field: field.name, role: this.role.id },
-      });
+    const entry = { field: field.name, role: this.role.id };
+    const fieldsPermissions: Record<string, any> = {
+      [action]: field[action] ? { remove: entry } : { add: entry },
+    };
+    // The backend requires the permissions a grant depends on, and accepts
+    // them from the same request: send the missing ones along.
+    if (!field[action]) {
+      if (action === 'canDeleteFiles' && !field.canUpdate) {
+        fieldsPermissions.canUpdate = { add: entry };
+      }
+      if (action !== 'canSee' && !field.canSee) {
+        fieldsPermissions.canSee = { add: entry };
+      }
+    }
 
     this.apollo
       .mutate<EditResourceMutationResponse>({
@@ -545,9 +552,7 @@ export class RoleResourcesComponent
         variables: {
           id: resource.id,
           role: this.role.id,
-          fieldsPermissions: {
-            [action]: updatedPermissions,
-          },
+          fieldsPermissions,
         },
       })
       .pipe(takeUntil(this.destroy$))
@@ -574,7 +579,7 @@ export class RoleResourcesComponent
   onBulkEditFieldAccess(
     resource: Resource,
     fields: { name: string; canSee?: boolean; canUpdate?: boolean }[],
-    permission: 'canSee' | 'canUpdate',
+    permission: 'canSee' | 'canUpdate' | 'canDeleteFiles',
     grant: boolean
   ): void {
     if (!this.role.id || !fields.length) return;
@@ -588,15 +593,22 @@ export class RoleResourcesComponent
         : { remove: fields.map(entry) },
     };
 
-    if (grant && permission === 'canUpdate') {
-      // The backend rejects a canUpdate grant on a field the role cannot see, and
-      // it validates the whole batch before writing anything, so a selection
-      // mixing visible and hidden fields would update none of them. It processes
-      // canSee first and accepts a canUpdate grant backed by a canSee grant of
-      // the same request, so the missing ones are sent along.
+    if (grant && permission !== 'canSee') {
+      // The backend rejects a grant on a field missing the permission it depends
+      // on ( canSee for canUpdate, canUpdate for canDeleteFiles ), and it
+      // validates the whole batch before writing anything, so a mixed selection
+      // would update none of them. It processes permissions in order and accepts
+      // a grant backed by a grant of the same request, so the missing ones are
+      // sent along.
       const missingCanSee = fields.filter((field) => !field.canSee);
       if (missingCanSee.length) {
         fieldsPermissions.canSee = { add: missingCanSee.map(entry) };
+      }
+      if (permission === 'canDeleteFiles') {
+        const missingCanUpdate = fields.filter((field) => !field.canUpdate);
+        if (missingCanUpdate.length) {
+          fieldsPermissions.canUpdate = { add: missingCanUpdate.map(entry) };
+        }
       }
     }
 

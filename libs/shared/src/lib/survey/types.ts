@@ -33,6 +33,11 @@ export interface QuestionFile extends QuestionFileModel, GlobalProperties {
   allowOutdatedFiles?: boolean;
   /** Display outdated files in the question ( only when the above is on ) */
   showOutdatedFiles?: boolean;
+  /**
+   * Whether the current user can permanently remove stored files ( per-field
+   * role permission, set from the form metadata ). Undefined means allowed.
+   */
+  canDeleteFiles?: boolean;
 }
 
 /** Type for comment question */

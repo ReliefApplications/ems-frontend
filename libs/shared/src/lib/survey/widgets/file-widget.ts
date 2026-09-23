@@ -405,9 +405,9 @@ const updateFileItems = (
     instance.canDownload = singleImage;
     instance.canOutdate = !readOnly && permanentRemoval;
     instance.permanentRemoval = permanentRemoval;
-    // Role-based file deletion is wired in a later step: permanent removal is
-    // currently available to every user allowed to edit the question.
-    instance.canRemove = !readOnly;
+    // Permanent removal of stored files is a per-field role permission
+    instance.canRemove =
+      !readOnly && (!permanentRemoval || question.canDeleteFiles !== false);
     instance.toggleOutdated = () => toggleOutdatedFile(question, index);
     instance.removeFile = () => removeFilePermanently(question, index);
     ref.changeDetectorRef.detectChanges();

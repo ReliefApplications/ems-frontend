@@ -115,6 +115,19 @@
               "
               (click)="onBulkEditFieldAccess('canUpdate')"
             ></ui-button>
+            <ui-button
+              *ngIf="bulkFields('canDeleteFiles').length > 0"
+              [isIcon]="true"
+              icon="delete_forever"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (bulkPermissionGranted('canDeleteFiles')
+                  ? 'components.role.tooltip.disallowSelectedFieldsDeleteFiles'
+                  : 'components.role.tooltip.allowSelectedFieldsDeleteFiles'
+                ) | translate
+              "
+              (click)="onBulkEditFieldAccess('canDeleteFiles')"
+            ></ui-button>
           </div>
         </th>
         <td uiCell *cdkCellDef="let element">
@@ -145,6 +158,22 @@
                 ) | translate : { field: element.name }
               "
               (click)="onEditFieldAccess(element, 'canUpdate')"
+            >
+            </ui-button>
+            <!-- File fields: permanent removal of files -->
+            <ui-button
+              *ngIf="element.isFile"
+              [isIcon]="true"
+              icon="delete_forever"
+              [variant]="element.canDeleteFiles ? 'primary' : 'grey'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (element.canDeleteFiles
+                  ? 'components.role.tooltip.allowFieldDeleteFiles'
+                  : 'components.role.tooltip.disallowFieldDeleteFiles'
+                ) | translate : { field: element.name }
+              "
+              (click)="onEditFieldAccess(element, 'canDeleteFiles')"
             >
             </ui-button>
           </div>

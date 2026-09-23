@@ -22,6 +22,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
         automated
         canSee
         canUpdate
+        canDeleteFiles
       }
     }
   }
