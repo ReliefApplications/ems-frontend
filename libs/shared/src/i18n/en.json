@@ -1403,6 +1403,10 @@
         },
         "search": "Search fields...",
         "selected": "Selected fields",
+        "showOutdatedFiles": {
+          "info": "Only applies to file fields. Files marked as outdated in the form are hidden unless this option is enabled.",
+          "title": "Show outdated files"
+        },
         "title": "Fields",
         "transferAllFrom": "Remove all fields",
         "transferAllTo": "Add all fields"

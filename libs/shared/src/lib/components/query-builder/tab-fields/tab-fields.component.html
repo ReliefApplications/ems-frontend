@@ -235,6 +235,25 @@
           [uiTooltip]="'components.queryBuilder.fields.format.info' | translate"
         ></ui-icon>
       </div>
+      <!-- Outdated files ( file fields ) -->
+      <div
+        *ngIf="fieldForm.controls.type?.value === 'JSON'"
+        class="flex items-center gap-2 mt-2"
+      >
+        <ui-toggle formControlName="showOutdatedFiles">
+          <ng-container ngProjectAs="label">{{
+            'components.queryBuilder.fields.showOutdatedFiles.title' | translate
+          }}</ng-container>
+        </ui-toggle>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          [uiTooltip]="
+            'components.queryBuilder.fields.showOutdatedFiles.info' | translate
+          "
+        ></ui-icon>
+      </div>
     </form>
   </ng-container>
   <!-- If not scalar field, display child template -->

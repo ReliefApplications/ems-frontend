@@ -1406,6 +1406,10 @@
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
+        "showOutdatedFiles": {
+          "info": "S’applique uniquement aux champs de type fichier. Les fichiers marqués comme obsolètes dans le formulaire sont masqués sauf si cette option est activée.",
+          "title": "Afficher les fichiers obsolètes"
+        },
         "title": "Champs",
         "transferAllFrom": "Supprimer tous les champs",
         "transferAllTo": "Ajouter tous les champs"

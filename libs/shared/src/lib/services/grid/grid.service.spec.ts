@@ -88,6 +88,27 @@ describe('GridService', () => {
       expect(result[0].disabled).toBe(true);
     });
 
+    it('should carry the outdated files display option of file fields', () => {
+      const fileFields = [
+        { name: 'documents', label: 'Documents', type: 'JSON' },
+        {
+          name: 'all',
+          label: 'All documents',
+          type: 'JSON',
+          showOutdatedFiles: true,
+        },
+      ];
+      const metaFields = {
+        documents: { type: 'file', permissions: { canSee: true } },
+        all: { type: 'file', permissions: { canSee: true } },
+      };
+
+      const result = service.getFields(fileFields, metaFields, {}, '');
+
+      expect(result[0].showOutdatedFiles).toBe(false);
+      expect(result[1].showOutdatedFiles).toBe(true);
+    });
+
     it('should default to no read-only fields when the option is omitted', () => {
       const metaFields = {
         email: { permissions: { canSee: true, canUpdate: true } },

@@ -933,23 +933,37 @@
             [style]="dataItem._display.style[field.name]"
           >
             <!-- Single file -->
-            <ng-container *ngIf="dataItem[field.name]?.length === 1">
+            <ng-container
+              *ngIf="dataItem._display.files[field.name]?.length === 1"
+            >
               <button
                 kendoButton
-                *ngFor="let file of dataItem[field.name]"
+                *ngFor="let file of dataItem._display.files[field.name]"
                 [look]="'flat'"
                 [uiTooltip]="file.name"
                 (click)="$event.stopPropagation(); onOpenFile(file)"
-                class="w-full !justify-start overflow-hidden text-ellipsis"
+                class="w-full !justify-start overflow-hidden text-ellipsis whitespace-nowrap"
               >
                 <span [class]="dataItem._display.icon[file.name]"></span>
+                <ui-icon
+                  *ngIf="file.outdated"
+                  icon="warning"
+                  variant="warning"
+                  [size]="16"
+                  class="inline-flex shrink-0 mr-1 align-middle"
+                  [uiTooltip]="
+                    'components.form.file.outdated.tooltip' | translate
+                  "
+                ></ui-icon>
                 <span class="textbox">{{
                   dataItem._display.text[field.name][file.name] || file.name
                 }}</span>
               </button>
             </ng-container>
             <!-- Multiple files -->
-            <ng-container *ngIf="dataItem[field.name]?.length > 1">
+            <ng-container
+              *ngIf="dataItem._display.files[field.name]?.length > 1"
+            >
               <button
                 kendoButton
                 class="w-full text-center"
@@ -960,20 +974,37 @@
               >
                 {{
                   'components.widget.grid.files'
-                    | translate : { number: dataItem[field.name].length }
+                    | translate
+                      : { number: dataItem._display.files[field.name].length }
                 }}
               </button>
               <ui-menu #fileMenu>
                 <button
                   kendoButton
-                  *ngFor="let file of dataItem[field.name]"
+                  *ngFor="let file of dataItem._display.files[field.name]"
                   [look]="'flat'"
                   [uiTooltip]="file.name"
                   (click)="$event.stopPropagation(); onOpenFile(file)"
                   class="w-full justify-start overflow-hidden text-overflow-ellipsis"
                 >
-                  <p style="text-wrap: auto" class="max-w-full">
-                    <span [class]="dataItem._display.icon[file.name]"></span>
+                  <p
+                    style="text-wrap: auto"
+                    class="max-w-full flex items-center"
+                  >
+                    <span
+                      [class]="dataItem._display.icon[file.name]"
+                      class="shrink-0"
+                    ></span>
+                    <ui-icon
+                      *ngIf="file.outdated"
+                      icon="warning"
+                      variant="warning"
+                      [size]="16"
+                      class="inline-flex shrink-0 mr-1 align-middle"
+                      [uiTooltip]="
+                        'components.form.file.outdated.tooltip' | translate
+                      "
+                    ></ui-icon>
                     <span class="textbox">{{
                       dataItem._display.text[field.name][file.name] || file.name
                     }}</span>
