@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isNil, omit } from 'lodash';
 import {
   CustomWidgetCollection,
   SurveyModel,
@@ -13,7 +13,10 @@ import { ComponentRef, Injector } from '@angular/core';
 import jsonpath from 'jsonpath';
 import { File } from '../../services/file/file.service';
 import { DomService } from '../../services/dom/dom.service';
-import { FileDownloadButtonComponent } from '../components/file-download-button/public-api';
+import { FileItemActionsComponent } from '../components/file-item-actions/public-api';
+import { FileQuestionActionsComponent } from '../components/file-question-actions/public-api';
+import { isOutdatedFile, isStoredFile } from '../../services/file/file.utils';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Set document properties based on value expressions
@@ -66,6 +69,16 @@ const setDocumentProperties = (
 
 /** Class toggled on the question root while the inline PDF preview is active. */
 const PDF_PREVIEW_CLASS = 'file-pdf-preview';
+/** Class toggled on preview items hidden because their file is outdated. */
+const OUTDATED_HIDDEN_CLASS = 'file-item--hidden';
+/** Class toggled on the question root when a stored single file locks uploads. */
+const SINGLE_LOCKED_CLASS = 'file-single-locked';
+/** Class toggled on the question root while it holds at least one file. */
+const ANSWERED_CLASS = 'file-question--answered';
+/** SurveyJS class giving a single image the full-size in-area preview. */
+const SINGLE_IMAGE_CLASS = 'sd-file--single-image';
+/** Class of the warning icon injected next to outdated file names. */
+const OUTDATED_ICON_CLASS = 'file-item__outdated-icon';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
 const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
 
@@ -73,7 +86,9 @@ const PDF_PREVIEW_FRAME_CLASS = 'file-pdf-preview__frame';
 interface FilePreviewQuestion extends QuestionFile {
   __filePreviewElement?: HTMLElement;
   __pdfPreviewObserver?: MutationObserver;
-  __imageDownloadButton?: ComponentRef<FileDownloadButtonComponent>;
+  __fileItemActions?: Map<number, ComponentRef<FileItemActionsComponent>>;
+  __questionActions?: ComponentRef<FileQuestionActionsComponent>;
+  __dropBlocker?: (event: Event) => void;
   __survey?: SurveyModel;
   __valueChangedHandler?: (
     sender: SurveyModel,
@@ -98,79 +113,6 @@ const getPreviewKind = (name: string, type: string): 'image' | 'pdf' | null => {
   const isPdf =
     type === 'application/pdf' || (hasGenericType && /\.pdf$/i.test(name));
   return isPdf ? 'pdf' : null;
-};
-
-/**
- * Removes the image download action from a file question, destroying the
- * injected component.
- *
- * @param question File question instance
- * @param domService Shared DOM service
- */
-const removeImageDownloadAction = (
-  question: FilePreviewQuestion,
-  domService: DomService
-): void => {
-  if (question.__imageDownloadButton) {
-    domService.removeComponentFromBody(question.__imageDownloadButton);
-    question.__imageDownloadButton = undefined;
-  }
-};
-
-/**
- * Injects a download action floating over a single image preview.
- *
- * SurveyJS renders single images without any visible download control (the
- * file-name link is transparent and stretched over the image), in both edit
- * and read-only mode. The action is a UI library button injected inside the
- * image wrapper, kept in sync with the question value.
- *
- * Safe to call repeatedly (it is driven by a MutationObserver): the injected
- * component is reused while SurveyJS keeps the same wrapper, re-created when
- * the wrapper is re-rendered, and removed once the value is no longer a
- * single image.
- *
- * @param question File question instance
- * @param htmlElement The question's rendered root HTML element
- * @param domService Shared DOM service
- */
-const updateImageDownloadAction = (
-  question: FilePreviewQuestion,
-  htmlElement: HTMLElement,
-  domService: DomService
-): void => {
-  const value = question.value as File[];
-  const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
-  const isImage = file
-    ? getPreviewKind(file.name, file.type ?? '') === 'image'
-    : false;
-  const wrapper = htmlElement.querySelector(
-    '.sd-file__image-wrapper'
-  ) as HTMLElement | null;
-
-  // Preview slot not rendered yet; the observer will call us again once it is.
-  if (!file || !isImage || !wrapper) {
-    removeImageDownloadAction(question, domService);
-    return;
-  }
-
-  let button = question.__imageDownloadButton;
-  // SurveyJS re-rendered the preview: the previous button is orphaned
-  if (button && !wrapper.contains(button.location.nativeElement)) {
-    removeImageDownloadAction(question, domService);
-    button = undefined;
-  }
-  if (!button) {
-    button = domService.appendComponentToBody(
-      FileDownloadButtonComponent,
-      wrapper
-    ) as ComponentRef<FileDownloadButtonComponent>;
-    question.__imageDownloadButton = button;
-  }
-  if (button.instance.file !== file) {
-    button.instance.file = file;
-    button.changeDetectorRef.detectChanges();
-  }
 };
 
 /**
@@ -277,6 +219,277 @@ const updatePdfPreview = (
 };
 
 /**
+ * Marks the file at the given index as outdated, or back as active when it
+ * already is. The question value is replaced ( not mutated ) so SurveyJS
+ * detects the change and notifies the survey.
+ *
+ * @param question File question instance
+ * @param index Index of the file in the question value
+ */
+const toggleOutdatedFile = (question: QuestionFile, index: number): void => {
+  const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const target = value[index];
+  if (!target) return;
+  const updated: File = isOutdatedFile(target)
+    ? (omit(target, ['outdated', 'outdatedAt']) as File)
+    : { ...target, outdated: true, outdatedAt: new Date().toISOString() };
+  question.value = value.map((file, i) => (i === index ? updated : file));
+};
+
+/**
+ * Permanently removes the file at the given index, through SurveyJS's own
+ * removal flow ( confirmation, onClearFiles, value update ).
+ *
+ * @param question File question instance
+ * @param index Index of the file in the question value
+ */
+const removeFilePermanently = (question: QuestionFile, index: number): void => {
+  const target = Array.isArray(question.value) ? question.value[index] : null;
+  if (target) question.doRemoveFile(target);
+};
+
+/**
+ * Keeps the warning icon next to the file name in sync with the outdated
+ * state of the file.
+ *
+ * @param preview Rendered preview item of the file
+ * @param outdated Whether the file is outdated
+ * @param translate Translate service
+ */
+const syncOutdatedIcon = (
+  preview: HTMLElement,
+  outdated: boolean,
+  translate: TranslateService
+): void => {
+  const existing = preview.querySelector(`.${OUTDATED_ICON_CLASS}`);
+  const sign = preview.querySelector('.sd-file__sign') as HTMLElement | null;
+  if (!outdated || !sign) {
+    existing?.remove();
+    return;
+  }
+  if (existing) return;
+  const icon = document.createElement('span');
+  icon.className = `${OUTDATED_ICON_CLASS} material-icons`;
+  icon.textContent = 'warning';
+  icon.title = translate.instant('components.form.file.outdated.tooltip');
+  sign.insertBefore(icon, sign.firstChild);
+};
+
+/**
+ * Removes the injected per-file actions, destroying their components.
+ *
+ * @param question File question instance
+ * @param domService Shared DOM service
+ * @param keep Indexes of the actions to keep
+ */
+const removeFileItemActions = (
+  question: FilePreviewQuestion,
+  domService: DomService,
+  keep: Set<number> = new Set()
+): void => {
+  question.__fileItemActions?.forEach((ref, index) => {
+    if (keep.has(index)) return;
+    domService.removeComponentFromBody(ref);
+    question.__fileItemActions?.delete(index);
+  });
+};
+
+/**
+ * Whether the question shows its only file as a full-size in-area image
+ * preview. SurveyJS only does so for single-file questions: the widget
+ * extends it to multiple-file questions holding a single image.
+ *
+ * @param question File question instance
+ * @param value Question value
+ * @returns True when the single image preview applies
+ */
+const isSingleImagePreview = (question: QuestionFile, value: File[]): boolean =>
+  value.length === 1 && !!question.canPreviewImage(value[0]);
+
+/**
+ * Keeps the per-file toolbars of the question in sync with its value and
+ * rendering, replacing SurveyJS's own per-file remove button:
+ * - warning icon on outdated files,
+ * - download action on image previews,
+ * - mark as outdated / active on stored files, when the question allows
+ *   outdated files, along with a permanent removal instead of the plain one,
+ * - outdated files hidden when the question is configured so.
+ *
+ * Safe to call repeatedly ( it is driven by a MutationObserver ): injected
+ * components are reused while SurveyJS keeps the same preview item,
+ * re-created when it is re-rendered, and removed once no longer needed.
+ *
+ * @param question File question instance
+ * @param htmlElement The question's rendered root HTML element
+ * @param domService Shared DOM service
+ * @param translate Translate service
+ */
+const updateFileItems = (
+  question: FilePreviewQuestion,
+  htmlElement: HTMLElement,
+  domService: DomService,
+  translate: TranslateService
+): void => {
+  const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const allowOutdated = !!question.allowOutdatedFiles;
+  const hideOutdated = allowOutdated && question.showOutdatedFiles === false;
+  const readOnly = question.isReadOnly;
+  const singleImage = isSingleImagePreview(question, value);
+  const previews = Array.from(
+    htmlElement.querySelectorAll('.sd-file__preview')
+  ) as HTMLElement[];
+  const actions =
+    question.__fileItemActions ?? (question.__fileItemActions = new Map());
+  const keep = new Set<number>();
+
+  previews.forEach((preview, index) => {
+    const file = value[index];
+    if (!file) return;
+    const outdated = isOutdatedFile(file);
+    const permanentRemoval = allowOutdated && isStoredFile(file);
+    preview.classList.toggle(OUTDATED_HIDDEN_CLASS, hideOutdated && outdated);
+    syncOutdatedIcon(preview, outdated, translate);
+    const wrapper = preview.querySelector(
+      '.sd-file__image-wrapper'
+    ) as HTMLElement | null;
+    // Preview slot not rendered yet; the observer will call us again once it is.
+    if (!wrapper) return;
+
+    let ref = actions.get(index);
+    // SurveyJS re-rendered the preview item: the previous component is orphaned
+    if (ref && !wrapper.contains(ref.location.nativeElement)) {
+      domService.removeComponentFromBody(ref);
+      ref = undefined;
+    }
+    if (!ref) {
+      ref = domService.appendComponentToBody(
+        FileItemActionsComponent,
+        wrapper
+      ) as ComponentRef<FileItemActionsComponent>;
+      actions.set(index, ref);
+    }
+    const instance = ref.instance;
+    instance.file = file;
+    instance.outdated = outdated;
+    instance.canDownload = singleImage;
+    instance.canOutdate = !readOnly && permanentRemoval;
+    instance.permanentRemoval = permanentRemoval;
+    // Role-based file deletion is wired in a later step: permanent removal is
+    // currently available to every user allowed to edit the question.
+    instance.canRemove = !readOnly;
+    instance.toggleOutdated = () => toggleOutdatedFile(question, index);
+    instance.removeFile = () => removeFilePermanently(question, index);
+    ref.changeDetectorRef.detectChanges();
+    keep.add(index);
+  });
+  removeFileItemActions(question, domService, keep);
+};
+
+/**
+ * Keeps the question-level toolbar ( "Select file" action replacing SurveyJS's
+ * choose / clear buttons ) and the upload lock in sync with the question:
+ * a stored single file can only be replaced by deleting it, so uploads are
+ * locked ( action disabled, drops ignored ) until it is removed permanently.
+ *
+ * @param question File question instance
+ * @param htmlElement The question's rendered root HTML element
+ * @param domService Shared DOM service
+ */
+const updateQuestionActions = (
+  question: FilePreviewQuestion,
+  htmlElement: HTMLElement,
+  domService: DomService
+): void => {
+  const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const readOnly = question.isReadOnly;
+  htmlElement.classList.toggle(ANSWERED_CLASS, value.length > 0);
+
+  // Extend SurveyJS's single image preview to multiple-file questions holding
+  // a single image
+  if (question.allowMultiple) {
+    htmlElement
+      .querySelector('.sd-file')
+      ?.classList.toggle(
+        SINGLE_IMAGE_CLASS,
+        isSingleImagePreview(question, value)
+      );
+  }
+
+  const locked =
+    !!question.allowOutdatedFiles &&
+    !question.allowMultiple &&
+    !readOnly &&
+    value.some((file) => isStoredFile(file));
+  htmlElement.classList.toggle(SINGLE_LOCKED_CLASS, locked);
+  if (locked && !question.__dropBlocker) {
+    const blocker = (event: Event): void => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    htmlElement.addEventListener('drop', blocker, true);
+    question.__dropBlocker = blocker;
+  } else if (!locked && question.__dropBlocker) {
+    htmlElement.removeEventListener('drop', question.__dropBlocker, true);
+    question.__dropBlocker = undefined;
+  }
+
+  const wrapper = htmlElement.querySelector(
+    '.sd-file__wrapper'
+  ) as HTMLElement | null;
+  let ref = question.__questionActions;
+  if (
+    ref &&
+    (readOnly || !wrapper || !wrapper.contains(ref.location.nativeElement))
+  ) {
+    domService.removeComponentFromBody(ref);
+    ref = undefined;
+    question.__questionActions = undefined;
+  }
+  // Upload area not rendered yet; the observer will call us again once it is.
+  if (readOnly || !wrapper) return;
+  if (!ref) {
+    ref = domService.appendComponentToBody(
+      FileQuestionActionsComponent,
+      wrapper
+    ) as ComponentRef<FileQuestionActionsComponent>;
+    question.__questionActions = ref;
+  }
+  ref.instance.locked = locked;
+  ref.instance.selectFile = () => {
+    const input = htmlElement.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement | null;
+    input?.click();
+  };
+  ref.changeDetectorRef.detectChanges();
+};
+
+/**
+ * Removes the question-level toolbar and the upload lock, destroying the
+ * injected component.
+ *
+ * @param question File question instance
+ * @param domService Shared DOM service
+ */
+const removeQuestionActions = (
+  question: FilePreviewQuestion,
+  domService: DomService
+): void => {
+  if (question.__questionActions) {
+    domService.removeComponentFromBody(question.__questionActions);
+    question.__questionActions = undefined;
+  }
+  if (question.__filePreviewElement && question.__dropBlocker) {
+    question.__filePreviewElement.removeEventListener(
+      'drop',
+      question.__dropBlocker,
+      true
+    );
+  }
+  question.__dropBlocker = undefined;
+};
+
+/**
  * Update file widget in order to be able to update properties with value expressions
  *
  * @param injector Parent instance angular injector containing all needed services and directives
@@ -288,6 +501,7 @@ export const init = (
 ): void => {
   const documentManagementService = injector.get(DocumentManagementService);
   const domService = injector.get(DomService);
+  const translate = injector.get(TranslateService);
   const widget = {
     name: 'file-widget',
     widgetIsLoaded: (): boolean => true,
@@ -328,17 +542,24 @@ export const init = (
             getPreviewKind(fileItem.name, fileItem.type) === 'image');
       }
 
-      // Render the PDF preview inside the upload area, and keep it in sync
-      // with SurveyJS re-renders (value changes, async preview loading).
+      // Render the PDF preview and the toolbars inside the upload area, and
+      // keep them in sync with SurveyJS re-renders (value changes, async
+      // preview loading).
       filePreviewQuestion.__pdfPreviewObserver?.disconnect();
-      const observer = new MutationObserver(() => {
+      const sync = (): void => {
         updatePdfPreview(question, htmlElement);
-        updateImageDownloadAction(filePreviewQuestion, htmlElement, domService);
-      });
+        updateFileItems(
+          filePreviewQuestion,
+          htmlElement,
+          domService,
+          translate
+        );
+        updateQuestionActions(filePreviewQuestion, htmlElement, domService);
+      };
+      const observer = new MutationObserver(sync);
       observer.observe(htmlElement, { childList: true, subtree: true });
       filePreviewQuestion.__pdfPreviewObserver = observer;
-      updatePdfPreview(question, htmlElement);
-      updateImageDownloadAction(filePreviewQuestion, htmlElement, domService);
+      sync();
     },
     willUnmount: (question: QuestionFile): void => {
       const filePreviewQuestion = question as FilePreviewQuestion;
@@ -354,7 +575,9 @@ export const init = (
       if (filePreviewQuestion.__filePreviewElement) {
         removePdfPreview(question, filePreviewQuestion.__filePreviewElement);
       }
-      removeImageDownloadAction(filePreviewQuestion, domService);
+      removeFileItemActions(filePreviewQuestion, domService);
+      removeQuestionActions(filePreviewQuestion, domService);
+      filePreviewQuestion.__fileItemActions = undefined;
       filePreviewQuestion.__pdfPreviewObserver = undefined;
       filePreviewQuestion.__filePreviewElement = undefined;
       filePreviewQuestion.__survey = undefined;

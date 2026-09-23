@@ -180,6 +180,32 @@ export const init = (environment: any): void => {
     minValue: 2,
   });
 
+  // Let users mark stored files as outdated instead of deleting them
+  serializer.addProperty('file', {
+    name: 'allowOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Allow marking files as outdated',
+    default: false,
+    visibleIndex: 11,
+  });
+  registerCustomPropertyHelp(
+    'allowOutdatedFiles',
+    'When enabled, users can mark stored files as outdated instead of deleting them. Outdated files stay attached to the record, are flagged with a warning icon, and still count toward the maximum number of files. Only roles allowed to delete files on this field can remove them permanently.'
+  );
+  serializer.addProperty('file', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: true,
+    dependsOn: 'allowOutdatedFiles',
+    visibleIf: (obj: any) => !!obj?.allowOutdatedFiles,
+    visibleIndex: 12,
+  });
+  registerCustomPropertyHelp(
+    'showOutdatedFiles',
+    'Display outdated files in this form. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
+  );
+
   // Add set value on complete expression to questions
   serializer.addProperty('question', {
     name: 'setValueOnComplete',

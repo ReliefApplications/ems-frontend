@@ -1127,6 +1127,17 @@
         "successEdit": "******",
         "successSave": "******"
       },
+      "file": {
+        "outdated": {
+          "locked": "******",
+          "markAsActive": "******",
+          "markAsOutdated": "******",
+          "removePermanently": "******",
+          "tooltip": "******"
+        },
+        "remove": "******",
+        "select": "******"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "****** {{name}} ******"

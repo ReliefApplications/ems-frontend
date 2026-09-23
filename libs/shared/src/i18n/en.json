@@ -1127,6 +1127,17 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "file": {
+        "outdated": {
+          "locked": "Remove the current file permanently before selecting a new one",
+          "markAsActive": "Mark as active",
+          "markAsOutdated": "Mark as outdated",
+          "removePermanently": "Remove permanently",
+          "tooltip": "This file is outdated"
+        },
+        "remove": "Remove file",
+        "select": "Select file"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"

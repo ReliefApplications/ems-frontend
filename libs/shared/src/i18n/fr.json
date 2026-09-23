@@ -1127,6 +1127,17 @@
         "successEdit": "Brouillon modifié avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
       },
+      "file": {
+        "outdated": {
+          "locked": "Supprimez définitivement le fichier actuel avant d’en sélectionner un nouveau",
+          "markAsActive": "Marquer comme actif",
+          "markAsOutdated": "Marquer comme obsolète",
+          "removePermanently": "Supprimer définitivement",
+          "tooltip": "Ce fichier est obsolète"
+        },
+        "remove": "Supprimer le fichier",
+        "select": "Sélectionner un fichier"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}}?"

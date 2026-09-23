@@ -223,27 +223,66 @@
     --sd-base-vertical-padding: 10px !important; //Reduces space between questions
   }
 
-  // File upload file wrapper
-  .sd-file__wrapper {
-    // File upload choose button
-    .sd-file__choose-btn {
-      @apply hover:bg-primary-500
-        bg-primary-400
-        focus-visible:outline
-        focus-visible:outline-2
-        focus-visible:outline-offset-2
-        focus-visible:outline-indigo-600
-        rounded-md
-        shadow-sm
-        text-sm
-        font-semibold
-        text-white;
-    }
+  // File questions: SurveyJS's choose / clear / per-file remove buttons are
+  // replaced by UI library toolbars injected by the file widget
+  .sd-file__choose-btn,
+  .sd-file__clean-btn,
+  .sd-file__remove-file-button {
+    display: none !important;
+  }
+
+  // Question-level toolbar ( "Select file" ): centered in the drop zone while
+  // empty, top-right corner once a file is attached
+  .file-question--answered .file-question-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;
+  }
+
+  // Per-file toolbar rendered below the file icon in the list: make room for
+  // it without growing the upload area ( image / PDF previews overlay it )
+  .sd-file:not(.sd-file--single-image) .sd-file__list {
+    padding: calc(8 * var(--sjs-base-unit, var(--base-unit, 8px))) 0;
+    min-height: calc(20 * var(--sjs-base-unit, var(--base-unit, 8px)));
+    max-height: calc(20 * var(--sjs-base-unit, var(--base-unit, 8px)));
+  }
+
+  // Per-file toolbar over image previews: bottom-right corner, above
+  // SurveyJS's transparent full-size file-name link
+  .sd-file--single-image .file-item-actions {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
   }
 
   // Fix position of file preview
   .sd-file__preview .sd-file__default-image {
     display: inline;
+  }
+
+  // Outdated files ( file questions allowing files to be marked as outdated )
+  .sd-file__preview {
+    // Hidden when the question is configured not to display outdated files
+    &.file-item--hidden {
+      display: none;
+    }
+
+    // Warning icon next to the file name
+    .file-item__outdated-icon {
+      font-size: 18px;
+      line-height: 1;
+      vertical-align: text-bottom;
+      margin-right: 4px;
+      color: #f59e0b;
+    }
+  }
+
+  // Single image: the name link is stretched over the image, the injected
+  // actions already carry the warning
+  .sd-file--single-image .file-item__outdated-icon {
+    display: none;
   }
 
   // Inline PDF preview, rendered inside the upload area of file questions
@@ -289,6 +328,15 @@
       width: 100%;
       height: 585px;
       border: none;
+    }
+
+    // Per-file toolbar over the PDF preview: bottom-right corner, clear of
+    // the viewer toolbar
+    .file-item-actions {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      z-index: 10;
     }
   }
 
