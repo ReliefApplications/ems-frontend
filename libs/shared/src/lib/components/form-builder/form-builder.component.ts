@@ -99,6 +99,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
+  // File questions: outdated files display is decided per form
+  'showOutdatedFiles',
 ];
 
 /**

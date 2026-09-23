@@ -201,9 +201,17 @@ export const init = (environment: any): void => {
     visibleIf: (obj: any) => !!obj?.allowOutdatedFiles,
     visibleIndex: 12,
   });
+  // Same option for HTML questions listing files through {field} placeholders
+  serializer.addProperty('html', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: false,
+    visibleIndex: 10,
+  });
   registerCustomPropertyHelp(
     'showOutdatedFiles',
-    'Display outdated files in this form. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
+    'Display files marked as outdated. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
   );
 
   // Add set value on complete expression to questions

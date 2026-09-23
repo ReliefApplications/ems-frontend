@@ -280,6 +280,13 @@
     }
   }
 
+  // HTML questions listing files: outdated ones hidden unless the question
+  // is configured to display them
+  .html-question--hide-outdated-files
+    button[type='file'][data-outdated='true'] {
+    display: none !important;
+  }
+
   // Single image: the name link is stretched over the image, the injected
   // actions already carry the warning
   .sd-file--single-image .file-item__outdated-icon {

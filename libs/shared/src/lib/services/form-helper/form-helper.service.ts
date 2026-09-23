@@ -26,6 +26,9 @@ import {
 import { File, FileService } from '../file/file.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
 
+/** Class toggled on HTML questions hiding the links of outdated files. */
+const HIDE_OUTDATED_FILES_CLASS = 'html-question--hide-outdated-files';
+
 /**
  * Shared survey helper service.
  */
@@ -519,6 +522,7 @@ export class FormHelpersService {
   ): void => {
     this.addQuestionTooltips(survey, options);
     this.bindHtmlQuestionFileClicks(survey, options);
+    this.applyOutdatedFilesDisplay(options);
   };
 
   /**
@@ -589,7 +593,9 @@ export class FormHelpersService {
    * Builds the clickable file links markup for a file question value.
    *
    * The `type`/`field`/`index` attributes let onFileClick identify the
-   * file to download or preview when the link is clicked.
+   * file to download or preview when the link is clicked. Files marked as
+   * outdated carry a warning icon and a `data-outdated` attribute, so HTML
+   * questions can hide them ( see applyOutdatedFilesDisplay ).
    *
    * @param fieldName name of the file question ( key in survey data )
    * @param files file question value
@@ -599,20 +605,51 @@ export class FormHelpersService {
     if (!Array.isArray(files)) {
       return '';
     }
+    const outdatedTitle = this.translate.instant(
+      'components.form.file.outdated.tooltip'
+    );
     return files
-      .filter((file) => this.isFile(file))
-      .map(
-        (file, index) =>
+      .map((file, index) => {
+        // Index in the question value, used to resolve the clicked file
+        if (!this.isFile(file)) return '';
+        const outdated = !!(file as File).outdated;
+        const warning = outdated
+          ? `<span class="material-icons" style="display: inline-block; font-size: 16px; line-height: 1; color: #f59e0b; margin-right: 2px; vertical-align: middle" title="${outdatedTitle}">warning</span>`
+          : '';
+        return (
           `<button type="file" field="${fieldName}" index="${index}" ` +
+          (outdated ? `data-outdated="true" ` : '') +
           `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
           `class="k-button k-button-flat k-button-flat-base"` +
           `title="${file.name}">` +
           `<span class="k-icon ${getFileIcon(
             file.name
           )}" style="margin-right: 4px"></span>` +
-          `${removeFileExtension(file.name)}</button>`
-      )
+          `${warning}${removeFileExtension(file.name)}</button>`
+        );
+      })
       .join('');
+  }
+
+  /**
+   * Hides the links of outdated files rendered in an HTML question, unless
+   * the question is configured to display them.
+   *
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private applyOutdatedFilesDisplay(options: {
+    question: Question;
+    htmlElement: HTMLElement;
+  }): void {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    options.htmlElement.classList.toggle(
+      HIDE_OUTDATED_FILES_CLASS,
+      !options.question.getPropertyValue('showOutdatedFiles')
+    );
   }
 
   /**
