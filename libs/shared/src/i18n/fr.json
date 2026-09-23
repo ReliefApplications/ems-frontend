@@ -1128,7 +1128,10 @@
         "successSave": "Enregistré dans les brouillons avec succès"
       },
       "file": {
+        "limitReached": "Nombre maximum de fichiers atteint ({{limit}})",
         "outdated": {
+          "hiddenSingle": "Le fichier joint est obsolète et masqué dans ce formulaire. Supprimez-le définitivement pour en télécharger un nouveau.",
+          "limitReachedHidden": "Nombre maximum de fichiers atteint ({{limit}}), dont {{count}} fichier(s) obsolète(s) masqué(s) dans ce formulaire",
           "locked": "Supprimez définitivement le fichier actuel avant d’en sélectionner un nouveau",
           "markAsActive": "Marquer comme actif",
           "markAsOutdated": "Marquer comme obsolète",

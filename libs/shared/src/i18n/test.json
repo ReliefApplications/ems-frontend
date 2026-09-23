@@ -1128,7 +1128,10 @@
         "successSave": "******"
       },
       "file": {
+        "limitReached": "****** {{limit}} ******",
         "outdated": {
+          "hiddenSingle": "******",
+          "limitReachedHidden": "****** {{limit}} ****** {{count}} ******",
           "locked": "******",
           "markAsActive": "******",
           "markAsOutdated": "******",

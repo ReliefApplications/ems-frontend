@@ -142,6 +142,21 @@ const removePdfPreview = (
 };
 
 /**
+ * Files of the question that are displayed: outdated files are left out when
+ * the question is configured not to display them. They stay in the question
+ * value ( and get saved ), they are only hidden from the rendering.
+ *
+ * @param question File question instance
+ * @returns Displayed files
+ */
+const getDisplayedFiles = (question: QuestionFile): File[] => {
+  const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const hideOutdated =
+    !!question.allowOutdatedFiles && question.showOutdatedFiles === false;
+  return hideOutdated ? value.filter((file) => !isOutdatedFile(file)) : value;
+};
+
+/**
  * Renders a PDF preview inside SurveyJS's upload area, in the slot where the
  * default file icon normally sits, so single PDFs get the same in-place
  * preview experience as images. Images need no custom rendering: SurveyJS
@@ -159,12 +174,15 @@ const updatePdfPreview = (
   question: QuestionFile,
   htmlElement: HTMLElement
 ): void => {
-  const value: Array<{ name: string; type: string }> = question.value;
-  const file = Array.isArray(value) && value.length === 1 ? value[0] : null;
-  const kind = file ? getPreviewKind(file.name, file.type) : null;
+  const displayed = getDisplayedFiles(question);
+  const file = displayed.length === 1 ? displayed[0] : null;
+  const kind = file ? getPreviewKind(file.name, file.type ?? '') : null;
   // previewValue holds the downloaded file content (data / http URL), already
-  // resolved by the survey's onDownloadFile handler for stored files.
-  const preview = question.previewValue?.[0];
+  // resolved by the survey's onDownloadFile handler for stored files, in the
+  // order of the question value.
+  const preview = file
+    ? question.previewValue?.[(question.value as File[]).indexOf(file)]
+    : null;
   const content =
     preview && typeof preview.content === 'string' ? preview.content : null;
 
@@ -333,10 +351,10 @@ const updateFileItems = (
   translate: TranslateService
 ): void => {
   const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const displayed = getDisplayedFiles(question);
   const allowOutdated = !!question.allowOutdatedFiles;
-  const hideOutdated = allowOutdated && question.showOutdatedFiles === false;
   const readOnly = question.isReadOnly;
-  const singleImage = isSingleImagePreview(question, value);
+  const singleImage = isSingleImagePreview(question, displayed);
   // Set by updatePdfPreview, which runs first
   const pdfPreview = htmlElement.classList.contains(PDF_PREVIEW_CLASS);
   htmlElement.classList.toggle(LIST_LAYOUT_CLASS, !singleImage && !pdfPreview);
@@ -352,7 +370,10 @@ const updateFileItems = (
     if (!file) return;
     const outdated = isOutdatedFile(file);
     const permanentRemoval = allowOutdated && isStoredFile(file);
-    preview.classList.toggle(OUTDATED_HIDDEN_CLASS, hideOutdated && outdated);
+    // Hidden outdated file: nothing rendered for it ( no toolbar either )
+    const hidden = !displayed.includes(file);
+    preview.classList.toggle(OUTDATED_HIDDEN_CLASS, hidden);
+    if (hidden) return;
     syncOutdatedIcon(preview, outdated, translate);
     // The toolbar overlays the preview item, except over the PDF preview
     // where it sits next to the "Select file" action, in the upload area.
@@ -411,17 +432,18 @@ const updateQuestionActions = (
   domService: DomService
 ): void => {
   const value: File[] = Array.isArray(question.value) ? question.value : [];
+  const displayed = getDisplayedFiles(question);
   const readOnly = question.isReadOnly;
-  htmlElement.classList.toggle(ANSWERED_CLASS, value.length > 0);
+  htmlElement.classList.toggle(ANSWERED_CLASS, displayed.length > 0);
 
   // Extend SurveyJS's single image preview to multiple-file questions holding
-  // a single image
+  // a single displayed image
   if (question.allowMultiple) {
     htmlElement
       .querySelector('.sd-file')
       ?.classList.toggle(
         SINGLE_IMAGE_CLASS,
-        isSingleImagePreview(question, value)
+        isSingleImagePreview(question, displayed)
       );
   }
 
@@ -464,7 +486,14 @@ const updateQuestionActions = (
     ) as ComponentRef<FileQuestionActionsComponent>;
     question.__questionActions = ref;
   }
+  const limit = question.allowMultiple
+    ? Number(question.getPropertyValue('allowedFileNumber')) || undefined
+    : undefined;
   ref.instance.locked = locked;
+  ref.instance.limit = limit;
+  ref.instance.limitReached = !!limit && value.length >= limit;
+  // Hidden outdated files still count toward the limit: explained in tooltips
+  ref.instance.hiddenCount = value.length - displayed.length;
   ref.instance.selectFile = () => {
     const input = htmlElement.querySelector(
       'input[type="file"]'

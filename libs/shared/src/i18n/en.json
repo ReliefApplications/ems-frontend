@@ -1128,7 +1128,10 @@
         "successSave": "Successfully saved as draft"
       },
       "file": {
+        "limitReached": "Maximum number of files reached ({{limit}})",
         "outdated": {
+          "hiddenSingle": "The attached file is outdated and hidden from this form. Remove it permanently to upload a new one.",
+          "limitReachedHidden": "Maximum number of files reached ({{limit}}), including {{count}} outdated file(s) hidden from this form",
           "locked": "Remove the current file permanently before selecting a new one",
           "markAsActive": "Mark as active",
           "markAsOutdated": "Mark as outdated",

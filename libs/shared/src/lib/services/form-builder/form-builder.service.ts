@@ -220,17 +220,20 @@ export class FormBuilderService {
   }
 
   /**
-   * Check if given files are valid for given file type question
+   * Check if given files can be added to the given file type question,
+   * regarding its maximum number of files. Files already attached to the
+   * question count, including stored ones and files marked as outdated.
    *
    * @param question File question to apply checks
-   * @param files Uploaded files
+   * @param files Files being uploaded
    * @returns Given files validity against given question
    */
   private checkFileUploadValidity(question: Question, files: File[]) {
     let isValid = true;
     const allowMultiple = question.getPropertyValue('allowMultiple');
     const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
-    if (allowMultiple && files.length > allowedFileNumber) {
+    const attached = Array.isArray(question.value) ? question.value.length : 0;
+    if (allowMultiple && attached + files.length > allowedFileNumber) {
       this.snackBar.openSnackBar(
         this.translate.instant(
           'components.formBuilder.errors.maximumAllowedFiles',
@@ -274,10 +277,10 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    const isUploadValid = this.checkFileUploadValidity(options.question, [
-      ...options.files,
-      ...(temporaryFilesStorage[options.name] ?? []),
-    ]);
+    const isUploadValid = this.checkFileUploadValidity(
+      options.question,
+      options.files
+    );
     if (!isUploadValid) {
       return;
     }

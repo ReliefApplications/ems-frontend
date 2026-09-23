@@ -82,7 +82,12 @@ describe('file widget', () => {
 
   const createQuestion = (
     mode: 'display' | 'edit',
-    value: Array<{ name: string; type: string; content: unknown }>,
+    value: Array<{
+      name: string;
+      type: string;
+      content: unknown;
+      outdated?: boolean;
+    }>,
     properties: Partial<QuestionFile> = {}
   ): QuestionFile =>
     ({
@@ -99,6 +104,7 @@ describe('file widget', () => {
       ),
       allowImagesPreview: true,
       doRemoveFile: jest.fn(),
+      getPropertyValue: () => undefined,
       ...properties,
     } as unknown as QuestionFile);
 
@@ -357,6 +363,56 @@ describe('file widget', () => {
       const previews = element.querySelectorAll('.sd-file__preview');
       expect(previews[0].classList.contains('file-item--hidden')).toBe(true);
       expect(previews[1].classList.contains('file-item--hidden')).toBe(false);
+      // No toolbar for the hidden file, the value still holds it
+      expect(getItems()).toHaveLength(1);
+      expect(getItems()[0].instance.file).toBe(question.value[1]);
+      expect(question.value).toHaveLength(2);
+    });
+
+    it('renders nothing for a hidden outdated single PDF', () => {
+      const pdf = {
+        ...stored,
+        name: 'report.pdf',
+        type: 'application/pdf',
+        outdated: true,
+      };
+      const question = createQuestion('edit', [pdf], {
+        allowOutdatedFiles: true,
+        showOutdatedFiles: false,
+        previewValue: [{ ...pdf, content: 'http://files/report.pdf' }],
+      } as any);
+      const element = createElement();
+
+      widget.afterRender(question, element);
+
+      expect(element.classList.contains('file-pdf-preview')).toBe(false);
+      expect(element.classList.contains('file-question--answered')).toBe(false);
+      expect(getItems()).toHaveLength(0);
+      expect(
+        element
+          .querySelector('.sd-file__preview')
+          ?.classList.contains('file-item--hidden')
+      ).toBe(true);
+      // The single file still locks uploads: it must be removed permanently
+      expect(getQuestionActions()[0].instance.locked).toBe(true);
+    });
+
+    it('does not extend the single image preview to a hidden outdated image', () => {
+      const question = createQuestion('edit', [{ ...image, outdated: true }], {
+        allowOutdatedFiles: true,
+        showOutdatedFiles: false,
+        allowMultiple: true,
+      });
+      const element = createElement();
+
+      widget.afterRender(question, element);
+
+      expect(
+        element
+          .querySelector('.sd-file')
+          ?.classList.contains('sd-file--single-image')
+      ).toBe(false);
+      expect(getItems()).toHaveLength(0);
     });
   });
 
@@ -422,6 +478,45 @@ describe('file widget', () => {
       expect(getQuestionActions()[0].instance.locked).toBe(false);
       wrapper.dispatchEvent(new Event('drop', { bubbles: true }));
       expect(dropHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('tells the user about hidden outdated files and the reached limit', () => {
+      const hidden = { ...stored, outdated: true };
+      const question = createQuestion('edit', [hidden, stored, stored], {
+        allowOutdatedFiles: true,
+        showOutdatedFiles: false,
+        allowMultiple: true,
+        getPropertyValue: (name: string) =>
+          name === 'allowedFileNumber' ? 3 : undefined,
+      } as any);
+      const element = createElement(3);
+
+      widget.afterRender(question, element);
+
+      const { instance } = getQuestionActions()[0];
+      expect(instance.hiddenCount).toBe(1);
+      expect(instance.limit).toBe(3);
+      expect(instance.limitReached).toBe(true);
+      expect(instance.locked).toBe(false);
+
+      question.value = [hidden, stored];
+      widget.afterRender(question, element);
+      expect(getQuestionActions()[0].instance.limitReached).toBe(false);
+    });
+
+    it('reports a single hidden outdated file as locking uploads', () => {
+      const question = createQuestion('edit', [{ ...stored, outdated: true }], {
+        allowOutdatedFiles: true,
+        showOutdatedFiles: false,
+      });
+      const element = createElement();
+
+      widget.afterRender(question, element);
+
+      const { instance } = getQuestionActions()[0];
+      expect(instance.locked).toBe(true);
+      expect(instance.hiddenCount).toBe(1);
+      expect(instance.limitReached).toBe(false);
     });
 
     it.each([

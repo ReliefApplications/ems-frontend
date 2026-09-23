@@ -232,7 +232,7 @@
   }
 
   // Question-level toolbar ( "Select file" ): centered in the drop zone while
-  // empty, top-right corner once a file is attached
+  // no file is displayed, top-right corner once a file is displayed
   .file-question--answered .file-question-actions {
     position: absolute;
     top: 0.5rem;
