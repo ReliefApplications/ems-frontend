@@ -42,9 +42,9 @@ import { File, FileService } from '../../../services/file/file.service';
     <ui-button
       *ngIf="canOutdate"
       [isIcon]="true"
-      [icon]="outdated ? 'unarchive' : 'archive'"
+      [icon]="outdated ? 'restore' : 'delete'"
       category="tertiary"
-      variant="primary"
+      [variant]="outdated ? 'primary' : 'danger'"
       size="small"
       [uiTooltip]="
         (outdated
