@@ -16,6 +16,7 @@ export const GET_DRAFT_RECORDS = gql`
         automated
         canSee
         canUpdate
+        canDeleteFiles
       }
     }
   }

@@ -42,6 +42,37 @@ describe('GridDataFormatterService', () => {
     expect(service).toBeTruthy();
   });
 
+  /**
+   * Builds a minimal file grid field.
+   *
+   * @param name field name
+   * @param showOutdatedFiles whether outdated files are displayed
+   * @returns grid field
+   */
+  const fileField = (name: string, showOutdatedFiles = false): GridField =>
+    ({
+      ...textField(name),
+      type: 'JSON',
+      meta: { type: 'file' },
+      showOutdatedFiles,
+    } as unknown as GridField);
+
+  it('should hide outdated files unless the field displays them', () => {
+    const files = [
+      { name: 'old.pdf', content: 'old-id', outdated: true },
+      { name: 'current.docx', content: 'current-id' },
+    ];
+    const row: any = { id: '1', documents: files, all: files };
+    service.formatGridRowData(row, [
+      fileField('documents'),
+      fileField('all', true),
+    ]);
+    expect(row._display.files.documents).toEqual([files[1]]);
+    expect(row._display.files.all).toEqual(files);
+    expect(row._display.icon['current.docx']).toBe('k-icon k-i-file-word');
+    expect(row.documents).toBe(files);
+  });
+
   it('should format text fields into the row display text map', () => {
     const row: any = { id: '1', name: 'Alice' };
     service.formatGridRowData(row, [textField('name')]);

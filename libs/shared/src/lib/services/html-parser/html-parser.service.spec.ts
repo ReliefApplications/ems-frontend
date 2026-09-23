@@ -375,6 +375,40 @@ describe('HtmlParserService', () => {
       expect(result).toContain('k-icon k-i-file-pdf');
       expect(result).toContain('report');
     });
+    describe('outdated files', () => {
+      const data = {
+        documents: [
+          { name: 'old.pdf', content: 'old-id', outdated: true },
+          { name: 'current.pdf', content: 'current-id' },
+        ],
+      };
+
+      it('hides outdated files by default, keeping the record index of the others', () => {
+        const result = service.parseHtml('<p>{{data.documents}}</p>', {
+          data,
+          fields: [{ name: 'documents', type: 'file' }],
+        });
+
+        expect(result).not.toContain('title="old.pdf"');
+        expect(result).toContain('title="current.pdf"');
+        expect(result).toContain('index="1"');
+        expect(result).not.toContain('index="0"');
+      });
+
+      it('displays outdated files with a warning when the field is configured so', () => {
+        const result = service.parseHtml('<p>{{data.documents}}</p>', {
+          data,
+          fields: [
+            { name: 'documents', type: 'file', showOutdatedFiles: true },
+          ],
+        });
+
+        expect(result).toContain('title="old.pdf"');
+        expect(result).toContain('index="0"');
+        expect(result).toContain('index="1"');
+        expect(result.match(/>warning</g)).toHaveLength(1);
+      });
+    });
   });
   describe('Parse HTML with context data', () => {
     let replaceRecordFields!: any;

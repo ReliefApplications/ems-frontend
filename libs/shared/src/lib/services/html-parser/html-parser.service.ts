@@ -987,24 +987,34 @@ export class HtmlParserService {
       case 'file':
         convertedValue = '';
         if (isArray(value)) {
-          for (let i = 0; value[i]; ) {
+          const outdatedTitle = this.translate.instant(
+            'components.form.file.outdated.tooltip'
+          );
+          // Files marked as outdated are hidden, unless the field is
+          // configured to display them. The index is the one in the
+          // record value, used to identify the file when clicking on button
+          for (let i = 0; value[i]; i++) {
             const file = value[i];
+            if (file.outdated && !field.showOutdatedFiles) continue;
             const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
               removeFileExtension(file.name),
               field
             );
+            const outdatedIcon = file.outdated
+              ? `<span class="material-icons" style="display: inline-block; font-size: 16px; line-height: 1; color: #f59e0b; margin-right: 2px; vertical-align: middle" title="${outdatedTitle}">warning</span>`
+              : '';
             convertedValue += `
               <button
                 type="file"
                 class="k-button k-button-flat k-button-flat-base"
                 field="${field.name}"
-                index="${i++}"
+                index="${i}"
                 style="padding: 4px 6px; cursor: pointer; ${style}"
                 title="${file.name}"
               >
                 <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
-                ${fileName}
+                ${outdatedIcon}${fileName}
               </button>
             `
               .replace(/\s+/g, ' ')

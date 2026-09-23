@@ -1127,6 +1127,20 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "file": {
+        "limitReached": "Maximum number of files reached ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "The attached file is outdated and hidden from this form. Remove it permanently to upload a new one.",
+          "limitReachedHidden": "Maximum number of files reached ({{limit}}), including {{count}} outdated file(s) hidden from this form",
+          "locked": "Remove the current file permanently before selecting a new one",
+          "markAsActive": "Mark as active",
+          "markAsOutdated": "Mark as outdated",
+          "removePermanently": "Remove permanently",
+          "tooltip": "This file is outdated"
+        },
+        "remove": "Remove file",
+        "select": "Select file"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -1392,6 +1406,10 @@
         },
         "search": "Search fields...",
         "selected": "Selected fields",
+        "showOutdatedFiles": {
+          "info": "Only applies to file fields. Files marked as outdated in the form are hidden unless this option is enabled.",
+          "title": "Show outdated files"
+        },
         "title": "Fields",
         "transferAllFrom": "Remove all fields",
         "transferAllTo": "Add all fields"
@@ -1615,14 +1633,18 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
+        "allowFieldDeleteFiles": "Allow this role to permanently delete files of the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
         "allowSelectedFieldsAccessibility": "Allow this role to see the selected fields",
+        "allowSelectedFieldsDeleteFiles": "Allow this role to permanently delete files of the selected file fields",
         "allowSelectedFieldsUpdate": "Allow this role to update the selected fields",
         "autoGrantFieldsAccessibility": "Automatically grant view access to fields added to this resource in the future",
         "autoGrantFieldsUpdate": "Automatically grant edit access to fields added to this resource in the future",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+        "disallowFieldDeleteFiles": "Disallow this role to permanently delete files of the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
         "disallowSelectedFieldsAccessibility": "Disallow this role to see the selected fields",
+        "disallowSelectedFieldsDeleteFiles": "Disallow this role to permanently delete files of the selected file fields",
         "disallowSelectedFieldsUpdate": "Disallow this role to update the selected fields",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",

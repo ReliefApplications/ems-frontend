@@ -36,6 +36,10 @@ export interface File {
   name: string;
   type?: string;
   content?: string | DocumentManagementFileContent;
+  /** Marked as outdated by a user, instead of being deleted */
+  outdated?: boolean;
+  /** ISO date of the last time the file was marked as outdated */
+  outdatedAt?: string;
 }
 
 /**

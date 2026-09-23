@@ -1127,6 +1127,20 @@
         "successEdit": "Brouillon modifié avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
       },
+      "file": {
+        "limitReached": "Nombre maximum de fichiers atteint ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "Le fichier joint est obsolète et masqué dans ce formulaire. Supprimez-le définitivement pour en télécharger un nouveau.",
+          "limitReachedHidden": "Nombre maximum de fichiers atteint ({{limit}}), dont {{count}} fichier(s) obsolète(s) masqué(s) dans ce formulaire",
+          "locked": "Supprimez définitivement le fichier actuel avant d’en sélectionner un nouveau",
+          "markAsActive": "Marquer comme actif",
+          "markAsOutdated": "Marquer comme obsolète",
+          "removePermanently": "Supprimer définitivement",
+          "tooltip": "Ce fichier est obsolète"
+        },
+        "remove": "Supprimer le fichier",
+        "select": "Sélectionner un fichier"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}}?"
@@ -1395,6 +1409,10 @@
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
+        "showOutdatedFiles": {
+          "info": "S’applique uniquement aux champs de type fichier. Les fichiers marqués comme obsolètes dans le formulaire sont masqués sauf si cette option est activée.",
+          "title": "Afficher les fichiers obsolètes"
+        },
         "title": "Champs",
         "transferAllFrom": "Supprimer tous les champs",
         "transferAllTo": "Ajouter tous les champs"
@@ -1618,14 +1636,18 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+        "allowFieldDeleteFiles": "Autoriser ce rôle à supprimer définitivement les fichiers du champ {{field}}",
         "allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
         "allowSelectedFieldsAccessibility": "Autoriser ce rôle à voir les champs sélectionnés",
+        "allowSelectedFieldsDeleteFiles": "Autoriser ce rôle à supprimer définitivement les fichiers des champs fichier sélectionnés",
         "allowSelectedFieldsUpdate": "Autoriser ce rôle à mettre à jour les champs sélectionnés",
         "autoGrantFieldsAccessibility": "Accorder automatiquement l'accès en visualisation aux champs ajoutés à cette ressource à l'avenir",
         "autoGrantFieldsUpdate": "Accorder automatiquement l'accès en modification aux champs ajoutés à cette ressource à l'avenir",
         "disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+        "disallowFieldDeleteFiles": "Interdire à ce rôle de supprimer définitivement les fichiers du champ {{field}}",
         "disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
         "disallowSelectedFieldsAccessibility": "Interdire ce rôle pour voir les champs sélectionnés",
+        "disallowSelectedFieldsDeleteFiles": "Interdire à ce rôle de supprimer définitivement les fichiers des champs fichier sélectionnés",
         "disallowSelectedFieldsUpdate": "Interdire ce rôle pour mettre à jour les champs sélectionnés",
         "grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
         "grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",

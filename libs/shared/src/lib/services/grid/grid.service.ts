@@ -253,6 +253,7 @@ export class GridService {
               fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,
               canSee,
+              showOutdatedFiles: !!f.showOutdatedFiles,
             };
           }
         }

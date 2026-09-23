@@ -25,6 +25,7 @@ import { FormFilterComponent } from './tab-fields/form-filter/form-filter.compon
 import {
   MenuModule,
   TooltipModule,
+  ToggleModule,
   RadioModule,
   ButtonModule,
   TableModule,
@@ -68,6 +69,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     IconModule,
     DateModule,
     TooltipModule,
+    ToggleModule,
     AutocompleteModule,
     TranslateModule,
     InputsModule,
