@@ -441,6 +441,50 @@ describe('file widget', () => {
     });
   });
 
+  describe('layout', () => {
+    it('flags the plain list layout', () => {
+      const question = createQuestion('edit', [stored, stored], {
+        allowMultiple: true,
+      });
+      const element = createElement(2);
+
+      widget.afterRender(question, element);
+
+      expect(element.classList.contains('file-question--list')).toBe(true);
+    });
+
+    it('does not flag the plain list layout on a single image', () => {
+      const question = createQuestion('edit', [image]);
+      const element = createElement();
+
+      widget.afterRender(question, element);
+
+      expect(element.classList.contains('file-question--list')).toBe(false);
+    });
+
+    it('moves the toolbar next to the select action over a PDF preview', () => {
+      const pdf = { ...stored, name: 'report.pdf', type: 'application/pdf' };
+      const question = createQuestion('edit', [pdf], {
+        previewValue: [{ ...pdf, content: 'http://files/report.pdf' }],
+      } as any);
+      const element = createElement();
+
+      widget.afterRender(question, element);
+
+      expect(element.classList.contains('file-pdf-preview')).toBe(true);
+      expect(element.classList.contains('file-question--list')).toBe(false);
+      expect(getItems()).toHaveLength(1);
+      expect(
+        element.querySelector('.sd-file__wrapper shared-file-item-actions')
+      ).not.toBeNull();
+      expect(
+        element.querySelector(
+          '.sd-file__image-wrapper shared-file-item-actions'
+        )
+      ).toBeNull();
+    });
+  });
+
   describe('single image preview', () => {
     it('extends it to a multiple-file question holding a single image', () => {
       const question = createQuestion('edit', [image], { allowMultiple: true });

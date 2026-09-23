@@ -241,8 +241,9 @@
   }
 
   // Per-file toolbar rendered below the file icon in the list: make room for
-  // it without growing the upload area ( image / PDF previews overlay it )
-  .sd-file:not(.sd-file--single-image) .sd-file__list {
+  // it without growing the upload area ( image / PDF previews are laid out
+  // by their own rules )
+  .file-question--list .sd-file__list {
     padding: calc(8 * var(--sjs-base-unit, var(--base-unit, 8px))) 0;
     min-height: calc(20 * var(--sjs-base-unit, var(--base-unit, 8px)));
     max-height: calc(20 * var(--sjs-base-unit, var(--base-unit, 8px)));
@@ -330,13 +331,24 @@
       border: none;
     }
 
-    // Per-file toolbar over the PDF preview: bottom-right corner, clear of
-    // the viewer toolbar
-    .file-item-actions {
+    // Upload area toolbar: "Select file" action followed by the per-file
+    // actions, in the top-right corner, clear of the viewer
+    .sd-file__wrapper {
       position: absolute;
-      bottom: 0.5rem;
+      top: 0.5rem;
       right: 0.5rem;
-      z-index: 10;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .file-question-actions {
+      position: static;
+    }
+
+    .file-item-actions {
+      order: 2;
     }
   }
 

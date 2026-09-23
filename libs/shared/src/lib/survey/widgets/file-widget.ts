@@ -77,6 +77,8 @@ const SINGLE_LOCKED_CLASS = 'file-single-locked';
 const ANSWERED_CLASS = 'file-question--answered';
 /** SurveyJS class giving a single image the full-size in-area preview. */
 const SINGLE_IMAGE_CLASS = 'sd-file--single-image';
+/** Class toggled on the question root when files render as a plain list. */
+const LIST_LAYOUT_CLASS = 'file-question--list';
 /** Class of the warning icon injected next to outdated file names. */
 const OUTDATED_ICON_CLASS = 'file-item__outdated-icon';
 /** CSS class of the iframe injected inside the upload area for PDFs. */
@@ -335,6 +337,9 @@ const updateFileItems = (
   const hideOutdated = allowOutdated && question.showOutdatedFiles === false;
   const readOnly = question.isReadOnly;
   const singleImage = isSingleImagePreview(question, value);
+  // Set by updatePdfPreview, which runs first
+  const pdfPreview = htmlElement.classList.contains(PDF_PREVIEW_CLASS);
+  htmlElement.classList.toggle(LIST_LAYOUT_CLASS, !singleImage && !pdfPreview);
   const previews = Array.from(
     htmlElement.querySelectorAll('.sd-file__preview')
   ) as HTMLElement[];
@@ -349,22 +354,27 @@ const updateFileItems = (
     const permanentRemoval = allowOutdated && isStoredFile(file);
     preview.classList.toggle(OUTDATED_HIDDEN_CLASS, hideOutdated && outdated);
     syncOutdatedIcon(preview, outdated, translate);
-    const wrapper = preview.querySelector(
-      '.sd-file__image-wrapper'
+    // The toolbar overlays the preview item, except over the PDF preview
+    // where it sits next to the "Select file" action, in the upload area.
+    const host = (
+      pdfPreview
+        ? htmlElement.querySelector('.sd-file__wrapper')
+        : preview.querySelector('.sd-file__image-wrapper')
     ) as HTMLElement | null;
-    // Preview slot not rendered yet; the observer will call us again once it is.
-    if (!wrapper) return;
+    // Slot not rendered yet; the observer will call us again once it is.
+    if (!host) return;
 
     let ref = actions.get(index);
-    // SurveyJS re-rendered the preview item: the previous component is orphaned
-    if (ref && !wrapper.contains(ref.location.nativeElement)) {
+    // SurveyJS re-rendered the slot, or the toolbar moved: the previous
+    // component is orphaned
+    if (ref && !host.contains(ref.location.nativeElement)) {
       domService.removeComponentFromBody(ref);
       ref = undefined;
     }
     if (!ref) {
       ref = domService.appendComponentToBody(
         FileItemActionsComponent,
-        wrapper
+        host
       ) as ComponentRef<FileItemActionsComponent>;
       actions.set(index, ref);
     }
