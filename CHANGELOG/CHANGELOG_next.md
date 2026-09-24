@@ -1,3 +1,9 @@
+# [2.24.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.19...v2.24.0-rc.20) (2026-09-24)
+
+### Features
+
+- Allow outdated files ([#2945](https://github.com/ReliefApplications/ems-frontend/issues/2945)) ([aeb0360](https://github.com/ReliefApplications/ems-frontend/commit/aeb0360dc7bcc743a2e9a9855e1632df35d8dd0d)), closes [AB#134566](https://github.com/AB/issues/134566)
+
 # [2.24.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.18...v2.24.0-rc.19) (2026-09-22)
 
 ### Bug Fixes
