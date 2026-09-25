@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  EDIT_FORM_LANGUAGES,
   EDIT_FORM_NAME,
   EDIT_FORM_PERMISSIONS,
   EDIT_FORM_STATUS,
@@ -18,6 +19,7 @@ import {
   FormQueryResponse,
   EditFormMutationResponse,
   SnackbarSpinnerComponent,
+  AZURE_SUPPORTED_LANGUAGES,
 } from '@oort-front/shared';
 import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
@@ -66,6 +68,12 @@ export class FormBuilderComponent implements OnInit {
   public statusControl = new FormControl<string | undefined>('');
   /** Status choices */
   public statusChoices = Object.values(status);
+
+  // === FORM SUPPORTED LANGUAGES ===
+  /** Languages control */
+  public languagesControl = new FormControl<string[]>([]);
+  /** Languages choices */
+  public languagesChoices = AZURE_SUPPORTED_LANGUAGES;
 
   // === FORM EDITION ===
   /** Can edit name */
@@ -154,6 +162,9 @@ export class FormBuilderComponent implements OnInit {
         this.updateStatus(status);
       }
     });
+    this.languagesControl.valueChanges.subscribe((languages) => {
+      this.saveLanguages(languages || []);
+    });
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
@@ -169,6 +180,9 @@ export class FormBuilderComponent implements OnInit {
               this.loading = loading;
               this.form = data.form;
               this.statusControl.setValue(this.form.status, {
+                emitEvent: false,
+              });
+              this.languagesControl.setValue(this.form.languages || [], {
                 emitEvent: false,
               });
               this.breadcrumbService.setBreadcrumb(
@@ -540,6 +554,61 @@ export class FormBuilderComponent implements OnInit {
           this.snackBar.openSnackBar(message, snackbarConfig);
           if (!errors) {
             this.form = { ...data?.editForm, structure: this.structure };
+          }
+        },
+        error: (err) => {
+          loadingSnackbarRef.instance.dismiss();
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+        complete: () => {
+          // Detach the current set overlay
+          overlayRef.detach();
+        },
+      });
+  }
+
+  /**
+   * Save the languages supported by the form.
+   *
+   * @param languages new list of language codes
+   */
+  private async saveLanguages(languages: string[]): Promise<void> {
+    const loadingSnackbarRef = this.snackBarMessageInit();
+    const overlayRef = this.createLoadingOverlay();
+
+    this.apollo
+      .mutate<EditFormMutationResponse>({
+        mutation: EDIT_FORM_LANGUAGES,
+        variables: {
+          id: this.id,
+          languages,
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          // Dismiss the loading snackbar
+          loadingSnackbarRef.instance.dismiss();
+          // Open new snackbar with the request error or success message
+          const message = errors
+            ? this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant(
+                  'components.form.settings.languages'
+                ),
+                error: errors ? errors[0].message : '',
+              })
+            : this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant(
+                  'components.form.settings.languages'
+                ),
+                value: '',
+              });
+          const snackbarConfig = {
+            ...REQUEST_SNACKBAR_CONF,
+            error: errors ? true : false,
+          };
+          this.snackBar.openSnackBar(message, snackbarConfig);
+          if (!errors) {
+            this.form = { ...this.form, languages: data?.editForm.languages };
           }
         },
         error: (err) => {

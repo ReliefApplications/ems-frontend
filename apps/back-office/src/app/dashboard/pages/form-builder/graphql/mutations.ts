@@ -40,3 +40,13 @@ export const EDIT_FORM_NAME = gql`
     }
   }
 `;
+
+/** Edit form languages gql mutation definition */
+export const EDIT_FORM_LANGUAGES = gql`
+  mutation editForm($id: ID!, $languages: [String]) {
+    editForm(id: $id, languages: $languages) {
+      id
+      languages
+    }
+  }
+`;

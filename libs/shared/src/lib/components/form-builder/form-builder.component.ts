@@ -41,6 +41,14 @@ import {
   FIELD_HISTORY_ALLOWED_PROPERTIES,
   FIELD_HISTORY_QUESTION_TYPE,
 } from '../../survey/components/field-history';
+import {
+  FILES_UPLOAD_ALLOWED_PROPERTIES,
+  FILES_UPLOAD_QUESTION_TYPE,
+} from '../../survey/components/files-upload';
+import {
+  FILES_MANAGEMENT_ALLOWED_PROPERTIES,
+  FILES_MANAGEMENT_QUESTION_TYPE,
+} from '../../survey/components/files-management';
 
 /**
  * Array containing the different types of questions.
@@ -355,6 +363,18 @@ export class FormBuilderComponent
       if (
         options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE &&
         !FIELD_HISTORY_ALLOWED_PROPERTIES.includes(options.property.name)
+      ) {
+        options.canShow = false;
+      }
+      if (
+        options.obj?.getType() === FILES_UPLOAD_QUESTION_TYPE &&
+        !FILES_UPLOAD_ALLOWED_PROPERTIES.includes(options.property.name)
+      ) {
+        options.canShow = false;
+      }
+      if (
+        options.obj?.getType() === FILES_MANAGEMENT_QUESTION_TYPE &&
+        !FILES_MANAGEMENT_ALLOWED_PROPERTIES.includes(options.property.name)
       ) {
         options.canShow = false;
       }

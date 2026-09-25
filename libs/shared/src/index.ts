@@ -125,6 +125,7 @@ export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
+export * from './lib/survey/constants/azure-languages.const';
 export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';
 export * from './lib/survey/components/code-editor/code-editor.component';

@@ -10,6 +10,7 @@ export const EDIT_FORM_FIELDS = gql`
     core
     isPublic
     fields
+    languages
     permissions {
       canSee {
         id

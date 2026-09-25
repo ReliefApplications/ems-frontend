@@ -1,0 +1,109 @@
+<div class="files-management-question flex flex-col gap-3">
+  <div class="flex flex-col sm:flex-row gap-3">
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'components.filesManagement.languageA' | translate }}</label>
+      <ui-select-menu [formControl]="languageAControl">
+        <ui-select-option
+          *ngFor="let choice of languageChoices"
+          [value]="choice.value"
+        >
+          {{ choice.text }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'components.filesManagement.languageB' | translate }}</label>
+      <ui-select-menu [formControl]="languageBControl">
+        <ui-select-option
+          *ngFor="let choice of languageChoices"
+          [value]="choice.value"
+        >
+          {{ choice.text }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </div>
+
+  <div *ngIf="rows.length; else emptyTmpl" class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500">
+          <th class="py-1 pr-2">
+            {{ 'components.filesManagement.fileName' | translate }}
+          </th>
+          <th class="py-1 pr-2">
+            {{ 'components.filesManagement.field' | translate }}
+          </th>
+          <th class="py-1 pr-2">
+            {{ 'components.filesManagement.language' | translate }}
+          </th>
+          <th class="py-1 pr-2">
+            {{ 'components.filesManagement.status' | translate }}
+          </th>
+          <th class="py-1"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows" class="border-t">
+          <td class="py-1 pr-2">{{ row.file.name }}</td>
+          <td class="py-1 pr-2">{{ row.fieldTitle }}</td>
+          <td class="py-1 pr-2">{{ row.languageLabel }}</td>
+          <td class="py-1 pr-2">
+            <span
+              *ngIf="row.outdated"
+              class="inline-flex items-center gap-1 text-amber-600"
+            >
+              <span class="k-icon k-i-warning"></span>
+              {{ 'components.filesManagement.statusOutdated' | translate }}
+            </span>
+            <span *ngIf="!row.outdated">
+              {{ 'components.filesManagement.statusUpToDate' | translate }}
+            </span>
+          </td>
+          <td class="py-1 text-right whitespace-nowrap">
+            <ui-button
+              [isIcon]="true"
+              icon="download"
+              category="tertiary"
+              variant="primary"
+              size="small"
+              [uiTooltip]="'components.filesManagement.download' | translate"
+              (click)="download(row)"
+            ></ui-button>
+            <!--
+              Azure Translator integration is explicitly out of scope for now
+              (ticket ABC-138121 comments); this stays disabled until that
+              work is picked up.
+            -->
+            <ui-button
+              [isIcon]="true"
+              icon="translate"
+              category="tertiary"
+              variant="primary"
+              size="small"
+              [disabled]="true"
+              [uiTooltip]="
+                'components.filesManagement.downloadTranslationTooltip'
+                  | translate
+              "
+            ></ui-button>
+            <ui-button
+              [isIcon]="true"
+              icon="close"
+              category="tertiary"
+              variant="danger"
+              size="small"
+              [uiTooltip]="'components.filesManagement.remove' | translate"
+              (click)="remove(row)"
+            ></ui-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #emptyTmpl>
+    <p class="text-gray-400 text-sm italic">
+      {{ 'components.filesManagement.empty' | translate }}
+    </p>
+  </ng-template>
+</div>
