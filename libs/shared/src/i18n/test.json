@@ -1075,6 +1075,39 @@
       "title": "******",
       "to": "******"
     },
+    "filesManagement": {
+      "download": "******",
+      "downloadTranslationTooltip": "******",
+      "empty": "******",
+      "field": "******",
+      "fileName": "******",
+      "language": "******",
+      "languageA": "******",
+      "languageB": "******",
+      "remove": "******",
+      "status": "******",
+      "statusOutdated": "******",
+      "statusUpToDate": "******",
+      "unspecifiedLanguage": "******"
+    },
+    "filesUpload": {
+      "addFiles": "******",
+      "confirm": "******",
+      "empty": "******",
+      "errors": {
+        "invalidType": "****** {{name}} ******",
+        "maxSizeExceeded": "****** {{name}} ******",
+        "maximumAllowedFiles": "****** {{number}}",
+        "noTargetField": "******",
+        "singleFileOnly": "******",
+        "uploadFailed": "******"
+      },
+      "fileName": "******",
+      "fileType": "******",
+      "language": "******",
+      "remove": "******",
+      "targetField": "******"
+    },
     "form": {
       "aggregation": {
         "delete": {
@@ -1153,6 +1186,9 @@
             "description": "******"
           }
         }
+      },
+      "settings": {
+        "languages": "******"
       },
       "summary": {
         "cache": {

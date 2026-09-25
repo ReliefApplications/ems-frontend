@@ -1075,6 +1075,39 @@
       "title": "Попередній перегляд електронного листа",
       "to": "Кому"
     },
+    "filesManagement": {
+      "download": "Завантажити",
+      "downloadTranslationTooltip": "Переклад через Azure Translator — незабаром",
+      "empty": "Немає файлів, що відповідають обраним мовам.",
+      "field": "Поле",
+      "fileName": "Назва файлу",
+      "language": "Мова",
+      "languageA": "Мова A",
+      "languageB": "Мова B",
+      "remove": "Видалити",
+      "status": "Статус",
+      "statusOutdated": "Застаріло",
+      "statusUpToDate": "Актуально",
+      "unspecifiedLanguage": "Мова не вказана"
+    },
+    "filesUpload": {
+      "addFiles": "Додати файли",
+      "confirm": "Завантажити",
+      "empty": "Немає доданих файлів.",
+      "errors": {
+        "invalidType": "«{{name}}» не є дозволеним типом файлу.",
+        "maxSizeExceeded": "«{{name}}» перевищує максимально допустимий розмір.",
+        "maximumAllowedFiles": "Максимальна кількість файлів: {{number}}",
+        "noTargetField": "Оберіть цільове поле перед додаванням файлів.",
+        "singleFileOnly": "Це поле приймає лише один файл.",
+        "uploadFailed": "Завантаження не вдалося, спробуйте ще раз."
+      },
+      "fileName": "Назва",
+      "fileType": "Тип",
+      "language": "Мова",
+      "remove": "Видалити",
+      "targetField": "Цільове поле"
+    },
     "form": {
       "aggregation": {
         "delete": {
@@ -1153,6 +1186,9 @@
             "description": "Перевпорядковуйте, сортуйте, фільтруйте та приховуйте стовпці для зміни стандартного відображення макета"
           }
         }
+      },
+      "settings": {
+        "languages": "Мови"
       },
       "summary": {
         "cache": {

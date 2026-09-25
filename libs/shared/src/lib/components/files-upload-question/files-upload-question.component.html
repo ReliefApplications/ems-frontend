@@ -1,0 +1,102 @@
+<div class="files-upload-question flex flex-col gap-3">
+  <div class="flex flex-col sm:flex-row gap-3">
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'components.filesUpload.targetField' | translate }}</label>
+      <ui-select-menu [formControl]="targetFieldControl">
+        <ui-select-option
+          *ngFor="let choice of targetFieldChoices"
+          [value]="choice.value"
+        >
+          {{ choice.text }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'components.filesUpload.language' | translate }}</label>
+      <ui-select-menu [formControl]="languageControl">
+        <ui-select-option
+          *ngFor="let choice of languageChoices"
+          [value]="choice.value"
+        >
+          {{ choice.text }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </div>
+
+  <div>
+    <input
+      #fileInput
+      type="file"
+      multiple
+      class="files-upload-question__input"
+      (change)="onFilesSelected($event)"
+    />
+    <ui-button
+      category="secondary"
+      variant="primary"
+      icon="attach_file"
+      (click)="fileInput.click()"
+    >
+      {{ 'components.filesUpload.addFiles' | translate }}
+    </ui-button>
+  </div>
+
+  <p *ngIf="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
+
+  <div *ngIf="stagedFiles.length; else emptyTmpl" class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-gray-500">
+          <th class="py-1 pr-2">
+            {{ 'components.filesUpload.fileName' | translate }}
+          </th>
+          <th class="py-1 pr-2">
+            {{ 'components.filesUpload.fileType' | translate }}
+          </th>
+          <th class="py-1 pr-2">
+            {{ 'components.filesUpload.language' | translate }}
+          </th>
+          <th class="py-1"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let staged of stagedFiles; let i = index"
+          class="border-t"
+        >
+          <td class="py-1 pr-2">{{ staged.file.name }}</td>
+          <td class="py-1 pr-2">{{ getFileType(staged.file) }}</td>
+          <td class="py-1 pr-2">{{ languageText(staged.language) }}</td>
+          <td class="py-1 text-right">
+            <ui-button
+              [isIcon]="true"
+              icon="close"
+              category="tertiary"
+              variant="danger"
+              size="small"
+              [uiTooltip]="'components.filesUpload.remove' | translate"
+              (click)="removeStagedFile(i)"
+            ></ui-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #emptyTmpl>
+    <p class="text-gray-400 text-sm italic">
+      {{ 'components.filesUpload.empty' | translate }}
+    </p>
+  </ng-template>
+
+  <div>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!stagedFiles.length"
+      (click)="confirmUpload()"
+    >
+      {{ 'components.filesUpload.confirm' | translate }}
+    </ui-button>
+  </div>
+</div>

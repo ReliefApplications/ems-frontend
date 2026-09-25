@@ -51,6 +51,7 @@ export interface Form {
   layouts?: Connection<Layout>;
   aggregations?: Connection<Aggregation>;
   metadata?: Metadata[];
+  languages?: string[];
 }
 
 /** Model for form graphql graphql query response */

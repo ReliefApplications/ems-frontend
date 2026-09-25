@@ -39,6 +39,7 @@ import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
+import { SurveyWithLanguages } from '../../survey/components/utils/files-widgets.util';
 
 /**
  * This component is used to display forms
@@ -149,6 +150,7 @@ export class FormComponent
       FIELD_HISTORY_REFRESH_PROPERTY,
       this.fieldHistoryRefresh$
     );
+    (this.survey as SurveyWithLanguages).languages = this.form.languages;
 
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();

@@ -1075,6 +1075,39 @@
       "title": "Email preview",
       "to": "To"
     },
+    "filesManagement": {
+      "download": "Download",
+      "downloadTranslationTooltip": "Translation via Azure Translator — coming soon",
+      "empty": "No files match the selected languages.",
+      "field": "Field",
+      "fileName": "File name",
+      "language": "Language",
+      "languageA": "Language A",
+      "languageB": "Language B",
+      "remove": "Remove",
+      "status": "Status",
+      "statusOutdated": "Outdated",
+      "statusUpToDate": "Up to date",
+      "unspecifiedLanguage": "Unspecified language"
+    },
+    "filesUpload": {
+      "addFiles": "Add files",
+      "confirm": "Upload",
+      "empty": "No files staged yet.",
+      "errors": {
+        "invalidType": "\"{{name}}\" is not an accepted file type.",
+        "maxSizeExceeded": "\"{{name}}\" exceeds the maximum allowed size.",
+        "maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
+        "noTargetField": "Select a target field before adding files.",
+        "singleFileOnly": "This field only accepts a single file.",
+        "uploadFailed": "The upload failed, please try again."
+      },
+      "fileName": "Name",
+      "fileType": "Type",
+      "language": "Language",
+      "remove": "Remove",
+      "targetField": "Target field"
+    },
     "form": {
       "aggregation": {
         "delete": {
@@ -1153,6 +1186,9 @@
             "description": "Reorder, sort, filter and hide columns to edit default display of the layout"
           }
         }
+      },
+      "settings": {
+        "languages": "Languages"
       },
       "summary": {
         "cache": {

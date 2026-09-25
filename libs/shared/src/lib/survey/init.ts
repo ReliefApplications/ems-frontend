@@ -11,6 +11,8 @@ import { ReferenceDataService } from '../services/reference-data/reference-data.
 import addCustomFunctions from '../utils/custom-functions';
 import * as EditorComponent from './components/editor';
 import * as FieldHistoryComponent from './components/field-history';
+import * as FilesUploadComponent from './components/files-upload';
+import * as FilesManagementComponent from './components/files-management';
 import * as GeospatialComponent from './components/geospatial';
 import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
@@ -58,6 +60,8 @@ const CUSTOM_COMPONENTS = [
   'geospatial',
   'editor',
   'field-history',
+  'filesupload',
+  'filesmanagement',
 ];
 
 /**
@@ -146,6 +150,8 @@ export const initCustomSurvey = (
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     EditorComponent.init(injector, ComponentCollection.Instance);
     FieldHistoryComponent.init(injector, ComponentCollection.Instance);
+    FilesUploadComponent.init(injector, ComponentCollection.Instance);
+    FilesManagementComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties

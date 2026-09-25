@@ -52,6 +52,7 @@ import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { SurveyWithLanguages } from '../../survey/components/utils/files-widgets.util';
 
 /**
  * Interface of Dialog data.
@@ -290,6 +291,7 @@ export class FormModalComponent
       this.form?.metadata,
       this.record
     );
+    (this.survey as SurveyWithLanguages).languages = this.form?.languages;
 
     // Auto-translation is wired centrally in FormBuilderService.createSurvey;
     // here we only handle component-specific reactions to value changes.

@@ -1075,6 +1075,39 @@
       "title": "Prévisualisation de mail",
       "to": "À"
     },
+    "filesManagement": {
+      "download": "Télécharger",
+      "downloadTranslationTooltip": "Traduction via Azure Translator — bientôt disponible",
+      "empty": "Aucun fichier ne correspond aux langues sélectionnées.",
+      "field": "Champ",
+      "fileName": "Nom du fichier",
+      "language": "Langue",
+      "languageA": "Langue A",
+      "languageB": "Langue B",
+      "remove": "Supprimer",
+      "status": "Statut",
+      "statusOutdated": "Obsolète",
+      "statusUpToDate": "À jour",
+      "unspecifiedLanguage": "Langue non précisée"
+    },
+    "filesUpload": {
+      "addFiles": "Ajouter des fichiers",
+      "confirm": "Téléverser",
+      "empty": "Aucun fichier en attente.",
+      "errors": {
+        "invalidType": "« {{name}} » n'est pas un type de fichier accepté.",
+        "maxSizeExceeded": "« {{name}} » dépasse la taille maximale autorisée.",
+        "maximumAllowedFiles": "Nombre maximum de fichiers autorisé : {{number}}",
+        "noTargetField": "Sélectionnez un champ cible avant d'ajouter des fichiers.",
+        "singleFileOnly": "Ce champ n'accepte qu'un seul fichier.",
+        "uploadFailed": "Le téléversement a échoué, veuillez réessayer."
+      },
+      "fileName": "Nom",
+      "fileType": "Type",
+      "language": "Langue",
+      "remove": "Supprimer",
+      "targetField": "Champ cible"
+    },
     "form": {
       "aggregation": {
         "delete": {
@@ -1153,6 +1186,9 @@
             "description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
           }
         }
+      },
+      "settings": {
+        "languages": "Langues"
       },
       "summary": {
         "cache": {

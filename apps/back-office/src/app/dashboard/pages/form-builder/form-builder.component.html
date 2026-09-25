@@ -35,6 +35,17 @@
         ></ui-button>
       </ng-container>
       <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'components.form.settings.languages' | translate }}</label>
+        <ui-select-menu [multiselect]="true" [formControl]="languagesControl">
+          <ui-select-option
+            *ngFor="let language of languagesChoices"
+            [value]="language.value"
+          >
+            {{ language.text }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div uiFormFieldDirective [outline]="false" class="p-0">
         <label>{{ 'common.status' | translate }}</label>
         <ui-select-menu
           [formControl]="statusControl"
