@@ -14,8 +14,15 @@ const CRON_OPTIONS = {
 export const cronValidator =
   (): ValidatorFn =>
   (control: AbstractControl): ValidationErrors | null => {
-    const valid = control.value
-      ? cron.isValidCron(control.value, CRON_OPTIONS)
-      : false;
-    return valid ? null : { pattern: { value: control.value } };
+    const value = control.value;
+
+    if (!value) {
+      return { pattern: { value } };
+    }
+
+    if (!cron.isValidCron(value, CRON_OPTIONS)) {
+      return { pattern: { value } };
+    }
+
+    return null;
   };

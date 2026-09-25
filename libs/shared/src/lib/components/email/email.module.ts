@@ -23,13 +23,14 @@ import {
   ExpansionPanelModule,
   RadioModule,
   DialogModule,
+  CronEditorModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { LayoutModule } from '@progress/kendo-angular-layout';
+import { LayoutModule, TabStripModule } from '@progress/kendo-angular-layout';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { FormModule } from '../form/form.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -42,7 +43,6 @@ import { LayoutComponent } from './steps/layout/layout.component';
 import { ScheduleAlertComponent } from './steps/schedule-alert/schedule-alert.component';
 import { SelectDistributionComponent } from './steps/select-distribution/select-distribution.component';
 import { PreviewComponent } from './steps/preview/preview.component';
-import { TabStripModule } from '@progress/kendo-angular-layout';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { EmailTemplateComponent } from './components/email-template/email-template.component';
 import { DatasetFilterComponent } from './components/dataset-filter/dataset-filter.component';
@@ -54,6 +54,7 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
 import { EmailAttachmentComponent } from './components/email-attachment/email-attachment.component';
 import { CreateDistributionComponent } from './components/create-distribution/create-distribution.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
+import { ReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
 
 /**
  * Email module.
@@ -117,6 +118,8 @@ import { PreviewDistributionComponent } from './components/preview-distribution/
     ResourceSelectComponent,
     ExpansionPanelModule,
     DialogModule,
+    CronEditorModule,
+    ReadableCronModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [
