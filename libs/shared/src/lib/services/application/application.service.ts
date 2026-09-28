@@ -420,6 +420,7 @@ export class ApplicationService {
             hideMenu: value.hideMenu,
             status: value.status,
             shortcut: value.shortcut,
+            additionalLanguages: value.additionalLanguages,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -439,6 +440,7 @@ export class ApplicationService {
                 hideMenu: data.editApplication.hideMenu,
                 status: data.editApplication.status,
                 shortcut: data.editApplication.shortcut,
+                additionalLanguages: data.editApplication.additionalLanguages,
               };
               this.application.next(newApplication);
             }

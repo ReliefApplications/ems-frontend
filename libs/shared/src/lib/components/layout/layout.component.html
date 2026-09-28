@@ -80,7 +80,9 @@
     <!-- Notifications -->
     <shared-notification-icon></shared-notification-icon>
     <!-- Language switch -->
-    <shared-language-switch></shared-language-switch>
+    <shared-language-switch
+      [allowedLanguages]="allowedLanguages"
+    ></shared-language-switch>
   </div>
   <!-- Account menu -->
   <ui-menu #accountMenu>

@@ -13,6 +13,8 @@ export interface Metadata {
   filter?: { defaultOperator?: string; operators: string[] };
   canSee?: boolean;
   canUpdate?: boolean;
+  /** File fields: whether the user can permanently remove files */
+  canDeleteFiles?: boolean;
   multiSelect?: boolean;
   filterable?: boolean;
   options?: { text: LocalizedString; value: any }[];

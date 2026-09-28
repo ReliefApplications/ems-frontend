@@ -6,9 +6,11 @@ import { Apollo } from 'apollo-angular';
 import 'survey-core/survey.i18n';
 import { AuthService } from '../services/auth/auth.service';
 import { DomService } from '../services/dom/dom.service';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
 import * as EditorComponent from './components/editor';
+import * as FieldHistoryComponent from './components/field-history';
 import * as GeospatialComponent from './components/geospatial';
 import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
@@ -42,6 +44,7 @@ import { initLocalization } from './localization';
 // Side-effect import: registers the custom property grid editor used to pick
 // the translation source question (translateField property).
 import './property-editors/translate-source-question.editor';
+import { registerSetValueOnFieldChangeTrigger } from './triggers/set-value-on-field-change.trigger';
 import { registerOnRecordEditionTrigger } from './triggers/on-record-edition.trigger';
 
 /** Name of the custom components we add to the survey */
@@ -54,6 +57,7 @@ const CUSTOM_COMPONENTS = [
   'people-tagbox',
   'geospatial',
   'editor',
+  'field-history',
 ];
 
 /**
@@ -75,6 +79,7 @@ export const initCustomSurvey = (
   const domService = injector.get(DomService);
   const apollo = injector.get(Apollo);
   const authService = injector.get(AuthService);
+  const datePipe = injector.get(DatePipe);
   const referenceDataService = injector.get(ReferenceDataService);
 
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
@@ -140,6 +145,7 @@ export const initCustomSurvey = (
     PeopleComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
     EditorComponent.init(injector, ComponentCollection.Instance);
+    FieldHistoryComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties
@@ -157,7 +163,8 @@ export const initCustomSurvey = (
   // set localization
   initLocalization();
   // register custom triggers
+  registerSetValueOnFieldChangeTrigger();
   registerOnRecordEditionTrigger();
   // load internal functions
-  addCustomFunctions(authService);
+  addCustomFunctions(authService, datePipe);
 };
