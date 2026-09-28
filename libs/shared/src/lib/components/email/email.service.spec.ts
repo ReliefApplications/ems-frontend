@@ -253,4 +253,32 @@ describe('EmailService (components/email)', () => {
       expect(service.sendSeparateBlocks).toEqual([]);
     });
   });
+
+  describe('hasSeparateEmailRecipients', () => {
+    it('is false when no send-separate recipients were loaded', () => {
+      service.distributionListSeparate = [];
+      expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+
+    it('is false when every block resolved to no recipient', () => {
+      service.distributionListSeparate = [
+        { name: 'Block 1', emails: [] },
+        { name: 'Block 2' },
+      ];
+      expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+
+    it('is true as soon as one block has a recipient', () => {
+      service.distributionListSeparate = [
+        { name: 'Block 1', emails: [] },
+        { name: 'Block 2', emails: ['first@example.com'] },
+      ];
+      expect(service.hasSeparateEmailRecipients).toBe(true);
+    });
+
+    it('tolerates a missing recipient list', () => {
+      (service as any).distributionListSeparate = undefined;
+      expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+  });
 });

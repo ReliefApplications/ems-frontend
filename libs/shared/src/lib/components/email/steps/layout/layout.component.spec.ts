@@ -342,4 +342,330 @@ describe('LayoutComponent', () => {
       expect(component.blockFieldSelect).toEqual([]);
     });
   });
+
+  describe('grid action recipient gate', () => {
+    /**
+     * Creates the layout step as a grid action, with a valid subject and body.
+     *
+     * @param options Grid action flags
+     * @param options.sendSeparateEmail Whether the grid action sends one email per record
+     * @param options.isPreviewTemplate Whether the To field is displayed
+     */
+    const createGridAction = (
+      options: {
+        sendSeparateEmail?: boolean;
+        isPreviewTemplate?: boolean;
+      } = {}
+    ) => {
+      emailServiceMock.isGridAction = true;
+      emailServiceMock.gridActionSendSeparateEmail =
+        options.sendSeparateEmail ?? false;
+      emailServiceMock.sendSeparateBlocks = options.sendSeparateEmail
+        ? ['Block 1']
+        : [];
+      emailServiceMock.hasSeparateEmailRecipients = false;
+      emailServiceMock.disableNextActionBtn = false;
+      emailServiceMock.emailDistributionList = { to: [], cc: [], bcc: [] };
+      emailServiceMock.quickEmailDistributionListQuery = {
+        to: [],
+        cc: [],
+        bcc: [],
+      };
+      emailServiceMock.allLayoutdata = {
+        txtSubject: 'Subject',
+        headerHtml: '',
+        bodyHtml: '<p>Body</p>',
+      };
+      createComponent(() => {
+        component.isPreviewTemplate = options.isPreviewTemplate ?? false;
+        jest
+          .spyOn(component, 'loadDistributionList')
+          .mockResolvedValue(undefined);
+      });
+    };
+
+    describe('validateQuickActionToEmails', () => {
+      it('does nothing outside of grid actions', () => {
+        createComponent();
+        emailServiceMock.disableNextActionBtn = true;
+
+        component.validateQuickActionToEmails();
+
+        expect(emailServiceMock.disableNextActionBtn).toBe(true);
+        expect(component.showRecipientError).toBe(false);
+      });
+
+      describe('single email', () => {
+        it('disables Next and flags the To field when nobody is addressed', () => {
+          createGridAction();
+          component.layoutForm.get('to')?.setValue([]);
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(true);
+          expect(component.showRecipientError).toBe(true);
+        });
+
+        it('enables Next once a To recipient is set', () => {
+          createGridAction();
+          component.layoutForm.get('to')?.setValue(['first@example.com']);
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(false);
+          expect(component.showRecipientError).toBe(false);
+        });
+
+        it('keeps Next disabled on an invalid layout without blaming the recipients', () => {
+          createGridAction();
+          component.layoutForm.get('to')?.setValue(['first@example.com']);
+          component.showSubjectValidator = true;
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(true);
+          expect(component.showRecipientError).toBe(false);
+        });
+      });
+
+      describe('send separate email', () => {
+        it('requires a recipient from either the To field or the per-record list', () => {
+          createGridAction({ sendSeparateEmail: true });
+          component.layoutForm.get('to')?.setValue([]);
+          emailServiceMock.hasSeparateEmailRecipients = false;
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(true);
+          expect(component.showRecipientError).toBe(true);
+        });
+
+        it('accepts per-record recipients in place of the To field', () => {
+          createGridAction({ sendSeparateEmail: true });
+          component.layoutForm.get('to')?.setValue([]);
+          emailServiceMock.hasSeparateEmailRecipients = true;
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(false);
+          expect(component.showRecipientError).toBe(false);
+        });
+
+        it('accepts a To recipient when no per-record recipient was found', () => {
+          createGridAction({ sendSeparateEmail: true });
+          component.layoutForm.get('to')?.setValue(['first@example.com']);
+          emailServiceMock.hasSeparateEmailRecipients = false;
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(false);
+          expect(component.showRecipientError).toBe(false);
+        });
+
+        it('still gates Next on the layout validity', () => {
+          createGridAction({ sendSeparateEmail: true });
+          component.layoutForm.get('to')?.setValue([]);
+          emailServiceMock.hasSeparateEmailRecipients = true;
+          component.showBodyValidator = true;
+
+          component.validateQuickActionToEmails();
+
+          expect(emailServiceMock.disableNextActionBtn).toBe(true);
+          expect(component.showRecipientError).toBe(false);
+        });
+      });
+    });
+
+    describe('onTxtSubjectChange', () => {
+      it('defers to the recipient check when previewing a template', () => {
+        createGridAction({ isPreviewTemplate: true });
+        component.layoutForm.get('to')?.setValue([]);
+
+        component.onTxtSubjectChange();
+
+        expect(component.showSubjectValidator).toBe(false);
+        expect(component.showBodyValidator).toBe(false);
+        expect(emailServiceMock.disableNextActionBtn).toBe(true);
+        expect(component.showRecipientError).toBe(true);
+      });
+
+      it('enables Next on a valid layout when there is no To field to satisfy', () => {
+        createGridAction({ isPreviewTemplate: false });
+        emailServiceMock.disableNextActionBtn = true;
+
+        component.onTxtSubjectChange();
+
+        expect(emailServiceMock.disableNextActionBtn).toBe(false);
+        expect(component.showRecipientError).toBe(false);
+      });
+
+      it('disables Next when the subject is empty, whatever the recipients', () => {
+        createGridAction({ isPreviewTemplate: true });
+        component.layoutForm.get('to')?.setValue(['first@example.com']);
+        component.layoutForm.get('subjectInput')?.setValue('   ');
+
+        component.onTxtSubjectChange();
+
+        expect(component.showSubjectValidator).toBe(true);
+        expect(emailServiceMock.disableNextActionBtn).toBe(true);
+      });
+    });
+
+    describe('loadDistributionList', () => {
+      /** Grid action query, as passed by the grid widget */
+      const DATA_QUERY = {
+        queryName: 'allRecords',
+        filter: { logic: 'and', filters: [] },
+        fields: [{ name: 'name' }, { name: 'email' }],
+        resource: 'res-1',
+      };
+
+      /**
+       * Builds the notification form with an empty distribution list.
+       *
+       * @returns Datasets form
+       */
+      const buildDatasetsForm = () =>
+        new FormGroup({
+          datasets: new FormArray([buildBlock('Draft', ['name'])]),
+          emailDistributionList: new FormGroup({
+            to: new FormGroup({ inputEmails: new FormArray([]) }),
+            cc: new FormGroup({ inputEmails: new FormArray([]) }),
+            bcc: new FormGroup({ inputEmails: new FormArray([]) }),
+          }),
+        });
+
+      /**
+       * Creates the grid action layout step and runs the real distribution list load.
+       *
+       * @param options Grid action flags and API response
+       * @param options.sendSeparateEmail Whether the grid action sends one email per record
+       * @param options.queryName Query name of the grid action
+       * @param options.response Response of the distribution list preview call
+       * @returns The query sent to the distribution list preview call
+       */
+      const load = async (
+        options: {
+          sendSeparateEmail?: boolean;
+          queryName?: string;
+          response?: any;
+        } = {}
+      ) => {
+        emailServiceMock.datasetsForm = buildDatasetsForm();
+        emailServiceMock.allPreviewData = [
+          {
+            dataQuery: {
+              ...DATA_QUERY,
+              queryName: options.queryName ?? DATA_QUERY.queryName,
+            },
+            separateEmailFields: [{ name: 'email' }],
+          },
+        ];
+        emailServiceMock.loadLayoutDistributionList = jest
+          .fn()
+          .mockResolvedValue(options.response ?? { to: [], cc: [], bcc: [] });
+        createGridAction({
+          sendSeparateEmail: options.sendSeparateEmail,
+          isPreviewTemplate: true,
+        });
+        (component.loadDistributionList as jest.Mock).mockRestore();
+
+        await component.loadDistributionList();
+
+        return emailServiceMock.loadLayoutDistributionList.mock.calls[0][0];
+      };
+
+      it('sends the grid action query as a send-separate dataset when sending separately', async () => {
+        const query = await load({ sendSeparateEmail: true });
+
+        expect(
+          emailServiceMock.loadLayoutDistributionList
+        ).toHaveBeenCalledTimes(1);
+        expect(query.datasets[0]).toMatchObject({
+          name: 'Block 1',
+          individualEmail: true,
+          individualEmailFields: [{ name: 'email' }],
+          resource: 'res-1',
+          query: {
+            name: 'allRecords',
+            filter: DATA_QUERY.filter,
+            fields: DATA_QUERY.fields,
+          },
+        });
+      });
+
+      it('leaves the dataset untouched for a single email', async () => {
+        const query = await load({ sendSeparateEmail: false });
+
+        expect(query.datasets[0].name).toBe('Draft');
+        expect(query.datasets[0].individualEmail).toBeUndefined();
+        expect(query.datasets[0].query.name).toBe('query');
+      });
+
+      it('leaves the dataset untouched when the grid action has no query name', async () => {
+        const query = await load({ sendSeparateEmail: true, queryName: '' });
+
+        expect(query.datasets[0].name).toBe('Draft');
+        expect(query.datasets[0].individualEmail).toBeUndefined();
+      });
+
+      it('stores the deduplicated per-record recipients for read-only display', async () => {
+        await load({
+          sendSeparateEmail: true,
+          response: {
+            to: [],
+            cc: [],
+            bcc: [],
+            individualEmailList: [
+              {
+                name: 'Block 1',
+                emails: [
+                  'first@example.com',
+                  'first@example.com',
+                  'second@example.com',
+                ],
+              },
+            ],
+          },
+        });
+
+        expect(emailServiceMock.distributionListSeparate).toEqual([
+          {
+            name: 'Block 1',
+            emails: ['first@example.com', 'second@example.com'],
+            isExpanded: false,
+          },
+        ]);
+      });
+
+      it('clears stale per-record recipients when the response has none', async () => {
+        emailServiceMock.distributionListSeparate = [
+          { name: 'Block 1', emails: ['stale@example.com'] },
+        ];
+
+        await load({ sendSeparateEmail: true });
+
+        expect(emailServiceMock.distributionListSeparate).toEqual([]);
+      });
+
+      it('flags the missing recipient once the list resolves empty', async () => {
+        await load();
+
+        expect(component.showRecipientError).toBe(true);
+        expect(emailServiceMock.disableNextActionBtn).toBe(true);
+      });
+
+      it('clears the recipient error once the list provides a To recipient', async () => {
+        await load({
+          response: { to: ['first@example.com'], cc: [], bcc: [] },
+        });
+
+        expect(component.layoutForm.get('to')?.value).toEqual([
+          'first@example.com',
+        ]);
+        expect(component.showRecipientError).toBe(false);
+        expect(emailServiceMock.disableNextActionBtn).toBe(false);
+      });
+    });
+  });
 });
