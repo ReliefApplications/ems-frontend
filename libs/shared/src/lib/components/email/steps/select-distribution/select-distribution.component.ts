@@ -209,22 +209,38 @@ export class SelectDistributionComponent
    */
   isAllSeparate(): boolean {
     if (this.emailService.datasetsForm?.get('datasets')?.getRawValue()) {
-      let separateEmailCount = 0;
+      let separateWithFieldsCount = 0;
       let datasetsCount = 0;
+      let anyToDistributionList = false;
       for (const dataset of this.emailService.datasetsForm.get('datasets')
         ?.value ?? []) {
-        if (
-          (dataset.resource || dataset.reference) &&
-          dataset.individualEmail
-        ) {
+        if (dataset.resource || dataset.reference) {
           datasetsCount += 1;
-          separateEmailCount += 1;
-        } else if (dataset.resource || dataset.reference) {
-          datasetsCount += 1;
+          if (dataset.individualEmail) {
+            const hasEmailFields = dataset.individualEmailFields?.length > 0;
+            const hasCsFilter = dataset.csFilter?.filters?.length > 0;
+            if (hasEmailFields || hasCsFilter) {
+              separateWithFieldsCount += 1;
+              if (dataset.individualEmailToDistributionList) {
+                anyToDistributionList = true;
+              }
+            }
+          }
         }
       }
 
-      if (separateEmailCount === datasetsCount && datasetsCount > 0) {
+      // Optional whenever at least one dataset is send-separate; required only
+      // when none is.
+      this.emailService.isDistributionListOptional =
+        separateWithFieldsCount > 0;
+
+      // Block the distribution list only when every dataset is send-separate
+      // and none sends to the distribution list as well.
+      if (
+        separateWithFieldsCount === datasetsCount &&
+        datasetsCount > 0 &&
+        !anyToDistributionList
+      ) {
         this.emailService.distributionListData.get('name')?.patchValue('');
         this.emailService.clearDistributionList(
           this.emailService.distributionListData.get('to') as FormGroup

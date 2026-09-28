@@ -9,6 +9,7 @@ import {
 } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
+import { of, throwError } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { EmailService } from './email.service';
 
@@ -279,6 +280,153 @@ describe('EmailService (components/email)', () => {
     it('tolerates a missing recipient list', () => {
       (service as any).distributionListSeparate = undefined;
       expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+  });
+
+  describe('Common Services users filter', () => {
+    /** Static reference fields, as the UI lists them */
+    const STATIC_FIELD_NAMES = [
+      'Application',
+      'PermissionAccessType',
+      'SystemRole',
+      'SystemPosition',
+      'Country',
+      'Region',
+      'LocationType',
+      'InternalExternal',
+    ];
+
+    /**
+     * Installs a fake Common Services GraphQL client on the service.
+     *
+     * @param fields Fields the user table introspection returns
+     * @returns The query spy
+     */
+    const installCsClient = (fields: any[]) => {
+      const query = jest.fn(() => of({ data: { __type: { fields } } }));
+      (service as any).apollo = { use: jest.fn(() => ({ query })) };
+      return query;
+    };
+
+    describe('dataset form', () => {
+      it('gives every new dataset an empty filter and the distribution list toggle off', () => {
+        const group = service.createNewDataSetGroup();
+
+        expect(group.get('individualEmailToDistributionList')?.value).toBe(
+          false
+        );
+        expect(group.get('csFilter')?.getRawValue()).toEqual({
+          logic: 'and',
+          filters: [],
+        });
+      });
+
+      it('resets the distribution list optionality when a new form is built', () => {
+        service.isDistributionListOptional = true;
+
+        service.setDatasetForm();
+
+        expect(service.isDistributionListOptional).toBe(false);
+      });
+    });
+
+    describe('optional distribution list', () => {
+      it('treats the distribution list as valid when it is optional', async () => {
+        service.isDistributionListOptional = true;
+
+        await expect(service.checkDLToValid()).resolves.toBe(true);
+      });
+
+      it('never blocks Next when the distribution list is optional', async () => {
+        service.isDistributionListOptional = true;
+        service.distributionListName = '';
+        const toCheck = jest.spyOn(service, 'isToValidCheck');
+        const next = jest.spyOn(service.disableSaveAndProceed, 'next');
+
+        await service.validateNextButton();
+
+        expect(next).toHaveBeenCalledWith(false);
+        expect(toCheck).not.toHaveBeenCalled();
+      });
+
+      it('still checks the To recipients when the distribution list is required', async () => {
+        service.isDistributionListOptional = false;
+        service.distributionListName = 'DL';
+        const toCheck = jest
+          .spyOn(service, 'isToValidCheck')
+          .mockResolvedValue(undefined);
+
+        await service.validateNextButton();
+
+        expect(toCheck).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('buildCommonServiceFields', () => {
+      it('combines the static reference fields with the scalar user table fields', async () => {
+        installCsClient([
+          { name: 'firstname', type: { kind: 'SCALAR' } },
+          { name: 'groups', type: { kind: 'LIST' } },
+          { name: 'agency', type: { kind: 'SCALAR' } },
+        ]);
+
+        await service.buildCommonServiceFields();
+
+        expect(service.userTableFields).toEqual(['firstname', 'agency']);
+        expect(
+          service.computedCommonServiceFields.map((field) => field.name)
+        ).toEqual([...STATIC_FIELD_NAMES, 'firstname', 'agency']);
+        expect(service.computedCommonServiceFields[0]).toMatchObject({
+          kind: 'SCALAR',
+          type: 'checkbox',
+          editor: 'select',
+          isCommonService: true,
+        });
+        expect(
+          service.computedCommonServiceFields[STATIC_FIELD_NAMES.length]
+        ).toMatchObject({
+          graphQLFieldName: 'firstname',
+          type: 'text',
+          editor: 'text',
+          isCommonService: true,
+        });
+      });
+
+      it('queries the user table once for concurrent and repeated callers', async () => {
+        const query = installCsClient([
+          { name: 'firstname', type: { kind: 'SCALAR' } },
+        ]);
+
+        await Promise.all([
+          service.buildCommonServiceFields(),
+          service.buildCommonServiceFields(),
+        ]);
+        await service.buildCommonServiceFields();
+
+        expect(query).toHaveBeenCalledTimes(1);
+        expect(service.computedCommonServiceFields).toHaveLength(
+          STATIC_FIELD_NAMES.length + 1
+        );
+      });
+
+      it('falls back to the static fields when the user table cannot be read', async () => {
+        const consoleError = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        (service as any).apollo = {
+          use: jest.fn(() => ({
+            query: jest.fn(() => throwError(() => new Error('CS down'))),
+          })),
+        };
+
+        await service.buildCommonServiceFields();
+
+        expect(consoleError).toHaveBeenCalled();
+        expect(
+          service.computedCommonServiceFields.map((field) => field.name)
+        ).toEqual(STATIC_FIELD_NAMES);
+        consoleError.mockRestore();
+      });
     });
   });
 });

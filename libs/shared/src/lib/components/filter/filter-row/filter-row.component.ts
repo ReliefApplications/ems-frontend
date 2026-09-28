@@ -66,6 +66,12 @@ export class FilterRowComponent
   @Input() isEmailNotification = false;
   /** Enables attribute filters to switch editor mode based on operator. */
   @Input() enableAttributeValueSource = false;
+  /**
+   * Per-dataset Common Services field settings for the value editor. When it
+   * carries `datasetBlocks`, the editor offers a picker of that dataset's fields
+   * that inserts `{{Block N.field}}` tokens (resolved per row when the email is sent).
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -86,6 +92,9 @@ export class FilterRowComponent
   /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
+  /** Reference to dataset token editor template */
+  @ViewChild('datasetTokenEditor', { static: false })
+  datasetTokenEditor!: TemplateRef<any>;
   /** In the last operator editor template */
   @ViewChild('inTheLastEditor', { static: false })
   inTheLastEditor!: TemplateRef<any>;
@@ -142,6 +151,38 @@ export class FilterRowComponent
   }
 
   /**
+   * Dataset token options built from datasetCommonServicesFieldSettings.datasetBlocks.
+   * Memoised field (not a getter) recomputed only when datasetCommonServicesFieldSettings
+   * changes, so the bound *ngFor receives stable references and its option nodes are not
+   * recreated each change-detection cycle (which made the open value picker unclickable).
+   */
+  public datasetTokenOptions: { value: string; label: string }[] = [];
+
+  /** Recomputes datasetTokenOptions from the current datasetCommonServicesFieldSettings. */
+  private computeDatasetTokenOptions(): void {
+    const blocks: { name: string; fields: string[] }[] =
+      this.datasetCommonServicesFieldSettings?.datasetBlocks ?? [];
+    this.datasetTokenOptions = blocks.flatMap((block) =>
+      block.fields.map((field) => ({
+        value: `{{${block.name}.${field}}}`,
+        label: `${block.name} - ${this.emailService.replaceUnderscores(field)}`,
+      }))
+    );
+  }
+
+  /**
+   * trackBy for the dataset token options *ngFor (key on the stable token value).
+   *
+   * @param _index the *ngFor index (unused).
+   * @param opt the dataset token option.
+   * @param opt.value the token value used as the tracking key.
+   * @returns the token value.
+   */
+  public trackByTokenValue(_index: number, opt: { value: string }): string {
+    return opt.value;
+  }
+
+  /**
    * Composite filter row.
    *
    * @param emailService email notifications helper functions
@@ -155,6 +196,7 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
+    this.computeDatasetTokenOptions();
     this.form
       .get('field')
       ?.valueChanges?.pipe(takeUntil(this.destroy$))
@@ -165,7 +207,7 @@ export class FilterRowComponent
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.getCsData(value, selectedField[0]);
+          await this.loadCommonServiceOptions(selectedField[0]);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -245,11 +287,6 @@ export class FilterRowComponent
             .filter((x) => x.label === this.form.getRawValue().field)?.[0]?.key
         );
     }
-
-    //Calling the common service function for getting value for Select type of data
-    if (this.field?.isCommonService) {
-      this.field.options = this.getCsData(this.field?.name, this.field);
-    }
   }
 
   /**
@@ -262,21 +299,52 @@ export class FilterRowComponent
     return Array.from({ length: 90 }, (_, i) => i + 1);
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     const initialField = this.form.get('field')?.value;
     if (initialField && this.fields.length > 0) {
+      // For a pre-selected Common Services select field, load its value options
+      // before rendering the editor so the value dropdown is populated on first
+      // paint (otherwise the async options arrive after render and only show on hover).
+      const field = this.fields.find((x: any) => x.name === initialField);
+      if (field?.isCommonService && field?.editor === 'select') {
+        await this.loadCommonServiceOptions(field);
+      }
       this.setField(initialField);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (
+    const fieldsChanged =
       initialField &&
       this.fields.length > 0 &&
-      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue);
+    const contextSettingsChanged =
+      initialField &&
+      this.field &&
+      !isEqual(
+        changes.datasetCommonServicesFieldSettings?.previousValue,
+        changes.datasetCommonServicesFieldSettings?.currentValue
+      );
+
+    // Recompute the memoised token options only when the settings actually change.
+    if (
+      changes.datasetCommonServicesFieldSettings &&
+      !isEqual(
+        changes.datasetCommonServicesFieldSettings.previousValue,
+        changes.datasetCommonServicesFieldSettings.currentValue
+      )
     ) {
+      this.computeDatasetTokenOptions();
+    }
+
+    if (fieldsChanged) {
       this.setField(initialField);
+    } else if (contextSettingsChanged && this.contextEditorIsActivated) {
+      // Settings-only change while an expression editor is shown: re-point the
+      // editor template without rebuilding the row, so an open value picker is
+      // not torn down mid-interaction.
+      this.setEditor(this.field);
     }
 
     if (
@@ -406,6 +474,15 @@ export class FilterRowComponent
     } else if (this.isDynamicPlaceholderValue(value)) {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
+    } else if (
+      typeof value === 'string' &&
+      value.startsWith('{{') &&
+      value.endsWith('}}') &&
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0
+    ) {
+      // Value saved from the dataset token editor — restore it.
+      this.editor = this.datasetTokenEditor;
+      this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
         case 'attribute': {
@@ -485,37 +562,44 @@ export class FilterRowComponent
   /** Toggles context editor */
   public toggleContextEditor() {
     this.form.get('value')?.setValue(null);
-    if (this.editor === this.contextEditor) {
+    const hasDatasetBlocks =
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0;
+    if (
+      this.editor === this.contextEditor ||
+      this.editor === this.datasetTokenEditor
+    ) {
       this.setEditor(this.field);
     } else {
-      this.editor = this.contextEditor;
+      this.editor = hasDatasetBlocks
+        ? this.datasetTokenEditor
+        : this.contextEditor;
       this.contextEditorIsActivated = true;
     }
   }
 
   /**
-   * Get CS Data
+   * Loads the Common Services value options for a select field and assigns them
+   * onto the field as a fresh array, so the value dropdown reflects them.
    *
-   * @param key selected key name
-   * @param selectedField selected field object
+   * @param field selected field object (its name is the reference-data key)
    */
-  async getCsData(key: string, selectedField: any) {
-    if (
-      this.emailService?.userTableFields?.filter((x) => x === key).length === 0
-    ) {
-      this.loading = true;
-      await firstValueFrom(this.cs.restRequest(key))
-        .then((data) => {
-          this.loading = false;
-          selectedField.options =
-            data?.value.map((x: any) => ({
-              text: x?.Name,
-              value: x?.Name,
-            })) || [];
-        })
-        .catch((error) => {
-          console.error(`Error while fetching reference data ${key}:`, error);
-        });
+  async loadCommonServiceOptions(field: any): Promise<void> {
+    const key = field?.name;
+    // User-table fields are free-text inputs, not select dropdowns — nothing to load.
+    if (!key || this.emailService?.userTableFields?.some((x) => x === key)) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const data = await firstValueFrom(this.cs.restRequest(key));
+      field.options = (data?.value ?? []).map((x: any) => ({
+        text: x?.Name,
+        value: x?.Name,
+      }));
+    } catch (error) {
+      console.error(`Error while fetching reference data ${key}:`, error);
+    } finally {
+      this.loading = false;
     }
   }
 }

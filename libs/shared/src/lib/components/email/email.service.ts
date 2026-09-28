@@ -41,6 +41,7 @@ import {
   EDIT_CUSTOM_TEMPLATE,
   EDIT_DISTRIBUTION_LIST,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  GET_CS_USER_FIELDS,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
   GET_EMAIL_NOTIFICATION_BY_ID,
@@ -163,6 +164,8 @@ export class EmailService {
   public dataList!: { [key: string]: any }[];
   /** Dataset fields */
   public datasetFields!: string[];
+  /** All available fields from the primary dataset resource (persisted across steps) */
+  public allAvailableDatasetFields: any[] = [];
   /** Email distribution list of names */
   public distributionListNames: string[] = [];
   /** Email notification list of names */
@@ -224,6 +227,11 @@ export class EmailService {
   public selectedDistributionListName: any = '';
   /** Checks if separate emails is checked for all blocks */
   public isAllSeparateEmail = false;
+  /**
+   * Distribution list is optional when at least one dataset is send-separate.
+   * It is required only when no dataset is send-separate.
+   */
+  public isDistributionListOptional = false;
   /** For storing emails For CC from service response (In select with Filter option) */
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
@@ -232,6 +240,12 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** Combined computed fields for the CS filter UI (static + dynamic user-table fields). */
+  public computedCommonServiceFields: any[] = [];
+  /** In-flight request for {@link getUserTableFields}, shared by concurrent callers. */
+  private userTableFieldsPromise?: Promise<void>;
+  /** In-flight request for {@link buildCommonServiceFields}, shared by concurrent callers. */
+  private commonServiceFieldsPromise?: Promise<void>;
   /** display types */
   public displayTypes: any[] = [
     { id: 'table', name: 'Table' },
@@ -295,6 +309,11 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
+      individualEmailToDistributionList: false,
+      csFilter: this.formBuilder.group({
+        logic: 'and',
+        filters: new FormArray([]),
+      }),
       dataType: null,
       reference: null,
       navigateToPage: false,
@@ -400,7 +419,7 @@ export class EmailService {
    */
   checkDLToValid(): Promise<boolean> {
     return new Promise((resolve) => {
-      if (this.isAllSeparateEmail) {
+      if (this.isAllSeparateEmail || this.isDistributionListOptional) {
         resolve(true);
       } else {
         if (
@@ -516,6 +535,71 @@ export class EmailService {
       } else {
         resolve({ valid: true, badData: [] });
       }
+    });
+  }
+
+  /**
+   * Fetches scalar user-table fields from the Common Service GraphQL endpoint.
+   * Idempotent — skips the call if fields are already loaded, and concurrent
+   * callers share the same in-flight request instead of each firing their own.
+   */
+  async getUserTableFields(): Promise<void> {
+    if (this.userTableFields.length > 0) return;
+    if (!this.userTableFieldsPromise) {
+      this.userTableFieldsPromise = (async () => {
+        const apolloClient = this.apollo.use('csClient');
+        await firstValueFrom(
+          apolloClient.query<any>({ query: GET_CS_USER_FIELDS })
+        )
+          .then(({ data }) => {
+            this.userTableFields = data.__type.fields
+              .filter((f: any) => f.type.kind === 'SCALAR')
+              .map((f: any) => f.name);
+          })
+          .catch((error) => {
+            console.error('Error fetching CS user table fields:', error);
+          });
+      })();
+    }
+    return this.userTableFieldsPromise;
+  }
+
+  /**
+   * Builds `computedCommonServiceFields` by combining the static CS reference fields with
+   * the dynamic user-table fields fetched from the CS endpoint.
+   * Idempotent — skips if already built, and concurrent callers share the same
+   * in-flight build instead of each pushing their own copy of the fields.
+   */
+  async buildCommonServiceFields(): Promise<void> {
+    if (this.computedCommonServiceFields.length > 0) return;
+    if (!this.commonServiceFieldsPromise) {
+      this.commonServiceFieldsPromise = this.doBuildCommonServiceFields();
+    }
+    return this.commonServiceFieldsPromise;
+  }
+
+  /** Performs the actual field-list build for {@link buildCommonServiceFields}. */
+  private async doBuildCommonServiceFields(): Promise<void> {
+    await this.getUserTableFields();
+    this.commonServiceFields.forEach((ele: any) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele.key,
+        kind: 'SCALAR',
+        type: 'checkbox',
+        editor: 'select',
+        isCommonService: true,
+      });
+    });
+    this.userTableFields.forEach((ele: string) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele,
+        kind: 'SCALAR',
+        type: 'text',
+        editor: 'text',
+        isCommonService: true,
+      });
     });
   }
 
@@ -843,6 +927,8 @@ export class EmailService {
         sendAsAttachment: null,
       }),
     });
+    // New form ⇒ recompute distribution-list optionality from scratch.
+    this.isDistributionListOptional = false;
   }
 
   /**
@@ -1939,6 +2025,11 @@ export class EmailService {
    * validating next button by taking 3 conditions in consideration DistributionList name mandatory, check duplicate name validation and requires To email
    */
   async validateNextButton() {
+    // When the distribution list is optional, it never blocks proceeding.
+    if (this.isDistributionListOptional) {
+      this.disableSaveAndProceed.next(false);
+      return;
+    }
     const distributionListNameExists =
       this.distributionListName?.trim()?.length > 0;
     const distributionListDuplicateName = this.isDistributionListNameDuplicate;
