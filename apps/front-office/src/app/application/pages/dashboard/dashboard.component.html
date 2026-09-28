@@ -77,6 +77,7 @@
     class="flex-1"
     [loading]="loading"
     [widgets]="widgets"
+    [dashboardId]="dashboard?.id"
     [options]="dashboard?.gridOptions"
     (changeStep)="changeStep.emit($event)"
   ></shared-widget-grid>

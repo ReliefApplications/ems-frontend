@@ -220,6 +220,7 @@
     "filter": {
       "apply": "******",
       "clear": "******",
+      "clearAll": "******",
       "empty": "******",
       "few": "******",
       "hide": "******",
@@ -1140,6 +1141,20 @@
         "successEdit": "******",
         "successSave": "******"
       },
+      "file": {
+        "limitReached": "****** {{limit}} ******",
+        "outdated": {
+          "hiddenSingle": "******",
+          "limitReachedHidden": "****** {{limit}} ****** {{count}} ******",
+          "locked": "******",
+          "markAsActive": "******",
+          "markAsOutdated": "******",
+          "removePermanently": "******",
+          "tooltip": "******"
+        },
+        "remove": "******",
+        "select": "******"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "****** {{name}} ******"
@@ -1273,11 +1288,15 @@
         "all": "******",
         "select": "******"
       },
+      "fieldRequired": "******",
+      "loadError": "******",
+      "noHistoryYet": "******",
       "preview": "******",
       "range": {
         "clear": "******"
       },
       "renderError": "******",
+      "unknownField": "******",
       "useTableMode": "******"
     },
     "icon": {
@@ -1394,13 +1413,20 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "showOutdatedFiles": {
+          "info": "******",
+          "title": "******"
+        },
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",
@@ -1432,6 +1458,7 @@
         "title": "******"
       },
       "sort": {
+        "add": "******",
         "ascending": "******",
         "descending": "******",
         "field": "******",
@@ -1589,6 +1616,8 @@
           },
           "title": "******"
         },
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "details": {
           "access": {
             "channels": "******",
@@ -1607,6 +1636,7 @@
         "noFilters": "******",
         "noForms": "******",
         "noSteps": "******",
+        "permissionsUpdated": "****** {{resource}} ******",
         "removeFilter": "******",
         "title": "******",
         "users": {
@@ -1617,9 +1647,19 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
+        "allowFieldDeleteFiles": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsDeleteFiles": "******",
+        "allowSelectedFieldsUpdate": "******",
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
+        "disallowFieldDeleteFiles": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsDeleteFiles": "******",
+        "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",
@@ -3143,6 +3183,14 @@
       },
       "settings": {
         "actions": "******",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "****** {{languages}} ******",
+            "title": "******"
+          },
+          "info": "******",
+          "text": "******"
+        },
         "emailCreated": "******",
         "emailDeleted": "******",
         "emailEdited": "******",
@@ -3186,6 +3234,7 @@
         "builtinHint": "******",
         "custom": "******",
         "docs": "******",
+        "functionDocs": "******",
         "noResults": "******",
         "open": "******",
         "searchPlaceholder": "******",
