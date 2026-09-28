@@ -68,6 +68,10 @@ describe('LayoutComponent', () => {
         fields: [...FIRST_BLOCK_FIELDS],
       },
       sendSeparateBlocks: [],
+      gridActionSendSeparateEmail: false,
+      gridActionDataQuery: null,
+      // Real flattening logic, so nested tokens are exercised
+      appendFields: EmailService.prototype.appendFields,
       datasetsForm: new FormGroup({
         datasets: new FormArray([
           buildBlock('Block 1', FIRST_BLOCK_FIELDS),
@@ -133,24 +137,47 @@ describe('LayoutComponent', () => {
   });
 
   describe('body field select options', () => {
-    it('lists every first-block field for each send-separate block', () => {
+    it("lists each send-separate block's own fields", () => {
       emailServiceMock.sendSeparateBlocks = ['Block 1', 'Block 2'];
       createComponent();
       expect(component.firstBlockFields).toEqual(FIRST_BLOCK_FIELDS);
       expect(component.blockFieldSelect).toEqual([
         'Block 1 - name',
         'Block 1 - contact.email',
-        'Block 2 - name',
-        'Block 2 - contact.email',
+        'Block 2 - other',
       ]);
     });
 
     it('only lists blocks flagged as send-separate', () => {
       emailServiceMock.sendSeparateBlocks = ['Block 2'];
       createComponent();
+      expect(component.blockFieldSelect).toEqual(['Block 2 - other']);
+    });
+
+    it('flattens nested fields of a send-separate block', () => {
+      emailServiceMock.sendSeparateBlocks = ['Block 2'];
+      emailServiceMock.datasetsForm = new FormGroup({
+        datasets: new FormArray([
+          buildBlock('Block 1', FIRST_BLOCK_FIELDS),
+          new FormGroup({
+            name: new FormControl('Block 2'),
+            query: new FormGroup({
+              name: new FormControl('query'),
+              filter: new FormGroup({ filters: new FormArray([]) }),
+              fields: new FormArray([
+                new FormControl({
+                  name: 'owner',
+                  fields: [{ name: 'name' }, { name: 'email' }],
+                }),
+              ]),
+            }),
+          }),
+        ]),
+      });
+      createComponent();
       expect(component.blockFieldSelect).toEqual([
-        'Block 2 - name',
-        'Block 2 - contact.email',
+        'Block 2 - owner.name',
+        'Block 2 - owner.email',
       ]);
     });
 
@@ -199,14 +226,35 @@ describe('LayoutComponent', () => {
       };
     });
 
-    it('clears the send-separate blocks so no body tokens are offered', () => {
+    it('offers the grid action query fields as body tokens when sending separate emails', () => {
+      emailServiceMock.gridActionSendSeparateEmail = true;
+      emailServiceMock.gridActionDataQuery = {
+        fields: [
+          { name: 'name' },
+          { name: 'contact', fields: [{ name: 'email' }] },
+        ],
+      };
       createComponent(() => {
         jest
           .spyOn(component, 'loadDistributionList')
           .mockResolvedValue(undefined);
       });
       expect(emailServiceMock.resetPreviewData).toHaveBeenCalledTimes(1);
-      expect(emailServiceMock.sendSeparateBlocks).toEqual([]);
+      expect(component.firstBlockFields).toEqual(['name', 'contact.email']);
+      expect(component.blockFieldSelect).toEqual([
+        'Block 1 - name',
+        'Block 1 - contact.email',
+      ]);
+    });
+
+    it('offers no body tokens when send separate email is disabled', () => {
+      emailServiceMock.sendSeparateBlocks = [];
+      emailServiceMock.gridActionDataQuery = { fields: [{ name: 'name' }] };
+      createComponent(() => {
+        jest
+          .spyOn(component, 'loadDistributionList')
+          .mockResolvedValue(undefined);
+      });
       expect(component.blockFieldSelect).toEqual([]);
     });
   });
