@@ -24,7 +24,7 @@ export const init = (
   // Register icon
   SvgRegistry.registerIconFromSvg(
     'editor',
-    '<svg class="feather feather-edit" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" height="18px" viewBox="0 0 24 24" width="18px" xmlns="http://www.w3.org/2000/svg"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'
+    '<svg viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.500-23.500T120-200v-560q0-33 23.500-56.500T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.500 56.500T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.500 6t26.500 18l56 57q11 12 17 26.500t6 29.500q0 15-5.500 29.500T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z"/></svg>'
   );
   const component = {
     name: 'editor',

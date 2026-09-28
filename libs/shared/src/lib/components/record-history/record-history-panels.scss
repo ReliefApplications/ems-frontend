@@ -1,0 +1,25 @@
+// Styles of the history expansion panels, shared by the cards display & the
+// loading skeleton
+.history-user {
+  @apply bg-sky-200;
+  border-radius: 10px;
+  padding: 4px;
+  margin-left: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+ui-expansion-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .accordion-item {
+  align-items: center;
+  font-size: 14px;
+  span:first-child {
+    display: contents;
+  }
+}

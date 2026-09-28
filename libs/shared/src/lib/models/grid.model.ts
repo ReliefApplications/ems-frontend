@@ -15,6 +15,8 @@ export interface GridField {
   order: number;
   canSee: boolean;
   subFields: GridField[];
+  /** File fields: display files marked as outdated ( hidden by default ) */
+  showOutdatedFiles?: boolean;
 }
 
 /**

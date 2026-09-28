@@ -1,5 +1,6 @@
 import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
+import { DatePipe } from '../pipes/date/date.pipe';
 import { AuthService } from '../services/auth/auth.service';
 import {
   FunctionFactory,
@@ -28,6 +29,8 @@ export interface CustomFunctionMeta {
   signature: string;
   description: string;
   example?: string;
+  /** Optional external documentation link shown in the reference panel. */
+  docsUrl?: string;
   category: CustomFunctionCategory;
 }
 
@@ -102,6 +105,16 @@ export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
     example: 'now() = 2024-06-12T14:23:30.123Z',
     category: 'date',
   },
+  /** Formats a date value using Angular DatePipe. Defaults to the browser timezone. */
+  {
+    name: 'formatDate',
+    signature: 'formatDate(value, format, timezone?)',
+    description:
+      'Formats a date using Angular DatePipe. Timezone is optional and defaults to the browser timezone. See the Angular DatePipe documentation for available formats.',
+    example: "formatDate({created_at}, 'dd/MM/yyyy HH:mm', 'UTC')",
+    docsUrl: 'https://angular.dev/api/common/DatePipe#usage-notes',
+    category: 'date',
+  },
   /** Rows of a matrix where the column equals the given value. */
   {
     name: 'listRowsWithColValue',
@@ -159,8 +172,31 @@ export const CUSTOM_FUNCTIONS_META: CustomFunctionMeta[] = [
  * Custom functions can be used in the logic fields.
  *
  * @param authService Shared auth service
+ * @param datePipe Shared date pipe
  */
-const addCustomFunctions = (authService: AuthService): void => {
+const addCustomFunctions = (
+  authService: AuthService,
+  datePipe: DatePipe
+): void => {
+  const formatDateValue = (params: unknown[]): string => {
+    const [value, format = 'mediumDate', timezone] = params;
+    if (isNil(value) || value === '') {
+      return '';
+    }
+
+    try {
+      return (
+        datePipe.transform(
+          value as string | number | Date,
+          `${format}`,
+          timezone ? `${timezone}` : undefined
+        ) || ''
+      );
+    } catch {
+      return '';
+    }
+  };
+
   const customFunctions: { name: string; function: (...args: any[]) => any }[] =
     [
       {
@@ -512,6 +548,16 @@ const addCustomFunctions = (authService: AuthService): void => {
         function: () => {
           return new Date().toISOString();
         },
+      },
+      {
+        name: 'formatDate',
+        /**
+         * Format a date or datetime value using Angular DatePipe.
+         *
+         * @param params Date value, Angular date format, optional timezone (defaults to the browser timezone)
+         * @returns Formatted date or empty string when invalid
+         */
+        function: (params: unknown[]) => formatDateValue(params),
       },
     ];
 
