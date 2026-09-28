@@ -434,9 +434,9 @@
 
         <!-- Separate email fields -->
         <ng-container *ngIf="formGroup.value.sendSeparateEmail">
-          <h2>{{
-            'components.queryBuilder.sendSeparate.title' | translate
-          }}</h2>
+          <h2>
+            {{ 'components.queryBuilder.sendSeparate.title' | translate }}
+          </h2>
           <shared-tab-fields
             *ngIf="fields.length > 0"
             [form]="separateEmailFieldsArray"

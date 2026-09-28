@@ -543,7 +543,10 @@ export class LayoutComponent
       // In grid-action mode the recipient validator is the authority for the
       // Next button once the layout is valid; blanket-enabling here would stomp
       // the send-separate-email / To recipient gate (last-writer-wins on disableNextActionBtn).
-      if (this.emailService.isGridAction) {
+      // Only applies when the To-field UI actually exists (isPreviewTemplate) --
+      // otherwise (e.g. the "create new template" wizard) there's no way to
+      // ever satisfy the recipient check and Next would stay disabled forever.
+      if (this.emailService.isGridAction && this.isPreviewTemplate) {
         this.validateQuickActionToEmails();
       } else {
         this.emailService.disableNextActionBtn = false;

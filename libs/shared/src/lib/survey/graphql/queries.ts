@@ -12,28 +12,17 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
   }
 `;
 
-// === GET RESOURCE BY ID ===
-/** Graphql request for getting data of a resource by its id */
-export const GET_RESOURCE_BY_ID = gql`
-  query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
-    resource(id: $id) {
+// === GET RESOURCE QUESTION RECORD ===
+/**
+ * Graphql request for getting the data of the record selected in a resource
+ * question, including its calculated fields, to expose it as survey variables.
+ */
+export const GET_RESOURCE_QUESTION_RECORD = gql`
+  query GetResourceQuestionRecord($id: ID!) {
+    record(id: $id) {
       id
-      name
-      createdAt
-      records(filter: $filter) {
-        edges {
-          node {
-            id
-            data(display: $display)
-          }
-          cursor
-        }
-        totalCount
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
+      incrementalId
+      data(calculatedFields: true)
     }
   }
 `;
@@ -44,6 +33,7 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
     resource(id: $id) {
       id
       name
+      queryName
       createdAt
       fields
       forms {

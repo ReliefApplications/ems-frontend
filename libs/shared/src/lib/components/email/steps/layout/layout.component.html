@@ -10,9 +10,11 @@
       *ngIf="isPreviewTemplate"
       [uiErrorMessage]="
         showRecipientError
-          ? ((emailService.gridActionSendSeparateEmail && !emailService.hasSeparateEmailRecipients
+          ? ((emailService.gridActionSendSeparateEmail &&
+            !emailService.hasSeparateEmailRecipients
               ? 'common.notifications.email.errors.noRecipientSeparateEmail'
-              : 'common.notifications.email.errors.noRecipient') | translate)
+              : 'common.notifications.email.errors.noRecipient'
+            ) | translate)
           : (emailsError | translate)
       "
       [uiErrorMessageIf]="
@@ -111,7 +113,10 @@
     </div>
 
     <!-- Emails from Send Separate Email Preview (read-only) -->
-    <div class="mb-4" *ngIf="isPreviewTemplate && emailService.hasSeparateEmailRecipients">
+    <div
+      class="mb-4"
+      *ngIf="isPreviewTemplate && emailService.hasSeparateEmailRecipients"
+    >
       <h1>
         {{ 'components.select.distribution.sendseparate.list' | translate }}
       </h1>
@@ -130,7 +135,10 @@
           *ngIf="block.emails.length > 6 && !block.isExpanded"
           class="inline-block mt-2"
           (click)="block.isExpanded = true"
-          >{{ 'components.email.preview.more' | translate : { length: block.emails.length - 6 } }}</ui-button
+          >{{
+            'components.email.preview.more'
+              | translate : { length: block.emails.length - 6 }
+          }}</ui-button
         >
         <ui-button
           *ngIf="block.isExpanded"

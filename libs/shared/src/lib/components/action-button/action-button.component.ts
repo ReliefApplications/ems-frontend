@@ -366,6 +366,8 @@ export class ActionButtonComponent
           disableClose: true,
           data: {
             ...(this.actionButton.editRecord && { recordId: this.recordId }), // Modal will open current record
+            ...(this.actionButton.cloneRecord &&
+              this.recordId && { cloneRecordId: this.recordId }),
             ...(template && { template }),
             actionButtonCtx: true,
             prefillData,
