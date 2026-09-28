@@ -218,7 +218,9 @@ export class SelectDistributionComponent
           datasetsCount += 1;
           if (dataset.individualEmail) {
             const hasEmailFields = dataset.individualEmailFields?.length > 0;
-            const hasCsFilter = dataset.csFilter?.filters?.length > 0;
+            const hasCsFilter =
+              dataset.csFilter?.filters?.length > 0 &&
+              this.hasTokenInFilters(dataset.csFilter.filters);
             if (hasEmailFields || hasCsFilter) {
               separateWithFieldsCount += 1;
               if (dataset.individualEmailToDistributionList) {
@@ -263,6 +265,20 @@ export class SelectDistributionComponent
       }
     }
     return false;
+  }
+
+  /**
+   * Checks recursively whether any filter (or nested filter) holds a {{...}} token value.
+   *
+   * @param filters the filter descriptors to inspect.
+   * @returns true if any filter value contains a {{...}} token.
+   */
+  private hasTokenInFilters(filters: any[]): boolean {
+    return (filters ?? []).some((f: any) =>
+      f.filters
+        ? this.hasTokenInFilters(f.filters)
+        : typeof f.value === 'string' && /\{\{[^}]+\}\}/.test(f.value)
+    );
   }
 
   /**

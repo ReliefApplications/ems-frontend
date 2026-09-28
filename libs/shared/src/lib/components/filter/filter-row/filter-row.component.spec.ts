@@ -273,6 +273,49 @@ describe('FilterRowComponent', () => {
     });
   });
 
+  describe('field operator overrides', () => {
+    /** Multi-valued field: its filter is a membership test, not an equality */
+    const GROUPS_FIELD = {
+      name: 'Groups',
+      editor: 'select',
+      type: 'checkbox',
+      isCommonService: true,
+      filter: {
+        defaultOperator: 'contains',
+        operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
+      },
+    };
+
+    it('offers the operators a field overrides and its default operator', () => {
+      createComponent({ fields: [...FIELDS, GROUPS_FIELD] });
+
+      (component as any).setField('Groups', true);
+
+      // Listed in the shared FILTER_OPERATORS order
+      expect(component.operators.map((op) => op.value)).toEqual([
+        'isempty',
+        'isnotempty',
+        'contains',
+        'doesnotcontain',
+      ]);
+      expect(component.form.get('operator')?.value).toBe('contains');
+    });
+
+    it('keeps the editor defaults for fields without overrides', () => {
+      createComponent();
+
+      (component as any).setField('Country', true);
+
+      expect(component.operators.map((op) => op.value)).toEqual([
+        'eq',
+        'neq',
+        'isempty',
+        'isnotempty',
+      ]);
+      expect(component.form.get('operator')?.value).toBe('eq');
+    });
+  });
+
   describe('loadCommonServiceOptions', () => {
     it('loads the reference values of a select field', async () => {
       createComponent();
@@ -320,6 +363,93 @@ describe('FilterRowComponent', () => {
       expect(csMock.restRequest).toHaveBeenCalledWith('Country');
       expect(component.field.options).toHaveLength(2);
       expect(component.editor).toBe(editors.select);
+    });
+
+    describe('user groups', () => {
+      /** Groups reference data, whose display value is nested under GroupName */
+      const GROUPS = { value: [{ GroupName: 'HQ' }, { GroupName: 'Field' }] };
+
+      /**
+       * The Groups reference field, fresh per test since options are assigned onto it.
+       *
+       * @returns Groups field
+       */
+      const groupsField = () => ({
+        name: 'Groups',
+        editor: 'select',
+        type: 'checkbox',
+        isCommonService: true,
+      });
+
+      /**
+       * Lets the async field-change handler finish.
+       *
+       * @returns Resolves on the next macrotask
+       */
+      const flush = () => new Promise((resolve) => setTimeout(resolve));
+
+      beforeEach(() => {
+        csMock.restRequest.mockReturnValue(of(GROUPS));
+      });
+
+      it('reads the option values from the given nested path', async () => {
+        createComponent();
+        const field: any = groupsField();
+
+        await component.loadCommonServiceOptions(field, 'GroupName');
+
+        expect(csMock.restRequest).toHaveBeenCalledWith('Groups');
+        expect(field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+      });
+
+      it('loads group names by their name path when the Groups field is picked', async () => {
+        createComponent({ fields: [...FIELDS, groupsField()] });
+        const load = jest.spyOn(component, 'loadCommonServiceOptions');
+
+        component.form.get('field')?.setValue('Groups');
+        await flush();
+
+        expect(load).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'Groups' }),
+          'GroupName'
+        );
+        expect(component.field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+      });
+
+      it('loads other reference fields without a name path', async () => {
+        createComponent();
+        const load = jest.spyOn(component, 'loadCommonServiceOptions');
+
+        component.form.get('field')?.setValue('Country');
+        await flush();
+
+        expect(load).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'Country' }),
+          undefined
+        );
+      });
+
+      it('preloads group names for a pre-selected Groups field', async () => {
+        createComponent({
+          form: buildForm('HQ', 'Groups'),
+          fields: [...FIELDS, groupsField()],
+        });
+
+        await component.ngAfterViewInit();
+
+        expect(csMock.restRequest).toHaveBeenCalledWith('Groups');
+        expect(component.field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+        expect(component.editor).toBe(editors.select);
+      });
     });
   });
 });

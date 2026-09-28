@@ -19,6 +19,7 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
+import { commonServiceFields } from '../../email/constant';
 
 /** Operators that keep attribute comparisons tied to another record field. */
 const ATTRIBUTE_FIELD_OPERATORS = ['eq', 'neq', 'in', 'notin'];
@@ -203,11 +204,15 @@ export class FilterRowComponent
       .subscribe(async (value) => {
         // remove value
         const selectedField = this.fields.filter((x: any) => x.name == value);
+        const commonServiceField = commonServiceFields.find(
+          (field) => field.key === value
+        );
+        const namePath = commonServiceField?.namePath;
         if (
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.loadCommonServiceOptions(selectedField[0]);
+          await this.loadCommonServiceOptions(selectedField[0], namePath);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -307,7 +312,13 @@ export class FilterRowComponent
       // paint (otherwise the async options arrive after render and only show on hover).
       const field = this.fields.find((x: any) => x.name === initialField);
       if (field?.isCommonService && field?.editor === 'select') {
-        await this.loadCommonServiceOptions(field);
+        const commonServiceField = commonServiceFields.find(
+          (f) => f.key === field.name
+        );
+        await this.loadCommonServiceOptions(
+          field,
+          commonServiceField?.namePath
+        );
       }
       this.setField(initialField);
     }
@@ -580,10 +591,12 @@ export class FilterRowComponent
   /**
    * Loads the Common Services value options for a select field and assigns them
    * onto the field as a fresh array, so the value dropdown reflects them.
+   * Supports an optional nested path for the display value (user-group filtering).
    *
    * @param field selected field object (its name is the reference-data key)
+   * @param path optional nested path to the option value (else uses Name)
    */
-  async loadCommonServiceOptions(field: any): Promise<void> {
+  async loadCommonServiceOptions(field: any, path?: string): Promise<void> {
     const key = field?.name;
     // User-table fields are free-text inputs, not select dropdowns — nothing to load.
     if (!key || this.emailService?.userTableFields?.some((x) => x === key)) {
@@ -593,8 +606,8 @@ export class FilterRowComponent
     try {
       const data = await firstValueFrom(this.cs.restRequest(key));
       field.options = (data?.value ?? []).map((x: any) => ({
-        text: x?.Name,
-        value: x?.Name,
+        text: path ? get(x, path) : x?.Name,
+        value: path ? get(x, path) : x?.Name,
       }));
     } catch (error) {
       console.error(`Error while fetching reference data ${key}:`, error);

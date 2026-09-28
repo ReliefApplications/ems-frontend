@@ -294,6 +294,7 @@ describe('EmailService (components/email)', () => {
       'Region',
       'LocationType',
       'InternalExternal',
+      'Groups',
     ];
 
     /**
@@ -327,6 +328,61 @@ describe('EmailService (components/email)', () => {
         service.setDatasetForm();
 
         expect(service.isDistributionListOptional).toBe(false);
+      });
+    });
+
+    describe('processFilters', () => {
+      it('normalises reference fields to their key, whether saved by key or by label', () => {
+        const query: any = {
+          logic: 'and',
+          filters: [
+            { field: 'User Groups', operator: 'contains', value: 'HQ' },
+            { field: 'Access', operator: 'eq', value: 'Admin' },
+            { field: 'Groups', operator: 'isempty', value: null },
+            { field: 'firstname', operator: 'eq', value: 'Ada' },
+          ],
+        };
+
+        const result = service.processFilters(query);
+
+        expect(result).toBe(query);
+        expect(query.filters.map((filter: any) => filter.field)).toEqual([
+          'Groups',
+          'PermissionAccessType',
+          'Groups',
+          'firstname',
+        ]);
+      });
+
+      it('normalises nested filters', () => {
+        const query: any = {
+          logic: 'and',
+          filters: [
+            {
+              logic: 'or',
+              filters: [
+                {
+                  field: 'ApplicationRoleName',
+                  operator: 'eq',
+                  value: 'Editor',
+                },
+                { field: 'SystemPosition', operator: 'eq', value: 'Lead' },
+              ],
+            },
+          ],
+        };
+
+        service.processFilters(query);
+
+        expect(
+          query.filters[0].filters.map((filter: any) => filter.field)
+        ).toEqual(['SystemRole', 'SystemPosition']);
+      });
+
+      it('builds an empty payload without a filter', () => {
+        expect(service.setCommonServicePayload(null)).toEqual({
+          commonServiceFilter: {},
+        });
       });
     });
 
@@ -426,6 +482,22 @@ describe('EmailService (components/email)', () => {
           service.computedCommonServiceFields.map((field) => field.name)
         ).toEqual(STATIC_FIELD_NAMES);
         consoleError.mockRestore();
+      });
+
+      it('offers membership operators for the User Groups field', async () => {
+        installCsClient([]);
+
+        await service.buildCommonServiceFields();
+
+        const byName = (name: string) =>
+          service.computedCommonServiceFields.find(
+            (field) => field.name === name
+          );
+        expect(byName('Groups')?.filter).toEqual({
+          defaultOperator: 'contains',
+          operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
+        });
+        expect(byName('Country')?.filter).toBeUndefined();
       });
     });
   });
