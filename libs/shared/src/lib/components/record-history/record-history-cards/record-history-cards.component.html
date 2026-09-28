@@ -1,0 +1,45 @@
+<div>
+  <ng-container
+    *ngFor="let item of items; let i = index; trackBy: trackByIndex"
+  >
+    <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
+      <ng-container ngProjectAs="title">
+        <span class="font-bold mr-2">{{
+          item.createdAt | sharedDate : 'shortDate'
+        }}</span>
+        {{ item.createdAt | sharedDate : 'shortTime' }}
+        <span class="history-user" *ngIf="item.createdBy">{{
+          item.createdBy
+        }}</span>
+      </ng-container>
+
+      <div class="flex flex-col text-sm">
+        <div
+          class="changes-content"
+          *ngFor="
+            let value of showMore ? item.changes : item.changes.slice(0, 4)
+          "
+          [innerHTML]="value.html"
+        ></div>
+        <div class="text-center mt-4 mb-3">
+          <ui-button
+            variant="primary"
+            *ngIf="!showMore && item.changes.length > 4"
+            (click)="showMore = true"
+            >{{ 'common.pagination.loadMore' | translate }} ({{
+              item.changes.length - 4
+            }})</ui-button
+          >
+        </div>
+        <ui-button
+          icon="update"
+          class="self-end"
+          (click)="revert.emit(item.version)"
+          *ngIf="item.version"
+        >
+          {{ 'components.history.preview' | translate }}
+        </ui-button>
+      </div>
+    </ui-expansion-panel>
+  </ng-container>
+</div>

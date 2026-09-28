@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
@@ -1143,6 +1144,20 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "file": {
+        "limitReached": "Maximum number of files reached ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "The attached file is outdated and hidden from this form. Remove it permanently to upload a new one.",
+          "limitReachedHidden": "Maximum number of files reached ({{limit}}), including {{count}} outdated file(s) hidden from this form",
+          "locked": "Remove the current file permanently before selecting a new one",
+          "markAsActive": "Mark as active",
+          "markAsOutdated": "Mark as outdated",
+          "removePermanently": "Remove permanently",
+          "tooltip": "This file is outdated"
+        },
+        "remove": "Remove file",
+        "select": "Select file"
+      },
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -1276,11 +1291,15 @@
         "all": "All fields",
         "select": "Select fields"
       },
+      "fieldRequired": "Select a field for the Field history question",
+      "loadError": "History could not be loaded",
+      "noHistoryYet": "No history yet",
       "preview": "Preview and revert",
       "range": {
         "clear": "Clear range"
       },
       "renderError": "Unable to display this change",
+      "unknownField": "Unknown field",
       "useTableMode": "Use table mode"
     },
     "icon": {
@@ -1397,13 +1416,20 @@
       "fields": {
         "available": "Available fields",
         "column": "Column width (px)",
+        "filterByForm": "Filter by form",
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
-        "title": "Fields"
+        "showOutdatedFiles": {
+          "info": "Only applies to file fields. Files marked as outdated in the form are hidden unless this option is enabled.",
+          "title": "Show outdated files"
+        },
+        "title": "Fields",
+        "transferAllFrom": "Remove all fields",
+        "transferAllTo": "Add all fields"
       },
       "filter": {
         "and": "And",
@@ -1435,6 +1461,7 @@
         "title": "Send Separate Email Fields"
       },
       "sort": {
+        "add": "Add sort field",
         "ascending": "Ascending",
         "descending": "Descending",
         "field": "Sort field",
@@ -1592,6 +1619,8 @@
           },
           "title": "Automatic assignment"
         },
+        "autoGrantFieldsAccessibility": "Auto-grant view access to new fields",
+        "autoGrantFieldsUpdate": "Auto-grant edit access to new fields",
         "details": {
           "access": {
             "channels": "Channels access",
@@ -1610,6 +1639,7 @@
         "noFilters": "No access filters detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
+        "permissionsUpdated": "Permissions on {{resource}} were successfully updated.",
         "removeFilter": "Remove filter",
         "title": "Summary",
         "users": {
@@ -1620,9 +1650,19 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
+        "allowFieldDeleteFiles": "Allow this role to permanently delete files of the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
+        "allowSelectedFieldsAccessibility": "Allow this role to see the selected fields",
+        "allowSelectedFieldsDeleteFiles": "Allow this role to permanently delete files of the selected file fields",
+        "allowSelectedFieldsUpdate": "Allow this role to update the selected fields",
+        "autoGrantFieldsAccessibility": "Automatically grant view access to fields added to this resource in the future",
+        "autoGrantFieldsUpdate": "Automatically grant edit access to fields added to this resource in the future",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+        "disallowFieldDeleteFiles": "Disallow this role to permanently delete files of the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+        "disallowSelectedFieldsAccessibility": "Disallow this role to see the selected fields",
+        "disallowSelectedFieldsDeleteFiles": "Disallow this role to permanently delete files of the selected file fields",
+        "disallowSelectedFieldsUpdate": "Disallow this role to update the selected fields",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",
         "grantDownloadRecordsPermission": "Grant permission to download records",
@@ -3147,6 +3187,14 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "The following language(s) will no longer be available in this application: {{languages}}. Users currently using them will be switched back to the default language. Do you want to continue?",
+            "title": "Remove additional language(s)"
+          },
+          "info": "Selected languages are shown in the language selector of the front-office. In the back-office, all languages always remain available in the dropdown.",
+          "text": "Additional languages"
+        },
         "emailCreated": "New email notification created",
         "emailDeleted": "Email notification deleted successfully",
         "emailEdited": "Email notification edited successfully",
@@ -3190,6 +3238,7 @@
         "builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
         "custom": "Custom functions",
         "docs": "Open SurveyJS docs",
+        "functionDocs": "Open documentation",
         "noResults": "No functions match your search.",
         "open": "Function reference",
         "searchPlaceholder": "Filter by name or description...",

@@ -141,6 +141,17 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
+    <button
+      *ngIf="hasActiveFilters"
+      [uiTooltip]="'common.filter.clearAll' | translate"
+      kendoButton
+      icon="filter-clear"
+      [disabled]="loadingRecords"
+      (click)="clearFilters()"
+      class="export-hide"
+    >
+      {{ 'common.filter.clearAll' | translate }}
+    </button>
     <!-- Reset default layout -->
     <button
       kendoTooltip
@@ -270,18 +281,18 @@
           >
             <div
               class="translate textbox-container"
-              [style]="dataItem.style[field.name]"
+              [style]="dataItem._display.style[field.name]"
             >
               <div
                 class="truncate"
-                [uiTooltip]="dataItem.text[field.name]"
+                [uiTooltip]="dataItem._display.text[field.name]"
                 tooltipEnableBy="truncate"
               >
-                {{ dataItem.text[field.name] }}
+                {{ dataItem._display.text[field.name] }}
               </div>
               <button
                 kendoButton
-                *ngIf="dataItem.showFullScreenButton[field.name]"
+                *ngIf="dataItem._display.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 class="export-hide"
                 (click)="onExpandText(dataItem, field.name, field.title)"
@@ -303,14 +314,14 @@
           >
             <div
               class="translate textbox-container"
-              [style]="dataItem.style[field.name]"
+              [style]="dataItem._display.style[field.name]"
             >
               <div
                 class="truncate"
-                [uiTooltip]="dataItem.text[field.name]"
+                [uiTooltip]="dataItem._display.text[field.name]"
                 tooltipEnableBy="truncate"
               >
-                {{ dataItem.text[field.name] }}
+                {{ dataItem._display.text[field.name] }}
               </div>
             </div>
           </ng-template>
@@ -321,24 +332,27 @@
             let-dataItem="dataItem"
             *ngIf="['url'].includes(field.meta.type)"
           >
-            <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="textbox-container"
+              [style]="dataItem._display.style[field.name]"
+            >
               <a
                 class="url-container truncate"
-                href="{{ dataItem.urlValue[field.name] }}"
+                href="{{ dataItem._display.urlValue[field.name] }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div
                   class="truncate"
-                  [uiTooltip]="dataItem.text[field.name]"
+                  [uiTooltip]="dataItem._display.text[field.name]"
                   tooltipEnableBy="truncate"
                 >
-                  {{ dataItem.text[field.name] }}
+                  {{ dataItem._display.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="dataItem.showFullScreenButton[field.name]"
+                *ngIf="dataItem._display.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
@@ -352,24 +366,27 @@
             let-dataItem="dataItem"
             *ngIf="['email'].includes(field.meta.type)"
           >
-            <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="textbox-container"
+              [style]="dataItem._display.style[field.name]"
+            >
               <a
                 class="url-container truncate"
-                href="mailto:{{ dataItem.value[field.name] }}"
+                href="mailto:{{ dataItem._display.value[field.name] }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div
                   class="truncate"
-                  [uiTooltip]="dataItem.text[field.name]"
+                  [uiTooltip]="dataItem._display.text[field.name]"
                   tooltipEnableBy="truncate"
                 >
-                  {{ dataItem.text[field.name] }}
+                  {{ dataItem._display.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="dataItem.showFullScreenButton[field.name]"
+                *ngIf="dataItem._display.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
@@ -383,24 +400,27 @@
             let-dataItem="dataItem"
             *ngIf="['tel'].includes(field.meta.type)"
           >
-            <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="textbox-container"
+              [style]="dataItem._display.style[field.name]"
+            >
               <a
                 class="url-container truncate"
-                href="tel:{{ dataItem.value[field.name] }}"
+                href="tel:{{ dataItem._display.value[field.name] }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div
                   class="truncate"
-                  [uiTooltip]="dataItem.text[field.name]"
+                  [uiTooltip]="dataItem._display.text[field.name]"
                   tooltipEnableBy="truncate"
                 >
-                  {{ dataItem.text[field.name] }}
+                  {{ dataItem._display.text[field.name] }}
                 </div>
               </a>
               <button
                 kendoButton
-                *ngIf="dataItem.showFullScreenButton[field.name]"
+                *ngIf="dataItem._display.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
@@ -414,7 +434,10 @@
             let-dataItem="dataItem"
             *ngIf="field.meta.type === 'boolean'"
           >
-            <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="textbox-container"
+              [style]="dataItem._display.style[field.name]"
+            >
               <input
                 type="checkbox"
                 kendoCheckBox
@@ -432,18 +455,18 @@
           >
             <div
               class="translate textbox-container"
-              [style]="dataItem.style[field.name]"
+              [style]="dataItem._display.style[field.name]"
             >
               <div
                 class="truncate"
-                [uiTooltip]="dataItem.text[field.name]"
+                [uiTooltip]="dataItem._display.text[field.name]"
                 tooltipEnableBy="truncate"
               >
-                {{ dataItem.text[field.name] }}
+                {{ dataItem._display.text[field.name] }}
               </div>
               <button
                 kendoButton
-                *ngIf="dataItem.showFullScreenButton[field.name]"
+                *ngIf="dataItem._display.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
@@ -484,7 +507,7 @@
               >
                 {{
                   field.displayField
-                    ? dataItem.text[field.name]
+                    ? dataItem._display.text[field.name]
                     : ((dataItem[field.name].length > 1
                         ? 'components.widget.grid.item.few'
                         : 'components.widget.grid.item.one'
@@ -504,13 +527,16 @@
             let-dataItem="dataItem"
             *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
           >
-            <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="textbox-container"
+              [style]="dataItem._display.style[field.name]"
+            >
               <div
                 class="truncate"
-                [uiTooltip]="dataItem.text[field.name]"
+                [uiTooltip]="dataItem._display.text[field.name]"
                 tooltipEnableBy="truncate"
               >
-                {{ dataItem.text[field.name] }}
+                {{ dataItem._display.text[field.name] }}
               </div>
             </div>
           </ng-template>
@@ -670,14 +696,14 @@
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <div
                 class="textbox-container"
-                [style]="dataItem.style[field.name]"
+                [style]="dataItem._display.style[field.name]"
               >
                 <div
                   class="truncate"
-                  [uiTooltip]="dataItem.text[subField.name]"
+                  [uiTooltip]="dataItem._display.text[subField.name]"
                   tooltipEnableBy="truncate"
                 >
-                  {{ dataItem.text[subField.name] }}
+                  {{ dataItem._display.text[subField.name] }}
                 </div>
                 <!-- <button
                   kendoButton
@@ -713,7 +739,10 @@
           ></ng-container>
         </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-          <div class="textbox-container" [style]="dataItem.style[field.name]">
+          <div
+            class="textbox-container"
+            [style]="dataItem._display.style[field.name]"
+          >
             <a
               class="url-container textbox cursor-pointer"
               rel="noopener noreferrer"
@@ -722,7 +751,7 @@
                 'components.widget.grid.tooltip.displayMap' | translate
               "
             >
-              {{ dataItem.text[field.name] }}
+              {{ dataItem._display.text[field.name] }}
             </a>
           </div>
         </ng-template>
@@ -749,13 +778,16 @@
           ></ng-container>
         </ng-template>
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-          <div class="textbox-container" [style]="dataItem.style[field.name]">
+          <div
+            class="textbox-container"
+            [style]="dataItem._display.style[field.name]"
+          >
             <div
               class="truncate"
-              [innerHTML]="dataItem.text[field.name] | sharedStripHtml"
+              [innerHTML]="dataItem._display.text[field.name] | sharedStripHtml"
             ></div>
             <button
-              *ngIf="dataItem.text[field.name]"
+              *ngIf="dataItem._display.text[field.name]"
               kendoButton
               icon="hyperlink-open-sm"
               (click)="onOpenEditorModal(dataItem, field)"
@@ -842,13 +874,16 @@
           </shared-grid-filter>
         </ng-template>
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
-          <div class="textbox-container" [style]="dataItem.style[field.name]">
+          <div
+            class="textbox-container"
+            [style]="dataItem._display.style[field.name]"
+          >
             <div
               class="truncate"
-              [uiTooltip]="dataItem.text[field.name]"
+              [uiTooltip]="dataItem._display.text[field.name]"
               tooltipEnableBy="truncate"
             >
-              {{ dataItem.text[field.name] }}
+              {{ dataItem._display.text[field.name] }}
             </div>
           </div>
         </ng-template>
@@ -893,25 +928,42 @@
           let-dataItem="dataItem"
           let-idx="rowIndex"
         >
-          <div class="textbox-container" [style]="dataItem.style[field.name]">
+          <div
+            class="textbox-container"
+            [style]="dataItem._display.style[field.name]"
+          >
             <!-- Single file -->
-            <ng-container *ngIf="dataItem[field.name]?.length === 1">
+            <ng-container
+              *ngIf="dataItem._display.files[field.name]?.length === 1"
+            >
               <button
                 kendoButton
-                *ngFor="let file of dataItem[field.name]"
+                *ngFor="let file of dataItem._display.files[field.name]"
                 [look]="'flat'"
                 [uiTooltip]="file.name"
                 (click)="$event.stopPropagation(); onOpenFile(file)"
-                class="w-full !justify-start overflow-hidden text-ellipsis"
+                class="w-full !justify-start overflow-hidden text-ellipsis whitespace-nowrap"
               >
-                <span [class]="dataItem.icon[file.name]"></span>
+                <span [class]="dataItem._display.icon[file.name]"></span>
+                <ui-icon
+                  *ngIf="file.outdated"
+                  icon="warning"
+                  variant="warning"
+                  [size]="16"
+                  class="inline-flex shrink-0 mr-1 align-middle"
+                  [uiTooltip]="
+                    'components.form.file.outdated.tooltip' | translate
+                  "
+                ></ui-icon>
                 <span class="textbox">{{
-                  dataItem.text[field.name][file.name] || file.name
+                  dataItem._display.text[field.name][file.name] || file.name
                 }}</span>
               </button>
             </ng-container>
             <!-- Multiple files -->
-            <ng-container *ngIf="dataItem[field.name]?.length > 1">
+            <ng-container
+              *ngIf="dataItem._display.files[field.name]?.length > 1"
+            >
               <button
                 kendoButton
                 class="w-full text-center"
@@ -922,22 +974,39 @@
               >
                 {{
                   'components.widget.grid.files'
-                    | translate : { number: dataItem[field.name].length }
+                    | translate
+                      : { number: dataItem._display.files[field.name].length }
                 }}
               </button>
               <ui-menu #fileMenu>
                 <button
                   kendoButton
-                  *ngFor="let file of dataItem[field.name]"
+                  *ngFor="let file of dataItem._display.files[field.name]"
                   [look]="'flat'"
                   [uiTooltip]="file.name"
                   (click)="$event.stopPropagation(); onOpenFile(file)"
                   class="w-full justify-start overflow-hidden text-overflow-ellipsis"
                 >
-                  <p style="text-wrap: auto" class="max-w-full">
-                    <span [class]="dataItem.icon[file.name]"></span>
+                  <p
+                    style="text-wrap: auto"
+                    class="max-w-full flex items-center"
+                  >
+                    <span
+                      [class]="dataItem._display.icon[file.name]"
+                      class="shrink-0"
+                    ></span>
+                    <ui-icon
+                      *ngIf="file.outdated"
+                      icon="warning"
+                      variant="warning"
+                      [size]="16"
+                      class="inline-flex shrink-0 mr-1 align-middle"
+                      [uiTooltip]="
+                        'components.form.file.outdated.tooltip' | translate
+                      "
+                    ></ui-icon>
                     <span class="textbox">{{
-                      dataItem.text[field.name][file.name] || file.name
+                      dataItem._display.text[field.name][file.name] || file.name
                     }}</span>
                   </p>
                 </button>
@@ -972,13 +1041,16 @@
           ></ng-container>
         </ng-template>
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
-          <div class="textbox-container" [style]="dataItem.style[field.name]">
+          <div
+            class="textbox-container"
+            [style]="dataItem._display.style[field.name]"
+          >
             <div
               class="truncate"
-              [uiTooltip]="dataItem.text[field.name]"
+              [uiTooltip]="dataItem._display.text[field.name]"
               tooltipEnableBy="truncate"
             >
-              {{ dataItem.text[field.name] }}
+              {{ dataItem._display.text[field.name] }}
             </div>
           </div>
         </ng-template>
@@ -1267,9 +1339,15 @@
     </ng-container>
     <!-- CUSTOM ROW ACTIONS -->
     <kendo-grid-column
-      *ngFor="let group of customRowActionGroups; trackBy: trackByGroupLabel"
+      #customActionColumn
+      *ngFor="
+        let group of customRowActionGroups;
+        let i = index;
+        trackBy: trackByGroupLabel
+      "
       [columnMenu]="false"
-      [width]="group.width"
+      [width]="getColumnWidth(customActionColumnName(i), group.width)"
+      [hidden]="isColumnHidden(customActionColumnName(i))"
       [resizable]="true"
       [title]="group.label"
       [sticky]="true"
@@ -1301,9 +1379,11 @@
     </kendo-grid-column>
     <!-- ROW DETAILS -->
     <kendo-grid-column
+      #detailsColumn
       *ngIf="hasDetails && actions.showDetails"
       [columnMenu]="false"
       [width]="68"
+      [hidden]="isColumnHidden(detailsColumnName)"
       [resizable]="false"
       [title]="'components.widget.grid.actions.details' | translate"
       [sticky]="true"
@@ -1329,9 +1409,11 @@
     </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
     <kendo-grid-column
+      #navigateColumn
       *ngIf="actions.navigateToPage"
       [columnMenu]="false"
-      [width]="54"
+      [width]="getColumnWidth(navigateColumnName, 54)"
+      [hidden]="isColumnHidden(navigateColumnName)"
       [resizable]="true"
       [title]="(actions.navigateSettings?.title | sharedLocalize) ?? ''"
       [sticky]="true"

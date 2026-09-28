@@ -98,6 +98,34 @@ export const getLanguageNativeName = (lang: string): string => {
 };
 
 /**
+ * Applies the correct active language given a set of allowed languages for
+ * the current context (e.g. the current application's additional languages,
+ * or the current form's used locales), without ever writing to localStorage.
+ *
+ * If the stored language preference is allowed here, it is (re)applied - so
+ * navigating back to a context that supports it keeps working. Otherwise,
+ * the interface silently falls back to the default language for this
+ * session only, leaving the stored preference untouched so it can be picked
+ * up again later.
+ *
+ * @param translate The translate service
+ * @param allowedLanguages Languages allowed in the current context (should include the default language)
+ */
+export const applyAllowedLanguage = (
+  translate: TranslateService,
+  allowedLanguages: string[]
+): void => {
+  const stored = localStorage.getItem('lang');
+  const desired =
+    stored && allowedLanguages.includes(stored)
+      ? stored
+      : translate.defaultLang;
+  if (translate.currentLang !== desired) {
+    translate.use(desired);
+  }
+};
+
+/**
  * Get the full name of a language in the current language of the user
  *
  * @param lang The code of the language we want the name of
