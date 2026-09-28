@@ -321,7 +321,8 @@
         },
         "fieldselect": {
           "placeholder": "******",
-          "tooltip": "******"
+          "tooltip": "******",
+          "tooltipTwo": "******"
         },
         "footer": {
           "logo": "******",
