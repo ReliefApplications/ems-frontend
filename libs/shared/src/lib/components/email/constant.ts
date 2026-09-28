@@ -25,7 +25,19 @@ export const commonServiceFields = [
   { key: 'Region', label: 'Region' },
   { key: 'LocationType', label: 'LocationType' },
   { key: 'InternalExternal', label: 'InternalExternal' },
-  { key: 'Groups', label: 'User Groups', namePath: 'GroupName' },
+  {
+    key: 'Groups',
+    label: 'User Groups',
+    namePath: 'GroupName',
+    // A user belongs to many groups, so the filter is a membership test:
+    // "contains X" matches users in a group named X, "does not contain X"
+    // matches users in no group named X. The email function evaluates these
+    // operators on the Groups field as exact name membership.
+    filter: {
+      defaultOperator: 'contains',
+      operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
+    },
+  },
 ];
 
 /** Maximum number of files allowed */

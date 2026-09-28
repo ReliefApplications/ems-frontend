@@ -589,6 +589,9 @@ export class EmailService {
         type: 'checkbox',
         editor: 'select',
         isCommonService: true,
+        // Optional per-field operator overrides (operators, defaultOperator),
+        // merged over the editor defaults by the filter row.
+        ...(ele.filter ? { filter: ele.filter } : {}),
       });
     });
     this.userTableFields.forEach((ele: string) => {

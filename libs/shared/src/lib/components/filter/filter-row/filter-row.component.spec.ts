@@ -273,6 +273,49 @@ describe('FilterRowComponent', () => {
     });
   });
 
+  describe('field operator overrides', () => {
+    /** Multi-valued field: its filter is a membership test, not an equality */
+    const GROUPS_FIELD = {
+      name: 'Groups',
+      editor: 'select',
+      type: 'checkbox',
+      isCommonService: true,
+      filter: {
+        defaultOperator: 'contains',
+        operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
+      },
+    };
+
+    it('offers the operators a field overrides and its default operator', () => {
+      createComponent({ fields: [...FIELDS, GROUPS_FIELD] });
+
+      (component as any).setField('Groups', true);
+
+      // Listed in the shared FILTER_OPERATORS order
+      expect(component.operators.map((op) => op.value)).toEqual([
+        'isempty',
+        'isnotempty',
+        'contains',
+        'doesnotcontain',
+      ]);
+      expect(component.form.get('operator')?.value).toBe('contains');
+    });
+
+    it('keeps the editor defaults for fields without overrides', () => {
+      createComponent();
+
+      (component as any).setField('Country', true);
+
+      expect(component.operators.map((op) => op.value)).toEqual([
+        'eq',
+        'neq',
+        'isempty',
+        'isnotempty',
+      ]);
+      expect(component.form.get('operator')?.value).toBe('eq');
+    });
+  });
+
   describe('loadCommonServiceOptions', () => {
     it('loads the reference values of a select field', async () => {
       createComponent();

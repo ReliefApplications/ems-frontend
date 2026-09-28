@@ -294,6 +294,7 @@ describe('EmailService (components/email)', () => {
       'Region',
       'LocationType',
       'InternalExternal',
+      'Groups',
     ];
 
     /**
@@ -426,6 +427,22 @@ describe('EmailService (components/email)', () => {
           service.computedCommonServiceFields.map((field) => field.name)
         ).toEqual(STATIC_FIELD_NAMES);
         consoleError.mockRestore();
+      });
+
+      it('offers membership operators for the User Groups field', async () => {
+        installCsClient([]);
+
+        await service.buildCommonServiceFields();
+
+        const byName = (name: string) =>
+          service.computedCommonServiceFields.find(
+            (field) => field.name === name
+          );
+        expect(byName('Groups')?.filter).toEqual({
+          defaultOperator: 'contains',
+          operators: ['contains', 'doesnotcontain', 'isempty', 'isnotempty'],
+        });
+        expect(byName('Country')?.filter).toBeUndefined();
       });
     });
   });
