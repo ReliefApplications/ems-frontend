@@ -58,6 +58,8 @@ export default {
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/utils/filter/*.spec.ts',
+    '<rootDir>/src/lib/utils/validators/*.spec.ts',
+    '<rootDir>/src/lib/components/email/steps/schedule-alert/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resource.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',
     '<rootDir>/src/lib/survey/components/field-history.spec.ts',
