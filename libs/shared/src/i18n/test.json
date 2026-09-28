@@ -307,6 +307,8 @@
           "noCustomTitle": "******",
           "noDistributionList": "******",
           "noFields": "******",
+          "noRecipient": "******",
+          "noRecipientSeparateEmail": "******",
           "noSubject": "******",
           "noTemplate": "******",
           "preview": "******"
@@ -2182,6 +2184,7 @@
               "selectAllRecordsActivePage": "******",
               "selectDisplay": "******",
               "sendMail": "******",
+              "separateEmailRecipientRequired": "******",
               "workflow": {
                 "close": "******",
                 "confirm": "******",

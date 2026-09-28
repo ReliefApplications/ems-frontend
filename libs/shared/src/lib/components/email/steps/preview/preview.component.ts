@@ -158,6 +158,8 @@ export class PreviewComponent
       this.distributionListTo = this.emailService.emailDistributionList?.to;
       this.distributionListCc = this.emailService.emailDistributionList?.cc;
       this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
+      this.distributionListSeparate =
+        this.emailService.distributionListSeparate ?? [];
     }
 
     this.query = this.emailService.datasetsForm.value;
@@ -291,6 +293,11 @@ export class PreviewComponent
             previewData?.dataQuery?.queryName || '';
           this.query.datasets[0].query.fields =
             previewData?.dataQuery?.fields || [];
+          if (previewData?.sendSeparateEmail) {
+            this.query.datasets[0].individualEmail = true;
+            this.query.datasets[0].individualEmailFields =
+              previewData?.separateEmailFields ?? [];
+          }
         }
         if (this.emailService.allPreviewData.length > 0) {
           this.emailService.allPreviewData[0]['emailDistributionList'] =

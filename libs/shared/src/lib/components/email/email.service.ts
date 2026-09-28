@@ -243,8 +243,37 @@ export class EmailService {
   public distributionListData: FormGroup | any = [];
   /** Show File Upload */
   public showFileUpload = false;
-  /** Send Separate Dataset Blocks */
-  public sendSeparateBlocks: string[] = [];
+  /** dataQuery for the current grid action (set before child components initialise) */
+  public gridActionDataQuery: any = null;
+  /** Whether send separate email is enabled for the current grid action */
+  public gridActionSendSeparateEmail = false;
+  /** Send-separate-email recipients returned by the last preview-distribution-lists call (read-only display) */
+  public distributionListSeparate: any[] = [];
+
+  /** @returns true when the last preview-distribution-lists call returned at least one send-separate-email recipient */
+  get hasSeparateEmailRecipients(): boolean {
+    return (
+      this.distributionListSeparate?.some((b: any) => b?.emails?.length > 0) ??
+      false
+    );
+  }
+
+  /**
+   * Block names marked for individual-email sending. Derived from form state; returns ['Block 1'] in grid-action send-separate-email mode.
+   *
+   * @returns array of block names with send separate email enabled
+   */
+  get sendSeparateBlocks(): string[] {
+    if (this.isGridAction) {
+      return this.gridActionSendSeparateEmail ? ['Block 1'] : [];
+    }
+    return (this.datasetsForm?.get('datasets')?.getRawValue() ?? [])
+      .filter(
+        (d: any) =>
+          d.individualEmail && d.query.name && (d.resource || d.reference)
+      )
+      .map((d: any) => d.name);
+  }
 
   /**
    * Generates new dataset group.
@@ -1001,16 +1030,12 @@ export class EmailService {
     if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
-      this.sendSeparateBlocks = [];
       datasetsValues.forEach((dataset: any) => {
         if (
           (dataset.query.name && dataset.resource) ||
           (dataset.query.name && dataset.reference)
         ) {
           datasets.push(dataset.name);
-          if (dataset.individualEmail) {
-            this.sendSeparateBlocks.push(dataset.name);
-          }
         }
       });
 
@@ -1033,7 +1058,6 @@ export class EmailService {
       datasets: [],
       fields: [],
     };
-    this.sendSeparateBlocks = [];
   }
 
   /**

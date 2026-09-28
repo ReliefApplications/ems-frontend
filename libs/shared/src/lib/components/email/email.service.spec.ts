@@ -196,17 +196,16 @@ describe('EmailService (components/email)', () => {
 
     it('does nothing when the form has no datasets', () => {
       (service.datasetsForm.get('datasets') as FormArray).clear();
-      service.sendSeparateBlocks = ['stale'];
 
       service.createPreviewData();
 
       expect(service.previewData).toBeUndefined();
-      expect(service.sendSeparateBlocks).toEqual(['stale']);
+      expect(service.sendSeparateBlocks).toEqual([]);
     });
   });
 
   describe('resetPreviewData', () => {
-    it('clears the preview data and the send-separate blocks', () => {
+    it('clears the preview data but keeps deriving send-separate blocks from the form', () => {
       seedDatasets([
         {
           name: 'Block 1',
@@ -221,7 +220,65 @@ describe('EmailService (components/email)', () => {
       service.resetPreviewData();
 
       expect(service.previewData).toEqual({ datasets: [], fields: [] });
+      // Derived from the datasets form, which reset does not touch
+      expect(service.sendSeparateBlocks).toEqual(['Block 1']);
+    });
+  });
+
+  describe('sendSeparateBlocks in grid action mode', () => {
+    beforeEach(() => {
+      service.isGridAction = true;
+      // A seeded send-separate block must be ignored in grid action mode
+      seedDatasets([
+        {
+          name: 'Ignored',
+          queryName: 'Q1',
+          resource: 'r1',
+          individualEmail: true,
+        },
+      ]);
+    });
+
+    afterEach(() => {
+      service.isGridAction = false;
+    });
+
+    it('is the single default block when send separate email is enabled', () => {
+      service.gridActionSendSeparateEmail = true;
+      expect(service.sendSeparateBlocks).toEqual(['Block 1']);
+    });
+
+    it('is empty when send separate email is disabled', () => {
+      service.gridActionSendSeparateEmail = false;
       expect(service.sendSeparateBlocks).toEqual([]);
+    });
+  });
+
+  describe('hasSeparateEmailRecipients', () => {
+    it('is false when no send-separate recipients were loaded', () => {
+      service.distributionListSeparate = [];
+      expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+
+    it('is false when every block resolved to no recipient', () => {
+      service.distributionListSeparate = [
+        { name: 'Block 1', emails: [] },
+        { name: 'Block 2' },
+      ];
+      expect(service.hasSeparateEmailRecipients).toBe(false);
+    });
+
+    it('is true as soon as one block has a recipient', () => {
+      service.distributionListSeparate = [
+        { name: 'Block 1', emails: [] },
+        { name: 'Block 2', emails: ['first@example.com'] },
+      ];
+      expect(service.hasSeparateEmailRecipients).toBe(true);
+    });
+
+    it('tolerates a missing recipient list', () => {
+      (service as any).distributionListSeparate = undefined;
+      expect(service.hasSeparateEmailRecipients).toBe(false);
     });
   });
 });
