@@ -58,7 +58,13 @@
 
   <!-- TOGGLE DATASET FIELD EDITOR (email notification context) -->
   <ui-button
-    *ngIf="field && !canUseContext && !hideEditor && !contextEditorIsActivated && datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0"
+    *ngIf="
+      field &&
+      !canUseContext &&
+      !hideEditor &&
+      !contextEditorIsActivated &&
+      datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0
+    "
     [isIcon]="true"
     [disabled]="disabled"
     icon="change_circle_outline"
@@ -108,10 +114,9 @@
             {{
               field.isCommonService && field.graphQLFieldName?.label
                 ? field.graphQLFieldName.label
-                : (!isEmailNotification
-                    ? (field.text || field.name)
+                : !isEmailNotification
+                ? field.text || field.name
                 : (this.emailService.replaceUnderscores(field.name) | titlecase)
-                  )
             }}
           </ui-select-option>
 
@@ -295,7 +300,9 @@
       icon="change_circle_outline"
       variant="primary"
       (click)="toggleContextEditor()"
-      [uiTooltip]="'components.queryBuilder.tooltip.filter.select.usePicker' | translate"
+      [uiTooltip]="
+        'components.queryBuilder.tooltip.filter.select.usePicker' | translate
+      "
     ></ui-button>
   </ng-template>
 

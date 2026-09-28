@@ -355,7 +355,9 @@
                 [form]="$any(query.get('csFilter'))"
                 [query]="query.get('csFilter').getRawValue()"
                 [referenceFields]="csFilterReferenceFields"
-                [datasetCommonServicesFieldSettings]="datasetCommonServicesFieldSettings"
+                [datasetCommonServicesFieldSettings]="
+                  datasetCommonServicesFieldSettings
+                "
               ></shared-tab-filter>
             </ng-container>
           </ng-template>

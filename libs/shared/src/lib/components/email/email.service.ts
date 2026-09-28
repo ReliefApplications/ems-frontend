@@ -242,6 +242,10 @@ export class EmailService {
   userTableFields: string[] = [];
   /** Combined computed fields for the CS filter UI (static + dynamic user-table fields). */
   public computedCommonServiceFields: any[] = [];
+  /** In-flight request for {@link getUserTableFields}, shared by concurrent callers. */
+  private userTableFieldsPromise?: Promise<void>;
+  /** In-flight request for {@link buildCommonServiceFields}, shared by concurrent callers. */
+  private commonServiceFieldsPromise?: Promise<void>;
   /** display types */
   public displayTypes: any[] = [
     { id: 'table', name: 'Table' },
@@ -536,29 +540,46 @@ export class EmailService {
 
   /**
    * Fetches scalar user-table fields from the Common Service GraphQL endpoint.
-   * Idempotent — skips the call if fields are already loaded.
+   * Idempotent — skips the call if fields are already loaded, and concurrent
+   * callers share the same in-flight request instead of each firing their own.
    */
   async getUserTableFields(): Promise<void> {
     if (this.userTableFields.length > 0) return;
-    const apolloClient = this.apollo.use('csClient');
-    await firstValueFrom(apolloClient.query<any>({ query: GET_CS_USER_FIELDS }))
-      .then(({ data }) => {
-        this.userTableFields = data.__type.fields
-          .filter((f: any) => f.type.kind === 'SCALAR')
-          .map((f: any) => f.name);
-      })
-      .catch((error) => {
-        console.error('Error fetching CS user table fields:', error);
-      });
+    if (!this.userTableFieldsPromise) {
+      this.userTableFieldsPromise = (async () => {
+        const apolloClient = this.apollo.use('csClient');
+        await firstValueFrom(
+          apolloClient.query<any>({ query: GET_CS_USER_FIELDS })
+        )
+          .then(({ data }) => {
+            this.userTableFields = data.__type.fields
+              .filter((f: any) => f.type.kind === 'SCALAR')
+              .map((f: any) => f.name);
+          })
+          .catch((error) => {
+            console.error('Error fetching CS user table fields:', error);
+          });
+      })();
+    }
+    return this.userTableFieldsPromise;
   }
 
   /**
    * Builds `computedCommonServiceFields` by combining the static CS reference fields with
    * the dynamic user-table fields fetched from the CS endpoint.
-   * Idempotent — skips if already built.
+   * Idempotent — skips if already built, and concurrent callers share the same
+   * in-flight build instead of each pushing their own copy of the fields.
    */
   async buildCommonServiceFields(): Promise<void> {
     if (this.computedCommonServiceFields.length > 0) return;
+    if (!this.commonServiceFieldsPromise) {
+      this.commonServiceFieldsPromise = this.doBuildCommonServiceFields();
+    }
+    return this.commonServiceFieldsPromise;
+  }
+
+  /** Performs the actual field-list build for {@link buildCommonServiceFields}. */
+  private async doBuildCommonServiceFields(): Promise<void> {
     await this.getUserTableFields();
     this.commonServiceFields.forEach((ele: any) => {
       this.computedCommonServiceFields.push({

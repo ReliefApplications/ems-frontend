@@ -16,6 +16,7 @@ import {
   SURVEY_PROP_CONFIRM_RECORD_UPDATE,
   SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
 } from '../../utils/survey-confirm-record-update.util';
+import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
 import { registerCustomPropertyHelp } from '../localization';
 import { Question } from '../types';
 
@@ -129,6 +130,19 @@ export const init = (environment: any): void => {
     isSerializable: false,
   });
 
+  // Preserve legacy record creation behavior unless explicitly enabled.
+  serializer.addProperty('survey', {
+    name: `${SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION}:boolean`,
+    type: 'boolean',
+    category: 'data',
+    displayName: 'Lock read-only fields on record creation',
+    default: false,
+  });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION,
+    'By default, fields marked as read-only can be edited while a new record is being created and only become locked when an existing record is edited. Enable this option to keep them read-only during record creation as well.'
+  );
+
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
   /** Size per file is mandatory */
@@ -165,6 +179,40 @@ export const init = (environment: any): void => {
     default: 5,
     minValue: 2,
   });
+
+  // Let users mark stored files as outdated instead of deleting them
+  serializer.addProperty('file', {
+    name: 'allowOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Allow marking files as outdated',
+    default: false,
+    visibleIndex: 11,
+  });
+  registerCustomPropertyHelp(
+    'allowOutdatedFiles',
+    'When enabled, users can mark stored files as outdated instead of deleting them. Outdated files stay attached to the record, are flagged with a warning icon, and still count toward the maximum number of files. Only roles allowed to delete files on this field can remove them permanently.'
+  );
+  serializer.addProperty('file', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: true,
+    dependsOn: 'allowOutdatedFiles',
+    visibleIf: (obj: any) => !!obj?.allowOutdatedFiles,
+    visibleIndex: 12,
+  });
+  // Same option for HTML questions listing files through {field} placeholders
+  serializer.addProperty('html', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: false,
+    visibleIndex: 10,
+  });
+  registerCustomPropertyHelp(
+    'showOutdatedFiles',
+    'Display files marked as outdated. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
+  );
 
   // Add set value on complete expression to questions
   serializer.addProperty('question', {

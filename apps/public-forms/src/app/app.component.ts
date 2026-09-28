@@ -17,6 +17,8 @@ export class AppComponent {
   public theme = environment.theme;
   /** Name of the displayed form, shown in the header when a form is loaded */
   public formTitle$ = this.headerService.formTitle$;
+  /** Additional languages allowed by the currently displayed form, for the language switch */
+  public formLanguages$ = this.headerService.formLanguages$;
 
   /**
    * Root component of the public-forms application.

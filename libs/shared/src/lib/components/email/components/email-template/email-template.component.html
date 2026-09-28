@@ -513,7 +513,9 @@
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
-            <ng-container *ngIf="emailService.computedCommonServiceFields.length > 0">
+            <ng-container
+              *ngIf="emailService.computedCommonServiceFields.length > 0"
+            >
               <div class="flex gap-4 mt-2">
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->

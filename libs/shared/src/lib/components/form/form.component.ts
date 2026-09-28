@@ -22,10 +22,12 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,6 +37,8 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
 /**
  * This component is used to display forms
@@ -93,6 +97,8 @@ export class FormComponent
   public saveButtonLabel = '';
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
+  /** Invalidates field history widgets after this form saves a new version. */
+  private fieldHistoryRefresh$ = new Subject<string | undefined>();
   /** As we save the draft record in the db, the local storage is no longer used */
   /** ID for local storage */
   // private storageId = '';
@@ -106,7 +112,6 @@ export class FormComponent
    * @param dialog This is the Angular Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
-   * @param authService This is the service that handles authentication.
    * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
@@ -117,7 +122,6 @@ export class FormComponent
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
@@ -127,10 +131,8 @@ export class FormComponent
     super();
   }
 
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  /** It creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService);
-
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
       structure.completedHtml = `<h3>${this.translate.instant(
@@ -141,7 +143,11 @@ export class FormComponent
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       this.form.metadata,
-      this.record
+      this.record || this.form.uniqueRecord
+    );
+    this.survey.setPropertyValue(
+      FIELD_HISTORY_REFRESH_PROPERTY,
+      this.fieldHistoryRefresh$
     );
 
     this.survey.showCompletedPage = false;
@@ -160,9 +166,11 @@ export class FormComponent
       this.onComplete();
     });
 
-    // Unset readOnly fields if it's the record creation
-    // It's a requirement to let all fields been editable during addition of records
-    if (!isNil(this.record)) {
+    // Read-only fields stay editable during creation unless the form opts in to locking them.
+    if (
+      !isNil(this.record) ||
+      shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+    ) {
       this.form.fields?.forEach((field) => {
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
@@ -209,6 +217,7 @@ export class FormComponent
         fireOnRecordEditionTriggers(this.survey);
       }
     });
+    captureFieldChangeInitialData(this.survey);
     // survey.data does not fire onValueChanged; refresh expression-based button labels
     this.updateButtonLabels();
 
@@ -253,6 +262,7 @@ export class FormComponent
     this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
+    captureFieldChangeInitialData(this.survey);
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();
     this.save.emit({ completed: false });
@@ -382,8 +392,10 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
+    const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
+    fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
     // If is an already saved record, edit it
-    if (this.record || this.form.uniqueRecord) {
+    if (isRecordUpdate) {
       const recordId = this.record
         ? this.record.id
         : this.form.uniqueRecord?.id;
@@ -451,6 +463,15 @@ export class FormComponent
         this.snackBar.openSnackBar(
           this.translate.instant('components.form.display.submissionMessage')
         );
+        const savedRecord = data.addRecord || data.editRecord;
+        const currentRecord = this.survey.getPropertyValue('record') as
+          | RecordModel
+          | undefined;
+        this.survey.setPropertyValue('record', {
+          ...currentRecord,
+          ...savedRecord,
+        });
+        this.fieldHistoryRefresh$.next(savedRecord?.id);
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
@@ -483,6 +504,7 @@ export class FormComponent
     } else {
       this.survey.clear();
     }
+    captureFieldChangeInitialData(this.survey);
     this.updateButtonLabels();
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
@@ -564,6 +586,7 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    this.fieldHistoryRefresh$.complete();
     // Auto-translation timers are cleared by the dispose() patch installed in
     // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
