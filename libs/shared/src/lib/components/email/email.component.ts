@@ -704,6 +704,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
       notificationType: emailData.notificationType,
+      language: emailData.language ?? null,
       datasets: emailData.datasets?.length
         ? dataArray
         : this.emailService.datasetsForm.controls.datasets,
