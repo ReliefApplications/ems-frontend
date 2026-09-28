@@ -364,5 +364,92 @@ describe('FilterRowComponent', () => {
       expect(component.field.options).toHaveLength(2);
       expect(component.editor).toBe(editors.select);
     });
+
+    describe('user groups', () => {
+      /** Groups reference data, whose display value is nested under GroupName */
+      const GROUPS = { value: [{ GroupName: 'HQ' }, { GroupName: 'Field' }] };
+
+      /**
+       * The Groups reference field, fresh per test since options are assigned onto it.
+       *
+       * @returns Groups field
+       */
+      const groupsField = () => ({
+        name: 'Groups',
+        editor: 'select',
+        type: 'checkbox',
+        isCommonService: true,
+      });
+
+      /**
+       * Lets the async field-change handler finish.
+       *
+       * @returns Resolves on the next macrotask
+       */
+      const flush = () => new Promise((resolve) => setTimeout(resolve));
+
+      beforeEach(() => {
+        csMock.restRequest.mockReturnValue(of(GROUPS));
+      });
+
+      it('reads the option values from the given nested path', async () => {
+        createComponent();
+        const field: any = groupsField();
+
+        await component.loadCommonServiceOptions(field, 'GroupName');
+
+        expect(csMock.restRequest).toHaveBeenCalledWith('Groups');
+        expect(field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+      });
+
+      it('loads group names by their name path when the Groups field is picked', async () => {
+        createComponent({ fields: [...FIELDS, groupsField()] });
+        const load = jest.spyOn(component, 'loadCommonServiceOptions');
+
+        component.form.get('field')?.setValue('Groups');
+        await flush();
+
+        expect(load).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'Groups' }),
+          'GroupName'
+        );
+        expect(component.field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+      });
+
+      it('loads other reference fields without a name path', async () => {
+        createComponent();
+        const load = jest.spyOn(component, 'loadCommonServiceOptions');
+
+        component.form.get('field')?.setValue('Country');
+        await flush();
+
+        expect(load).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'Country' }),
+          undefined
+        );
+      });
+
+      it('preloads group names for a pre-selected Groups field', async () => {
+        createComponent({
+          form: buildForm('HQ', 'Groups'),
+          fields: [...FIELDS, groupsField()],
+        });
+
+        await component.ngAfterViewInit();
+
+        expect(csMock.restRequest).toHaveBeenCalledWith('Groups');
+        expect(component.field.options).toEqual([
+          { text: 'HQ', value: 'HQ' },
+          { text: 'Field', value: 'Field' },
+        ]);
+        expect(component.editor).toBe(editors.select);
+      });
+    });
   });
 });

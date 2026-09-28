@@ -181,20 +181,71 @@ describe('SelectDistributionComponent', () => {
       expect(component.distributionListId).toBe('dl-1');
     });
 
-    it('counts a Common Services users filter as a recipient source', () => {
+    it('counts a Common Services users filter holding a dataset token as a recipient source', () => {
       seedDatasets([
         dataset({
           individualEmail: true,
           individualEmailFields: [],
           csFilter: {
             logic: 'and',
-            filters: [{ field: 'country', operator: 'eq', value: 'x' }],
+            filters: [
+              {
+                field: 'Country',
+                operator: 'eq',
+                value: '{{Block 1.country}}',
+              },
+            ],
           },
         }),
       ]);
 
       expect(component.isAllSeparate()).toBe(true);
       expect(emailServiceMock.isDistributionListOptional).toBe(true);
+    });
+
+    it('finds a dataset token inside nested Common Services filters', () => {
+      seedDatasets([
+        dataset({
+          individualEmail: true,
+          individualEmailFields: [],
+          csFilter: {
+            logic: 'and',
+            filters: [
+              { field: 'Country', operator: 'eq', value: 'France' },
+              {
+                logic: 'or',
+                filters: [
+                  {
+                    field: 'Groups',
+                    operator: 'contains',
+                    value: '{{Block 1.group}}',
+                  },
+                ],
+              },
+            ],
+          },
+        }),
+      ]);
+
+      expect(component.isAllSeparate()).toBe(true);
+      expect(emailServiceMock.isDistributionListOptional).toBe(true);
+    });
+
+    it('does not treat a static Common Services filter as a per-record recipient source', () => {
+      seedDatasets([
+        dataset({
+          individualEmail: true,
+          individualEmailFields: [],
+          csFilter: {
+            logic: 'and',
+            filters: [{ field: 'Groups', operator: 'contains', value: 'HQ' }],
+          },
+        }),
+      ]);
+
+      expect(component.isAllSeparate()).toBe(false);
+      expect(emailServiceMock.isDistributionListOptional).toBe(false);
+      expect(emailServiceMock.clearDistributionList).not.toHaveBeenCalled();
     });
 
     it('ignores a send-separate dataset that has no recipient source yet', () => {

@@ -331,6 +331,61 @@ describe('EmailService (components/email)', () => {
       });
     });
 
+    describe('processFilters', () => {
+      it('normalises reference fields to their key, whether saved by key or by label', () => {
+        const query: any = {
+          logic: 'and',
+          filters: [
+            { field: 'User Groups', operator: 'contains', value: 'HQ' },
+            { field: 'Access', operator: 'eq', value: 'Admin' },
+            { field: 'Groups', operator: 'isempty', value: null },
+            { field: 'firstname', operator: 'eq', value: 'Ada' },
+          ],
+        };
+
+        const result = service.processFilters(query);
+
+        expect(result).toBe(query);
+        expect(query.filters.map((filter: any) => filter.field)).toEqual([
+          'Groups',
+          'PermissionAccessType',
+          'Groups',
+          'firstname',
+        ]);
+      });
+
+      it('normalises nested filters', () => {
+        const query: any = {
+          logic: 'and',
+          filters: [
+            {
+              logic: 'or',
+              filters: [
+                {
+                  field: 'ApplicationRoleName',
+                  operator: 'eq',
+                  value: 'Editor',
+                },
+                { field: 'SystemPosition', operator: 'eq', value: 'Lead' },
+              ],
+            },
+          ],
+        };
+
+        service.processFilters(query);
+
+        expect(
+          query.filters[0].filters.map((filter: any) => filter.field)
+        ).toEqual(['SystemRole', 'SystemPosition']);
+      });
+
+      it('builds an empty payload without a filter', () => {
+        expect(service.setCommonServicePayload(null)).toEqual({
+          commonServiceFilter: {},
+        });
+      });
+    });
+
     describe('optional distribution list', () => {
       it('treats the distribution list as valid when it is optional', async () => {
         service.isDistributionListOptional = true;
