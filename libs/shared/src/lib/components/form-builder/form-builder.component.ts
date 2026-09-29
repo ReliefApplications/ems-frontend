@@ -41,6 +41,14 @@ import {
   FIELD_HISTORY_ALLOWED_PROPERTIES,
   FIELD_HISTORY_QUESTION_TYPE,
 } from '../../survey/components/field-history';
+import {
+  FILES_MANAGEMENT_ALLOWED_PROPERTIES,
+  FILES_MANAGEMENT_QUESTION_TYPE,
+} from '../../survey/components/files-management';
+import {
+  FILES_UPLOAD_ALLOWED_PROPERTIES,
+  FILES_UPLOAD_QUESTION_TYPE,
+} from '../../survey/components/files-upload';
 
 /**
  * Array containing the different types of questions.
@@ -346,15 +354,23 @@ export class FormBuilderComponent
         options.allowEdit = true;
       }
     );
+    // Questions displaying / placing data of other questions never store a
+    // value of their own: no "required" toggle, restricted property grid
+    const displayOnlyQuestions: Record<string, string[]> = {
+      [FIELD_HISTORY_QUESTION_TYPE]: FIELD_HISTORY_ALLOWED_PROPERTIES,
+      [FILES_UPLOAD_QUESTION_TYPE]: FILES_UPLOAD_ALLOWED_PROPERTIES,
+      [FILES_MANAGEMENT_QUESTION_TYPE]: FILES_MANAGEMENT_ALLOWED_PROPERTIES,
+    };
     this.surveyCreator.onElementAllowOperations.add((_, options) => {
-      if (options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE) {
+      if (displayOnlyQuestions[options.obj?.getType()]) {
         options.allowChangeRequired = false;
       }
     });
     this.surveyCreator.onShowingProperty.add((_, options) => {
+      const allowedProperties = displayOnlyQuestions[options.obj?.getType()];
       if (
-        options.obj?.getType() === FIELD_HISTORY_QUESTION_TYPE &&
-        !FIELD_HISTORY_ALLOWED_PROPERTIES.includes(options.property.name)
+        allowedProperties &&
+        !allowedProperties.includes(options.property.name)
       ) {
         options.canShow = false;
       }

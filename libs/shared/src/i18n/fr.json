@@ -1095,6 +1095,37 @@
       "title": "Prévisualisation de mail",
       "to": "À"
     },
+    "filesManagement": {
+      "allLanguages": "Toutes les langues",
+      "download": "Télécharger",
+      "downloadTranslationTooltip": "Traduction via Azure Translator — bientôt disponible",
+      "empty": "Aucun fichier ne correspond aux langues sélectionnées.",
+      "field": "Question",
+      "fileName": "Nom du fichier",
+      "language": "Langue",
+      "languageA": "Langue A",
+      "languageB": "Langue B",
+      "status": "Statut",
+      "statusOutdated": "Obsolète",
+      "statusUpToDate": "À jour",
+      "unspecifiedLanguage": "Langue non spécifiée"
+    },
+    "filesUpload": {
+      "addFiles": "Ajouter des fichiers",
+      "confirm": "Téléverser",
+      "dropFilesHere": "Déposez les fichiers ici",
+      "errors": {
+        "fileTooLarge": "Fichier trop volumineux.",
+        "invalidExtension": "Type de fichier non autorisé.",
+        "invalidType": "« {{name}} » n'est pas un type de fichier accepté.",
+        "maximumAllowedFiles": "Nombre maximum de fichiers autorisé : {{number}}",
+        "noTargetField": "Sélectionnez une question de type fichier avant d'ajouter des fichiers.",
+        "singleFileOnly": "Cette question n'accepte qu'un seul fichier.",
+        "uploadFailed": "Le téléversement a échoué, veuillez réessayer."
+      },
+      "language": "Langue",
+      "targetField": "Question de type fichier"
+    },
     "form": {
       "aggregation": {
         "delete": {

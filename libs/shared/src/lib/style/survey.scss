@@ -231,6 +231,13 @@
     display: none !important;
   }
 
+  // File questions hidden by a Files management question: they keep storing
+  // the files uploaded through Files upload questions, so they are hidden
+  // from the DOM only ( SurveyJS visibility would clear their value )
+  .file-question--hidden {
+    display: none !important;
+  }
+
   // Question-level toolbar ( "Select file" ): centered in the drop zone while
   // no file is displayed, top-right corner once a file is displayed
   .file-question--answered .file-question-actions {

@@ -1095,6 +1095,37 @@
       "title": "******",
       "to": "******"
     },
+    "filesManagement": {
+      "allLanguages": "******",
+      "download": "******",
+      "downloadTranslationTooltip": "******",
+      "empty": "******",
+      "field": "******",
+      "fileName": "******",
+      "language": "******",
+      "languageA": "******",
+      "languageB": "******",
+      "status": "******",
+      "statusOutdated": "******",
+      "statusUpToDate": "******",
+      "unspecifiedLanguage": "******"
+    },
+    "filesUpload": {
+      "addFiles": "******",
+      "confirm": "******",
+      "dropFilesHere": "******",
+      "errors": {
+        "fileTooLarge": "******",
+        "invalidExtension": "******",
+        "invalidType": "****** {{name}} ******",
+        "maximumAllowedFiles": "****** {{number}}",
+        "noTargetField": "******",
+        "singleFileOnly": "******",
+        "uploadFailed": "******"
+      },
+      "language": "******",
+      "targetField": "******"
+    },
     "form": {
       "aggregation": {
         "delete": {

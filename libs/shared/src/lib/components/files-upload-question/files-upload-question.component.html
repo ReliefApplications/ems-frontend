@@ -1,0 +1,82 @@
+<div class="files-upload-question flex flex-col gap-3">
+  <div class="flex flex-col sm:flex-row gap-3">
+    <div class="flex flex-col gap-1 flex-1">
+      <kendo-label
+        [for]="targetFieldDropdown"
+        [text]="'components.filesUpload.targetField' | translate"
+      ></kendo-label>
+      <kendo-dropdownlist
+        #targetFieldDropdown
+        [data]="targetFieldChoices"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+        [formControl]="targetFieldControl"
+      ></kendo-dropdownlist>
+    </div>
+    <div class="flex flex-col gap-1 flex-1">
+      <kendo-label
+        [for]="languageDropdown"
+        [text]="'components.filesUpload.language' | translate"
+      ></kendo-label>
+      <kendo-dropdownlist
+        #languageDropdown
+        [data]="languageChoices"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+        [formControl]="languageControl"
+      ></kendo-dropdownlist>
+    </div>
+  </div>
+
+  <kendo-fileselect
+    [multiple]="multiple"
+    [restrictions]="restrictions"
+    [accept]="accept"
+    [disabled]="disabled"
+    (select)="onSelect($event)"
+    (remove)="onRemove($event)"
+  >
+    <kendo-fileselect-messages
+      [select]="'components.filesUpload.addFiles' | translate"
+      [dropFilesHere]="'components.filesUpload.dropFilesHere' | translate"
+      [invalidFileExtension]="
+        'components.filesUpload.errors.invalidExtension' | translate
+      "
+      [invalidMaxFileSize]="
+        'components.filesUpload.errors.fileTooLarge' | translate
+      "
+    ></kendo-fileselect-messages>
+    <!-- Default file info, plus the language the file is tagged with -->
+    <ng-template kendoFileSelectFileInfoTemplate let-files>
+      <span class="k-file-name" [title]="files[0].name">{{
+        files[0].name
+      }}</span>
+      <span
+        *ngIf="validationMessage(files[0]) as message; else languageTmpl"
+        class="k-file-validation-message"
+        >{{ message }}</span
+      >
+      <ng-template #languageTmpl>
+        <span class="k-file-size">{{ languageOf(files[0]) }}</span>
+      </ng-template>
+    </ng-template>
+  </kendo-fileselect>
+
+  <p *ngIf="errorMessage" class="k-form-error text-red-600 text-sm m-0">
+    {{ errorMessage }}
+  </p>
+
+  <div class="flex justify-end">
+    <button
+      kendoButton
+      themeColor="primary"
+      icon="upload"
+      [disabled]="disabled || !validStaged.length"
+      (click)="confirmUpload()"
+    >
+      {{ 'components.filesUpload.confirm' | translate }}
+    </button>
+  </div>
+</div>
