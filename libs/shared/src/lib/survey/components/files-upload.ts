@@ -5,11 +5,13 @@ import {
   Serializer,
   SvgRegistry,
   SurveyModel,
+  ValueChangedEvent,
 } from 'survey-core';
 import { FilesUploadQuestionComponent } from '../../components/files-upload-question/files-upload-question.component';
 import { DomService } from '../../services/dom/dom.service';
 import { registerCustomPropertyHelp } from '../localization';
 import {
+  FILE_QUESTION_TYPE,
   FILES_UPLOAD_QUESTION_TYPE,
   getFileQuestionChoices,
   getLanguageChoices,
@@ -60,11 +62,12 @@ export interface FilesUploadQuestion extends SurveyQuestion {
 
 /**
  * Registers the Files upload SurveyJS question: a front-end only question
- * letting the user pick one of the survey's file questions and upload files
- * to it, tagged with a language, without navigating to that question. Its
- * `targetField` / `defaultLanguage` properties are part of the form
- * structure and only preselect the dropdowns: the files end up in the target
- * file question's value and follow the regular save pipeline.
+ * letting the user pick one of the survey's file questions and add files to
+ * it, tagged with a language, without navigating to that question, while
+ * listing every file of the survey waiting to be uploaded. Its `targetField`
+ * / `defaultLanguage` properties are part of the form structure and only
+ * preselect the dropdowns: the files end up in the target file question's
+ * value and are uploaded when the record is saved, like any other file.
  *
  * @param injector Parent Angular injector
  * @param componentCollection SurveyJS custom component collection
@@ -147,7 +150,20 @@ export const init = (
       componentRef.instance.refresh();
       componentRef.changeDetectorRef.detectChanges();
 
+      // Keep the list of files to upload in sync with the files of the survey
+      const valueChangedHandler = (
+        _: SurveyModel,
+        options: ValueChangedEvent
+      ): void => {
+        if (options.question?.getType() === FILE_QUESTION_TYPE) {
+          componentRef.instance.refresh();
+          componentRef.changeDetectorRef.detectChanges();
+        }
+      };
+      survey?.onValueChanged.add(valueChangedHandler);
+
       addGridTeardown(componentRef, () => {
+        survey?.onValueChanged.remove(valueChangedHandler);
         question.filesUploadComponentRef = undefined;
       });
       registerGridForCleanup(survey, componentRef, domService);

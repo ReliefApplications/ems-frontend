@@ -71,6 +71,13 @@
 }
 
 ::ng-deep .sd-matrixdropdown.sd-table,
+// File questions hidden by a Files management question: they keep storing
+// the files uploaded through Files upload questions, so they are hidden from
+// the DOM only ( SurveyJS visibility would clear their value on completion )
+::ng-deep .file-question--hidden {
+  display: none !important;
+}
+
 ::ng-deep .sd-table.sd-matrixdynamic {
   padding: 0.5rem 0 1rem 0;
 }
@@ -228,13 +235,6 @@
   .sd-file__choose-btn,
   .sd-file__clean-btn,
   .sd-file__remove-file-button {
-    display: none !important;
-  }
-
-  // File questions hidden by a Files management question: they keep storing
-  // the files uploaded through Files upload questions, so they are hidden
-  // from the DOM only ( SurveyJS visibility would clear their value )
-  .file-question--hidden {
     display: none !important;
   }
 

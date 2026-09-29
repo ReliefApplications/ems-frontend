@@ -1096,33 +1096,29 @@
       "to": "To"
     },
     "filesManagement": {
-      "allLanguages": "All languages",
-      "download": "Download",
-      "downloadTranslationTooltip": "Translation via Azure Translator — coming soon",
-      "empty": "No files match the selected languages.",
+      "empty": "No files yet.",
       "field": "Question",
       "fileName": "File name",
       "language": "Language",
-      "languageA": "Language A",
-      "languageB": "Language B",
+      "noLanguage": "No language",
       "status": "Status",
       "statusOutdated": "Outdated",
-      "statusUpToDate": "Up to date",
-      "unspecifiedLanguage": "Unspecified language"
+      "statusUpToDate": "Up to date"
     },
     "filesUpload": {
       "addFiles": "Add files",
-      "confirm": "Upload",
-      "dropFilesHere": "Drop files here to upload",
+      "dropFilesHere": "Drop files here",
+      "empty": "No files to upload yet.",
       "errors": {
-        "fileTooLarge": "File size too large.",
-        "invalidExtension": "File type not allowed.",
         "invalidType": "\"{{name}}\" is not an accepted file type.",
+        "maxSizeExceeded": "\"{{name}}\" exceeds the maximum allowed size.",
         "maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
         "noTargetField": "Select a file question before adding files.",
         "singleFileOnly": "This question only accepts a single file.",
-        "uploadFailed": "The upload failed, please try again."
+        "uploadFailed": "The files could not be added, please try again."
       },
+      "field": "Question",
+      "fileName": "File name",
       "language": "Language",
       "targetField": "File question"
     },

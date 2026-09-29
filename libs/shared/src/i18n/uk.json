@@ -1096,33 +1096,29 @@
       "to": "Кому"
     },
     "filesManagement": {
-      "allLanguages": "Усі мови",
-      "download": "Завантажити",
-      "downloadTranslationTooltip": "Переклад через Azure Translator — незабаром",
-      "empty": "Немає файлів, що відповідають вибраним мовам.",
+      "empty": "Поки що немає файлів.",
       "field": "Питання",
       "fileName": "Назва файлу",
       "language": "Мова",
-      "languageA": "Мова A",
-      "languageB": "Мова B",
+      "noLanguage": "Без мови",
       "status": "Статус",
       "statusOutdated": "Застарілий",
-      "statusUpToDate": "Актуальний",
-      "unspecifiedLanguage": "Мову не вказано"
+      "statusUpToDate": "Актуальний"
     },
     "filesUpload": {
       "addFiles": "Додати файли",
-      "confirm": "Завантажити",
       "dropFilesHere": "Перетягніть файли сюди",
+      "empty": "Поки що немає файлів для завантаження.",
       "errors": {
-        "fileTooLarge": "Файл занадто великий.",
-        "invalidExtension": "Тип файлу не дозволено.",
         "invalidType": "«{{name}}» не є дозволеним типом файлу.",
+        "maxSizeExceeded": "«{{name}}» перевищує максимально дозволений розмір.",
         "maximumAllowedFiles": "Максимальна кількість файлів: {{number}}",
         "noTargetField": "Виберіть питання типу «файл», перш ніж додавати файли.",
         "singleFileOnly": "Це питання приймає лише один файл.",
-        "uploadFailed": "Не вдалося завантажити, спробуйте ще раз."
+        "uploadFailed": "Не вдалося додати файли, спробуйте ще раз."
       },
+      "field": "Питання",
+      "fileName": "Назва файлу",
       "language": "Мова",
       "targetField": "Питання типу «файл»"
     },

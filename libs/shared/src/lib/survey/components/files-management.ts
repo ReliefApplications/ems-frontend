@@ -14,10 +14,8 @@ import {
   FILE_QUESTION_TYPE,
   FILES_MANAGEMENT_QUESTION_TYPE,
   HIDE_FILE_QUESTIONS_PROPERTY,
-  getLanguageChoices,
   registerFileQuestionsVisibility,
   syncFileQuestionsVisibility,
-  WidgetChoice,
 } from './utils/files-widgets.util';
 import {
   addGridTeardown,
@@ -35,8 +33,6 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
   'name',
   'title',
   'description',
-  'languageA',
-  'languageB',
   HIDE_FILE_QUESTIONS_PROPERTY,
   'visible',
   'visibleIf',
@@ -53,10 +49,6 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
 
 /** Files management custom question properties used during rendering. */
 export interface FilesManagementQuestion extends SurveyQuestion {
-  /** First language compared by default */
-  languageA?: string;
-  /** Second language compared by default */
-  languageB?: string;
   /** Hide the survey's file questions, files being managed here */
   hideFileQuestions?: boolean;
   /** Rendered Angular component */
@@ -65,12 +57,11 @@ export interface FilesManagementQuestion extends SurveyQuestion {
 
 /**
  * Registers the Files management SurveyJS question: a front-end only question
- * listing every file held by the survey's file questions, filtered to two
- * languages picked for comparison, with download / outdated / remove actions.
- * Its `languageA` / `languageB` properties are part of the form structure and
- * only preselect the dropdowns. It can also hide the survey's file questions,
- * which then keep storing files and defining their restrictions while the
- * Files upload and Files management questions handle the user interactions.
+ * listing every file held by the survey's file questions, with the same
+ * download / outdated / remove actions as the file questions. It can also
+ * hide the survey's file questions, which then keep storing files and
+ * defining their restrictions while the Files upload and Files management
+ * questions handle the user interactions.
  *
  * @param injector Parent Angular injector
  * @param componentCollection SurveyJS custom component collection
@@ -86,15 +77,6 @@ export const init = (
     '<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>'
   );
 
-  const languageChoices = (
-    question: FilesManagementQuestion,
-    choicesCallback: (choices: WidgetChoice[]) => void
-  ) => {
-    choicesCallback(
-      getLanguageChoices(question.survey as SurveyModel | undefined)
-    );
-  };
-
   const component = {
     name: FILES_MANAGEMENT_QUESTION_TYPE,
     title: 'Files management',
@@ -106,33 +88,11 @@ export const init = (
     },
     onInit: (): void => {
       Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
-        name: 'languageA',
-        category: 'general',
-        displayName: 'Language A',
-        visibleIndex: 3,
-        choices: languageChoices,
-      });
-      Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
-        name: 'languageB',
-        category: 'general',
-        displayName: 'Language B',
-        visibleIndex: 4,
-        choices: languageChoices,
-      });
-      registerCustomPropertyHelp(
-        'languageA',
-        'First language compared by default. Available languages are the ones of the form: its translations and the target languages of its auto-translated questions. A form without translations offers every supported language.'
-      );
-      registerCustomPropertyHelp(
-        'languageB',
-        'Second language compared by default. Files tagged with one of the two languages, or with no language, are listed.'
-      );
-      Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
         name: `${HIDE_FILE_QUESTIONS_PROPERTY}:boolean`,
         category: 'general',
         displayName: 'Hide file questions',
         default: false,
-        visibleIndex: 5,
+        visibleIndex: 3,
       });
       registerCustomPropertyHelp(
         HIDE_FILE_QUESTIONS_PROPERTY,

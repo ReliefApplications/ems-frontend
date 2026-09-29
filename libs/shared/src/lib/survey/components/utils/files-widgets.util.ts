@@ -270,18 +270,19 @@ export const shouldHideFileQuestions = (
     );
 
 /**
- * Hides / shows a rendered file question. The question is hidden through the
- * DOM only: SurveyJS visibility would clear its value on completion and
- * skip its validation, while hidden file questions must keep storing the
- * files placed by the files upload question.
+ * Hides / shows a rendered file question according to the survey. The
+ * question is hidden through the DOM only: SurveyJS visibility would clear
+ * its value on completion and skip its validation, while hidden file
+ * questions must keep storing the files placed by the files upload question.
  *
+ * @param survey Survey owning the file question
  * @param element Rendered question element ( or any element inside it )
- * @param hidden Whether the question must be hidden
  */
-const toggleFileQuestionElement = (
-  element: HTMLElement,
-  hidden: boolean
+export const applyFileQuestionVisibility = (
+  survey: SurveyModel | undefined,
+  element: HTMLElement
 ): void => {
+  const hidden = shouldHideFileQuestions(survey);
   const root = element.closest<HTMLElement>('.sd-question') ?? element;
   // SurveyJS wraps each question of a row in a flex column: hide it as well so
   // the hidden question does not leave an empty column behind
@@ -307,19 +308,18 @@ export const syncFileQuestionsVisibility = (
   if (!survey) {
     return;
   }
-  const hidden = shouldHideFileQuestions(survey);
   getFileQuestions(survey).forEach((question) => {
     const element = document.getElementById(question.id);
     if (element) {
-      toggleFileQuestionElement(element, hidden);
+      applyFileQuestionVisibility(survey, element);
     }
   });
 };
 
 /**
- * Keeps the file questions visibility in sync with the survey ( once per
- * survey ): file questions rendered later on, files management questions
- * shown / hidden by logic.
+ * Keeps the file questions visibility in sync when a files management
+ * question is shown / hidden by logic ( once per survey ). Newly rendered
+ * file questions are handled by the file widget itself.
  *
  * @param survey Survey owning the file questions
  * @param document Document the survey is rendered in
@@ -336,14 +336,6 @@ export const registerFileQuestionsVisibility = (
     return;
   }
   host[VISIBILITY_HANDLER_KEY] = true;
-  survey.onAfterRenderQuestion.add((_, options) => {
-    if (options.question.getType() === FILE_QUESTION_TYPE) {
-      toggleFileQuestionElement(
-        options.htmlElement,
-        shouldHideFileQuestions(survey)
-      );
-    }
-  });
   survey.onVisibleChanged.add((_, options) => {
     if (options.question.getType() === FILES_MANAGEMENT_QUESTION_TYPE) {
       syncFileQuestionsVisibility(survey, document);
