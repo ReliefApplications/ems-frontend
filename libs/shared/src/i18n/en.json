@@ -307,6 +307,8 @@
           "noCustomTitle": "Custom template title is required to proceed!",
           "noDistributionList": "Something went wrong during the email sending: no distribution list found",
           "noFields": "DocumentType & InformationConfidentiality is required to proceed!",
+          "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Subject is required to proceed!",
           "noTemplate": "Something went wrong during the email sending: no template found",
           "preview": "Preview of email failed"
@@ -321,7 +323,8 @@
         },
         "fieldselect": {
           "placeholder": "Field Select",
-          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results",
+          "tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
         },
         "footer": {
           "logo": "Footer logo",
@@ -967,6 +970,9 @@
         "noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
         "noResourceFields": "Selected resource doesn't contain any fields",
         "noSelectedFields": "Please select at least 1 field to save this dataset",
+        "scheduler": {
+          "invalid": "Error! Please enter a valid cron value"
+        },
         "selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
         "selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
         "subscribeExists": "Error! {{message}}",
@@ -988,7 +994,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
+          "allSeparate": "All datasets are set to send separate email, so there is no distribution list to configure. To also send the separate emails to a distribution list, enable \"send each separate email to the distribution list\" on a dataset.",
           "and": "and",
           "noEmail": "Selected Dataset does not contain valid email addresses",
           "partOne": "To proceed, please enter",
@@ -1026,7 +1032,10 @@
       "name": "Email",
       "notification": {
         "create": "Create Notification",
+        "language": "Language",
+        "languageDescription": "The language used to render this notification's data (translated fields and choice values).",
         "list": "Notification List",
+        "selectLanguage": "Select a language",
         "type": "Alert Type",
         "validTitle": "Please enter a title"
       },
@@ -1042,6 +1051,17 @@
         "title": "Restrict user subscription"
       },
       "saveAsDraft": "Save as draft",
+      "schedule": {
+        "disable": {
+          "checkbox": "Disable Scheduler",
+          "tooltip": "Click to disable scheduler"
+        },
+        "enable": {
+          "checkbox": "Enable scheduler",
+          "tooltip": "Click to enable scheduler"
+        },
+        "title": "Schedule alerts"
+      },
       "subscribe": {
         "error": {
           "restricted": "Subscription Restricted"
@@ -1441,6 +1461,7 @@
         "title": "Preview"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Send Separate Email Fields"
       },
       "sort": {
@@ -1484,6 +1505,10 @@
           "date": {
             "useExpression": "Use Expression editor",
             "usePicker": "Use Date picker"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {
@@ -1688,9 +1713,12 @@
         "label": "Distribution List Name*",
         "noPreviewData": "Selected dataset does not contain any preview data",
         "sendseparate": {
-          "list": "Send separate email recipients"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Send separate email recipients",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Send separate email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Subscription list",
         "to": "To"
       }
@@ -2167,6 +2195,7 @@
               "selectAllRecordsActivePage": "Select all records on the active page",
               "selectDisplay": "Select displayed fields",
               "sendMail": "Send mail",
+              "separateEmailRecipientRequired": "Add at least one separate email field containing email values, otherwise the separate emails have no recipients. A distribution list can be added as well, but does not replace the per-row field.",
               "workflow": {
                 "close": "Close workflow",
                 "confirm": "Confirmation message",

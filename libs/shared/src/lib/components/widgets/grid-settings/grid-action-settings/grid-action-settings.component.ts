@@ -257,10 +257,8 @@ export class GridActionSettingsComponent
         if (value) {
           this.formGroup?.get('templates')?.setValidators(Validators.required);
         } else {
-          this.formGroup?.get('distributionList')?.clearValidators();
           this.formGroup?.get('templates')?.clearValidators();
         }
-        this.formGroup?.get('distributionList')?.updateValueAndValidity();
         this.formGroup?.get('templates')?.updateValueAndValidity();
       });
 
@@ -361,6 +359,19 @@ export class GridActionSettingsComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+
+    this.formGroup
+      ?.get('sendSeparateEmail')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((sendSeparateEmail: boolean) => {
+        if (!sendSeparateEmail) {
+          // Drop per-row recipient fields when separate email is off.
+          const fields = this.separateEmailFieldsArray;
+          while (fields?.length) {
+            fields.removeAt(0);
+          }
+        }
+      });
   }
 
   /** Set list of resources user can attach a record to */
@@ -395,6 +406,11 @@ export class GridActionSettingsComponent
   /** @returns An array of the modifications on button form */
   get modificationsArray(): UntypedFormArray {
     return this.formGroup?.get('modifications') as UntypedFormArray;
+  }
+
+  /** @returns The separateEmailFields FormArray */
+  get separateEmailFieldsArray(): UntypedFormArray {
+    return this.formGroup?.get('separateEmailFields') as UntypedFormArray;
   }
 
   /**
@@ -481,6 +497,17 @@ export class GridActionSettingsComponent
   public async addEmailTemplate() {
     this.emailService.showFileUpload = false;
     this.emailService.resetAllLayoutData();
+
+    const bodyFieldsRaw: any[] =
+      (this.formGroup.get('bodyFields') as UntypedFormArray)?.getRawValue() ??
+      [];
+    this.emailService.gridActionDataQuery = {
+      fields: bodyFieldsRaw,
+      queryName: '',
+    };
+    this.emailService.gridActionSendSeparateEmail =
+      this.formGroup.get('sendSeparateEmail')?.value ?? false;
+
     const { TemplateModalComponent } = await import(
       '../../../templates/components/template-modal/template-modal.component'
     );
@@ -491,6 +518,8 @@ export class GridActionSettingsComponent
       width: '80%',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      this.emailService.gridActionDataQuery = null;
+      this.emailService.gridActionSendSeparateEmail = false;
       if (value) {
         const data = value.result.data.addCustomTemplate;
         this.templates = [data, ...this.templates];

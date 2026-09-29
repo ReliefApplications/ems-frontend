@@ -41,6 +41,7 @@ import {
   EDIT_CUSTOM_TEMPLATE,
   EDIT_DISTRIBUTION_LIST,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  GET_CS_USER_FIELDS,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
   GET_EMAIL_NOTIFICATION_BY_ID,
@@ -163,6 +164,8 @@ export class EmailService {
   public dataList!: { [key: string]: any }[];
   /** Dataset fields */
   public datasetFields!: string[];
+  /** All available fields from the primary dataset resource (persisted across steps) */
+  public allAvailableDatasetFields: any[] = [];
   /** Email distribution list of names */
   public distributionListNames: string[] = [];
   /** Email notification list of names */
@@ -224,6 +227,11 @@ export class EmailService {
   public selectedDistributionListName: any = '';
   /** Checks if separate emails is checked for all blocks */
   public isAllSeparateEmail = false;
+  /**
+   * Distribution list is optional when at least one dataset is send-separate.
+   * It is required only when no dataset is send-separate.
+   */
+  public isDistributionListOptional = false;
   /** For storing emails For CC from service response (In select with Filter option) */
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
@@ -232,6 +240,12 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** Combined computed fields for the CS filter UI (static + dynamic user-table fields). */
+  public computedCommonServiceFields: any[] = [];
+  /** In-flight request for {@link getUserTableFields}, shared by concurrent callers. */
+  private userTableFieldsPromise?: Promise<void>;
+  /** In-flight request for {@link buildCommonServiceFields}, shared by concurrent callers. */
+  private commonServiceFieldsPromise?: Promise<void>;
   /** display types */
   public displayTypes: any[] = [
     { id: 'table', name: 'Table' },
@@ -243,6 +257,37 @@ export class EmailService {
   public distributionListData: FormGroup | any = [];
   /** Show File Upload */
   public showFileUpload = false;
+  /** dataQuery for the current grid action (set before child components initialise) */
+  public gridActionDataQuery: any = null;
+  /** Whether send separate email is enabled for the current grid action */
+  public gridActionSendSeparateEmail = false;
+  /** Send-separate-email recipients returned by the last preview-distribution-lists call (read-only display) */
+  public distributionListSeparate: any[] = [];
+
+  /** @returns true when the last preview-distribution-lists call returned at least one send-separate-email recipient */
+  get hasSeparateEmailRecipients(): boolean {
+    return (
+      this.distributionListSeparate?.some((b: any) => b?.emails?.length > 0) ??
+      false
+    );
+  }
+
+  /**
+   * Block names marked for individual-email sending. Derived from form state; returns ['Block 1'] in grid-action send-separate-email mode.
+   *
+   * @returns array of block names with send separate email enabled
+   */
+  get sendSeparateBlocks(): string[] {
+    if (this.isGridAction) {
+      return this.gridActionSendSeparateEmail ? ['Block 1'] : [];
+    }
+    return (this.datasetsForm?.get('datasets')?.getRawValue() ?? [])
+      .filter(
+        (d: any) =>
+          d.individualEmail && d.query.name && (d.resource || d.reference)
+      )
+      .map((d: any) => d.name);
+  }
 
   /**
    * Generates new dataset group.
@@ -264,6 +309,11 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
+      individualEmailToDistributionList: false,
+      csFilter: this.formBuilder.group({
+        logic: 'and',
+        filters: new FormArray([]),
+      }),
       dataType: null,
       reference: null,
       navigateToPage: false,
@@ -369,7 +419,7 @@ export class EmailService {
    */
   checkDLToValid(): Promise<boolean> {
     return new Promise((resolve) => {
-      if (this.isAllSeparateEmail) {
+      if (this.isAllSeparateEmail || this.isDistributionListOptional) {
         resolve(true);
       } else {
         if (
@@ -485,6 +535,74 @@ export class EmailService {
       } else {
         resolve({ valid: true, badData: [] });
       }
+    });
+  }
+
+  /**
+   * Fetches scalar user-table fields from the Common Service GraphQL endpoint.
+   * Idempotent — skips the call if fields are already loaded, and concurrent
+   * callers share the same in-flight request instead of each firing their own.
+   */
+  async getUserTableFields(): Promise<void> {
+    if (this.userTableFields.length > 0) return;
+    if (!this.userTableFieldsPromise) {
+      this.userTableFieldsPromise = (async () => {
+        const apolloClient = this.apollo.use('csClient');
+        await firstValueFrom(
+          apolloClient.query<any>({ query: GET_CS_USER_FIELDS })
+        )
+          .then(({ data }) => {
+            this.userTableFields = data.__type.fields
+              .filter((f: any) => f.type.kind === 'SCALAR')
+              .map((f: any) => f.name);
+          })
+          .catch((error) => {
+            console.error('Error fetching CS user table fields:', error);
+          });
+      })();
+    }
+    return this.userTableFieldsPromise;
+  }
+
+  /**
+   * Builds `computedCommonServiceFields` by combining the static CS reference fields with
+   * the dynamic user-table fields fetched from the CS endpoint.
+   * Idempotent — skips if already built, and concurrent callers share the same
+   * in-flight build instead of each pushing their own copy of the fields.
+   */
+  async buildCommonServiceFields(): Promise<void> {
+    if (this.computedCommonServiceFields.length > 0) return;
+    if (!this.commonServiceFieldsPromise) {
+      this.commonServiceFieldsPromise = this.doBuildCommonServiceFields();
+    }
+    return this.commonServiceFieldsPromise;
+  }
+
+  /** Performs the actual field-list build for {@link buildCommonServiceFields}. */
+  private async doBuildCommonServiceFields(): Promise<void> {
+    await this.getUserTableFields();
+    this.commonServiceFields.forEach((ele: any) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele.key,
+        kind: 'SCALAR',
+        type: 'checkbox',
+        editor: 'select',
+        isCommonService: true,
+        // Optional per-field operator overrides (operators, defaultOperator),
+        // merged over the editor defaults by the filter row.
+        ...(ele.filter ? { filter: ele.filter } : {}),
+      });
+    });
+    this.userTableFields.forEach((ele: string) => {
+      this.computedCommonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele,
+        kind: 'SCALAR',
+        type: 'text',
+        editor: 'text',
+        isCommonService: true,
+      });
     });
   }
 
@@ -800,17 +918,34 @@ export class EmailService {
     this.datasetsForm = this.formBuilder.group({
       name: ['', Validators.required],
       notificationType: [null, Validators.required],
+      language: [
+        this.translate.currentLang || this.translate.defaultLang || null,
+      ],
       applicationId: [''],
       datasets: new FormArray([this.createNewDataSetGroup()]),
       emailDistributionList: this.initialiseDistributionList(),
       subscriptionList: this.formBuilder.array([]),
       restrictSubscription: false,
       emailLayout: this.emailLayout,
-      schedule: [''],
+      schedule: this.createScheduleGroup(),
       attachments: this.formBuilder.group({
         files: [],
         sendAsAttachment: null,
       }),
+    });
+    // New form ⇒ recompute distribution-list optionality from scratch.
+    this.isDistributionListOptional = false;
+  }
+
+  /**
+   * Creates a new schedule form group.
+   *
+   * @returns A new schedule form group.
+   */
+  createScheduleGroup(): FormGroup {
+    return this.formBuilder.group({
+      scheduleEnabled: false,
+      cronValue: new FormControl(),
     });
   }
 
@@ -988,14 +1123,14 @@ export class EmailService {
       const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
       datasetsValues.forEach((dataset: any) => {
-        if (dataset.query.name && dataset.resource) {
+        if (
+          (dataset.query.name && dataset.resource) ||
+          (dataset.query.name && dataset.reference)
+        ) {
           datasets.push(dataset.name);
-        } else {
-          dataset.query.name && dataset.reference
-            ? datasets.push(dataset.name)
-            : '';
         }
       });
+
       const fields: string[] = [];
       datasetsValues[0].query.fields.forEach((field: any) => {
         this.appendFields(field, field.name, fields);
@@ -1837,7 +1972,16 @@ export class EmailService {
    */
   sendQuickEmail(emailData: any): Observable<any> {
     const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
-    return this.http.post<any>(urlWithConfigId, emailData);
+    // Grid-action emails have no configured language: render in the sender's
+    // current UI language (falling back to the app default).
+    const payload = {
+      ...emailData,
+      language:
+        emailData?.language ||
+        this.translate.currentLang ||
+        this.translate.defaultLang,
+    };
+    return this.http.post<any>(urlWithConfigId, payload);
   }
 
   /**
@@ -1896,6 +2040,11 @@ export class EmailService {
    * validating next button by taking 3 conditions in consideration DistributionList name mandatory, check duplicate name validation and requires To email
    */
   async validateNextButton() {
+    // When the distribution list is optional, it never blocks proceeding.
+    if (this.isDistributionListOptional) {
+      this.disableSaveAndProceed.next(false);
+      return;
+    }
     const distributionListNameExists =
       this.distributionListName?.trim()?.length > 0;
     const distributionListDuplicateName = this.isDistributionListNameDuplicate;
@@ -1978,13 +2127,14 @@ export class EmailService {
    */
   processFilters(distributionListCommonQuery: any) {
     distributionListCommonQuery?.filters?.forEach((ele: any) => {
-      let preDefineFields: any = [];
       if (!ele.filters) {
-        preDefineFields = this.commonServiceFields.filter(
-          (x: any) => x.key === ele?.field
+        // Always normalize to key for backend logic
+        const preDefineField = this.commonServiceFields.find(
+          (x: any) => x.key === ele?.field || x.label === ele?.field
         );
-        ele.field =
-          preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
+        if (preDefineField) {
+          ele.field = preDefineField.key;
+        }
       } else {
         this.processFilters(ele);
       }

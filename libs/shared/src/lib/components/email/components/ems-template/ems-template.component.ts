@@ -419,13 +419,17 @@ export class EmsTemplateComponent
             sendAsAttachment: tempQuery.sendAsAttachment ?? false,
           });
         }
+        dataset.csFilter =
+          dataset.csFilter?.filters?.length > 0
+            ? this.emailService.setCommonServicePayload(
+                cloneDeep(dataset.csFilter)
+              )
+            : null;
       })
     );
-    const isAllSendSeparate = emailData.datasets?.every(
-      (dataset: any) => dataset.individualEmail
-    );
-    //Check if DL id exist or all the dataset are to be send separate
-    if (emailData?.emailDistributionList?.id && !isAllSendSeparate) {
+    // An existing distribution list is referenced by id — update it in place
+    // rather than re-adding it (which would fail on the unique name).
+    if (emailData?.emailDistributionList?.id) {
       //Common service payload rebuild
       const objData: any = cloneDeep(emailData);
       objData.emailDistributionList.to.commonServiceFilter =

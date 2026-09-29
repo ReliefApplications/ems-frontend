@@ -307,6 +307,8 @@
           "noCustomTitle": "******",
           "noDistributionList": "******",
           "noFields": "******",
+          "noRecipient": "******",
+          "noRecipientSeparateEmail": "******",
           "noSubject": "******",
           "noTemplate": "******",
           "preview": "******"
@@ -321,7 +323,8 @@
         },
         "fieldselect": {
           "placeholder": "******",
-          "tooltip": "******"
+          "tooltip": "******",
+          "tooltipTwo": "******"
         },
         "footer": {
           "logo": "******",
@@ -967,6 +970,9 @@
         "noResource": "******",
         "noResourceFields": "******",
         "noSelectedFields": "******",
+        "scheduler": {
+          "invalid": "******"
+        },
         "selectChildFields": "******",
         "selectedNonEmailFields": "******",
         "subscribeExists": "****** {{message}}",
@@ -1026,7 +1032,10 @@
       "name": "******",
       "notification": {
         "create": "******",
+        "language": "******",
+        "languageDescription": "******",
         "list": "******",
+        "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"
       },
@@ -1042,6 +1051,17 @@
         "title": "******"
       },
       "saveAsDraft": "******",
+      "schedule": {
+        "disable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "enable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "title": "******"
+      },
       "subscribe": {
         "error": {
           "restricted": "******"
@@ -1441,6 +1461,7 @@
         "title": "******"
       },
       "sendSeparate": {
+        "csFilter": "******",
         "title": "******"
       },
       "sort": {
@@ -1482,6 +1503,10 @@
         "displayField": "******",
         "filter": {
           "date": {
+            "useExpression": "******",
+            "usePicker": "******"
+          },
+          "select": {
             "useExpression": "******",
             "usePicker": "******"
           }
@@ -1688,9 +1713,12 @@
         "label": "******",
         "noPreviewData": "******",
         "sendseparate": {
-          "list": "******"
+          "alsoToDistributionList": "******",
+          "list": "******",
+          "ownRecipientOnly": "******"
         },
         "separateEmail": "******",
+        "separateEmailToDistributionList": "******",
         "subscriptionList": "******",
         "to": "******"
       }
@@ -2167,6 +2195,7 @@
               "selectAllRecordsActivePage": "******",
               "selectDisplay": "******",
               "sendMail": "******",
+              "separateEmailRecipientRequired": "******",
               "workflow": {
                 "close": "******",
                 "confirm": "******",
