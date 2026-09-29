@@ -1,0 +1,112 @@
+<div class="files-upload-question flex flex-col gap-3">
+  <div class="flex flex-col sm:flex-row gap-3">
+    <div class="flex flex-col gap-1 flex-1">
+      <kendo-label
+        [for]="targetFieldDropdown"
+        [text]="'components.filesUpload.targetField' | translate"
+      ></kendo-label>
+      <kendo-dropdownlist
+        #targetFieldDropdown
+        [data]="targetFieldChoices"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+        [formControl]="targetFieldControl"
+      ></kendo-dropdownlist>
+    </div>
+    <div class="flex flex-col gap-1 flex-1">
+      <kendo-label
+        [for]="languageDropdown"
+        [text]="'components.filesUpload.language' | translate"
+      ></kendo-label>
+      <kendo-dropdownlist
+        #languageDropdown
+        [data]="languageChoices"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+        [formControl]="languageControl"
+      ></kendo-dropdownlist>
+    </div>
+  </div>
+
+  <!-- Picker only: the picked files are listed in the table below -->
+  <kendo-fileselect
+    [multiple]="multiple"
+    [restrictions]="restrictions"
+    [accept]="accept"
+    [disabled]="disabled"
+    [showFileList]="false"
+    (select)="onSelect($event)"
+  >
+    <kendo-fileselect-messages
+      [select]="'components.filesUpload.addFiles' | translate"
+      [dropFilesHere]="'components.filesUpload.dropFilesHere' | translate"
+    ></kendo-fileselect-messages>
+  </kendo-fileselect>
+
+  <p *ngIf="errorMessage" class="k-form-error text-red-600 text-sm m-0">
+    {{ errorMessage }}
+  </p>
+
+  <kendo-grid
+    [data]="rows"
+    [sortable]="true"
+    [sort]="sort"
+    (sortChange)="onSortChange($event)"
+    [scrollable]="'none'"
+  >
+    <kendo-grid-column
+      field="file.name"
+      [title]="'components.filesUpload.fileName' | translate"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span class="inline-flex items-center gap-2">
+          <span class="k-icon" [ngClass]="dataItem.icon"></span>
+          <span [title]="dataItem.file.name">{{ dataItem.file.name }}</span>
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+      field="fieldTitle"
+      [title]="'components.filesUpload.field' | translate"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      field="languageLabel"
+      [title]="'components.filesUpload.language' | translate"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span *ngIf="dataItem.languageLabel; else noLanguageTmpl">
+          {{ dataItem.languageLabel }}
+        </span>
+        <ng-template #noLanguageTmpl>
+          <span class="italic text-gray-500">
+            {{ 'components.filesManagement.noLanguage' | translate }}
+          </span>
+        </ng-template>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+      [title]="'common.actions' | translate"
+      [sortable]="false"
+      [width]="100"
+    >
+      <!-- Same actions as the file questions -->
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <shared-file-item-actions
+          class="justify-end"
+          [file]="dataItem.file"
+          [canRemove]="dataItem.canRemove"
+          [removeFile]="dataItem.removeFile"
+        ></shared-file-item-actions>
+      </ng-template>
+    </kendo-grid-column>
+    <ng-template kendoGridNoRecordsTemplate>
+      <shared-empty
+        class="m-auto"
+        icon="draft"
+        [title]="'components.filesUpload.empty' | translate"
+      ></shared-empty>
+    </ng-template>
+  </kendo-grid>
+</div>

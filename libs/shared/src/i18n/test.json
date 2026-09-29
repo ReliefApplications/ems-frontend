@@ -1095,6 +1095,34 @@
       "title": "******",
       "to": "******"
     },
+    "filesManagement": {
+      "empty": "******",
+      "field": "******",
+      "fileName": "******",
+      "language": "******",
+      "noLanguage": "******",
+      "status": "******",
+      "statusActive": "******",
+      "statusOutdated": "******",
+      "statusPending": "******"
+    },
+    "filesUpload": {
+      "addFiles": "******",
+      "dropFilesHere": "******",
+      "empty": "******",
+      "errors": {
+        "invalidType": "****** {{name}} ******",
+        "maxSizeExceeded": "****** {{name}} ******",
+        "maximumAllowedFiles": "****** {{number}}",
+        "noTargetField": "******",
+        "singleFileOnly": "******",
+        "uploadFailed": "******"
+      },
+      "field": "******",
+      "fileName": "******",
+      "language": "******",
+      "targetField": "******"
+    },
     "form": {
       "aggregation": {
         "delete": {

@@ -1,0 +1,96 @@
+<kendo-grid
+  class="files-management-question"
+  [data]="rows"
+  [sortable]="true"
+  [sort]="sort"
+  (sortChange)="onSortChange($event)"
+  [scrollable]="'none'"
+>
+  <kendo-grid-column
+    field="file.name"
+    [title]="'components.filesManagement.fileName' | translate"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span class="inline-flex items-center gap-2">
+        <span class="k-icon" [ngClass]="dataItem.icon"></span>
+        <span [title]="dataItem.file.name">{{ dataItem.file.name }}</span>
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="fieldTitle"
+    [title]="'components.filesManagement.field' | translate"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="languageLabel"
+    [title]="'components.filesManagement.language' | translate"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span *ngIf="dataItem.languageLabel; else noLanguageTmpl">
+        {{ dataItem.languageLabel }}
+      </span>
+      <ng-template #noLanguageTmpl>
+        <span class="italic text-gray-500">
+          {{ 'components.filesManagement.noLanguage' | translate }}
+        </span>
+      </ng-template>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="status"
+    [title]="'components.filesManagement.status' | translate"
+    [width]="140"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span
+        *ngIf="dataItem.status === 'pending'"
+        class="inline-flex items-center gap-1 text-gray-500"
+      >
+        <span class="k-icon k-i-upload"></span>
+        {{ 'components.filesManagement.statusPending' | translate }}
+      </span>
+      <span
+        *ngIf="dataItem.status === 'outdated'"
+        class="inline-flex items-center gap-1 text-amber-600"
+      >
+        <span class="k-icon k-i-warning"></span>
+        {{ 'components.filesManagement.statusOutdated' | translate }}
+      </span>
+      <span
+        *ngIf="dataItem.status === 'active'"
+        class="inline-flex items-center gap-1 text-green-700"
+      >
+        <span class="k-icon k-i-check"></span>
+        {{ 'components.filesManagement.statusActive' | translate }}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column
+    [title]="'common.actions' | translate"
+    [sortable]="false"
+    [width]="140"
+  >
+    <!-- Same actions as the file questions -->
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <shared-file-item-actions
+        class="justify-end"
+        [file]="dataItem.file"
+        [outdated]="dataItem.outdated"
+        [showOutdatedWarning]="false"
+        [canDownload]="true"
+        [canOutdate]="dataItem.canOutdate"
+        [canRemove]="dataItem.canRemove"
+        [permanentRemoval]="dataItem.permanentRemoval"
+        [toggleOutdated]="dataItem.toggleOutdated"
+        [removeFile]="dataItem.removeFile"
+      ></shared-file-item-actions>
+    </ng-template>
+  </kendo-grid-column>
+  <ng-template kendoGridNoRecordsTemplate>
+    <shared-empty
+      class="m-auto"
+      icon="draft"
+      [title]="'components.filesManagement.empty' | translate"
+    ></shared-empty>
+  </ng-template>
+</kendo-grid>
