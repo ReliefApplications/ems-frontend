@@ -514,6 +514,7 @@
     "status": "Statut",
     "status_active": "Actif",
     "status_archived": "Archivé",
+    "status_draft": "Brouillon",
     "status_pending": "Inactif",
     "step": {
       "few": "Etape",

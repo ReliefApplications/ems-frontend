@@ -514,6 +514,7 @@
     "status": "Статус",
     "status_active": "Активний",
     "status_archived": "Архівовано",
+    "status_draft": "Чернетка",
     "status_pending": "Очікує",
     "step": {
       "few": "Кроки",

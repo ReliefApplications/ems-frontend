@@ -514,6 +514,7 @@
     "status": "Status",
     "status_active": "Active",
     "status_archived": "Archived",
+    "status_draft": "Draft",
     "status_pending": "Pending",
     "step": {
       "few": "Steps",

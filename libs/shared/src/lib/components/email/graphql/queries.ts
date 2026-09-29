@@ -239,6 +239,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           name
           id
           notificationType
+          status
           language
           createdBy
           isDraft

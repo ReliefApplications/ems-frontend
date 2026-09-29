@@ -55,6 +55,7 @@ import { EmailAttachmentComponent } from './components/email-attachment/email-at
 import { CreateDistributionComponent } from './components/create-distribution/create-distribution.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
 import { ReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
+import { StatusOptionsComponent } from '../status-options/status-options.component';
 
 /**
  * Email module.
@@ -120,6 +121,7 @@ import { ReadableCronModule } from '../../pipes/readable-cron/readable-cron.modu
     DialogModule,
     CronEditorModule,
     ReadableCronModule,
+    StatusOptionsComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [

@@ -125,6 +125,20 @@
                   </td>
                 </ng-container>
 
+                <ng-container cdkColumnDef="status">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{ 'common.status' | translate }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    <shared-status-options
+                      [status]="element.status"
+                      [isDraft]="element.isDraft"
+                    ></shared-status-options>
+                  </td>
+                </ng-container>
+
                 <ng-container cdkColumnDef="createdby">
                   <th uiCellHeader *cdkHeaderCellDef scope="col">
                     <span class="headerTitle">

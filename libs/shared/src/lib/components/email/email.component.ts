@@ -55,7 +55,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Displayed columns in the table. */
-  public displayedColumns = ['name', 'alerttype', 'createdby', 'actions'];
+  public displayedColumns = [
+    'name',
+    'alerttype',
+    'status',
+    'createdby',
+    'actions',
+  ];
   /** Columns for distribution. */
   public distributionColumn = ['name'];
   /** Cached API configurations. */
