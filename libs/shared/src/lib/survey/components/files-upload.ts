@@ -1,4 +1,5 @@
 import { ComponentRef, Injector } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ComponentCollection,
   Question as SurveyQuestion,
@@ -77,6 +78,9 @@ export const init = (
   componentCollection: ComponentCollection
 ): void => {
   const domService = injector.get(DomService);
+  const translate = injector.get(TranslateService);
+  const availableLanguages: string[] =
+    injector.get('environment')?.availableLanguages ?? [];
 
   SvgRegistry.registerIconFromSvg(
     FILES_UPLOAD_QUESTION_TYPE,
@@ -121,13 +125,17 @@ export const init = (
           choicesCallback: (choices: WidgetChoice[]) => void
         ) => {
           choicesCallback(
-            getLanguageChoices(question.survey as SurveyModel | undefined)
+            getLanguageChoices(
+              question.survey as SurveyModel | undefined,
+              availableLanguages,
+              translate
+            )
           );
         },
       });
       registerCustomPropertyHelp(
         'defaultLanguage',
-        'Language selected by default when the form opens. Available languages are the ones of the form: its translations and the target languages of its auto-translated questions. A form without translations offers every supported language.'
+        'Language selected by default when the form opens. Available languages are the system language and the languages of the form translations that the system supports, like the language switch of the public forms.'
       );
     },
     onLoaded: (question: FilesUploadQuestion): void => {

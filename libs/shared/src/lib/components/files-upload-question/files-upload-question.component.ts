@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -30,10 +31,10 @@ import {
   getFileQuestions,
   getKendoFileRestrictions,
   getLanguageChoices,
-  getLanguageText,
   WidgetChoice,
 } from '../../survey/components/utils/files-widgets.util';
 import { QuestionFile } from '../../survey/types';
+import { getLanguageName } from '../../utils/languages';
 import { EmptyModule } from '../ui/empty/empty.module';
 
 /** Translation keys of the validation errors raised by the Kendo file select. */
@@ -119,10 +120,12 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
    *
    * @param translate Angular translation service
    * @param cdr Change detector of the component
+   * @param environment Injected environment ( available languages )
    */
   constructor(
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject('environment') private environment: any
   ) {}
 
   ngOnInit(): void {
@@ -141,7 +144,11 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
    */
   refresh(): void {
     this.targetFieldChoices = getFileQuestionChoices(this.survey);
-    this.languageChoices = getLanguageChoices(this.survey);
+    this.languageChoices = getLanguageChoices(
+      this.survey,
+      this.environment?.availableLanguages ?? [],
+      this.translate
+    );
     this.targetFieldControl.setValue(
       this.pickChoice(
         this.targetFieldChoices,
@@ -329,7 +336,9 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
           file,
           icon: getFileIcon(file.name),
           fieldTitle,
-          languageLabel: file.language ? getLanguageText(file.language) : '',
+          languageLabel: file.language
+            ? getLanguageName(file.language, this.translate)
+            : '',
           canRemove: !readOnly,
           removeFile: () => question.doRemoveFile(file),
         });

@@ -13,11 +13,9 @@ import {
 } from '../../services/file/file.utils';
 import { FileItemActionsComponent } from '../../survey/components/file-item-actions/public-api';
 import { FilesManagementQuestion } from '../../survey/components/files-management';
-import {
-  getFileQuestions,
-  getLanguageText,
-} from '../../survey/components/utils/files-widgets.util';
+import { getFileQuestions } from '../../survey/components/utils/files-widgets.util';
 import { QuestionFile } from '../../survey/types';
+import { getLanguageName } from '../../utils/languages';
 import { EmptyModule } from '../ui/empty/empty.module';
 
 /** A single row of the files management table. */
@@ -104,7 +102,9 @@ export class FilesManagementQuestionComponent {
           file,
           icon: getFileIcon(file.name),
           fieldTitle,
-          languageLabel: file.language ? getLanguageText(file.language) : '',
+          languageLabel: file.language
+            ? getLanguageName(file.language, this.translate)
+            : '',
           outdated,
           status: !stored ? 'pending' : outdated ? 'outdated' : 'active',
           canOutdate: !readOnly && permanentRemoval,

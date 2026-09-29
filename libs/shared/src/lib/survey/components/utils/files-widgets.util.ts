@@ -1,6 +1,7 @@
+import { TranslateService } from '@ngx-translate/core';
 import { FileRestrictions } from '@progress/kendo-angular-upload';
 import { Question as SurveyQuestion, SurveyModel } from 'survey-core';
-import { AZURE_SUPPORTED_LANGUAGES } from '../../constants/azure-languages.const';
+import { getLanguageName, toI18nLocale } from '../../../utils/languages';
 
 /** SurveyJS question type name of a native file upload question. */
 export const FILE_QUESTION_TYPE = 'file';
@@ -49,74 +50,45 @@ export const getFileQuestionChoices = (
   }));
 
 /**
- * Languages of a form, computed on the front-end from its structure:
- * - the locales used by the form's translations ( Translation tab of the
- *   form builder ), including the default one,
- * - the target languages of the auto-translated questions ( `translateTo` ).
+ * Languages of a form, computed on the front-end the same way the public
+ * forms application restricts its language switch: the system's default
+ * language, plus the locales used by the form's translations ( Translation
+ * tab of the form builder ) that are available in the system.
  *
  * @param survey Survey to inspect
- * @returns Language codes, in order of appearance ( empty if no survey )
+ * @param availableLanguages Languages available in the system ( environment ), default one first
+ * @returns Language codes ( i18n / Angular convention ), default one first
  */
 export const getSurveyLanguages = (
-  survey: SurveyModel | undefined
+  survey: SurveyModel | undefined,
+  availableLanguages: string[]
 ): string[] => {
-  if (!survey) {
-    return [];
-  }
-  const codes = new Set<string>();
-  (survey.getUsedLocales?.() ?? []).forEach((locale) => {
-    if (locale) {
-      codes.add(locale);
-    }
-  });
-  survey.getAllQuestions().forEach((question) => {
-    const translateTo = question.getPropertyValue('translateTo');
-    if (typeof translateTo === 'string' && translateTo) {
-      codes.add(translateTo);
-    }
-  });
-  return Array.from(codes);
+  const usedLocales = survey?.getUsedLocales?.() ?? [];
+  const formLanguages = usedLocales
+    .map((locale) => toI18nLocale(locale))
+    .filter((language) => availableLanguages.includes(language));
+  return Array.from(
+    new Set([...availableLanguages.slice(0, 1), ...formLanguages])
+  );
 };
 
 /**
- * Builds the language choices for the files upload / management questions.
- *
- * The languages are the ones computed from the form ( see
- * {@link getSurveyLanguages} ). A form without translations only knows its
- * default language, which is not enough to tag / compare files: every
- * language supported by the translation API is then offered, the form's own
- * languages first.
+ * Builds the language choices for the files upload question.
  *
  * @param survey Survey to inspect
+ * @param availableLanguages Languages available in the system ( environment ), default one first
+ * @param translate Angular translation service, to display the language names
  * @returns Language choices
  */
 export const getLanguageChoices = (
-  survey: SurveyModel | undefined
-): WidgetChoice[] => {
-  const languages = getSurveyLanguages(survey);
-  const codes =
-    languages.length >= 2
-      ? languages
-      : Array.from(
-          new Set([
-            ...languages,
-            ...AZURE_SUPPORTED_LANGUAGES.map((lang) => lang.value),
-          ])
-        );
-  return codes.map((code) => ({
+  survey: SurveyModel | undefined,
+  availableLanguages: string[],
+  translate: TranslateService
+): WidgetChoice[] =>
+  getSurveyLanguages(survey, availableLanguages).map((code) => ({
     value: code,
-    text: getLanguageText(code),
+    text: getLanguageName(code, translate),
   }));
-};
-
-/**
- * Resolves the display text of a language code.
- *
- * @param code Language code
- * @returns Language name, or the code itself when unknown
- */
-export const getLanguageText = (code: string): string =>
-  AZURE_SUPPORTED_LANGUAGES.find((lang) => lang.value === code)?.text || code;
 
 /**
  * Splits a file question's `acceptedTypes` ( same format as the native
