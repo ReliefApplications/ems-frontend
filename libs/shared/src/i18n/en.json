@@ -1060,6 +1060,7 @@
           "checkbox": "Enable scheduler",
           "tooltip": "Click to enable scheduler"
         },
+        "timezoneNotice": "Schedules run in Coordinated Universal Time (UTC).",
         "title": "Schedule alerts"
       },
       "subscribe": {

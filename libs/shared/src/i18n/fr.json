@@ -1060,6 +1060,7 @@
           "checkbox": "Activer le planificateur",
           "tooltip": "Cliquez pour activer le planificateur"
         },
+        "timezoneNotice": "Les planifications s'exécutent en temps universel coordonné (UTC).",
         "title": "Planifier les alertes"
       },
       "subscribe": {

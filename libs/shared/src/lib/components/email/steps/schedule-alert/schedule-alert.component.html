@@ -15,6 +15,9 @@
   </div>
   <div *ngIf="this.scheduleForm.get('scheduleEnabled')?.value">
     <ng-container ngProjectAs="content" class="flex flex-col">
+      <p class="mb-2 text-sm text-gray-500">
+        {{ 'components.email.schedule.timezoneNotice' | translate }}
+      </p>
       <!-- Show readable value of the schedule -->
       <ui-alert
         *ngIf="this.scheduleForm.get('cronValue')?.value && scheduleCron.valid"
