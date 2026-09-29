@@ -40,8 +40,8 @@ export interface File {
   outdated?: boolean;
   /** ISO date of the last time the file was marked as outdated */
   outdatedAt?: string;
-  /** Language the file was uploaded for ( tagged by the Files upload question ) */
-  language?: string;
+  /** Language the file was uploaded for ( tagged by the Files upload question ). */
+  lang?: string;
 }
 
 /**

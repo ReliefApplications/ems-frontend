@@ -234,7 +234,7 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
           name: result.file.name,
           type: result.file.type,
           content: result.content as StoredFile['content'],
-          language,
+          lang: language,
         }));
         const current: StoredFile[] = Array.isArray(target.value)
           ? target.value
@@ -336,8 +336,8 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
           file,
           icon: getFileIcon(file.name),
           fieldTitle,
-          languageLabel: file.language
-            ? getLanguageName(file.language, this.translate)
+          languageLabel: file.lang
+            ? getLanguageName(file.lang, this.translate)
             : '',
           canRemove: !readOnly,
           removeFile: () => question.doRemoveFile(file),

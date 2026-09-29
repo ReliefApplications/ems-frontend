@@ -102,8 +102,8 @@ export class FilesManagementQuestionComponent {
           file,
           icon: getFileIcon(file.name),
           fieldTitle,
-          languageLabel: file.language
-            ? getLanguageName(file.language, this.translate)
+          languageLabel: file.lang
+            ? getLanguageName(file.lang, this.translate)
             : '',
           outdated,
           status: !stored ? 'pending' : outdated ? 'outdated' : 'active',

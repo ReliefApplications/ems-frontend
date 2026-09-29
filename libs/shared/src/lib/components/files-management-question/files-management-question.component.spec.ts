@@ -8,7 +8,7 @@ describe('FilesManagementQuestionComponent', () => {
   let component: FilesManagementQuestionComponent;
 
   /** Files of the attachments question */
-  const pending = { name: 'pending.pdf', content: 'data:x', language: 'fr' };
+  const pending = { name: 'pending.pdf', content: 'data:x', lang: 'fr' };
   const active = { name: 'active.png', content: 'file-id' };
   const outdated = {
     name: 'outdated.docx',

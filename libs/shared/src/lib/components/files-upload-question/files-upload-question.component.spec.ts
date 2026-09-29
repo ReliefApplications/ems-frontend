@@ -187,7 +187,7 @@ describe('FilesUploadQuestionComponent', () => {
         name: 'new.png',
         type: 'image/png',
         content: 'data:new.png',
-        language: 'fr',
+        lang: 'fr',
       },
     ]);
     expect(component.errorMessage).toBe('');
@@ -302,7 +302,7 @@ describe('FilesUploadQuestionComponent', () => {
   it('lists every file of the survey waiting to be uploaded, with its document type', () => {
     survey.setValue('attachments', [
       stored,
-      { name: 'b.png', content: 'data:b', language: 'fr' },
+      { name: 'b.png', content: 'data:b', lang: 'fr' },
     ]);
     survey.setValue('cover', [{ name: 'a.png', content: 'data:a' }]);
     component.refresh();
