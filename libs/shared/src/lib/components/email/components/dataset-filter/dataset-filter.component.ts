@@ -260,11 +260,6 @@ export class DatasetFilterComponent
       this.query.controls['name'].setValue(name);
     }
 
-    if (this.query?.value?.resource) {
-      this.selectedResourceId = this.query?.value?.resource;
-      this.getResourceData(false);
-    }
-
     this.filteredFields = this.resource?.fields;
     if (this.query.controls.query.get('cacheData')?.value) {
       const {

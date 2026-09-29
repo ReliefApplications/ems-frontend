@@ -259,12 +259,16 @@ export class EmsTemplateComponent
       }
     } else if (this.currentStep === 1) {
       if (this.emailService.datasetsForm.controls['name'].valid) {
+        if (this.emailService.loading) {
+          return;
+        }
         try {
           this.emailService.loading = true;
+          this.emailService.disableSaveAndProceed.next(true);
           const { valid, badData } =
             await this.emailService.checkDatasetsValid();
-          this.emailService.loading = false;
           if (valid) {
+            this.emailService.disableSaveAndProceed.next(false);
             this.currentStep += 1;
             this.steps[2].disabled = false;
           } else {
@@ -284,6 +288,13 @@ export class EmsTemplateComponent
           }
         } catch (error) {
           console.error('Error validating datasets:', error);
+          this.emailService.disableSaveAndProceed.next(false);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.dataNotRecovered'),
+            { error: true }
+          );
+        } finally {
+          this.emailService.loading = false;
         }
       } else {
         this.emailService.datasetsForm.controls['name'].markAsTouched();
