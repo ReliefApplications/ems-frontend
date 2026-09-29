@@ -37,24 +37,32 @@
     </ng-template>
   </kendo-grid-column>
   <kendo-grid-column
-    field="outdated"
+    field="status"
     [title]="'components.filesManagement.status' | translate"
     [width]="140"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <span
-        *ngIf="dataItem.outdated; else upToDateTmpl"
+        *ngIf="dataItem.status === 'pending'"
+        class="inline-flex items-center gap-1 text-gray-500"
+      >
+        <span class="k-icon k-i-upload"></span>
+        {{ 'components.filesManagement.statusPending' | translate }}
+      </span>
+      <span
+        *ngIf="dataItem.status === 'outdated'"
         class="inline-flex items-center gap-1 text-amber-600"
       >
         <span class="k-icon k-i-warning"></span>
         {{ 'components.filesManagement.statusOutdated' | translate }}
       </span>
-      <ng-template #upToDateTmpl>
-        <span class="inline-flex items-center gap-1 text-green-700">
-          <span class="k-icon k-i-check"></span>
-          {{ 'components.filesManagement.statusUpToDate' | translate }}
-        </span>
-      </ng-template>
+      <span
+        *ngIf="dataItem.status === 'active'"
+        class="inline-flex items-center gap-1 text-green-700"
+      >
+        <span class="k-icon k-i-check"></span>
+        {{ 'components.filesManagement.statusActive' | translate }}
+      </span>
     </ng-template>
   </kendo-grid-column>
   <kendo-grid-column

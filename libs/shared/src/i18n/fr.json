@@ -1097,13 +1097,14 @@
     },
     "filesManagement": {
       "empty": "Aucun fichier pour le moment.",
-      "field": "Question",
+      "field": "Type de document",
       "fileName": "Nom du fichier",
       "language": "Langue",
       "noLanguage": "Sans langue",
       "status": "Statut",
+      "statusActive": "Actif",
       "statusOutdated": "Obsolète",
-      "statusUpToDate": "À jour"
+      "statusPending": "À téléverser"
     },
     "filesUpload": {
       "addFiles": "Ajouter des fichiers",
@@ -1117,10 +1118,10 @@
         "singleFileOnly": "Cette question n'accepte qu'un seul fichier.",
         "uploadFailed": "Les fichiers n'ont pas pu être ajoutés, veuillez réessayer."
       },
-      "field": "Question",
+      "field": "Type de document",
       "fileName": "Nom du fichier",
       "language": "Langue",
-      "targetField": "Question de type fichier"
+      "targetField": "Type de document"
     },
     "form": {
       "aggregation": {

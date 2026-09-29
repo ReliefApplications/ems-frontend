@@ -80,7 +80,7 @@ export const init = (
 
   SvgRegistry.registerIconFromSvg(
     FILES_UPLOAD_QUESTION_TYPE,
-    '<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>'
+    '<svg viewBox="0 -960 960 960"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>'
   );
 
   const component = {
@@ -96,7 +96,7 @@ export const init = (
       Serializer.addProperty(FILES_UPLOAD_QUESTION_TYPE, {
         name: 'targetField',
         category: 'general',
-        displayName: 'Target file question',
+        displayName: 'Document type',
         visibleIndex: 3,
         choices: (
           question: FilesUploadQuestion,
@@ -109,7 +109,7 @@ export const init = (
       });
       registerCustomPropertyHelp(
         'targetField',
-        'File question selected by default. Uploaded files are added to it and follow its restrictions ( accepted types, maximum size, number of files ). Users can pick another file question of the form when filling it.'
+        'Document type ( file question ) selected by default. Added files are placed in it and follow its restrictions ( accepted types, maximum size, number of files ). Users can pick another document type of the form when filling it.'
       );
       Serializer.addProperty(FILES_UPLOAD_QUESTION_TYPE, {
         name: 'defaultLanguage',

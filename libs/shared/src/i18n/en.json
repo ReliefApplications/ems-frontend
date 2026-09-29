@@ -1097,13 +1097,14 @@
     },
     "filesManagement": {
       "empty": "No files yet.",
-      "field": "Question",
+      "field": "Document type",
       "fileName": "File name",
       "language": "Language",
       "noLanguage": "No language",
       "status": "Status",
+      "statusActive": "Active",
       "statusOutdated": "Outdated",
-      "statusUpToDate": "Up to date"
+      "statusPending": "To upload"
     },
     "filesUpload": {
       "addFiles": "Add files",
@@ -1117,10 +1118,10 @@
         "singleFileOnly": "This question only accepts a single file.",
         "uploadFailed": "The files could not be added, please try again."
       },
-      "field": "Question",
+      "field": "Document type",
       "fileName": "File name",
       "language": "Language",
-      "targetField": "File question"
+      "targetField": "Document type"
     },
     "form": {
       "aggregation": {

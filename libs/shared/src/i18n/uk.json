@@ -1097,13 +1097,14 @@
     },
     "filesManagement": {
       "empty": "Поки що немає файлів.",
-      "field": "Питання",
+      "field": "Тип документа",
       "fileName": "Назва файлу",
       "language": "Мова",
       "noLanguage": "Без мови",
       "status": "Статус",
+      "statusActive": "Активний",
       "statusOutdated": "Застарілий",
-      "statusUpToDate": "Актуальний"
+      "statusPending": "До завантаження"
     },
     "filesUpload": {
       "addFiles": "Додати файли",
@@ -1117,10 +1118,10 @@
         "singleFileOnly": "Це питання приймає лише один файл.",
         "uploadFailed": "Не вдалося додати файли, спробуйте ще раз."
       },
-      "field": "Питання",
+      "field": "Тип документа",
       "fileName": "Назва файлу",
       "language": "Мова",
-      "targetField": "Питання типу «файл»"
+      "targetField": "Тип документа"
     },
     "form": {
       "aggregation": {

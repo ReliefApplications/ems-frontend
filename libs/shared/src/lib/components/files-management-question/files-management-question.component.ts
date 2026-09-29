@@ -32,6 +32,8 @@ export interface FileManagementRow {
   languageLabel: string;
   /** Whether the file was marked as outdated */
   outdated: boolean;
+  /** Status of the file: to upload on save, outdated, or active */
+  status: 'pending' | 'outdated' | 'active';
   /** Whether the file can be marked as outdated / active */
   canOutdate: boolean;
   /** Whether the file can be removed */
@@ -96,13 +98,15 @@ export class FilesManagementQuestionComponent {
           continue;
         }
         const stored = isStoredFile(file);
+        const outdated = isOutdatedFile(file);
         const permanentRemoval = !!question.allowOutdatedFiles && stored;
         rows.push({
           file,
           icon: getFileIcon(file.name),
           fieldTitle,
           languageLabel: file.language ? getLanguageText(file.language) : '',
-          outdated: isOutdatedFile(file),
+          outdated,
+          status: !stored ? 'pending' : outdated ? 'outdated' : 'active',
           canOutdate: !readOnly && permanentRemoval,
           // Removing a stored file is a per-field role permission. Files not
           // saved yet can always be removed.
