@@ -56,6 +56,7 @@ import { CreateDistributionComponent } from './components/create-distribution/cr
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
 import { ReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
 import { StatusOptionsComponent } from '../status-options/status-options.component';
+import { DateModule as SharedDateModule } from '../../pipes/date/date.module';
 
 /**
  * Email module.
@@ -122,6 +123,7 @@ import { StatusOptionsComponent } from '../status-options/status-options.compone
     CronEditorModule,
     ReadableCronModule,
     StatusOptionsComponent,
+    SharedDateModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [

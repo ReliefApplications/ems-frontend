@@ -139,16 +139,33 @@
                   </td>
                 </ng-container>
 
-                <ng-container cdkColumnDef="createdby">
+                <ng-container cdkColumnDef="configuredBy">
                   <th uiCellHeader *cdkHeaderCellDef scope="col">
                     <span class="headerTitle">
                       {{
-                        'models.customNotification.lastExecution' | translate
+                        'components.email.notification.configuredBy' | translate
                       }}
                     </span>
                   </th>
                   <td uiCell *cdkCellDef="let element">
-                    {{ element?.createdBy?.name }}
+                    {{ element?.createdBy?.name || '-' }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="lastExecution">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{
+                        'components.email.notification.lastExecution'
+                          | translate
+                      }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    {{
+                      (element.lastExecution
+                        | sharedDate : 'short' : executionTimezone) || '-'
+                    }}
                   </td>
                 </ng-container>
                 <div

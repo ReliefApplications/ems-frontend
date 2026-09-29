@@ -1032,9 +1032,11 @@
       },
       "name": "******",
       "notification": {
+        "configuredBy": "******",
         "create": "******",
         "language": "******",
         "languageDescription": "******",
+        "lastExecution": "******",
         "list": "******",
         "selectLanguage": "******",
         "type": "******",

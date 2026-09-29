@@ -22,6 +22,10 @@ import { cloneDeep } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
+import {
+  EMAIL_NOTIFICATION_COLUMNS,
+  EMAIL_NOTIFICATION_TIMEZONE,
+} from './email-list.constants';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -29,7 +33,6 @@ const DEFAULT_PAGE_SIZE = 5;
 const DISTRIBUTION_PAGE_SIZE = 5;
 /** Current Template list items page size (for pagination) */
 const TEMPLATE_PAGE_SIZE = 5;
-
 /** Email Notification setup component. */
 @Component({
   selector: 'app-email',
@@ -55,13 +58,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Displayed columns in the table. */
-  public displayedColumns = [
-    'name',
-    'alerttype',
-    'status',
-    'createdby',
-    'actions',
-  ];
+  public displayedColumns = [...EMAIL_NOTIFICATION_COLUMNS];
+  /** Timezone used to display the last execution. */
+  public readonly executionTimezone = EMAIL_NOTIFICATION_TIMEZONE;
   /** Columns for distribution. */
   public distributionColumn = ['name'];
   /** Cached API configurations. */

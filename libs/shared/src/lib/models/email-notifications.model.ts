@@ -37,6 +37,7 @@ export interface EmailNotification {
   };
   isDraft: boolean;
   isDeleted: boolean;
+  lastExecution: string | null;
   draftStepper: any;
   __typename: string;
   attachments: EmailNotificationAttachment;

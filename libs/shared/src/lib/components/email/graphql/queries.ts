@@ -245,6 +245,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           isDraft
           isDeleted
           draftStepper
+          lastExecution
           attachments
         }
       }

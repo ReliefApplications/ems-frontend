@@ -1032,9 +1032,11 @@
       },
       "name": "Email",
       "notification": {
+        "configuredBy": "Configuré par",
         "create": "Créer une notification",
         "language": "Langue",
         "languageDescription": "La langue utilisée pour afficher les données de cette notification (champs traduits et valeurs de choix).",
+        "lastExecution": "Dernière exécution (UTC)",
         "list": "Liste des notifications",
         "selectLanguage": "Sélectionner une langue",
         "type": "Type d'alerte",
