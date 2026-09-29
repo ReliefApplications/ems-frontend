@@ -275,7 +275,9 @@ export class ActionButtonComponent
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(50);
           const selectedId = value?.template;
-          const template = templates.filter((x: any) => x.id === selectedId)[0];
+          const template = templates.find(
+            (item: any) => item.id === selectedId
+          );
           if (template) {
             let layout!: Layout;
             if (!isNil(resource)) {
@@ -505,15 +507,12 @@ export class ActionButtonComponent
   private async getSelectedNotificationTemplates(templates: string[]) {
     const { data: templateResponse } = await lastValueFrom(
       this.emailService.getCustomTemplates(
-        this.applicationService.application?.getValue()?.id as string
+        this.applicationService.application?.getValue()?.id as string,
+        undefined,
+        templates
       )
     );
-    const allTemplateData = templateResponse.customTemplates.edges.map(
-      (x: any) => x.node
-    );
-    return allTemplateData.filter((template: any) =>
-      templates.includes(template.id)
-    );
+    return templateResponse.customTemplates.edges.map((x: any) => x.node);
   }
 
   /**

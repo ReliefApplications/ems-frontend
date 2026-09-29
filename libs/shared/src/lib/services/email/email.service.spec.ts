@@ -8,25 +8,37 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
+import { of } from 'rxjs';
 
 import { EmailService } from './email.service';
 import { PreviewTemplateModalComponent } from '../../components/templates/components/preview-template-modal/preview-template-modal.component';
+import {
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
+} from '../../components/email/graphql/queries';
 
 // Lazily loaded by previewCustomTemplate; only its identity matters here
 jest.mock(
   '../../components/templates/components/preview-template-modal/preview-template-modal.component',
-  () => ({ PreviewTemplateModalComponent: class {} })
+  () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    PreviewTemplateModalComponent: class {},
+  })
 );
 
 describe('EmailService', () => {
   let service: EmailService;
   let dialog: Dialog;
+  let apollo: { query: jest.Mock };
 
   beforeEach(() => {
+    apollo = {
+      query: jest.fn().mockReturnValue(of({ data: {} })),
+    };
     TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: {} },
-        { provide: Apollo, useValue: {} },
+        { provide: Apollo, useValue: apollo },
         TranslateService,
       ],
       imports: [
@@ -46,6 +58,24 @@ describe('EmailService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('requests only the configured templates', () => {
+    service.getCustomTemplates(['template-1', 'template-2']);
+
+    expect(apollo.query).toHaveBeenCalledWith({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: { ids: ['template-1', 'template-2'] },
+    });
+  });
+
+  it('requests only the configured distribution list', () => {
+    service.getEmailDistributionList('distribution-list-1');
+
+    expect(apollo.query).toHaveBeenCalledWith({
+      query: GET_DISTRIBUTION_LIST,
+      variables: { id: 'distribution-list-1' },
+    });
   });
 
   describe('previewCustomTemplate', () => {

@@ -70,6 +70,7 @@ export default {
     '<rootDir>/src/lib/components/templates/components/preview-template-modal/*.spec.ts',
     '<rootDir>/src/lib/components/widgets/grid-settings/grid-settings.forms.spec.ts',
     '<rootDir>/src/lib/components/widgets/grid-settings/grid-action-settings/*.spec.ts',
+    '<rootDir>/src/lib/components/widgets/grid/grid.component.spec.ts',
     '<rootDir>/src/lib/services/email/*.spec.ts',
     '<rootDir>/src/lib/survey/components/resource.spec.ts',
     '<rootDir>/src/lib/survey/components/resources.spec.ts',

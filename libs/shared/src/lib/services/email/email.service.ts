@@ -347,24 +347,26 @@ export class EmailService {
   /**
    * Retrieves custom templates from the server.
    *
+   * @param ids IDs of templates to retrieve.
    * @returns {Observable<any>} An observable that resolves with the result of the query.
    */
-  getCustomTemplates(): Observable<any> {
+  getCustomTemplates(ids?: string[]): Observable<any> {
     return this.apollo.query<any>({
       query: GET_CUSTOM_TEMPLATES,
-      variables: {},
+      variables: { ids },
     });
   }
 
   /**
    * Get an email distribution lists.
    *
+   * @param id ID of the distribution list to retrieve.
    * @returns Email distribution lists.
    */
-  getEmailDistributionList() {
+  getEmailDistributionList(id?: string) {
     return this.apollo.query<any>({
       query: GET_DISTRIBUTION_LIST,
-      variables: {},
+      variables: { id },
     });
   }
 

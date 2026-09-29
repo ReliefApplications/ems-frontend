@@ -12,6 +12,7 @@ import { Apollo } from 'apollo-angular';
 import { of, throwError } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { EmailService } from './email.service';
+import { GET_CUSTOM_TEMPLATES } from './graphql/queries';
 
 /** Shape used to seed a dataset block in the notification form */
 interface BlockSeed {
@@ -25,6 +26,7 @@ interface BlockSeed {
 
 describe('EmailService (components/email)', () => {
   let service: EmailService;
+  let apollo: { query: jest.Mock };
 
   /**
    * Replaces the datasets of the notification form with the given blocks.
@@ -52,6 +54,9 @@ describe('EmailService (components/email)', () => {
   };
 
   beforeEach(() => {
+    apollo = {
+      query: jest.fn().mockReturnValue(of({ data: {} })),
+    };
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -66,7 +71,7 @@ describe('EmailService (components/email)', () => {
         FormBuilder,
         TranslateService,
         { provide: 'environment', useValue: {} },
-        { provide: Apollo, useValue: {} },
+        { provide: Apollo, useValue: apollo },
         { provide: RestService, useValue: { apiUrl: '' } },
         { provide: SnackbarService, useValue: { openSnackBar: jest.fn() } },
       ],
@@ -77,6 +82,22 @@ describe('EmailService (components/email)', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
     expect(service.sendSeparateBlocks).toEqual([]);
+  });
+
+  it('requests custom templates by application and configured IDs', () => {
+    service.getCustomTemplates('application-1', undefined, [
+      'template-1',
+      'template-2',
+    ]);
+
+    expect(apollo.query).toHaveBeenCalledWith({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {
+        applicationId: 'application-1',
+        isFromEmailNotification: undefined,
+        ids: ['template-1', 'template-2'],
+      },
+    });
   });
 
   describe('createPreviewData', () => {
