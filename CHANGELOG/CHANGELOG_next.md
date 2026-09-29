@@ -1,3 +1,14 @@
+# [2.24.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.20...v2.24.0-rc.21) (2026-09-29)
+
+### Features
+
+- Enable emails sent from grid actions to send separate emails based on field values ([#2918](https://github.com/ReliefApplications/ems-frontend/issues/2918)) ([5da5b77](https://github.com/ReliefApplications/ems-frontend/commit/5da5b77dd91d035781e7e49b3a569aaa900aa3eb))
+- Enable use of groups in CS user filtering for emails ([#2920](https://github.com/ReliefApplications/ems-frontend/issues/2920)) ([75d181a](https://github.com/ReliefApplications/ems-frontend/commit/75d181ac890dd9861fd23d324461f683a234bd41))
+- Now possible to bind email datasets with CS user filter to send one email per user ([#2919](https://github.com/ReliefApplications/ems-frontend/issues/2919)) ([5544818](https://github.com/ReliefApplications/ems-frontend/commit/5544818c3231ac9c2445b52fddce37c67413ab21))
+- Now possible to insert per record fields into email template ([#2917](https://github.com/ReliefApplications/ems-frontend/issues/2917)) ([416aca3](https://github.com/ReliefApplications/ems-frontend/commit/416aca3d3c0ddb6ed8a73d6ccb4c2e008b0c8080))
+- Now possible to schedule emails ([#2916](https://github.com/ReliefApplications/ems-frontend/issues/2916)) ([b5eebf1](https://github.com/ReliefApplications/ems-frontend/commit/b5eebf1980d3980711f8a0c1478a13e06ad7c509))
+- Now possible to select language email notifications will be sent with ([#2921](https://github.com/ReliefApplications/ems-frontend/issues/2921)) ([53882b9](https://github.com/ReliefApplications/ems-frontend/commit/53882b9072486576a143c9cd1eee575758cfcb61))
+
 # [2.24.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.19...v2.24.0-rc.20) (2026-09-24)
 
 ### Features
