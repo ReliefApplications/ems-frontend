@@ -3,7 +3,7 @@ import { gql } from 'apollo-angular';
 /** Graphql request for getting draft records */
 export const GET_DRAFT_RECORDS = gql`
   query GetDraftRecords($form: ID!) {
-    records(form: $form, draft: true) {
+    records(form: $form, recordVisibility: ownDrafts) {
       id
       incrementalId
       draft
