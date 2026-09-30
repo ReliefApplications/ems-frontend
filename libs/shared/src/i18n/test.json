@@ -1123,7 +1123,8 @@
         "confirmationMessage": "****** {{name}} ******"
       },
       "deleteRow": {
-        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******",
+        "draftConfirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
       },
       "display": {
         "submissionMessage": "******"

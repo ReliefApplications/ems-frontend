@@ -111,6 +111,8 @@ describe('GridWidgetComponent', () => {
     component.onLayoutChange({ recordVisibility: RecordVisibility.allDrafts });
 
     expect(component.isDraftLayout).toBe(true);
+    // Drafts can still be resumed and deleted from the grid
+    expect(component.recordActionsDisabled).toBe(false);
     expect(component.gridSettings.recordVisibility).toBe(
       RecordVisibility.allDrafts
     );

@@ -1,6 +1,7 @@
 import { CoreGridComponent } from './core-grid.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { EMPTY } from 'rxjs';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 
 describe('CoreGridComponent', () => {
   let component: CoreGridComponent;
@@ -34,7 +35,7 @@ describe('CoreGridComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should disable every record action for a draft layout', () => {
+  it('should disable every record action while the layout is not loaded', () => {
     component.settings = {
       template: 'template-id',
       actions: {
@@ -72,7 +73,7 @@ describe('CoreGridComponent', () => {
     expect(component.editable).toBe(false);
   });
 
-  it('should allow details while other draft-layout actions are disabled', () => {
+  it('should allow details while the other actions are disabled', () => {
     component.actionsDisabled = true;
     const detailsSpy = jest
       .spyOn(component, 'onShowDetails')
@@ -89,6 +90,62 @@ describe('CoreGridComponent', () => {
     expect(detailsSpy).toHaveBeenCalledWith([{ id: 'draft-id' }], undefined);
     expect(updateSpy).not.toHaveBeenCalled();
     expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should let drafts be resumed, deleted and exported only', () => {
+    component.settings = {
+      template: 'template-id',
+      recordVisibility: RecordVisibility.ownDrafts,
+      actions: {
+        addRecord: true,
+        update: true,
+        delete: true,
+        history: true,
+        convert: true,
+        export: true,
+        import: true,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+        inlineEdition: true,
+      },
+    };
+
+    component.configureGrid();
+
+    expect(component.isDraftGrid).toBe(true);
+    expect(component.actions).toEqual(
+      expect.objectContaining({
+        add: false,
+        update: true,
+        delete: true,
+        history: false,
+        convert: false,
+        export: true,
+        import: false,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+      })
+    );
+    expect(component.editable).toBe(false);
+  });
+
+  it('should route update and delete of drafts, but not history', () => {
+    component.settings = { recordVisibility: RecordVisibility.allDrafts };
+    const updateSpy = jest.spyOn(component, 'onUpdate').mockResolvedValue();
+    const deleteSpy = jest.spyOn(component, 'onDelete').mockImplementation();
+    const historySpy = jest
+      .spyOn(component, 'onViewHistory')
+      .mockImplementation();
+
+    component.onAction({ action: 'update', item: { id: 'draft-id' } });
+    component.onAction({ action: 'delete', item: { id: 'draft-id' } });
+    component.onAction({ action: 'history', item: { id: 'draft-id' } });
+
+    expect(updateSpy).toHaveBeenCalledWith([{ id: 'draft-id' }]);
+    expect(deleteSpy).toHaveBeenCalledWith([{ id: 'draft-id' }]);
+    expect(historySpy).not.toHaveBeenCalled();
   });
 
   it('should load layout filters into the user filter state', () => {

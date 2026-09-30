@@ -141,7 +141,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** @returns list of active grid actions */
   get gridActions() {
-    if (this.recordActionsDisabled) {
+    if (this.recordActionsDisabled || this.isDraftLayout) {
       return [];
     }
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
@@ -152,12 +152,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return isDraftVisibility(this.layout?.recordVisibility);
   }
 
-  /** @returns True while actions must remain unavailable for the selected layout. */
+  /** @returns True while a configured layout is not loaded yet, so no action targets the wrong records. */
   get recordActionsDisabled(): boolean {
-    return (
-      this.isDraftLayout ||
-      (get(this.settings, 'layouts', []).length > 0 && !this.layout)
-    );
+    return get(this.settings, 'layouts', []).length > 0 && !this.layout;
   }
 
   /**
@@ -358,7 +355,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param options action options.
    */
   public async onGridAction(options: any): Promise<void> {
-    if (this.recordActionsDisabled) {
+    if (this.recordActionsDisabled || this.isDraftLayout) {
       return;
     }
     // Select all the records in the grid

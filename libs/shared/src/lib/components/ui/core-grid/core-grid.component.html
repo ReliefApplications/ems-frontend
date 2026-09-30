@@ -29,7 +29,7 @@
   [blank]="!settings.query"
   (edit)="edit.emit($event)"
   [widget]="widget"
-  [actionsDisabled]="actionsDisabled"
+  [actionsDisabled]="actionsDisabled || isDraftGrid"
   [canUpdate]="canUpdate"
   [canAdd]="canCreateRecords"
   [canDownload]="canDownloadRecords"

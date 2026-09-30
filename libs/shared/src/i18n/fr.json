@@ -1123,7 +1123,8 @@
         "confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}}?"
       },
       "deleteRow": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?",
+        "draftConfirmationMessage": "Voulez-vous vraiment supprimer définitivement {{quantity}} {{rowText}} de brouillon ? Cette action est irréversible."
       },
       "display": {
         "submissionMessage": "Le formulaire a été sauvegardé."

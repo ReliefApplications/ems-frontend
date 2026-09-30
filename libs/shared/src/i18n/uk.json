@@ -1123,7 +1123,8 @@
         "confirmationMessage": "Ви підтверджуєте видалення форми {{name}}?"
       },
       "deleteRow": {
-        "confirmationMessage": "Ви підтверджуєте видалення {{quantity}} {{rowText}}?"
+        "confirmationMessage": "Ви підтверджуєте видалення {{quantity}} {{rowText}}?",
+        "draftConfirmationMessage": "Ви підтверджуєте остаточне видалення {{quantity}} {{rowText}} чернеток? Цю дію неможливо скасувати."
       },
       "display": {
         "submissionMessage": "Форма була успішно відправлена."

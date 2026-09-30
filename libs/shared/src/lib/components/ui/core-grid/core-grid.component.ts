@@ -284,7 +284,7 @@ export class CoreGridComponent
   }
 
   /** @returns True when this grid displays draft records instead of submitted records. */
-  private get isDraftGrid(): boolean {
+  public get isDraftGrid(): boolean {
     return isDraftVisibility(this.settings?.recordVisibility);
   }
 
@@ -524,23 +524,38 @@ export class CoreGridComponent
       },
       remove: get(this.settings, 'actions.remove', false),
     };
-    this.actions = this.actionsDisabled
-      ? {
-          add: false,
-          update: false,
-          delete: false,
-          history: false,
-          convert: false,
-          export: false,
-          import: false,
-          showDetails: configuredActions.showDetails,
-          navigateToPage: false,
-          navigateSettings: configuredActions.navigateSettings,
-          remove: false,
-        }
-      : configuredActions;
+    if (this.actionsDisabled) {
+      this.actions = {
+        add: false,
+        update: false,
+        delete: false,
+        history: false,
+        convert: false,
+        export: false,
+        import: false,
+        showDetails: configuredActions.showDetails,
+        navigateToPage: false,
+        navigateSettings: configuredActions.navigateSettings,
+        remove: false,
+      };
+    } else if (this.isDraftGrid) {
+      // Drafts can be resumed, permanently deleted, viewed and exported.
+      // They have no history, cannot be converted, and added or imported
+      // records would not be drafts.
+      this.actions = {
+        ...configuredActions,
+        add: false,
+        history: false,
+        convert: false,
+        import: false,
+      };
+    } else {
+      this.actions = configuredActions;
+    }
     this.editable =
-      !this.actionsDisabled && this.settings.actions?.inlineEdition;
+      !this.actionsDisabled &&
+      !this.isDraftGrid &&
+      this.settings.actions?.inlineEdition;
   }
 
   /**
@@ -598,9 +613,10 @@ export class CoreGridComponent
             sortFields:
               this.sortFields.length > 0 ? this.sortFields : undefined,
             styles: this.style,
-            actions: this.actionsDisabled
-              ? null
-              : this.settings.customRowActions || null,
+            actions:
+              this.actionsDisabled || this.isDraftGrid
+                ? null
+                : this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
@@ -1164,6 +1180,11 @@ export class CoreGridComponent
     if (this.actionsDisabled && disabledActions.includes(event.action)) {
       return;
     }
+    // Inline edition, history and conversion are not available for drafts
+    const draftDisabledActions = ['add', 'edit', 'save', 'history', 'convert'];
+    if (this.isDraftGrid && draftDisabledActions.includes(event.action)) {
+      return;
+    }
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -1450,7 +1471,9 @@ export class CoreGridComponent
             : this.translate.instant('common.row.one'),
       }),
       content: this.translate.instant(
-        'components.form.deleteRow.confirmationMessage',
+        this.isDraftGrid
+          ? 'components.form.deleteRow.draftConfirmationMessage'
+          : 'components.form.deleteRow.confirmationMessage',
         {
           quantity: rowsSelected,
           rowText:
