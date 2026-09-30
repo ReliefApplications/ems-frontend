@@ -96,6 +96,8 @@ describe('file widget', () => {
         mode,
         onValueChanged: { add: jest.fn(), remove: jest.fn() },
         runExpression: jest.fn(),
+        // No files management question hiding the file questions
+        getAllQuestions: () => [],
       },
       isReadOnly: mode === 'display',
       allowMultiple: false,

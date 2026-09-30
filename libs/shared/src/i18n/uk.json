@@ -1095,6 +1095,34 @@
       "title": "Попередній перегляд електронного листа",
       "to": "Кому"
     },
+    "filesManagement": {
+      "empty": "Поки що немає файлів.",
+      "field": "Тип документа",
+      "fileName": "Назва файлу",
+      "language": "Мова",
+      "noLanguage": "Без мови",
+      "status": "Статус",
+      "statusActive": "Активний",
+      "statusOutdated": "Застарілий",
+      "statusPending": "До завантаження"
+    },
+    "filesUpload": {
+      "addFiles": "Додати файли",
+      "dropFilesHere": "Перетягніть файли сюди",
+      "empty": "Поки що немає файлів для завантаження.",
+      "errors": {
+        "invalidType": "«{{name}}» не є дозволеним типом файлу.",
+        "maxSizeExceeded": "«{{name}}» перевищує максимально дозволений розмір.",
+        "maximumAllowedFiles": "Максимальна кількість файлів: {{number}}",
+        "noTargetField": "Виберіть питання типу «файл», перш ніж додавати файли.",
+        "singleFileOnly": "Це питання приймає лише один файл.",
+        "uploadFailed": "Не вдалося додати файли, спробуйте ще раз."
+      },
+      "field": "Тип документа",
+      "fileName": "Назва файлу",
+      "language": "Мова",
+      "targetField": "Тип документа"
+    },
     "form": {
       "aggregation": {
         "delete": {
