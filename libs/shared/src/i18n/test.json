@@ -2222,10 +2222,11 @@
             }
           },
           "drafts": {
-            "all": "******",
-            "allTooltip": "******",
-            "records": "******",
-            "recordsTooltip": "******"
+            "allDrafts": "******",
+            "ownDrafts": "******",
+            "submitted": "******",
+            "visibility": "******",
+            "visibilityTooltip": "******"
           },
           "hint": {
             "actions": {

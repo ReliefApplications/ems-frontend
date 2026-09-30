@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Inject, Input } from '@angular/core';
 import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Layout } from '../../../models/layout.model';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 import {
   createDisplayForm,
   createQueryForm,
@@ -12,10 +13,10 @@ import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
-  CheckboxModule,
   DialogModule,
   FormWrapperModule,
   IconModule,
+  SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
@@ -51,7 +52,7 @@ interface DialogData {
     ButtonModule,
     LocalizedInputComponent,
     TranslateModule,
-    CheckboxModule,
+    SelectMenuModule,
     IconModule,
     TooltipModule,
   ],
@@ -76,13 +77,16 @@ export class EditLayoutModalComponent implements AfterViewInit {
     ],
     query: createQueryForm(this.data.layout?.query),
     display: createDisplayForm(this.data.layout?.display),
-    draft: [this.data.layout?.draft ?? false],
-    allDrafts: [this.data.layout?.allDrafts ?? false],
+    recordVisibility: [
+      this.data.layout?.recordVisibility ?? RecordVisibility.submitted,
+    ],
   });
   /**
    * Templates
    */
   public templates: any[] = [];
+  /** Available record visibility options */
+  public recordVisibilityOptions = Object.values(RecordVisibility);
   /**
    * Layout preview data
    */
@@ -101,13 +105,7 @@ export class EditLayoutModalComponent implements AfterViewInit {
     public dialogRef: DialogRef<EditLayoutModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private translate: TranslateService
-  ) {
-    this.form.get('draft')?.valueChanges.subscribe((draft) => {
-      if (!draft) {
-        this.form.get('allDrafts')?.setValue(false);
-      }
-    });
-  }
+  ) {}
 
   ngAfterViewInit(): void {
     this.layoutPreviewData = {
@@ -149,8 +147,7 @@ export class EditLayoutModalComponent implements AfterViewInit {
       nameTranslations,
       query: raw.query,
       display: raw.display,
-      draft: raw.draft,
-      allDrafts: raw.draft ? raw.allDrafts : false,
+      recordVisibility: raw.recordVisibility,
     } as any);
   }
 

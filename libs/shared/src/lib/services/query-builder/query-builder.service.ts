@@ -15,6 +15,7 @@ import {
   QueryMetaDataQueryResponse,
   QueryTypesResponse,
 } from '../../models/metadata.model';
+import { RecordVisibility } from '../../models/record-visibility.model';
 
 /** Interface for the variables of a query */
 interface QueryVariables {
@@ -29,8 +30,7 @@ interface QueryVariables {
   styles?: any;
   actions?: any;
   at?: Date;
-  draft?: boolean;
-  allDrafts?: boolean;
+  recordVisibility?: RecordVisibility;
 }
 
 /** Interface for a query response */
@@ -389,12 +389,11 @@ export class QueryBuilderService {
    */
   public singleGraphQLQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetSingleRecord($id: ID! $data: JSON $draft: Boolean $allDrafts: Boolean) {
+    query GetSingleRecord($id: ID! $data: JSON $recordVisibility: RecordVisibility) {
       ${name}(
       id: $id
       data: $data
-      draft: $draft
-      allDrafts: $allDrafts
+      recordVisibility: $recordVisibility
       ) {
         ${fields}
       }
@@ -411,7 +410,7 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $sortFields: JSON, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date, $draft: Boolean, $allDrafts: Boolean) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $sortFields: JSON, $display: Boolean, $styles: JSON, $actions: JSON, $at: Date, $recordVisibility: RecordVisibility) {
       ${name}(
       first: $first
       skip: $skip
@@ -423,8 +422,7 @@ export class QueryBuilderService {
       styles: $styles
       actions: $actions
       at: $at
-      draft: $draft
-      allDrafts: $allDrafts
+      recordVisibility: $recordVisibility
       ) {
         edges {
           node {

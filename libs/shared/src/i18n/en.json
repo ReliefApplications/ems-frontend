@@ -2222,10 +2222,11 @@
             }
           },
           "drafts": {
-            "all": "Show all users' drafts",
-            "allTooltip": "When enabled, the grid includes drafts created by all users. Otherwise users only see their own drafts.",
-            "records": "Show draft records",
-            "recordsTooltip": "Display draft records instead of submitted records"
+            "allDrafts": "All users' draft records",
+            "ownDrafts": "My draft records",
+            "submitted": "Submitted records",
+            "visibility": "Records to display",
+            "visibilityTooltip": "Choose whether the grid shows submitted records, your own draft records, or the draft records of every user"
           },
           "hint": {
             "actions": {

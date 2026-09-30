@@ -35,8 +35,7 @@ export const GET_RESOURCE = gql`
             query
             createdAt
             display
-            draft
-            allDrafts
+            recordVisibility
           }
         }
         pageInfo {

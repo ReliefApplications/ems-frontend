@@ -59,6 +59,10 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
 import {
+  isDraftVisibility,
+  RecordVisibility,
+} from '../../../models/record-visibility.model';
+import {
   GridColumnConfigurationMap,
   GridColumnConfigurationService,
 } from '../../../services/grid-layout/grid-column-configuration.service';
@@ -70,8 +74,7 @@ const DEFAULT_FILE_NAME = 'Records';
 
 /** Draft visibility variables accepted by record queries. */
 interface RecordVisibilityVariables {
-  draft?: boolean;
-  allDrafts?: boolean;
+  recordVisibility?: RecordVisibility;
 }
 
 /**
@@ -275,18 +278,14 @@ export class CoreGridComponent
 
   /** @returns Draft visibility variables for generated record queries. */
   public get recordVisibilityVariables(): RecordVisibilityVariables {
-    if (!this.isDraftGrid) {
-      return {};
-    }
-    return {
-      draft: true,
-      allDrafts: get(this.settings, 'allDrafts', false),
-    };
+    return this.isDraftGrid
+      ? { recordVisibility: this.settings.recordVisibility }
+      : {};
   }
 
   /** @returns True when this grid displays draft records instead of submitted records. */
   private get isDraftGrid(): boolean {
-    return get(this.settings, 'draft', false);
+    return isDraftVisibility(this.settings?.recordVisibility);
   }
 
   // === FILTERING ===

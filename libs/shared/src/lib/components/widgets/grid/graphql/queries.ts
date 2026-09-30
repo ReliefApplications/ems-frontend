@@ -3,8 +3,8 @@ import { gql } from 'apollo-angular';
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query OnSelectGetRecordById($id: ID!, $draft: Boolean, $allDrafts: Boolean) {
-    record(id: $id, draft: $draft, allDrafts: $allDrafts) {
+  query OnSelectGetRecordById($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
       incrementalId
       draft
@@ -33,8 +33,8 @@ export const GET_RECORD_BY_ID = gql`
 // === GET RECORD DETAILS ===
 /** Graphql request for getting record details by its id */
 export const GET_RECORD_DETAILS = gql`
-  query GetRecordDetails($id: ID!, $draft: Boolean, $allDrafts: Boolean) {
-    record(id: $id, draft: $draft, allDrafts: $allDrafts) {
+  query GetRecordDetails($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
       draft
       data

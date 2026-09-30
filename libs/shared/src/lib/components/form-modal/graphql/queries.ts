@@ -31,8 +31,8 @@ export const GET_FORM_BY_ID = gql`
 
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!, $draft: Boolean, $allDrafts: Boolean) {
-    record(id: $id, draft: $draft, allDrafts: $allDrafts) {
+  query GetRecordById($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
       incrementalId
       draft

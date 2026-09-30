@@ -12,8 +12,7 @@ export const ADD_LAYOUT = gql`
       createdAt
       query
       display
-      draft
-      allDrafts
+      recordVisibility
     }
   }
 `;
@@ -35,8 +34,7 @@ export const EDIT_LAYOUT = gql`
       createdAt
       query
       display
-      draft
-      allDrafts
+      recordVisibility
     }
   }
 `;

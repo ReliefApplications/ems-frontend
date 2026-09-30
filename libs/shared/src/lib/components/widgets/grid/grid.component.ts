@@ -49,6 +49,10 @@ import { AggregationGridComponent } from '../../aggregation/aggregation-grid/agg
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { clone } from 'lodash';
+import {
+  isDraftVisibility,
+  RecordVisibility,
+} from '../../../models/record-visibility.model';
 
 /** Component for the grid widget */
 @Component({
@@ -145,7 +149,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** @returns True when the selected layout displays draft records. */
   get isDraftLayout(): boolean {
-    return !!this.layout?.draft;
+    return isDraftVisibility(this.layout?.recordVisibility);
   }
 
   /** @returns True while actions must remain unavailable for the selected layout. */
@@ -201,8 +205,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
-    delete this.gridSettings.draft;
-    delete this.gridSettings.allDrafts;
+    delete this.gridSettings.recordVisibility;
     if (this.settings.resource) {
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
@@ -260,8 +263,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               ...this.settings,
               ...this.layout,
               ...{ template: get(this.settings, 'template', null) },
-              draft: !!this.layout?.draft,
-              allDrafts: !!this.layout?.draft && !!this.layout?.allDrafts,
+              recordVisibility:
+                this.layout?.recordVisibility ?? RecordVisibility.submitted,
             };
           });
         return;
@@ -768,8 +771,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       ...this.settings,
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
-      draft: !!this.layout?.draft,
-      allDrafts: !!this.layout?.draft && !!this.layout?.allDrafts,
+      recordVisibility:
+        this.layout?.recordVisibility ?? RecordVisibility.submitted,
     };
   }
 

@@ -60,6 +60,7 @@ import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-upd
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { RecordVisibility } from '../../models/record-visibility.model';
 
 /**
  * Interface of Dialog data.
@@ -73,8 +74,7 @@ interface DialogData {
   askForConfirm?: boolean;
   recordData?: any;
   actionButtonCtx?: boolean;
-  draft?: boolean;
-  allDrafts?: boolean;
+  recordVisibility?: RecordVisibility;
   isDraftClone?: boolean;
 }
 /**
@@ -265,8 +265,7 @@ export class FormModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id,
-              draft: this.data.draft,
-              allDrafts: this.data.allDrafts,
+              recordVisibility: this.data.recordVisibility,
             },
           })
         ).then(({ data }) => {

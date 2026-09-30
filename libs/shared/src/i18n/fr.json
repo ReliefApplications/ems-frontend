@@ -2225,10 +2225,11 @@
             }
           },
           "drafts": {
-            "all": "Afficher les brouillons de tous les utilisateurs",
-            "allTooltip": "Si cette option est activée, la grille inclut les brouillons créés par tous les utilisateurs. Sinon, les utilisateurs ne voient que leurs propres brouillons.",
-            "records": "Afficher les brouillons",
-            "recordsTooltip": "Afficher les brouillons au lieu des enregistrements soumis"
+            "allDrafts": "Brouillons de tous les utilisateurs",
+            "ownDrafts": "Mes brouillons",
+            "submitted": "Enregistrements soumis",
+            "visibility": "Enregistrements à afficher",
+            "visibilityTooltip": "Choisir si la grille affiche les enregistrements soumis, vos propres brouillons ou les brouillons de tous les utilisateurs"
           },
           "hint": {
             "actions": {

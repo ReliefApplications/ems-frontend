@@ -22,6 +22,7 @@ import {
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from '../../../services/query-builder/graphql/queries';
 import { Ability } from '@casl/ability';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 
 describe('GridWidgetComponent', () => {
   let component: GridWidgetComponent;
@@ -95,24 +96,32 @@ describe('GridWidgetComponent', () => {
   it('should derive draft visibility and actions from the selected layout', () => {
     component.settings = {
       template: 'template-id',
-      draft: true,
-      allDrafts: true,
+      recordVisibility: RecordVisibility.allDrafts,
       floatingButtons: [{ show: true }],
     };
 
-    component.onLayoutChange({ draft: false, allDrafts: false });
+    component.onLayoutChange({ recordVisibility: RecordVisibility.submitted });
 
     expect(component.isDraftLayout).toBe(false);
-    expect(component.gridSettings.draft).toBe(false);
-    expect(component.gridSettings.allDrafts).toBe(false);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.submitted
+    );
     expect(component.gridActions).toHaveLength(1);
 
-    component.onLayoutChange({ draft: true, allDrafts: true });
+    component.onLayoutChange({ recordVisibility: RecordVisibility.allDrafts });
 
     expect(component.isDraftLayout).toBe(true);
-    expect(component.gridSettings.draft).toBe(true);
-    expect(component.gridSettings.allDrafts).toBe(true);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.allDrafts
+    );
     expect(component.gridActions).toEqual([]);
+
+    component.onLayoutChange({});
+
+    expect(component.isDraftLayout).toBe(false);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.submitted
+    );
   });
 
   it('should disable actions until the first configured layout is loaded', () => {
