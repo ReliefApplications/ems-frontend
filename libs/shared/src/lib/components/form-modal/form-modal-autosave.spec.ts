@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { of } from 'rxjs';
 import { SurveyModel } from 'survey-core';
-import { AuthService } from '../../services/auth/auth.service';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -73,7 +72,6 @@ describe('FormModalComponent clone auto-save', () => {
       {} as DialogRef<FormModalComponent>,
       apollo,
       { openSnackBar: jest.fn() } as unknown as SnackbarService,
-      {} as AuthService,
       formBuilderService,
       { saveAsDraft } as unknown as FormHelpersService,
       {} as ConfirmService,

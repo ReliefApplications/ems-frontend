@@ -10,6 +10,32 @@ import {
   getUrl,
 } from './grid-data-formatter.helper';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { File } from '../file/file.service';
+
+/**
+ * Display values computed by the formatter for a grid row.
+ * Stored under `rowData._display`, so they never collide with record fields
+ * ( a question named `text`, `style`, `value`... ) and formatting the same row
+ * several times keeps reading the untouched record values.
+ */
+export interface GridRowDisplay {
+  /** Style per field name */
+  style: Record<string, any>;
+  /** Display text per field name ( per file name for file fields ) */
+  text: Record<string, any>;
+  /** Row actions grouped by column label */
+  actions: { label: string; actions: any[] }[];
+  /** Icon class per file name, for file fields */
+  icon: Record<string, string>;
+  /** Displayed files per field name, for file fields ( outdated ones hidden unless configured ) */
+  files: Record<string, File[]>;
+  /** Full URL per field name, for url fields */
+  urlValue: Record<string, URL | null>;
+  /** Raw value per field name, for email & tel fields */
+  value: Record<string, any>;
+  /** Whether the full screen button is displayed, per field name */
+  showFullScreenButton: Record<string, boolean>;
+}
 
 /**
  * Grid data formatter service
@@ -35,6 +61,12 @@ export class GridDataFormatterService {
    */
   private iconObj = {
     icon: {},
+  };
+  /**
+   * Grid files helper object
+   */
+  private filesObj: { files: Record<string, File[]> } = {
+    files: {},
   };
   /**
    * Grid urls helper object
@@ -85,6 +117,9 @@ export class GridDataFormatterService {
     this.iconObj = {
       icon: {},
     };
+    this.filesObj = {
+      files: {},
+    };
     this.urlObj = {
       urlValue: {},
     };
@@ -116,15 +151,22 @@ export class GridDataFormatterService {
           actions,
         })
       ) || [];
-    // General properties
-    Object.assign(rowData, this.styleObj);
-    Object.assign(rowData, this.textObj);
-    Object.assign(rowData, this.actionsObj);
-    // Specific types for each field and meta
-    Object.assign(rowData, this.iconObj);
-    Object.assign(rowData, this.urlObj);
-    Object.assign(rowData, this.valueObj);
-    Object.assign(rowData, this.showFullScreenButtonObj);
+    // Display values live in their own property, so they never overwrite a
+    // record field ( e.g. a question named `text` ) and the record values stay
+    // available when the same row gets formatted again.
+    const display: GridRowDisplay = {
+      // General properties
+      ...this.styleObj,
+      ...this.textObj,
+      ...this.actionsObj,
+      // Specific types for each field and meta
+      ...this.iconObj,
+      ...this.filesObj,
+      ...this.urlObj,
+      ...this.valueObj,
+      ...this.showFullScreenButtonObj,
+    };
+    rowData._display = display;
   }
 
   /**
@@ -174,24 +216,28 @@ export class GridDataFormatterService {
               [field.name]: false,
             });
           } else {
-            // Format files name and icons for each field
-            (get(rowData, field.name) || {}).forEach(
-              (file: { name: string }) => {
-                const text = this.htmlParserService.applyLayoutFormat(
-                  removeFileExtension(file.name),
-                  field
-                );
-                Object.assign(this.textObj.text, {
-                  [field.name]: {
-                    [file.name]: text,
-                  },
-                });
-                const icon = 'k-icon ' + getFileIcon(file.name);
-                Object.assign(this.iconObj.icon, {
-                  [file.name]: icon,
-                });
-              }
+            // Files marked as outdated are hidden, unless the field is
+            // configured to display them
+            const files: File[] = (get(rowData, field.name) || []).filter(
+              (file: File) => field.showOutdatedFiles || !file.outdated
             );
+            Object.assign(this.filesObj.files, { [field.name]: files });
+            // Format files name and icons for each field
+            files.forEach((file: { name: string }) => {
+              const text = this.htmlParserService.applyLayoutFormat(
+                removeFileExtension(file.name),
+                field
+              );
+              Object.assign(this.textObj.text, {
+                [field.name]: {
+                  [file.name]: text,
+                },
+              });
+              const icon = 'k-icon ' + getFileIcon(file.name);
+              Object.assign(this.iconObj.icon, {
+                [file.name]: icon,
+              });
+            });
           }
         }
       });

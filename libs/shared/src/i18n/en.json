@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
@@ -306,6 +307,8 @@
           "noCustomTitle": "Custom template title is required to proceed!",
           "noDistributionList": "Something went wrong during the email sending: no distribution list found",
           "noFields": "DocumentType & InformationConfidentiality is required to proceed!",
+          "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Subject is required to proceed!",
           "noTemplate": "Something went wrong during the email sending: no template found",
           "preview": "Preview of email failed"
@@ -320,7 +323,8 @@
         },
         "fieldselect": {
           "placeholder": "Field Select",
-          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results",
+          "tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
         },
         "footer": {
           "logo": "Footer logo",
@@ -966,6 +970,9 @@
         "noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
         "noResourceFields": "Selected resource doesn't contain any fields",
         "noSelectedFields": "Please select at least 1 field to save this dataset",
+        "scheduler": {
+          "invalid": "Error! Please enter a valid cron value"
+        },
         "selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
         "selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
         "subscribeExists": "Error! {{message}}",
@@ -987,7 +994,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
+          "allSeparate": "All datasets are set to send separate email, so there is no distribution list to configure. To also send the separate emails to a distribution list, enable \"send each separate email to the distribution list\" on a dataset.",
           "and": "and",
           "noEmail": "Selected Dataset does not contain valid email addresses",
           "partOne": "To proceed, please enter",
@@ -1025,7 +1032,10 @@
       "name": "Email",
       "notification": {
         "create": "Create Notification",
+        "language": "Language",
+        "languageDescription": "The language used to render this notification's data (translated fields and choice values).",
         "list": "Notification List",
+        "selectLanguage": "Select a language",
         "type": "Alert Type",
         "validTitle": "Please enter a title"
       },
@@ -1041,6 +1051,17 @@
         "title": "Restrict user subscription"
       },
       "saveAsDraft": "Save as draft",
+      "schedule": {
+        "disable": {
+          "checkbox": "Disable Scheduler",
+          "tooltip": "Click to disable scheduler"
+        },
+        "enable": {
+          "checkbox": "Enable scheduler",
+          "tooltip": "Click to enable scheduler"
+        },
+        "title": "Schedule alerts"
+      },
       "subscribe": {
         "error": {
           "restricted": "Subscription Restricted"
@@ -1126,6 +1147,20 @@
         "select": "Select draft record",
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
+      },
+      "file": {
+        "limitReached": "Maximum number of files reached ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "The attached file is outdated and hidden from this form. Remove it permanently to upload a new one.",
+          "limitReachedHidden": "Maximum number of files reached ({{limit}}), including {{count}} outdated file(s) hidden from this form",
+          "locked": "Remove the current file permanently before selecting a new one",
+          "markAsActive": "Mark as active",
+          "markAsOutdated": "Mark as outdated",
+          "removePermanently": "Remove permanently",
+          "tooltip": "This file is outdated"
+        },
+        "remove": "Remove file",
+        "select": "Select file"
       },
       "layout": {
         "delete": {
@@ -1260,11 +1295,15 @@
         "all": "All fields",
         "select": "Select fields"
       },
+      "fieldRequired": "Select a field for the Field history question",
+      "loadError": "History could not be loaded",
+      "noHistoryYet": "No history yet",
       "preview": "Preview and revert",
       "range": {
         "clear": "Clear range"
       },
       "renderError": "Unable to display this change",
+      "unknownField": "Unknown field",
       "useTableMode": "Use table mode"
     },
     "icon": {
@@ -1381,13 +1420,20 @@
       "fields": {
         "available": "Available fields",
         "column": "Column width (px)",
+        "filterByForm": "Filter by form",
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
-        "title": "Fields"
+        "showOutdatedFiles": {
+          "info": "Only applies to file fields. Files marked as outdated in the form are hidden unless this option is enabled.",
+          "title": "Show outdated files"
+        },
+        "title": "Fields",
+        "transferAllFrom": "Remove all fields",
+        "transferAllTo": "Add all fields"
       },
       "filter": {
         "and": "And",
@@ -1416,9 +1462,11 @@
         "title": "Preview"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Send Separate Email Fields"
       },
       "sort": {
+        "add": "Add sort field",
         "ascending": "Ascending",
         "descending": "Descending",
         "field": "Sort field",
@@ -1458,6 +1506,10 @@
           "date": {
             "useExpression": "Use Expression editor",
             "usePicker": "Use Date picker"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {
@@ -1576,6 +1628,8 @@
           },
           "title": "Automatic assignment"
         },
+        "autoGrantFieldsAccessibility": "Auto-grant view access to new fields",
+        "autoGrantFieldsUpdate": "Auto-grant edit access to new fields",
         "details": {
           "access": {
             "channels": "Channels access",
@@ -1594,6 +1648,7 @@
         "noFilters": "No access filters detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
+        "permissionsUpdated": "Permissions on {{resource}} were successfully updated.",
         "removeFilter": "Remove filter",
         "title": "Summary",
         "users": {
@@ -1604,9 +1659,19 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
+        "allowFieldDeleteFiles": "Allow this role to permanently delete files of the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
+        "allowSelectedFieldsAccessibility": "Allow this role to see the selected fields",
+        "allowSelectedFieldsDeleteFiles": "Allow this role to permanently delete files of the selected file fields",
+        "allowSelectedFieldsUpdate": "Allow this role to update the selected fields",
+        "autoGrantFieldsAccessibility": "Automatically grant view access to fields added to this resource in the future",
+        "autoGrantFieldsUpdate": "Automatically grant edit access to fields added to this resource in the future",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+        "disallowFieldDeleteFiles": "Disallow this role to permanently delete files of the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
+        "disallowSelectedFieldsAccessibility": "Disallow this role to see the selected fields",
+        "disallowSelectedFieldsDeleteFiles": "Disallow this role to permanently delete files of the selected file fields",
+        "disallowSelectedFieldsUpdate": "Disallow this role to update the selected fields",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",
         "grantDownloadRecordsPermission": "Grant permission to download records",
@@ -1649,9 +1714,12 @@
         "label": "Distribution List Name*",
         "noPreviewData": "Selected dataset does not contain any preview data",
         "sendseparate": {
-          "list": "Send separate email recipients"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Send separate email recipients",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Send separate email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Subscription list",
         "to": "To"
       }
@@ -2128,6 +2196,7 @@
               "selectAllRecordsActivePage": "Select all records on the active page",
               "selectDisplay": "Select displayed fields",
               "sendMail": "Send mail",
+              "separateEmailRecipientRequired": "Add at least one separate email field containing email values, otherwise the separate emails have no recipients. A distribution list can be added as well, but does not replace the per-row field.",
               "workflow": {
                 "close": "Close workflow",
                 "confirm": "Confirmation message",
@@ -3136,6 +3205,14 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "The following language(s) will no longer be available in this application: {{languages}}. Users currently using them will be switched back to the default language. Do you want to continue?",
+            "title": "Remove additional language(s)"
+          },
+          "info": "Selected languages are shown in the language selector of the front-office. In the back-office, all languages always remain available in the dropdown.",
+          "text": "Additional languages"
+        },
         "emailCreated": "New email notification created",
         "emailDeleted": "Email notification deleted successfully",
         "emailEdited": "Email notification edited successfully",
@@ -3179,6 +3256,7 @@
         "builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
         "custom": "Custom functions",
         "docs": "Open SurveyJS docs",
+        "functionDocs": "Open documentation",
         "noResults": "No functions match your search.",
         "open": "Function reference",
         "searchPlaceholder": "Filter by name or description...",

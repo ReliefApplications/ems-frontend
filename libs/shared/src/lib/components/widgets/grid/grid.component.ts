@@ -73,6 +73,10 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** Data */
   @Input() widget: any;
+  /** Dashboard owning the widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard. */
+  @Input() widgetKey?: string;
 
   /** Permission to create records */
   public canCreateRecords = false;
@@ -566,7 +570,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                           this.widget.settings.actions.navigateToPage
                           ? this.widget.settings.actions.navigateSettings
                           : undefined,
-                        emailQuery
+                        emailQuery,
+                        options.sendSeparateEmail,
+                        options.separateEmailFields
                       );
                       this.status = {
                         error: false,
@@ -806,6 +812,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       return {
         queryName: this.layout?.query.name || '',
         fields: fields || [],
+        resource: this.settings.resource,
         first: selectedIds.length,
         filter: {
           logic: 'and',

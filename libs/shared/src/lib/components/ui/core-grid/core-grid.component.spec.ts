@@ -1,94 +1,33 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
 import { CoreGridComponent } from './core-grid.component';
-import { UntypedFormBuilder } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import {
-  ApolloTestingModule,
-  ApolloTestingController,
-} from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../../../services/query-builder/graphql/queries';
-import { Ability } from '@casl/ability';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { EMPTY } from 'rxjs';
 
 describe('CoreGridComponent', () => {
   let component: CoreGridComponent;
-  let fixture: ComponentFixture<CoreGridComponent>;
-  let controller: ApolloTestingController;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        { provide: DialogRef, useValue: {} },
-        { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        UntypedFormBuilder,
-        QueryBuilderService,
-        TranslateService,
-        {
-          provide: Ability,
-          useValue: { can: jest.fn(), cannot: jest.fn() },
-        },
-      ],
-      declarations: [CoreGridComponent],
-      imports: [
-        HttpClientModule,
-        DialogCdkModule,
-        RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-        ApolloTestingModule,
-      ],
-    })
-      .overrideComponent(CoreGridComponent, { set: { template: '' } })
-      .compileComponents();
-
-    controller = TestBed.inject(ApolloTestingController);
-  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CoreGridComponent);
-    component = fixture.componentInstance;
-    const op = controller.expectOne(GET_QUERY_TYPES);
-
-    op.flush({
-      data: {
-        types: {
-          availableQueries: [],
-          userFields: [],
-        },
-      },
-    });
-  });
-
-  afterEach(() => {
-    controller.verify();
-    fixture.destroy();
+    component = new CoreGridComponent(
+      {},
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {
+        filter$: EMPTY,
+        injectContext: (filter: CompositeFilterDescriptor) => filter,
+      } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never
+    );
   });
 
   it('should create', () => {
@@ -139,7 +78,9 @@ describe('CoreGridComponent', () => {
       .spyOn(component, 'onShowDetails')
       .mockResolvedValue();
     const updateSpy = jest.spyOn(component, 'onUpdate').mockResolvedValue();
-    const resetSpy = jest.spyOn(component, 'resetDefaultLayout');
+    const resetSpy = jest
+      .spyOn(component, 'resetDefaultLayout')
+      .mockImplementation();
 
     component.onAction({ action: 'details', items: [{ id: 'draft-id' }] });
     component.onAction({ action: 'update', item: { id: 'draft-id' } });
@@ -148,5 +89,69 @@ describe('CoreGridComponent', () => {
     expect(detailsSpy).toHaveBeenCalledWith([{ id: 'draft-id' }], undefined);
     expect(updateSpy).not.toHaveBeenCalled();
     expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should load layout filters into the user filter state', () => {
+    const layoutFilter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [{ field: 'status', operator: 'eq', value: 'active' }],
+    };
+    component.defaultLayout = { filter: layoutFilter };
+    component.settings = {};
+
+    component.configureGrid();
+
+    expect(component.filter).toEqual(layoutFilter);
+  });
+
+  it('should reset the user filter state when the layout has no filter', () => {
+    component.filter = {
+      logic: 'and',
+      filters: [{ field: 'name', operator: 'contains', value: 'test' }],
+    };
+    component.defaultLayout = {};
+    component.settings = {};
+
+    component.configureGrid();
+
+    expect(component.filter).toEqual({ logic: 'and', filters: [] });
+  });
+
+  it('should clear layout and user filters, keep query filters, and return to page one', () => {
+    const layoutFilter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [{ field: 'status', operator: 'eq', value: 'active' }],
+    };
+    const queryFilter: CompositeFilterDescriptor = {
+      logic: 'and',
+      filters: [{ field: 'archived', operator: 'eq', value: false }],
+    };
+    const pageChangeSpy = jest
+      .spyOn(component, 'onPageChange')
+      .mockImplementation();
+    component.defaultLayout = { filter: layoutFilter };
+    component.settings = {};
+    component.configureGrid();
+    component.settings = { query: { filter: queryFilter } };
+    component.skip = 20;
+
+    component.onFilterChange({ logic: 'and', filters: [] });
+
+    expect(component.filter).toEqual({ logic: 'and', filters: [] });
+    expect(component.skip).toBe(0);
+    expect(pageChangeSpy).toHaveBeenCalledWith({
+      skip: 0,
+      take: component.pageSize,
+    });
+    expect(component.queryFilter).toEqual({
+      logic: 'and',
+      filters: [
+        {
+          logic: 'and',
+          filters: [{ logic: 'and', filters: [] }, queryFilter],
+        },
+        { logic: 'and', filters: [] },
+      ],
+    });
   });
 });

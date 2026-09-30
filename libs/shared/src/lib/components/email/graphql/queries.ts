@@ -225,6 +225,8 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
             textStyle
             individualEmail
             individualEmailFields
+            individualEmailToDistributionList
+            csFilter
             sendAsAttachment
             pageSize
             navigateToPage
@@ -237,6 +239,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           name
           id
           notificationType
+          language
           createdBy
           isDraft
           isDeleted
@@ -266,13 +269,18 @@ export const ADD_EMAIL_NOTIFICATION = gql`
         textStyle
         individualEmail
         individualEmailFields
+        individualEmailToDistributionList
+        csFilter
         sendAsAttachment
         pageSize
         navigateToPage
         navigateSettings
       }
       modifiedAt
-      schedule
+      schedule {
+        scheduleEnabled
+        cronValue
+      }
       createdBy
       emailLayout
       id
@@ -280,6 +288,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       lastExecution
       name
       notificationType
+      language
       emailDistributionList
       subscriptionList
       restrictSubscription
@@ -318,6 +327,8 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
         textStyle
         individualEmail
         individualEmailFields
+        individualEmailToDistributionList
+        csFilter
         sendAsAttachment
         pageSize
         navigateToPage
@@ -326,11 +337,15 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       id
       name
       notificationType
+      language
       emailDistributionList
       subscriptionList
       restrictSubscription
       status
-      schedule
+      schedule {
+        scheduleEnabled
+        cronValue
+      }
       modifiedAt
       emailLayout
       lastExecution

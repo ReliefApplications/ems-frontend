@@ -47,8 +47,14 @@ export const ADD_RECORD = gql`
     $data: JSON!
     $display: Boolean
     $draft: Boolean
+    $cloneRecordId: ID
   ) {
-    addRecord(form: $form, data: $data, draft: $draft) {
+    addRecord(
+      form: $form
+      data: $data
+      draft: $draft
+      cloneRecordId: $cloneRecordId
+    ) {
       id
       incrementalId
       draft

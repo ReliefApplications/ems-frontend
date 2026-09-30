@@ -20,12 +20,11 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { EDIT_RECORD } from './graphql/mutations';
-import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
+import { EDIT_RECORD } from './graphql/mutations';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
@@ -36,12 +35,44 @@ describe('FormComponent', () => {
   let fixture: ComponentFixture<FormComponent>;
   let formHelpersService: FormHelpersService;
   let mutate: jest.Mock;
+  const createSurvey = jest.fn<
+    SurveyModel,
+    Parameters<FormBuilderService['createSurvey']>
+  >(() => new SurveyModel());
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: {} },
         { provide: DialogRef, useValue: {} },
+        { provide: Apollo, useValue: { mutate: jest.fn() } },
+        { provide: SnackbarService, useValue: { openSnackBar: jest.fn() } },
+        { provide: UILayoutService, useValue: {} },
+        {
+          provide: FormBuilderService,
+          useValue: {
+            createSurvey,
+            addEventsCallBacksToSurvey: jest.fn(),
+          },
+        },
+        {
+          provide: FormHelpersService,
+          useValue: {
+            uploadFiles: jest.fn(),
+            setEmptyQuestions: jest.fn(),
+            createTemporaryRecords: jest.fn(),
+          },
+        },
+        {
+          provide: AutoTranslateService,
+          useValue: {
+            suppressAutoTranslationWhile: (
+              _survey: SurveyModel,
+              callback: () => void
+            ) => callback(),
+          },
+        },
+        { provide: ConfirmService, useValue: {} },
         {
           provide: DIALOG_DATA,
           useValue: {
@@ -53,24 +84,8 @@ describe('FormComponent', () => {
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
-        { provide: Apollo, useValue: { mutate: jest.fn() } },
-        { provide: AuthService, useValue: {} },
-        { provide: FormBuilderService, useValue: {} },
-        {
-          provide: FormHelpersService,
-          useValue: {
-            uploadFiles: jest.fn(),
-            setEmptyQuestions: jest.fn(),
-            createTemporaryRecords: jest.fn(),
-          },
-        },
-        { provide: SnackbarService, useValue: { openSnackBar: jest.fn() } },
-        { provide: UILayoutService, useValue: {} },
-        { provide: AutoTranslateService, useValue: {} },
-        { provide: ConfirmService, useValue: {} },
       ],
       declarations: [FormComponent],
-      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         DialogCdkModule,
         HttpClientModule,
@@ -82,6 +97,7 @@ describe('FormComponent', () => {
           },
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     formHelpersService = TestBed.inject(FormHelpersService);
@@ -89,14 +105,13 @@ describe('FormComponent', () => {
   });
 
   beforeEach(() => {
+    createSurvey.mockClear();
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     component.form = {
       id: 'form-id',
       structure: '{}',
     };
-    component.survey = new SurveyModel({ elements: [] });
-    component.survey.showCompletedPage = false;
   });
 
   afterEach(() => {
@@ -104,10 +119,14 @@ describe('FormComponent', () => {
   });
 
   it('should create', () => {
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
   it('should show the completed page after publishing a restored draft', async () => {
+    component.survey = new SurveyModel({ elements: [] });
+    component.survey.showCompletedPage = false;
     jest.spyOn(formHelpersService, 'uploadFiles').mockResolvedValue();
     jest
       .spyOn(formHelpersService, 'createTemporaryRecords')
@@ -145,5 +164,17 @@ describe('FormComponent', () => {
     expect(component.lastDraftRecord).toBeUndefined();
     expect(component.survey.showCompletedPage).toBe(true);
     expect(component.surveyActive).toBe(false);
+  });
+
+  it('provides an existing unique record to the survey', () => {
+    const uniqueRecord = { id: 'unique-record-id', data: {} };
+    component.form = {
+      structure: '{}',
+      uniqueRecord,
+    };
+
+    fixture.detectChanges();
+
+    expect(createSurvey.mock.lastCall?.[2]).toBe(uniqueRecord);
   });
 });

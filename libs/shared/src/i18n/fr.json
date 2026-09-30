@@ -220,6 +220,7 @@
     "filter": {
       "apply": "Appliquer",
       "clear": "Supprimer le filtre",
+      "clearAll": "Effacer les filtres",
       "empty": "Aucun résultat",
       "few": "Filtres",
       "hide": "Cacher le filtre",
@@ -306,6 +307,8 @@
           "noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
           "noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
           "noFields": "Type de document et informationsLa confidentialité est requise pour continuer !",
+          "noRecipient": "Au moins un destinataire est requis pour continuer !",
+          "noRecipientSeparateEmail": "Au moins un destinataire est requis pour continuer ! Assurez-vous que les champs utilisés pour l'envoi d'e-mails séparés contiennent au moins un champ avec des adresses e-mail valides.",
           "noSubject": "Le sujet doit continuer!",
           "noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
           "preview": "Erreur lors de la génération de l'e-mail"
@@ -320,7 +323,8 @@
         },
         "fieldselect": {
           "placeholder": "Sélection de champ",
-          "tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats"
+          "tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats",
+          "tooltipTwo": "Sélectionnez le champ à insérer; \nLa liste déroulante ne fait que remplir les valeurs séparées d'envoi"
         },
         "footer": {
           "logo": "Pied-de-page Logo",
@@ -966,6 +970,9 @@
         "noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
         "noResourceFields": "La ressource sélectionnée ne contient aucun champ",
         "noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
+        "scheduler": {
+          "invalid": "Erreur! \nVeuillez saisir une valeur cron valide"
+        },
         "selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
         "selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Aller plus loin peut provoquer des erreurs.",
         "subscribeExists": "Erreur! \n{{message}}",
@@ -987,7 +994,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
+          "allSeparate": "Tous les ensembles de données sont configurés pour envoyer un e-mail séparé ; il n'y a donc aucune liste de distribution à configurer. Pour envoyer également les e-mails séparés à une liste de distribution, activez « envoyer chaque e-mail séparé à la liste de distribution » sur un ensemble de données.",
           "and": "et",
           "noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
           "partOne": "Pour continuer, veuillez saisir",
@@ -1025,7 +1032,10 @@
       "name": "Email",
       "notification": {
         "create": "Créer une notification",
+        "language": "Langue",
+        "languageDescription": "La langue utilisée pour afficher les données de cette notification (champs traduits et valeurs de choix).",
         "list": "Liste des notifications",
+        "selectLanguage": "Sélectionner une langue",
         "type": "Type d'alerte",
         "validTitle": "Veuillez saisir un titre"
       },
@@ -1041,6 +1051,17 @@
         "title": "Restreindre l'abonnement des utilisateurs"
       },
       "saveAsDraft": "Enregistrer comme brouillon",
+      "schedule": {
+        "disable": {
+          "checkbox": "Désactiver",
+          "tooltip": "Cliquez pour désactiver le planificateur"
+        },
+        "enable": {
+          "checkbox": "Activer le planificateur",
+          "tooltip": "Cliquez pour activer le planificateur"
+        },
+        "title": "Planifier les alertes"
+      },
       "subscribe": {
         "error": {
           "restricted": "Abonnement restreint"
@@ -1126,6 +1147,20 @@
         "select": "Sélectionner le brouillon",
         "successEdit": "Brouillon modifié avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
+      },
+      "file": {
+        "limitReached": "Nombre maximum de fichiers atteint ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "Le fichier joint est obsolète et masqué dans ce formulaire. Supprimez-le définitivement pour en télécharger un nouveau.",
+          "limitReachedHidden": "Nombre maximum de fichiers atteint ({{limit}}), dont {{count}} fichier(s) obsolète(s) masqué(s) dans ce formulaire",
+          "locked": "Supprimez définitivement le fichier actuel avant d’en sélectionner un nouveau",
+          "markAsActive": "Marquer comme actif",
+          "markAsOutdated": "Marquer comme obsolète",
+          "removePermanently": "Supprimer définitivement",
+          "tooltip": "Ce fichier est obsolète"
+        },
+        "remove": "Supprimer le fichier",
+        "select": "Sélectionner un fichier"
       },
       "layout": {
         "delete": {
@@ -1260,11 +1295,15 @@
         "all": "Tous les champs",
         "select": "Sélectionner les champs"
       },
+      "fieldRequired": "Sélectionnez un champ pour la question Historique du champ",
+      "loadError": "Impossible de charger l'historique",
+      "noHistoryYet": "Aucun historique pour le moment",
       "preview": "Prévisualiser et revenir",
       "range": {
         "clear": "Effacer la plage de données"
       },
       "renderError": "Impossible d'afficher ce changement",
+      "unknownField": "Champ inconnu",
       "useTableMode": "Afficher en table"
     },
     "icon": {
@@ -1384,13 +1423,20 @@
       "fields": {
         "available": "Champs disponibles",
         "column": "Largeur de la colonne (px)",
+        "filterByForm": "Filtrer par formulaire",
         "format": {
           "info": "Laissez vide pour utiliser le mode classique",
           "title": "Mode d'affichage"
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
-        "title": "Champs"
+        "showOutdatedFiles": {
+          "info": "S’applique uniquement aux champs de type fichier. Les fichiers marqués comme obsolètes dans le formulaire sont masqués sauf si cette option est activée.",
+          "title": "Afficher les fichiers obsolètes"
+        },
+        "title": "Champs",
+        "transferAllFrom": "Supprimer tous les champs",
+        "transferAllTo": "Ajouter tous les champs"
       },
       "filter": {
         "and": "Et",
@@ -1419,9 +1465,11 @@
         "title": "Aperçu"
       },
       "sendSeparate": {
+        "csFilter": "Filtre utilisateurs du Common Service",
         "title": "Envoyer des champs de courrier électronique séparés"
       },
       "sort": {
+        "add": "Ajouter un champ de tri",
         "ascending": "Croissant",
         "descending": "Décroissant",
         "field": "Filtrer le champ",
@@ -1461,6 +1509,10 @@
           "date": {
             "useExpression": "Utiliser une expression",
             "usePicker": "Choisir une date"
+          },
+          "select": {
+            "useExpression": "Utiliser une expression",
+            "usePicker": "Choisir une valeur"
           }
         },
         "pagination": {
@@ -1579,6 +1631,8 @@
           },
           "title": "Attribution automatique"
         },
+        "autoGrantFieldsAccessibility": "Accorder automatiquement l'accès en visualisation aux nouveaux champs",
+        "autoGrantFieldsUpdate": "Accorder automatiquement l'accès en modification aux nouveaux champs",
         "details": {
           "access": {
             "channels": "Canaux accessibles",
@@ -1597,6 +1651,7 @@
         "noFilters": "Aucun filtre d'accès détecté",
         "noForms": "Aucun formulaire détecté",
         "noSteps": "Aucune étape détectée",
+        "permissionsUpdated": "Les permissions sur {{resource}} ont été mises à jour avec succès.",
         "removeFilter": "Supprimer le filtre",
         "title": "Résumé",
         "users": {
@@ -1607,9 +1662,19 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+        "allowFieldDeleteFiles": "Autoriser ce rôle à supprimer définitivement les fichiers du champ {{field}}",
         "allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+        "allowSelectedFieldsAccessibility": "Autoriser ce rôle à voir les champs sélectionnés",
+        "allowSelectedFieldsDeleteFiles": "Autoriser ce rôle à supprimer définitivement les fichiers des champs fichier sélectionnés",
+        "allowSelectedFieldsUpdate": "Autoriser ce rôle à mettre à jour les champs sélectionnés",
+        "autoGrantFieldsAccessibility": "Accorder automatiquement l'accès en visualisation aux champs ajoutés à cette ressource à l'avenir",
+        "autoGrantFieldsUpdate": "Accorder automatiquement l'accès en modification aux champs ajoutés à cette ressource à l'avenir",
         "disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+        "disallowFieldDeleteFiles": "Interdire à ce rôle de supprimer définitivement les fichiers du champ {{field}}",
         "disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+        "disallowSelectedFieldsAccessibility": "Interdire ce rôle pour voir les champs sélectionnés",
+        "disallowSelectedFieldsDeleteFiles": "Interdire à ce rôle de supprimer définitivement les fichiers des champs fichier sélectionnés",
+        "disallowSelectedFieldsUpdate": "Interdire ce rôle pour mettre à jour les champs sélectionnés",
         "grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
         "grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
         "grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",
@@ -1652,9 +1717,12 @@
         "label": "Nom de la liste de distribution*",
         "noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
         "sendseparate": {
-          "list": "Envoyer des e-mails à des destinataires distincts"
+          "alsoToDistributionList": "Chacun de ces e-mails est également envoyé à la liste de distribution.",
+          "list": "Envoyer des e-mails à des destinataires distincts",
+          "ownRecipientOnly": "Chacun de ces e-mails est envoyé uniquement à son propre destinataire."
         },
         "separateEmail": "Envoyer un e-mail séparé",
+        "separateEmailToDistributionList": "Envoyer aussi à la liste de distribution",
         "subscriptionList": "Liste d'abonnement",
         "to": "À"
       }
@@ -2131,6 +2199,7 @@
               "selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
               "selectDisplay": "Sélectionner les champs affichés",
               "sendMail": "Envoyer le mail",
+              "separateEmailRecipientRequired": "Ajoutez au moins un champ d'envoi séparé contenant des adresses e-mail, sinon les e-mails séparés n'ont aucun destinataire. Une liste de distribution peut également être ajoutée, mais ne remplace pas le champ par ligne.",
               "workflow": {
                 "close": "Fermer le workflow",
                 "confirm": "Message de confirmation",
@@ -3139,6 +3208,14 @@
       },
       "settings": {
         "actions": "Actions",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "La ou les langues suivantes ne seront plus disponibles dans cette application : {{languages}}. Les utilisateurs qui les utilisent actuellement basculeront vers la langue par défaut. Voulez-vous continuer ?",
+            "title": "Retirer la ou les langue(s) supplémentaire(s)"
+          },
+          "info": "Les langues sélectionnées sont affichées dans le sélecteur de langue du front-office. Dans le back-office, toutes les langues restent toujours disponibles dans la liste déroulante.",
+          "text": "Langues supplémentaires"
+        },
         "emailCreated": "Nouvelle notification par e-mail créée",
         "emailDeleted": "Notification par e-mail supprimée avec succès",
         "emailEdited": "Notification par e-mail modifiée avec succès.",
@@ -3182,6 +3259,7 @@
         "builtinHint": "Fonctions d'expression standard de SurveyJS. Consultez la documentation officielle pour leur utilisation.",
         "custom": "Fonctions personnalisées",
         "docs": "Ouvrir la doc SurveyJS",
+        "functionDocs": "Ouvrir la documentation",
         "noResults": "Aucune fonction ne correspond à votre recherche.",
         "open": "Référence des fonctions",
         "searchPlaceholder": "Filtrer par nom ou description...",

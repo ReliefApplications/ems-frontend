@@ -39,7 +39,6 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { AuthService } from '../../services/auth/auth.service';
 import {
   ConfirmDialogData,
   ConfirmService,
@@ -47,7 +46,10 @@ import {
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
-import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -55,6 +57,7 @@ import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 
@@ -66,6 +69,7 @@ interface DialogData {
   recordId?: string | [];
   prefillRecords?: Record[];
   prefillData?: any;
+  cloneRecordId?: string;
   askForConfirm?: boolean;
   recordData?: any;
   actionButtonCtx?: boolean;
@@ -174,7 +178,6 @@ export class FormModalComponent
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
@@ -188,7 +191,6 @@ export class FormModalComponent
     public dialogRef: DialogRef<FormModalComponent>,
     private apollo: Apollo,
     protected snackBar: SnackbarService,
-    private authService: AuthService,
     private formBuilderService: FormBuilderService,
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
@@ -397,13 +399,20 @@ export class FormModalComponent
             this.survey.setValue(question, cleanedData[question]);
           });
         }
-        addCustomFunctions(this.authService);
         this.survey.showCompletedPage = false;
+      }
+
+      if (
+        this.isUpdate ||
+        shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+      ) {
         this.form?.fields?.forEach((field) => {
           if (field.readOnly && this.survey.getQuestionByName(field.name))
             this.survey.getQuestionByName(field.name).readOnly = true;
         });
+      }
 
+      if (this.isUpdate) {
         // Fire once now that the existing record's data is in the survey
         fireOnRecordEditionTriggers(this.survey);
       }
@@ -411,6 +420,7 @@ export class FormModalComponent
       // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
       this.updateButtonLabels();
     });
+    captureFieldChangeInitialData(this.survey);
 
     this.valueChanged = false;
     this.autoSaveEnabled = this.canAutoSaveDraft;
@@ -558,6 +568,7 @@ export class FormModalComponent
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
+        fireFieldChangeTriggersForRecordUpdate(this.survey, true);
         this.updateData(this.data.recordId, survey);
       }
     } else if (this.lastDraftRecord) {
@@ -609,6 +620,7 @@ export class FormModalComponent
           variables: {
             form: this.data.template,
             data: survey.data,
+            cloneRecordId: this.data.cloneRecordId,
           },
         })
         .subscribe({

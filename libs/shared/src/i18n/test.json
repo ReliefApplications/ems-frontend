@@ -220,6 +220,7 @@
     "filter": {
       "apply": "******",
       "clear": "******",
+      "clearAll": "******",
       "empty": "******",
       "few": "******",
       "hide": "******",
@@ -306,6 +307,8 @@
           "noCustomTitle": "******",
           "noDistributionList": "******",
           "noFields": "******",
+          "noRecipient": "******",
+          "noRecipientSeparateEmail": "******",
           "noSubject": "******",
           "noTemplate": "******",
           "preview": "******"
@@ -320,7 +323,8 @@
         },
         "fieldselect": {
           "placeholder": "******",
-          "tooltip": "******"
+          "tooltip": "******",
+          "tooltipTwo": "******"
         },
         "footer": {
           "logo": "******",
@@ -966,6 +970,9 @@
         "noResource": "******",
         "noResourceFields": "******",
         "noSelectedFields": "******",
+        "scheduler": {
+          "invalid": "******"
+        },
         "selectChildFields": "******",
         "selectedNonEmailFields": "******",
         "subscribeExists": "****** {{message}}",
@@ -1025,7 +1032,10 @@
       "name": "******",
       "notification": {
         "create": "******",
+        "language": "******",
+        "languageDescription": "******",
         "list": "******",
+        "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"
       },
@@ -1041,6 +1051,17 @@
         "title": "******"
       },
       "saveAsDraft": "******",
+      "schedule": {
+        "disable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "enable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "title": "******"
+      },
       "subscribe": {
         "error": {
           "restricted": "******"
@@ -1126,6 +1147,20 @@
         "select": "******",
         "successEdit": "******",
         "successSave": "******"
+      },
+      "file": {
+        "limitReached": "****** {{limit}} ******",
+        "outdated": {
+          "hiddenSingle": "******",
+          "limitReachedHidden": "****** {{limit}} ****** {{count}} ******",
+          "locked": "******",
+          "markAsActive": "******",
+          "markAsOutdated": "******",
+          "removePermanently": "******",
+          "tooltip": "******"
+        },
+        "remove": "******",
+        "select": "******"
       },
       "layout": {
         "delete": {
@@ -1260,11 +1295,15 @@
         "all": "******",
         "select": "******"
       },
+      "fieldRequired": "******",
+      "loadError": "******",
+      "noHistoryYet": "******",
       "preview": "******",
       "range": {
         "clear": "******"
       },
       "renderError": "******",
+      "unknownField": "******",
       "useTableMode": "******"
     },
     "icon": {
@@ -1381,13 +1420,20 @@
       "fields": {
         "available": "******",
         "column": "******",
+        "filterByForm": "******",
         "format": {
           "info": "******",
           "title": "******"
         },
         "search": "******",
         "selected": "******",
-        "title": "******"
+        "showOutdatedFiles": {
+          "info": "******",
+          "title": "******"
+        },
+        "title": "******",
+        "transferAllFrom": "******",
+        "transferAllTo": "******"
       },
       "filter": {
         "and": "******",
@@ -1416,9 +1462,11 @@
         "title": "******"
       },
       "sendSeparate": {
+        "csFilter": "******",
         "title": "******"
       },
       "sort": {
+        "add": "******",
         "ascending": "******",
         "descending": "******",
         "field": "******",
@@ -1456,6 +1504,10 @@
         "displayField": "******",
         "filter": {
           "date": {
+            "useExpression": "******",
+            "usePicker": "******"
+          },
+          "select": {
             "useExpression": "******",
             "usePicker": "******"
           }
@@ -1576,6 +1628,8 @@
           },
           "title": "******"
         },
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "details": {
           "access": {
             "channels": "******",
@@ -1594,6 +1648,7 @@
         "noFilters": "******",
         "noForms": "******",
         "noSteps": "******",
+        "permissionsUpdated": "****** {{resource}} ******",
         "removeFilter": "******",
         "title": "******",
         "users": {
@@ -1604,9 +1659,19 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
+        "allowFieldDeleteFiles": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
+        "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsDeleteFiles": "******",
+        "allowSelectedFieldsUpdate": "******",
+        "autoGrantFieldsAccessibility": "******",
+        "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
+        "disallowFieldDeleteFiles": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
+        "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsDeleteFiles": "******",
+        "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
         "grantDownloadRecordsPermission": "******",
@@ -1649,9 +1714,12 @@
         "label": "******",
         "noPreviewData": "******",
         "sendseparate": {
-          "list": "******"
+          "alsoToDistributionList": "******",
+          "list": "******",
+          "ownRecipientOnly": "******"
         },
         "separateEmail": "******",
+        "separateEmailToDistributionList": "******",
         "subscriptionList": "******",
         "to": "******"
       }
@@ -2128,6 +2196,7 @@
               "selectAllRecordsActivePage": "******",
               "selectDisplay": "******",
               "sendMail": "******",
+              "separateEmailRecipientRequired": "******",
               "workflow": {
                 "close": "******",
                 "confirm": "******",
@@ -3136,6 +3205,14 @@
       },
       "settings": {
         "actions": "******",
+        "additionalLanguages": {
+          "confirmRemoval": {
+            "message": "****** {{languages}} ******",
+            "title": "******"
+          },
+          "info": "******",
+          "text": "******"
+        },
         "emailCreated": "******",
         "emailDeleted": "******",
         "emailEdited": "******",
@@ -3179,6 +3256,7 @@
         "builtinHint": "******",
         "custom": "******",
         "docs": "******",
+        "functionDocs": "******",
         "noResults": "******",
         "open": "******",
         "searchPlaceholder": "******",

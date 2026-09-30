@@ -30,6 +30,7 @@ export const GET_GRID_RESOURCE_META = gql`
             nameTranslations
             query
             createdAt
+            modifiedAt
             display
             draft
             allDrafts
@@ -61,6 +62,7 @@ export const GET_GRID_FORM_META = gql`
             nameTranslations
             query
             createdAt
+            modifiedAt
             display
             draft
             allDrafts

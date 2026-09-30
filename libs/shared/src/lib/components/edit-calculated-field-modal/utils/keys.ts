@@ -313,6 +313,14 @@ export const CALC_FUNCTIONS_META: CalcFunctionMeta[] = [
     example: "{{calc.displayValue('country')}} = 'France'",
     category: 'misc',
   },
+  {
+    name: 'translate',
+    signature: "translate( 'name' ; 'locale'? )",
+    description:
+      "Returns the translated value of the field with the given name, using its associated translation field for the target locale (the request locale by default, or the given `locale` when provided). Falls back to the field's own value when no translation is configured or available.",
+    example: "{{calc.translate('title')}}",
+    category: 'misc',
+  },
 ];
 
 /**
