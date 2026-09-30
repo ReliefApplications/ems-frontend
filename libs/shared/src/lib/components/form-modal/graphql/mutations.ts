@@ -10,6 +10,8 @@ export const EDIT_RECORD = gql`
     $template: ID
     $display: Boolean
     $lang: String
+    $draft: Boolean
+    $updateDraftStatus: Boolean
   ) {
     editRecord(
       id: $id
@@ -17,9 +19,12 @@ export const EDIT_RECORD = gql`
       version: $version
       template: $template
       lang: $lang
+      draft: $draft
+      updateDraftStatus: $updateDraftStatus
     ) {
       id
       incrementalId
+      draft
       data(display: $display)
       createdAt
       modifiedAt
@@ -41,10 +46,18 @@ export const ADD_RECORD = gql`
     $form: ID!
     $data: JSON!
     $display: Boolean
+    $draft: Boolean
     $cloneRecordId: ID
   ) {
-    addRecord(form: $form, data: $data, cloneRecordId: $cloneRecordId) {
+    addRecord(
+      form: $form
+      data: $data
+      draft: $draft
+      cloneRecordId: $cloneRecordId
+    ) {
       id
+      incrementalId
+      draft
       createdAt
       modifiedAt
       createdBy {

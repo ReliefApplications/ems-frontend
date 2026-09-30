@@ -54,6 +54,7 @@ export * from './lib/models/dashboard.model';
 export * from './lib/models/email-notifications.model';
 export * from './lib/models/form.model';
 export * from './lib/models/layout.model';
+export * from './lib/models/record-visibility.model';
 export * from './lib/models/metadata.model';
 export * from './lib/models/notification.model';
 export * from './lib/models/page.model';

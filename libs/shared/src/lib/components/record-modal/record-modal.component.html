@@ -6,6 +6,7 @@
         <shared-record-summary
           *ngIf="!data.compareTo"
           [record]="record"
+          [canShowHistory]="!record.draft"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
       </div>

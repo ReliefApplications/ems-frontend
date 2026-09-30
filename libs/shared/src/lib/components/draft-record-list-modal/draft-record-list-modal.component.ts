@@ -10,13 +10,14 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import {
   DraftRecordsQueryResponse,
-  DraftRecord,
-} from '../../models/draft-record.model';
+  Record as RecordModel,
+} from '../../models/record.model';
 import {
   TableModule,
   DialogModule,
   ButtonModule,
   TooltipModule,
+  SnackbarService,
 } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { Form, FormQueryResponse } from '../../models/form.model';
@@ -48,7 +49,7 @@ interface DialogData {
 })
 export class DraftRecordListModalComponent implements OnInit {
   /** Array of available draft records */
-  public draftRecords: Array<DraftRecord> = new Array<DraftRecord>();
+  public draftRecords: Array<RecordModel> = new Array<RecordModel>();
   /** Displayed table columns */
   public displayedColumns = ['createdAt', 'actions'];
   /** Displayed skeleton table columns */
@@ -72,6 +73,7 @@ export class DraftRecordListModalComponent implements OnInit {
    * @param dialog CDK Dialog service
    * @param dialogRef Dialog reference
    * @param formHelpersService This is the service that will handle forms.
+   * @param snackBar Shared snackbar service
    * @param data Data passed to the dialog, here the formId of the current form
    */
   constructor(
@@ -81,6 +83,7 @@ export class DraftRecordListModalComponent implements OnInit {
     public dialog: Dialog,
     public dialogRef: DialogRef<DraftRecordListModalComponent>,
     public formHelpersService: FormHelpersService,
+    private snackBar: SnackbarService,
     @Inject(DIALOG_DATA)
     public data: DialogData
   ) {}
@@ -101,10 +104,16 @@ export class DraftRecordListModalComponent implements OnInit {
         },
       })
       .pipe()
-      .subscribe(({ data }) => {
-        this.form = data.form;
-        this.draftRecords = data.draftRecords;
-        this.loading = false;
+      .subscribe({
+        next: ({ data }) => {
+          this.form = data.form;
+          this.draftRecords = data.records;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -113,7 +122,7 @@ export class DraftRecordListModalComponent implements OnInit {
    *
    * @param element draft record selected
    */
-  async onPreview(element: DraftRecord) {
+  async onPreview(element: RecordModel) {
     const { DraftRecordModalComponent } = await import(
       '../draft-record-modal/draft-record-modal.component'
     );
@@ -130,7 +139,7 @@ export class DraftRecordListModalComponent implements OnInit {
    *
    * @param element Draft record to delete
    */
-  onDelete(element: DraftRecord) {
+  onDelete(element: RecordModel) {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant(
         'components.form.draftRecords.confirmModal.delete'
@@ -160,7 +169,7 @@ export class DraftRecordListModalComponent implements OnInit {
    *
    * @param element Draft record to be returned to form component
    */
-  onClose(element: DraftRecord): void {
+  onClose(element: RecordModel): void {
     const confirmDialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant(
         'components.form.draftRecords.confirmModal.load'

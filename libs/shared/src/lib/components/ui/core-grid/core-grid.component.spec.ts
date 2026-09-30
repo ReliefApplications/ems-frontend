@@ -1,6 +1,7 @@
 import { CoreGridComponent } from './core-grid.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { EMPTY } from 'rxjs';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 
 describe('CoreGridComponent', () => {
   let component: CoreGridComponent;
@@ -32,6 +33,163 @@ describe('CoreGridComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should disable every record action while the layout is not loaded', () => {
+    component.settings = {
+      template: 'template-id',
+      actions: {
+        addRecord: true,
+        update: true,
+        delete: true,
+        history: true,
+        convert: true,
+        export: true,
+        import: true,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+        inlineEdition: true,
+      },
+    };
+    component.actionsDisabled = true;
+
+    component.configureGrid();
+
+    expect(component.actions).toEqual(
+      expect.objectContaining({
+        add: false,
+        update: false,
+        delete: false,
+        history: false,
+        convert: false,
+        export: false,
+        import: false,
+        showDetails: true,
+        navigateToPage: false,
+        remove: false,
+      })
+    );
+    expect(component.editable).toBe(false);
+  });
+
+  it('should allow details while the other actions are disabled', () => {
+    component.actionsDisabled = true;
+    const detailsSpy = jest
+      .spyOn(component, 'onShowDetails')
+      .mockResolvedValue();
+    const updateSpy = jest.spyOn(component, 'onUpdate').mockResolvedValue();
+    const resetSpy = jest
+      .spyOn(component, 'resetDefaultLayout')
+      .mockImplementation();
+
+    component.onAction({ action: 'details', items: [{ id: 'draft-id' }] });
+    component.onAction({ action: 'update', item: { id: 'draft-id' } });
+    component.onAction({ action: 'resetLayout' });
+
+    expect(detailsSpy).toHaveBeenCalledWith([{ id: 'draft-id' }], undefined);
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should let drafts be resumed, deleted and exported only', () => {
+    component.settings = {
+      template: 'template-id',
+      recordVisibility: RecordVisibility.ownDrafts,
+      actions: {
+        addRecord: true,
+        update: true,
+        delete: true,
+        history: true,
+        convert: true,
+        export: true,
+        import: true,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+        inlineEdition: true,
+      },
+    };
+
+    component.configureGrid();
+
+    expect(component.isDraftGrid).toBe(true);
+    expect(component.actions).toEqual(
+      expect.objectContaining({
+        add: false,
+        update: true,
+        delete: true,
+        history: false,
+        convert: false,
+        export: true,
+        import: false,
+        showDetails: true,
+        navigateToPage: true,
+        remove: true,
+      })
+    );
+    expect(component.editable).toBe(false);
+  });
+
+  it('should route update and delete of drafts, but not history', () => {
+    component.settings = { recordVisibility: RecordVisibility.allDrafts };
+    const updateSpy = jest.spyOn(component, 'onUpdate').mockResolvedValue();
+    const deleteSpy = jest.spyOn(component, 'onDelete').mockImplementation();
+    const historySpy = jest
+      .spyOn(component, 'onViewHistory')
+      .mockImplementation();
+
+    component.onAction({ action: 'update', item: { id: 'draft-id' } });
+    component.onAction({ action: 'delete', item: { id: 'draft-id' } });
+    component.onAction({ action: 'history', item: { id: 'draft-id' } });
+
+    expect(updateSpy).toHaveBeenCalledWith([{ id: 'draft-id' }]);
+    expect(deleteSpy).toHaveBeenCalledWith([{ id: 'draft-id' }]);
+    expect(historySpy).not.toHaveBeenCalled();
+  });
+
+  it('should export drafts with the draft visibility of the grid', () => {
+    const getRecordsExport = jest.fn();
+    const draftGrid = new CoreGridComponent(
+      {},
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { getRecordsExport } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { name: 'application' } as never,
+      {
+        filter$: EMPTY,
+        injectContext: (filter: CompositeFilterDescriptor) => filter,
+      } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never
+    );
+    draftGrid.settings = {
+      resource: 'resource-id',
+      query: { name: 'allDrafts' },
+      recordVisibility: RecordVisibility.allDrafts,
+    };
+    draftGrid.gridData = { data: [{ id: 'draft-id' }], total: 1 };
+
+    draftGrid.onExport({ records: 'all', format: 'xlsx' });
+
+    expect(getRecordsExport).toHaveBeenCalledWith(
+      '/download/records',
+      expect.any(String),
+      expect.any(String),
+      expect.objectContaining({
+        resource: 'resource-id',
+        recordVisibility: RecordVisibility.allDrafts,
+      })
+    );
   });
 
   it('should load layout filters into the user filter state', () => {

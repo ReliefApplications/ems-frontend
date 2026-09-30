@@ -1123,13 +1123,15 @@
         "confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}}?"
       },
       "deleteRow": {
-        "confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
+        "confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?",
+        "draftConfirmationMessage": "Voulez-vous vraiment supprimer définitivement {{quantity}} {{rowText}} de brouillon ? Cette action est irréversible."
       },
       "display": {
         "submissionMessage": "Le formulaire a été sauvegardé."
       },
       "draftRecords": {
         "buttonLoad": "Charger un brouillon",
+        "cloneNotice": "Vous dupliquez un brouillon. L'enregistrement créera un nouvel enregistrement finalisé ; le brouillon d'origine restera inchangé. Utilisez Enregistrer comme brouillon pour créer un autre brouillon.",
         "confirmModal": {
           "confirmDelete": "Voulez-vous vraiment supprimer ce brouillon ?",
           "confirmLoad": "Voulez-vous vraiment charger ce brouillon ?",
@@ -2223,6 +2225,13 @@
               "publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
             }
           },
+          "drafts": {
+            "allDrafts": "Brouillons de tous les utilisateurs",
+            "ownDrafts": "Mes brouillons",
+            "submitted": "Enregistrements soumis",
+            "visibility": "Enregistrements à afficher",
+            "visibilityTooltip": "Choisir si la grille affiche les enregistrements soumis, vos propres brouillons ou les brouillons de tous les utilisateurs"
+          },
           "hint": {
             "actions": {
               "add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
@@ -2260,6 +2269,7 @@
           },
           "warnings": {
             "add": "Veuillez sélectionner un modèle",
+            "drafts": "Attention : au moins une vue sélectionnée affiche des brouillons. Certaines fonctionnalités peuvent être désactivées pour celle-ci.",
             "general": "Attention: les actions contiennent des erreurs"
           }
         },
