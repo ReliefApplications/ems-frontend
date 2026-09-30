@@ -81,8 +81,10 @@
       [disabled]="disableSaveAsDraft || saving"
       (click)="saveAsDraft()"
       >{{
-      'components.form.draftRecords.save' | translate
-    }}</ui-button>
+        saveAsDraftButtonLabel ||
+          ('components.form.draftRecords.save' | translate)
+      }}</ui-button
+    >
     <ui-button
       category="secondary"
       variant="primary"

@@ -98,6 +98,8 @@ export class FormComponent
   private valueChanged = false;
   /** Evaluated label for the save button (from form expression or default translation) */
   public saveButtonLabel = '';
+  /** Save as draft button label, evaluated from the survey settings */
+  public saveAsDraftButtonLabel = '';
 
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
@@ -261,6 +263,7 @@ export class FormComponent
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
     this.saveButtonLabel = labels.saveButtonLabel;
+    this.saveAsDraftButtonLabel = labels.saveAsDraftButtonLabel;
   }
 
   /**

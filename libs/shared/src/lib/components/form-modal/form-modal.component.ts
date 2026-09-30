@@ -141,6 +141,8 @@ export class FormModalComponent
   protected isMultiEdition = false;
   /** Evaluated label for the modal save button */
   public saveButtonLabel = '';
+  /** Save as draft button label, evaluated from the survey settings */
+  public saveAsDraftButtonLabel = '';
   /** Temporary storage of files */
   protected temporaryFilesStorage: any = {};
   /** Stored cloned data */
@@ -433,6 +435,7 @@ export class FormModalComponent
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
     this.saveButtonLabel = labels.modalSaveButtonLabel;
+    this.saveAsDraftButtonLabel = labels.modalSaveAsDraftButtonLabel;
   }
 
   /**
