@@ -38,6 +38,7 @@ import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
@@ -101,9 +102,17 @@ export class FormComponent
   /** Save as draft button label, evaluated from the survey settings */
   public saveAsDraftButtonLabel = '';
 
+  /** @returns True when drafts can be used: they always belong to a logged user. */
+  public get canUseDrafts(): boolean {
+    return !!this.authService.userValue;
+  }
+
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
-    return (!this.record && !this.form.uniqueRecord) || !!this.lastDraftRecord;
+    return (
+      this.canUseDrafts &&
+      ((!this.record && !this.form.uniqueRecord) || !!this.lastDraftRecord)
+    );
   }
 
   /** Timeout for reset survey */
@@ -129,6 +138,7 @@ export class FormComponent
    * @param translate This is the service used to translate text
    * @param autoTranslateService Auto-translate text using Azure Translator
    * @param confirmService This is the service that displays confirmation modals.
+   * @param authService Shared authentication service
    */
   constructor(
     public dialog: Dialog,
@@ -139,7 +149,8 @@ export class FormComponent
     public formHelpersService: FormHelpersService,
     private translate: TranslateService,
     private autoTranslateService: AutoTranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private authService: AuthService
   ) {
     super();
   }

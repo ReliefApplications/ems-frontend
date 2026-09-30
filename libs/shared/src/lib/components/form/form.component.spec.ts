@@ -24,6 +24,7 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { SurveyModel } from 'survey-core';
@@ -35,6 +36,9 @@ describe('FormComponent', () => {
   let fixture: ComponentFixture<FormComponent>;
   let formHelpersService: FormHelpersService;
   let mutate: jest.Mock;
+  /** Authentication service mock, anonymous when userValue is null */
+  const authService: { userValue: unknown } = { userValue: null };
+
   const createSurvey = jest.fn<
     SurveyModel,
     Parameters<FormBuilderService['createSurvey']>
@@ -73,6 +77,7 @@ describe('FormComponent', () => {
           },
         },
         { provide: ConfirmService, useValue: {} },
+        { provide: AuthService, useValue: authService },
         {
           provide: DIALOG_DATA,
           useValue: {
@@ -106,6 +111,7 @@ describe('FormComponent', () => {
 
   beforeEach(() => {
     createSurvey.mockClear();
+    authService.userValue = { id: 'user-id' };
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     component.form = {
@@ -122,6 +128,22 @@ describe('FormComponent', () => {
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
+  });
+
+  it('should offer drafts to logged users on a new record', () => {
+    expect(component.canUseDrafts).toBe(true);
+    expect(component.showSaveAsDraft).toBe(true);
+  });
+
+  it('should hide drafts from anonymous users', () => {
+    authService.userValue = null;
+
+    expect(component.canUseDrafts).toBe(false);
+    expect(component.showSaveAsDraft).toBe(false);
+
+    // Even a previously loaded draft id must not show the button
+    component.onLoadDraftRecord('draft-id');
+    expect(component.showSaveAsDraft).toBe(false);
   });
 
   it('should show the completed page after publishing a restored draft', async () => {

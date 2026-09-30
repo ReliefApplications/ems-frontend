@@ -6,6 +6,7 @@
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
   <shared-draft-record
+    *ngIf="canUseDrafts"
     [survey]="survey"
     [formId]="form.id ?? ''"
     [beforeOpenDrafts]="beforeOpenDrafts"
