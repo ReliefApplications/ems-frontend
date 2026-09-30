@@ -2266,6 +2266,7 @@
           },
           "warnings": {
             "add": "Please select a template",
+            "drafts": "Warning: at least one selected layout displays draft records. Some features may be disabled for it.",
             "general": "Warning: actions contain errors"
           }
         },

@@ -4,6 +4,7 @@ import { TabActionsComponent } from './tab-actions.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  AlertModule,
   FormWrapperModule,
   IconModule,
   ToggleModule,
@@ -20,6 +21,7 @@ import { LocalizedInputComponent } from '../../../controls/public-api';
   declarations: [TabActionsComponent],
   imports: [
     CommonModule,
+    AlertModule,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,

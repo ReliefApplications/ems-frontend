@@ -49,6 +49,18 @@
         "
         uiTooltipPosition="right"
       ></ui-icon>
+      <!-- Icon with warning when a layout displays draft records -->
+      <ui-icon
+        *ngIf="hasDraftLayouts && !widgetFormGroup.get('actions')?.invalid"
+        class="ml-1 cursor-help self-center"
+        variant="warning"
+        icon="warning"
+        [size]="18"
+        [uiTooltip]="
+          'components.widget.settings.grid.warnings.drafts' | translate
+        "
+        uiTooltipPosition="right"
+      ></ui-icon>
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-actions

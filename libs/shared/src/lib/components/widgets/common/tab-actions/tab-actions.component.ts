@@ -4,6 +4,7 @@ import { ApplicationService } from '../../../../services/application/application
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { Layout } from '../../../../models/layout.model';
+import { isDraftVisibility } from '../../../../models/record-visibility.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { Dialog } from '@angular/cdk/dialog';
@@ -27,6 +28,14 @@ export class TabActionsComponent
   @Input() fields: any[] = [];
   /** Layouts currently used by the widget */
   @Input() layouts: Layout[] = [];
+
+  /** @returns True when at least one layout of the widget displays draft records. */
+  get hasDraftLayouts(): boolean {
+    return this.layouts.some((layout) =>
+      isDraftVisibility(layout.recordVisibility)
+    );
+  }
+
   /** Show select page id and checkbox for record id */
   public showSelectPage = false;
   /** Number of fields currently marked as read-only for inline edition */

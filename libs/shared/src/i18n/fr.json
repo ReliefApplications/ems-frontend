@@ -2269,6 +2269,7 @@
           },
           "warnings": {
             "add": "Veuillez sélectionner un modèle",
+            "drafts": "Attention : au moins une vue sélectionnée affiche des brouillons. Certaines fonctionnalités peuvent être désactivées pour celle-ci.",
             "general": "Attention: les actions contiennent des erreurs"
           }
         },
