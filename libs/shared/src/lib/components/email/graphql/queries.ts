@@ -239,6 +239,9 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           name
           id
           notificationType
+          schedule {
+            scheduleEnabled
+          }
           status
           language
           createdBy

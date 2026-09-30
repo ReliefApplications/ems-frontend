@@ -15,6 +15,12 @@ export const EMAIL_NOTIFICATION_STATUSES = [
 export type EmailNotificationStatus =
   (typeof EMAIL_NOTIFICATION_STATUSES)[number];
 
+/** Email notification scheduling configuration. */
+export interface EmailNotificationSchedule {
+  scheduleEnabled?: boolean | null;
+  cronValue?: string | null;
+}
+
 /**
  * Email notification item
  */
@@ -28,6 +34,7 @@ export interface EmailNotification {
   name: string;
   id: string;
   notificationType: EmailNotificationTypes;
+  schedule?: EmailNotificationSchedule | null;
   status: EmailNotificationStatus;
   /** ISO language code the notification renders its data in (e.g. 'en', 'uk'). */
   language?: string;

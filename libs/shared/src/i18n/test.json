@@ -1034,10 +1034,13 @@
       "notification": {
         "configuredBy": "******",
         "create": "******",
+        "delivery": "******",
         "language": "******",
         "languageDescription": "******",
         "lastExecution": "******",
         "list": "******",
+        "manual": "******",
+        "scheduled": "******",
         "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"

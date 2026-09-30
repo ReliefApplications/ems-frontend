@@ -68,6 +68,7 @@ export default {
     '<rootDir>/src/lib/components/email/steps/preview/*.spec.ts',
     '<rootDir>/src/lib/components/email/steps/select-distribution/*.spec.ts',
     '<rootDir>/src/lib/components/email/components/dataset-filter/*.spec.ts',
+    '<rootDir>/src/lib/components/email/components/email-delivery/*.spec.ts',
     '<rootDir>/src/lib/components/email/components/ems-template/*.spec.ts',
     '<rootDir>/src/lib/components/filter/filter-row/*.spec.ts',
     '<rootDir>/src/lib/components/templates/components/preview-template-modal/*.spec.ts',

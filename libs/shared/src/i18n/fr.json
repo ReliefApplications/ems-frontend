@@ -1034,10 +1034,13 @@
       "notification": {
         "configuredBy": "Configuré par",
         "create": "Créer une notification",
+        "delivery": "Mode d'envoi",
         "language": "Langue",
         "languageDescription": "La langue utilisée pour afficher les données de cette notification (champs traduits et valeurs de choix).",
         "lastExecution": "Dernière exécution (UTC)",
         "list": "Liste des notifications",
+        "manual": "Manuel",
+        "scheduled": "Planifié",
         "selectLanguage": "Sélectionner une langue",
         "type": "Type d'alerte",
         "validTitle": "Veuillez saisir un titre"

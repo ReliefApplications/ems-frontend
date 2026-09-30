@@ -1034,10 +1034,13 @@
       "notification": {
         "configuredBy": "Configured by",
         "create": "Create Notification",
+        "delivery": "Delivery",
         "language": "Language",
         "languageDescription": "The language used to render this notification's data (translated fields and choice values).",
         "lastExecution": "Last execution (UTC)",
         "list": "Notification List",
+        "manual": "Manual",
+        "scheduled": "Scheduled",
         "selectLanguage": "Select a language",
         "type": "Alert Type",
         "validTitle": "Please enter a title"
