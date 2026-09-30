@@ -148,6 +148,50 @@ describe('CoreGridComponent', () => {
     expect(historySpy).not.toHaveBeenCalled();
   });
 
+  it('should export drafts with the draft visibility of the grid', () => {
+    const getRecordsExport = jest.fn();
+    const draftGrid = new CoreGridComponent(
+      {},
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { getRecordsExport } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      { name: 'application' } as never,
+      {
+        filter$: EMPTY,
+        injectContext: (filter: CompositeFilterDescriptor) => filter,
+      } as never,
+      {} as never,
+      {} as never,
+      {} as never,
+      {} as never
+    );
+    draftGrid.settings = {
+      resource: 'resource-id',
+      query: { name: 'allDrafts' },
+      recordVisibility: RecordVisibility.allDrafts,
+    };
+    draftGrid.gridData = { data: [{ id: 'draft-id' }], total: 1 };
+
+    draftGrid.onExport({ records: 'all', format: 'xlsx' });
+
+    expect(getRecordsExport).toHaveBeenCalledWith(
+      '/download/records',
+      expect.any(String),
+      expect.any(String),
+      expect.objectContaining({
+        resource: 'resource-id',
+        recordVisibility: RecordVisibility.allDrafts,
+      })
+    );
+  });
+
   it('should load layout filters into the user filter state', () => {
     const layoutFilter: CompositeFilterDescriptor = {
       logic: 'and',

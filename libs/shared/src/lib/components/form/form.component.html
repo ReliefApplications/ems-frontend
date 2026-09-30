@@ -3,6 +3,7 @@
   <shared-record-summary
     *ngIf="record"
     [record]="record"
+    [canShowHistory]="!record.draft && !lastDraftRecord"
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
   <shared-draft-record

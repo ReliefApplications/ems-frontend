@@ -47,6 +47,7 @@ export default {
     '<rootDir>/src/lib/components/form-modal/form-modal-autosave.spec.ts',
     '<rootDir>/src/lib/components/ui/core-grid/core-grid.component.spec.ts',
     '<rootDir>/src/lib/components/widgets/grid/grid.component.spec.ts',
+    '<rootDir>/src/lib/components/record-summary/*.spec.ts',
     '<rootDir>/src/lib/components/record-history/*.spec.ts',
     '<rootDir>/src/lib/components/record-history/record-history-table/*.spec.ts',
     '<rootDir>/src/lib/components/record-history/record-history-cards/*.spec.ts',
