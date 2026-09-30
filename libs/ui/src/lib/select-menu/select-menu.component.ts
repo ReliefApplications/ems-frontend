@@ -62,6 +62,10 @@ export class SelectMenuComponent
   @Input() extraClasses?: string;
   /** Default value to be displayed when no option is selected */
   @Input() placeholder = '';
+  /** Accessible name forwarded to the internal trigger button. */
+  @Input() ariaLabel?: string;
+  /** Id of the element labelling the internal trigger button. */
+  @Input() ariaLabelledby?: string;
 
   /** Emits when the list is opened */
   @Output() opened = new EventEmitter<void>();

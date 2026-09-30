@@ -145,3 +145,16 @@ export const getLanguageName = (lang: string, translate: TranslateService) => {
     return lang;
   }
 };
+
+/**
+ * Get the bilingual label used by language pickers.
+ *
+ * @param lang The code of the language to display
+ * @param translate The translation service providing the active UI language
+ * @returns The language name in the active language and its native name
+ */
+export const getLanguageDisplayLabel = (
+  lang: string,
+  translate: TranslateService
+): string =>
+  `${getLanguageName(lang, translate)} / ${getLanguageNativeName(lang)}`;

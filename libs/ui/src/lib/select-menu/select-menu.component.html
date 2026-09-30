@@ -5,6 +5,8 @@
     extraClasses!
   "
   [disabled]="disabled"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-labelledby]="ariaLabelledby"
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,

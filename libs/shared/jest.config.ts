@@ -61,6 +61,7 @@ export default {
     '<rootDir>/src/lib/utils/filter/*.spec.ts',
     '<rootDir>/src/lib/utils/validators/*.spec.ts',
     '<rootDir>/src/lib/components/email/steps/schedule-alert/*.spec.ts',
+    '<rootDir>/src/lib/components/email/steps/create-notification/*.spec.ts',
     '<rootDir>/src/lib/components/email/steps/layout/*.spec.ts',
     '<rootDir>/src/lib/components/email/email.component.spec.ts',
     '<rootDir>/src/lib/components/email/email.service.spec.ts',

@@ -19,4 +19,15 @@ describe('SelectMenuComponent', () => {
   it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
+
+  it('forwards its accessible label to the trigger button', () => {
+    component.ariaLabelledby = 'language-label';
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement
+        .querySelector('button')
+        .getAttribute('aria-labelledby')
+    ).toBe('language-label');
+  });
 });

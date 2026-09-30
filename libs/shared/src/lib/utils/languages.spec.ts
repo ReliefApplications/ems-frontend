@@ -1,4 +1,10 @@
-import { localeAliases, toI18nLocale, toSurveyLocale } from './languages';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  getLanguageDisplayLabel,
+  localeAliases,
+  toI18nLocale,
+  toSurveyLocale,
+} from './languages';
 
 describe('languages utility', () => {
   describe('toSurveyLocale', () => {
@@ -47,6 +53,19 @@ describe('languages utility', () => {
       expect(localeAliases('')).toEqual([]);
       expect(localeAliases(null)).toEqual([]);
       expect(localeAliases(undefined)).toEqual([]);
+    });
+  });
+
+  describe('getLanguageDisplayLabel', () => {
+    it('combines the language name in the current and target languages', () => {
+      const translate = {
+        currentLang: 'en',
+        defaultLang: 'en',
+      } as TranslateService;
+
+      expect(getLanguageDisplayLabel('fr', translate)).toBe(
+        'French / Français'
+      );
     });
   });
 });

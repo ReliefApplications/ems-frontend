@@ -28,14 +28,26 @@
       </div>
     </div>
     <div class="w-1/3" uiFormFieldDirective [outline]="false">
-      <label htmlFor="notification__language" class="mb-1">
-        {{ 'components.email.notification.language' | translate }}
-      </label>
+      <div class="mb-1 flex items-center gap-1">
+        <label id="notification__language-label">
+          {{ 'components.email.notification.language' | translate }}
+        </label>
+        <button
+          type="button"
+          class="flex cursor-help border-0 bg-transparent p-0"
+          [attr.aria-label]="
+            'components.email.notification.languageDescription' | translate
+          "
+          [uiTooltip]="
+            'components.email.notification.languageDescription' | translate
+          "
+        >
+          <ui-icon icon="help_outline" variant="grey"></ui-icon>
+        </button>
+      </div>
       <ui-select-menu
+        ariaLabelledby="notification__language-label"
         formControlName="language"
-        [uiTooltip]="
-          'components.email.notification.languageDescription' | translate
-        "
         placeholder="{{
           'components.email.notification.selectLanguage' | translate
         }}"
