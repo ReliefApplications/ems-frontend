@@ -14,17 +14,24 @@
           formControlName="name"
         />
       </div>
-      <div class="ml-4 w-1/4">
-        <ui-checkbox
-          uiTooltip="{{
-            'components.email.restrictSubscription.description' | translate
-          }}"
-          formControlName="restrictSubscription"
-        >
+      <div class="ml-4 flex w-1/4 items-center gap-1">
+        <ui-checkbox formControlName="restrictSubscription">
           <ng-container ngProjectAs="label">{{
             'components.email.restrictSubscription.title' | translate
           }}</ng-container>
         </ui-checkbox>
+        <button
+          type="button"
+          class="flex cursor-help border-0 bg-transparent p-0"
+          [attr.aria-label]="
+            'components.email.restrictSubscription.description' | translate
+          "
+          [uiTooltip]="
+            'components.email.restrictSubscription.description' | translate
+          "
+        >
+          <ui-icon icon="help_outline" variant="grey"></ui-icon>
+        </button>
       </div>
     </div>
     <div class="w-1/3" uiFormFieldDirective [outline]="false">

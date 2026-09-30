@@ -1055,6 +1055,7 @@
       },
       "saveAsDraft": "******",
       "schedule": {
+        "description": "******",
         "disable": {
           "checkbox": "******",
           "tooltip": "******"
@@ -1718,6 +1719,7 @@
         "noPreviewData": "******",
         "sendseparate": {
           "alsoToDistributionList": "******",
+          "description": "******",
           "list": "******",
           "ownRecipientOnly": "******"
         },

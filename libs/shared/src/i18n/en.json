@@ -1055,6 +1055,7 @@
       },
       "saveAsDraft": "Save as draft",
       "schedule": {
+        "description": "Automatically sends this notification according to the configured schedule. Times use UTC.",
         "disable": {
           "checkbox": "Disable Scheduler",
           "tooltip": "Click to disable scheduler"
@@ -1717,7 +1718,8 @@
         "label": "Distribution List Name*",
         "noPreviewData": "Selected dataset does not contain any preview data",
         "sendseparate": {
-          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "alsoToDistributionList": "For each dataset record, also sends one email to the configured distribution list.",
+          "description": "For each dataset record, sends a separate email to each recipient resolved from the fields and filters below. The separate dataset block contains only that record.",
           "list": "Send separate email recipients",
           "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },

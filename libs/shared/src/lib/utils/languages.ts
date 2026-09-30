@@ -1,5 +1,14 @@
 import { TranslateService } from '@ngx-translate/core';
-import { startCase } from 'lodash';
+
+/**
+ * Capitalize a display name without stripping its Unicode characters.
+ *
+ * @param name Display name to capitalize
+ * @param locale Locale used for capitalization
+ * @returns Capitalized display name
+ */
+const capitalizeLanguageName = (name: string, locale: string): string =>
+  name ? `${name.charAt(0).toLocaleUpperCase(locale)}${name.slice(1)}` : name;
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Intl {
@@ -90,7 +99,7 @@ export const getLanguageNativeName = (lang: string): string => {
   try {
     // try to get names for the asking language
     const displayName = new Intl.DisplayNames(lang, { type: 'language' });
-    return startCase(displayName.of(lang)) || lang;
+    return capitalizeLanguageName(displayName.of(lang), lang) || lang;
   } catch {
     // if lang argument is not a language code
     return lang;
@@ -139,7 +148,7 @@ export const getLanguageName = (lang: string, translate: TranslateService) => {
     const displayName = new Intl.DisplayNames(displayLang, {
       type: 'language',
     });
-    return startCase(displayName.of(lang)) || lang;
+    return capitalizeLanguageName(displayName.of(lang), displayLang) || lang;
   } catch {
     // if lang argument is not a language code
     return lang;

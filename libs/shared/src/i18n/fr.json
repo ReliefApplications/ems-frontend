@@ -1055,6 +1055,7 @@
       },
       "saveAsDraft": "Enregistrer comme brouillon",
       "schedule": {
+        "description": "Envoie automatiquement cette notification selon la planification configurée. Les heures utilisent UTC.",
         "disable": {
           "checkbox": "Désactiver",
           "tooltip": "Cliquez pour désactiver le planificateur"
@@ -1720,7 +1721,8 @@
         "label": "Nom de la liste de distribution*",
         "noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
         "sendseparate": {
-          "alsoToDistributionList": "Chacun de ces e-mails est également envoyé à la liste de distribution.",
+          "alsoToDistributionList": "Pour chaque enregistrement du jeu de données, envoie également un e-mail à la liste de distribution configurée.",
+          "description": "Pour chaque enregistrement du jeu de données, envoie un e-mail séparé à chaque destinataire identifié à partir des champs et filtres ci-dessous. Le bloc de jeu de données séparé contient uniquement cet enregistrement.",
           "list": "Envoyer des e-mails à des destinataires distincts",
           "ownRecipientOnly": "Chacun de ces e-mails est envoyé uniquement à son propre destinataire."
         },
