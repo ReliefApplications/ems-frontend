@@ -134,6 +134,8 @@ export const addNewField = (field: any, newField?: boolean) => {
         ],
         width: [newField ? null : field.width],
         format: [get(field, 'format', null)],
+        // File fields: display files marked as outdated ( hidden by default )
+        showOutdatedFiles: [get(field, 'showOutdatedFiles', false)],
       });
     }
   }

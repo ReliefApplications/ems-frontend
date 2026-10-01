@@ -1,3 +1,80 @@
+# [2.24.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.21...v2.24.0-rc.22) (2026-09-30)
+
+### Features
+
+- Enable records to be saved as draft ([#2821](https://github.com/ReliefApplications/ems-frontend/issues/2821)) ([e1874a0](https://github.com/ReliefApplications/ems-frontend/commit/e1874a005a01ad6aa1b2944792c4680162535b67))
+
+# [2.24.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.20...v2.24.0-rc.21) (2026-09-29)
+
+### Features
+
+- Enable emails sent from grid actions to send separate emails based on field values ([#2918](https://github.com/ReliefApplications/ems-frontend/issues/2918)) ([5da5b77](https://github.com/ReliefApplications/ems-frontend/commit/5da5b77dd91d035781e7e49b3a569aaa900aa3eb))
+- Enable use of groups in CS user filtering for emails ([#2920](https://github.com/ReliefApplications/ems-frontend/issues/2920)) ([75d181a](https://github.com/ReliefApplications/ems-frontend/commit/75d181ac890dd9861fd23d324461f683a234bd41))
+- Now possible to bind email datasets with CS user filter to send one email per user ([#2919](https://github.com/ReliefApplications/ems-frontend/issues/2919)) ([5544818](https://github.com/ReliefApplications/ems-frontend/commit/5544818c3231ac9c2445b52fddce37c67413ab21))
+- Now possible to insert per record fields into email template ([#2917](https://github.com/ReliefApplications/ems-frontend/issues/2917)) ([416aca3](https://github.com/ReliefApplications/ems-frontend/commit/416aca3d3c0ddb6ed8a73d6ccb4c2e008b0c8080))
+- Now possible to schedule emails ([#2916](https://github.com/ReliefApplications/ems-frontend/issues/2916)) ([b5eebf1](https://github.com/ReliefApplications/ems-frontend/commit/b5eebf1980d3980711f8a0c1478a13e06ad7c509))
+- Now possible to select language email notifications will be sent with ([#2921](https://github.com/ReliefApplications/ems-frontend/issues/2921)) ([53882b9](https://github.com/ReliefApplications/ems-frontend/commit/53882b9072486576a143c9cd1eee575758cfcb61))
+
+# [2.24.0-rc.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.19...v2.24.0-rc.20) (2026-09-24)
+
+### Features
+
+- Allow outdated files ([#2945](https://github.com/ReliefApplications/ems-frontend/issues/2945)) ([aeb0360](https://github.com/ReliefApplications/ems-frontend/commit/aeb0360dc7bcc743a2e9a9855e1632df35d8dd0d)), closes [AB#134566](https://github.com/AB/issues/134566)
+
+# [2.24.0-rc.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.18...v2.24.0-rc.19) (2026-09-22)
+
+### Bug Fixes
+
+- addRecordToSurveyContext not detecting correct new values ([b77dce6](https://github.com/ReliefApplications/ems-frontend/commit/b77dce661d8d9d94f8bde1eca2b7f2bed251b08e))
+
+# [2.24.0-rc.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.17...v2.24.0-rc.18) (2026-09-21)
+
+### Features
+
+- Enable calculated fields to translate fields that support translations ([#2943](https://github.com/ReliefApplications/ems-frontend/issues/2943)) ([4e1ef12](https://github.com/ReliefApplications/ems-frontend/commit/4e1ef1283bfc4330ca4022405d8f0db579ddaa5a)), closes [AB#138076](https://github.com/AB/issues/138076)
+
+# [2.24.0-rc.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.16...v2.24.0-rc.17) (2026-09-21)
+
+### Features
+
+- Improve resource question, adding option to use calculated fields ([#2944](https://github.com/ReliefApplications/ems-frontend/issues/2944)) ([295e0d2](https://github.com/ReliefApplications/ems-frontend/commit/295e0d20c36f12aafdba7096bbb7e69f05bda9a5)), closes [AB#133920](https://github.com/AB/issues/133920)
+
+# [2.24.0-rc.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.15...v2.24.0-rc.16) (2026-09-18)
+
+### Features
+
+- View the history of changes to a specific field in forms ([#2942](https://github.com/ReliefApplications/ems-frontend/issues/2942)) ([f5433c9](https://github.com/ReliefApplications/ems-frontend/commit/f5433c9dd72ca04292e0d5c1dd127873de65a040)), closes [AB#137751](https://github.com/AB/issues/137751)
+
+# [2.24.0-rc.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.14...v2.24.0-rc.15) (2026-09-18)
+
+### Bug Fixes
+
+- Cloned records now copy history from original record ([#2941](https://github.com/ReliefApplications/ems-frontend/issues/2941)) ([10a1899](https://github.com/ReliefApplications/ems-frontend/commit/10a18992988246e95bb17aa8e90553398b5f895e)), closes [AB#134832](https://github.com/AB/issues/134832)
+
+# [2.24.0-rc.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.13...v2.24.0-rc.14) (2026-09-17)
+
+### Bug Fixes
+
+- In Safari, tagbox & dropdowns would not show option text ([#2932](https://github.com/ReliefApplications/ems-frontend/issues/2932)) ([bc84c8a](https://github.com/ReliefApplications/ems-frontend/commit/bc84c8af65c6e805bc9f3945209d207a6b295ef4)), closes [AB#137621](https://github.com/AB/issues/137621)
+
+# [2.24.0-rc.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.12...v2.24.0-rc.13) (2026-09-16)
+
+### Features
+
+- Add flexible date formatter in forms ([#2900](https://github.com/ReliefApplications/ems-frontend/issues/2900)) ([84607d5](https://github.com/ReliefApplications/ems-frontend/commit/84607d51062b55cf4d2f17c82e72eeb770ad1396)), closes [AB#134845](https://github.com/AB/issues/134845)
+
+# [2.24.0-rc.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.11...v2.24.0-rc.12) (2026-09-16)
+
+### Features
+
+- Button to remove all filters ([#2939](https://github.com/ReliefApplications/ems-frontend/issues/2939)) ([a1c2fbd](https://github.com/ReliefApplications/ems-frontend/commit/a1c2fbdfa723bce45825cfdd595ed5a555185043)), closes [AB#137748](https://github.com/AB/issues/137748)
+
+# [2.24.0-rc.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.10...v2.24.0-rc.11) (2026-09-15)
+
+### Features
+
+- Automatically save grid configuration in browser ([#2938](https://github.com/ReliefApplications/ems-frontend/issues/2938)) ([459f38d](https://github.com/ReliefApplications/ems-frontend/commit/459f38d78a2ddf43cdeec01c6dd2c25ceb59ebe6)), closes [AB#137744](https://github.com/AB/issues/137744)
+
 # [2.24.0-rc.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.9...v2.24.0-rc.10) (2026-09-14)
 
 ### Features

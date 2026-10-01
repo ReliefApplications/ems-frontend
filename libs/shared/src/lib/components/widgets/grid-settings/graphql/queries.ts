@@ -25,6 +25,7 @@ export const GET_GRID_FORM_META = gql`
             createdAt
             query
             display
+            recordVisibility
           }
         }
         pageInfo {
@@ -73,6 +74,7 @@ export const GET_GRID_RESOURCE_META = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         pageInfo {

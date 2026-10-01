@@ -222,6 +222,7 @@
     "filter": {
       "apply": "Apply",
       "clear": "Clear Filter",
+      "clearAll": "Clear filters",
       "empty": "No result",
       "few": "Filters",
       "hide": "Hide Filter",
@@ -309,6 +310,8 @@
           "noCustomTitle": "Custom template title is required to proceed!",
           "noDistributionList": "Something went wrong during the email sending: no distribution list found",
           "noFields": "DocumentType & InformationConfidentiality is required to proceed!",
+          "noRecipient": "At least one recipient is required to proceed!",
+          "noRecipientSeparateEmail": "At least one recipient is required to proceed! Ensure the Send Separate Email Fields used contain at least one field with valid emails.",
           "noSubject": "Subject is required to proceed!",
           "noTemplate": "Something went wrong during the email sending: no template found",
           "preview": "Preview of email failed"
@@ -323,7 +326,8 @@
         },
         "fieldselect": {
           "placeholder": "Field Select",
-          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+          "tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results",
+          "tooltipTwo": "Select field to insert; dropdown only populates with send separate values"
         },
         "footer": {
           "logo": "Footer logo",
@@ -974,6 +978,9 @@
         "noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
         "noResourceFields": "Selected resource doesn't contain any fields",
         "noSelectedFields": "Please select at least 1 field to save this dataset",
+        "scheduler": {
+          "invalid": "Error! Please enter a valid cron value"
+        },
         "selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
         "selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
         "subscribeExists": "Error! {{message}}",
@@ -995,7 +1002,7 @@
       },
       "distributionList": {
         "alert": {
-          "allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
+          "allSeparate": "All datasets are set to send separate email, so there is no distribution list to configure. To also send the separate emails to a distribution list, enable \"send each separate email to the distribution list\" on a dataset.",
           "and": "and",
           "noEmail": "Selected Dataset does not contain valid email addresses",
           "partOne": "To proceed, please enter",
@@ -1033,7 +1040,10 @@
       "name": "Email",
       "notification": {
         "create": "Create Notification",
+        "language": "Language",
+        "languageDescription": "The language used to render this notification's data (translated fields and choice values).",
         "list": "Notification List",
+        "selectLanguage": "Select a language",
         "type": "Alert Type",
         "validTitle": "Please enter a title"
       },
@@ -1049,6 +1059,17 @@
         "title": "Restrict user subscription"
       },
       "saveAsDraft": "Save as draft",
+      "schedule": {
+        "disable": {
+          "checkbox": "Disable Scheduler",
+          "tooltip": "Click to disable scheduler"
+        },
+        "enable": {
+          "checkbox": "Enable scheduler",
+          "tooltip": "Click to enable scheduler"
+        },
+        "title": "Schedule alerts"
+      },
       "subscribe": {
         "error": {
           "restricted": "Subscription Restricted"
@@ -1110,13 +1131,15 @@
         "confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
       },
       "deleteRow": {
-        "confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+        "confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?",
+        "draftConfirmationMessage": "Do you confirm the permanent deletion of {{quantity}} draft {{rowText}}? This cannot be undone."
       },
       "display": {
         "submissionMessage": "The form has successfully been submitted."
       },
       "draftRecords": {
         "buttonLoad": "Load draft record",
+        "cloneNotice": "You are duplicating a draft. Saving will create a new completed record; the original draft will remain unchanged. Use Save as draft to create a separate draft instead.",
         "confirmModal": {
           "confirmDelete": "Do you really want to delete this draft record?",
           "confirmLoad": "Do you really want to load this draft record?",
@@ -1133,6 +1156,20 @@
         "select": "Select draft record",
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
+      },
+      "file": {
+        "limitReached": "Maximum number of files reached ({{limit}})",
+        "outdated": {
+          "hiddenSingle": "The attached file is outdated and hidden from this form. Remove it permanently to upload a new one.",
+          "limitReachedHidden": "Maximum number of files reached ({{limit}}), including {{count}} outdated file(s) hidden from this form",
+          "locked": "Remove the current file permanently before selecting a new one",
+          "markAsActive": "Mark as active",
+          "markAsOutdated": "Mark as outdated",
+          "removePermanently": "Remove permanently",
+          "tooltip": "This file is outdated"
+        },
+        "remove": "Remove file",
+        "select": "Select file"
       },
       "layout": {
         "delete": {
@@ -1267,11 +1304,15 @@
         "all": "All fields",
         "select": "Select fields"
       },
+      "fieldRequired": "Select a field for the Field history question",
+      "loadError": "History could not be loaded",
+      "noHistoryYet": "No history yet",
       "preview": "Preview and revert",
       "range": {
         "clear": "Clear range"
       },
       "renderError": "Unable to display this change",
+      "unknownField": "Unknown field",
       "useTableMode": "Use table mode"
     },
     "icon": {
@@ -1395,6 +1436,10 @@
         },
         "search": "Search fields...",
         "selected": "Selected fields",
+        "showOutdatedFiles": {
+          "info": "Only applies to file fields. Files marked as outdated in the form are hidden unless this option is enabled.",
+          "title": "Show outdated files"
+        },
         "title": "Fields",
         "transferAllFrom": "Remove all fields",
         "transferAllTo": "Add all fields"
@@ -1426,6 +1471,7 @@
         "title": "Preview"
       },
       "sendSeparate": {
+        "csFilter": "Common Service Users Filter",
         "title": "Send Separate Email Fields"
       },
       "sort": {
@@ -1469,6 +1515,10 @@
           "date": {
             "useExpression": "Use Expression editor",
             "usePicker": "Use Date picker"
+          },
+          "select": {
+            "useExpression": "Use Expression editor",
+            "usePicker": "Use Value picker"
           }
         },
         "pagination": {
@@ -1618,14 +1668,18 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "Allow this role to see the field {{field}}",
+        "allowFieldDeleteFiles": "Allow this role to permanently delete files of the field {{field}}",
         "allowFieldUpdate": "Allow this role to update the field {{field}}",
         "allowSelectedFieldsAccessibility": "Allow this role to see the selected fields",
+        "allowSelectedFieldsDeleteFiles": "Allow this role to permanently delete files of the selected file fields",
         "allowSelectedFieldsUpdate": "Allow this role to update the selected fields",
         "autoGrantFieldsAccessibility": "Automatically grant view access to fields added to this resource in the future",
         "autoGrantFieldsUpdate": "Automatically grant edit access to fields added to this resource in the future",
         "disallowFieldAccessibility": "Disallow this role to see the field {{field}}",
+        "disallowFieldDeleteFiles": "Disallow this role to permanently delete files of the field {{field}}",
         "disallowFieldUpdate": "Disallow this role to update the field {{field}}",
         "disallowSelectedFieldsAccessibility": "Disallow this role to see the selected fields",
+        "disallowSelectedFieldsDeleteFiles": "Disallow this role to permanently delete files of the selected file fields",
         "disallowSelectedFieldsUpdate": "Disallow this role to update the selected fields",
         "grantAddRecordsPermission": "Grant permission to add new records",
         "grantDeleteRecordsPermission": "Grant permission to delete records",
@@ -1669,9 +1723,12 @@
         "label": "Distribution List Name*",
         "noPreviewData": "Selected dataset does not contain any preview data",
         "sendseparate": {
-          "list": "Send separate email recipients"
+          "alsoToDistributionList": "Each of these emails is also sent to the distribution list.",
+          "list": "Send separate email recipients",
+          "ownRecipientOnly": "Each of these emails is sent to its own recipient only."
         },
         "separateEmail": "Send separate email",
+        "separateEmailToDistributionList": "Also send to the distribution list",
         "subscriptionList": "Subscription list",
         "to": "To"
       }
@@ -2186,6 +2243,7 @@
               "selectAllRecordsActivePage": "Select all records on the active page",
               "selectDisplay": "Select displayed fields",
               "sendMail": "Send mail",
+              "separateEmailRecipientRequired": "Add at least one separate email field containing email values, otherwise the separate emails have no recipients. A distribution list can be added as well, but does not replace the per-row field.",
               "workflow": {
                 "close": "Close workflow",
                 "confirm": "Confirmation message",
@@ -2209,6 +2267,13 @@
               "notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
               "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
             }
+          },
+          "drafts": {
+            "allDrafts": "All users' draft records",
+            "ownDrafts": "My draft records",
+            "submitted": "Submitted records",
+            "visibility": "Records to display",
+            "visibilityTooltip": "Choose whether the grid shows submitted records, your own draft records, or the draft records of every user"
           },
           "hint": {
             "actions": {
@@ -2247,6 +2312,7 @@
           },
           "warnings": {
             "add": "Please select a template",
+            "drafts": "Warning: at least one selected layout displays draft records. Some features may be disabled for it.",
             "general": "Warning: actions contain errors"
           }
         },
@@ -3239,6 +3305,7 @@
         "builtinHint": "Standard SurveyJS expression functions. See the official documentation for usage.",
         "custom": "Custom functions",
         "docs": "Open SurveyJS docs",
+        "functionDocs": "Open documentation",
         "noResults": "No functions match your search.",
         "open": "Function reference",
         "searchPlaceholder": "Filter by name or description...",

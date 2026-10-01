@@ -9,7 +9,9 @@ import {
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import {
+  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from '../../utils/survey-form-action-labels.util';
 import {
@@ -41,7 +43,10 @@ const ADVANCED_NAVIGATION_LABEL_OVERRIDES_STATE =
 const hasModalActionButtonLabelOverrides = (
   obj?: SurveyPropertyOwner
 ): boolean =>
-  Boolean(obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL));
+  Boolean(
+    obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL) ||
+      obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL)
+  );
 
 /**
  * Whether modal-specific navigation overrides should be visible in the property grid.
@@ -180,6 +185,40 @@ export const init = (environment: any): void => {
     minValue: 2,
   });
 
+  // Let users mark stored files as outdated instead of deleting them
+  serializer.addProperty('file', {
+    name: 'allowOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Allow marking files as outdated',
+    default: false,
+    visibleIndex: 11,
+  });
+  registerCustomPropertyHelp(
+    'allowOutdatedFiles',
+    'When enabled, users can mark stored files as outdated instead of deleting them. Outdated files stay attached to the record, are flagged with a warning icon, and still count toward the maximum number of files. Only roles allowed to delete files on this field can remove them permanently.'
+  );
+  serializer.addProperty('file', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: true,
+    dependsOn: 'allowOutdatedFiles',
+    visibleIf: (obj: any) => !!obj?.allowOutdatedFiles,
+    visibleIndex: 12,
+  });
+  // Same option for HTML questions listing files through {field} placeholders
+  serializer.addProperty('html', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: false,
+    visibleIndex: 10,
+  });
+  registerCustomPropertyHelp(
+    'showOutdatedFiles',
+    'Display files marked as outdated. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
+  );
+
   // Add set value on complete expression to questions
   serializer.addProperty('question', {
     name: 'setValueOnComplete',
@@ -262,6 +301,17 @@ export const init = (environment: any): void => {
     isLocalizable: true,
   });
   serializer.addProperty('survey', {
+    name: SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 101,
+    displayName: 'Save as draft label',
+    default: '',
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
+  });
+  serializer.addProperty('survey', {
     name: `${ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY}:boolean`,
     type: 'boolean',
     category: 'navigation',
@@ -290,6 +340,22 @@ export const init = (environment: any): void => {
   registerCustomPropertyHelp(
     SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
     'Only used when the form is opened in a modal. Falls back to the regular save label if empty.'
+  );
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 104,
+    displayName: 'Modal save as draft label override',
+    default: '',
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
+    visibleIf: shouldShowAdvancedNavigationLabelOverrides,
+  });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
+    'Only used when the form is opened in a modal. Falls back to the regular save as draft label if empty.'
   );
 };
 

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Inject, Input } from '@angular/core';
 import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Layout } from '../../../models/layout.model';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 import {
   createDisplayForm,
   createQueryForm,
@@ -11,7 +12,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { LocalizedInputComponent } from '../../controls/public-api';
 import {
@@ -45,6 +52,9 @@ interface DialogData {
     ButtonModule,
     LocalizedInputComponent,
     TranslateModule,
+    SelectMenuModule,
+    IconModule,
+    TooltipModule,
   ],
   selector: 'shared-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
@@ -67,11 +77,16 @@ export class EditLayoutModalComponent implements AfterViewInit {
     ],
     query: createQueryForm(this.data.layout?.query),
     display: createDisplayForm(this.data.layout?.display),
+    recordVisibility: [
+      this.data.layout?.recordVisibility ?? RecordVisibility.submitted,
+    ],
   });
   /**
    * Templates
    */
   public templates: any[] = [];
+  /** Available record visibility options */
+  public recordVisibilityOptions = Object.values(RecordVisibility);
   /**
    * Layout preview data
    */
@@ -132,6 +147,7 @@ export class EditLayoutModalComponent implements AfterViewInit {
       nameTranslations,
       query: raw.query,
       display: raw.display,
+      recordVisibility: raw.recordVisibility,
     } as any);
   }
 

@@ -1,15 +1,18 @@
 /**
- * Converts days, months, years to minutes.
+ * Converts a time span to minutes.
  *
  * @param value number value
- * @param unit days, months, years
- * @returns days in minutes.
+ * @param unit minutes, hours, days, weeks, months, years
+ * @returns the span in minutes.
  */
 export const convertToMinutes = (value: number, unit: string): number => {
   const currentDate = new Date();
   let minutes;
 
   switch (unit) {
+    case 'minutes':
+      minutes = value;
+      break;
     case 'hours':
       minutes = value * 60;
       break;

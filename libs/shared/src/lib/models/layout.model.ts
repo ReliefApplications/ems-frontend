@@ -1,4 +1,5 @@
 import { LocalizedString } from './localized-string.model';
+import { RecordVisibility } from './record-visibility.model';
 
 /**
  * Interface for Layout objects.
@@ -7,8 +8,10 @@ export interface Layout {
   id?: string;
   name?: string;
   nameTranslations?: LocalizedString;
+  modifiedAt?: string;
   query?: any;
   display?: any;
+  recordVisibility?: RecordVisibility;
 }
 
 /** Model for add layout mutation response */

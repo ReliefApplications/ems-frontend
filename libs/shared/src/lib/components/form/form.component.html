@@ -3,13 +3,16 @@
   <shared-record-summary
     *ngIf="record"
     [record]="record"
+    [canShowHistory]="!record.draft && !lastDraftRecord"
     (showHistory)="onShowHistory()"
   ></shared-record-summary>
-  <!-- <shared-draft-record
+  <shared-draft-record
+    *ngIf="canUseDrafts"
     [survey]="survey"
     [formId]="form.id ?? ''"
+    [beforeOpenDrafts]="beforeOpenDrafts"
     (loadDraft)="onLoadDraftRecord($event)"
-  ></shared-draft-record> -->
+  ></shared-draft-record>
 </div>
 <!-- Form pages -->
 <ui-tabs
@@ -51,9 +54,15 @@
           >{{ 'common.next' | translate }}</ui-button
         >
       </ng-container>
-      <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
-        'components.form.draftRecords.save' | translate
-      }}</ui-button> -->
+      <ui-button
+        *ngIf="showSaveAsDraft"
+        [disabled]="disableSaveAsDraft"
+        (click)="saveAsDraft()"
+        >{{
+          saveAsDraftButtonLabel ||
+            ('components.form.draftRecords.save' | translate)
+        }}</ui-button
+      >
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
         saveButtonLabel || ('common.save' | translate)
       }}</ui-button>

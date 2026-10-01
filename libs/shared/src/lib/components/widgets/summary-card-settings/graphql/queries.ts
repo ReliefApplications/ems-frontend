@@ -19,6 +19,7 @@ export const GET_RESOURCE = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         totalCount

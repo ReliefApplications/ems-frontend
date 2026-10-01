@@ -17,10 +17,17 @@ type ResourceField = {
   name: string;
   canSee: boolean;
   canUpdate: boolean;
+  /** File fields only: permanent removal of files */
+  canDeleteFiles: boolean;
+  /** Whether the field is a file question */
+  isFile: boolean;
 };
 
 /** Field permissions that can be granted to a role */
-const FIELD_PERMISSIONS = ['canSee', 'canUpdate'] as const;
+export type FieldPermission = 'canSee' | 'canUpdate' | 'canDeleteFiles';
+
+/** Field permissions with a fields auto-grant setting */
+const AUTO_GRANT_PERMISSIONS = ['canSee', 'canUpdate'] as const;
 
 /**
  * Component containing table with fields of a resource.
@@ -43,14 +50,14 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
-    permission: 'canSee' | 'canUpdate';
+    permission: FieldPermission;
   }>();
   /** Event emitter for bulk toggle */
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onBulkToggle = new EventEmitter<{
     resource: Resource;
     fields: ResourceField[];
-    permission: 'canSee' | 'canUpdate';
+    permission: FieldPermission;
     grant: boolean;
   }>();
   /** Event emitter for fields auto-grant toggle */
@@ -86,7 +93,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     this.filterId.valueChanges.subscribe((value) => {
       this.computeFields(value);
     });
-    FIELD_PERMISSIONS.forEach((permission) => {
+    AUTO_GRANT_PERMISSIONS.forEach((permission) => {
       this.autoGrant[permission].valueChanges.subscribe(() => {
         this.onAutoGrantToggle.emit({ resource: this.resource, permission });
       });
@@ -110,10 +117,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * @param field field
    * @returns field with access data
    */
-  private hasFieldAccess = (field: any) => ({
+  private hasFieldAccess = (field: any): ResourceField => ({
     name: field.name,
     canSee: !!field.permissions?.canSee?.includes(this.role.id),
     canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+    canDeleteFiles: !!field.permissions?.canDeleteFiles?.includes(this.role.id),
+    isFile: field.type === 'file',
   });
 
   /**
@@ -171,10 +180,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * @param field Field to toggle permission for.
    * @param permission Permission type to toggle.
    */
-  public onEditFieldAccess(
-    field: ResourceField,
-    permission: 'canSee' | 'canUpdate'
-  ) {
+  public onEditFieldAccess(field: ResourceField, permission: FieldPermission) {
     this.onToggle.emit({
       field,
       permission,
@@ -224,8 +230,21 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * @param permission permission to check
    * @returns true if every selected field has the permission granted
    */
-  public bulkPermissionGranted(permission: 'canSee' | 'canUpdate'): boolean {
-    return this.selection.selected.every((field) => field[permission]);
+  public bulkPermissionGranted(permission: FieldPermission): boolean {
+    return this.bulkFields(permission).every((field) => field[permission]);
+  }
+
+  /**
+   * Selected fields the given permission applies to ( file fields only, for
+   * the files deletion permission ).
+   *
+   * @param permission permission to apply
+   * @returns selected fields concerned by the permission
+   */
+  public bulkFields(permission: FieldPermission): ResourceField[] {
+    return permission === 'canDeleteFiles'
+      ? this.selection.selected.filter((field) => field.isFile)
+      : [...this.selection.selected];
   }
 
   /**
@@ -234,10 +253,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    *
    * @param permission permission to bulk toggle
    */
-  public onBulkEditFieldAccess(permission: 'canSee' | 'canUpdate') {
+  public onBulkEditFieldAccess(permission: FieldPermission) {
+    const fields = this.bulkFields(permission);
+    if (!fields.length) return;
     this.onBulkToggle.emit({
       resource: this.resource,
-      fields: [...this.selection.selected],
+      fields,
       permission,
       grant: !this.bulkPermissionGranted(permission),
     });
@@ -282,7 +303,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
    * checkbox controls, and update their disabled state.
    */
   private syncAutoGrantControls(): void {
-    FIELD_PERMISSIONS.forEach((permission) => {
+    AUTO_GRANT_PERMISSIONS.forEach((permission) => {
       const control = this.autoGrant[permission];
       const disabled = this.disabled || this.isAutoGrantDisabled(permission);
       if (disabled !== control.disabled) {

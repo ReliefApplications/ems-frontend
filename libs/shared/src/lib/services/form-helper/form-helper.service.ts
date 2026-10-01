@@ -9,9 +9,9 @@ import { firstValueFrom } from 'rxjs';
 import { PageModel, SurveyModel } from 'survey-core';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import {
-  AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
-  EditDraftRecordMutationResponse,
+  DeleteRecordMutationResponse,
+  EditRecordMutationResponse,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import { AuthService } from '../auth/auth.service';
@@ -25,6 +25,21 @@ import {
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+
+/** Details returned after a draft save. */
+interface DraftSaveDetails {
+  id?: string;
+  save: {
+    completed: false;
+    hideNewRecord: true;
+  };
+}
+
+/** Callback executed after a draft save. */
+type DraftSaveCallback = (details: DraftSaveDetails) => void;
+
+/** Class toggled on HTML questions hiding the links of outdated files. */
+const HIDE_OUTDATED_FILES_CLASS = 'html-question--hide-outdated-files';
 
 /**
  * Shared survey helper service.
@@ -519,6 +534,7 @@ export class FormHelpersService {
   ): void => {
     this.addQuestionTooltips(survey, options);
     this.bindHtmlQuestionFileClicks(survey, options);
+    this.applyOutdatedFilesDisplay(options);
   };
 
   /**
@@ -589,7 +605,9 @@ export class FormHelpersService {
    * Builds the clickable file links markup for a file question value.
    *
    * The `type`/`field`/`index` attributes let onFileClick identify the
-   * file to download or preview when the link is clicked.
+   * file to download or preview when the link is clicked. Files marked as
+   * outdated carry a warning icon and a `data-outdated` attribute, so HTML
+   * questions can hide them ( see applyOutdatedFilesDisplay ).
    *
    * @param fieldName name of the file question ( key in survey data )
    * @param files file question value
@@ -599,20 +617,51 @@ export class FormHelpersService {
     if (!Array.isArray(files)) {
       return '';
     }
+    const outdatedTitle = this.translate.instant(
+      'components.form.file.outdated.tooltip'
+    );
     return files
-      .filter((file) => this.isFile(file))
-      .map(
-        (file, index) =>
+      .map((file, index) => {
+        // Index in the question value, used to resolve the clicked file
+        if (!this.isFile(file)) return '';
+        const outdated = !!(file as File).outdated;
+        const warning = outdated
+          ? `<span class="material-icons" style="display: inline-block; font-size: 16px; line-height: 1; color: #f59e0b; margin-right: 2px; vertical-align: middle" title="${outdatedTitle}">warning</span>`
+          : '';
+        return (
           `<button type="file" field="${fieldName}" index="${index}" ` +
+          (outdated ? `data-outdated="true" ` : '') +
           `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
           `class="k-button k-button-flat k-button-flat-base"` +
           `title="${file.name}">` +
           `<span class="k-icon ${getFileIcon(
             file.name
           )}" style="margin-right: 4px"></span>` +
-          `${removeFileExtension(file.name)}</button>`
-      )
+          `${warning}${removeFileExtension(file.name)}</button>`
+        );
+      })
       .join('');
+  }
+
+  /**
+   * Hides the links of outdated files rendered in an HTML question, unless
+   * the question is configured to display them.
+   *
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private applyOutdatedFilesDisplay(options: {
+    question: Question;
+    htmlElement: HTMLElement;
+  }): void {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    options.htmlElement.classList.toggle(
+      HIDE_OUTDATED_FILES_CLASS,
+      !options.question.getPropertyValue('showOutdatedFiles')
+    );
   }
 
   /**
@@ -754,17 +803,19 @@ export class FormHelpersService {
    * @param formId Form id of the survey
    * @param draftId Draft record id
    * @param callback callback method
+   * @param errorCallback callback method executed when saving fails
    */
   public saveAsDraft(
     survey: SurveyModel,
     formId: string,
     draftId?: string,
-    callback?: any
+    callback?: DraftSaveCallback,
+    errorCallback?: () => void
   ): void {
     // Check if a draft has already been loaded
     if (!draftId) {
       // Add a new draft record to the database
-      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+      const mutation = this.apollo.mutate<AddRecordMutationResponse>({
         mutation: ADD_DRAFT_RECORD,
         variables: {
           form: formId,
@@ -773,49 +824,56 @@ export class FormHelpersService {
       });
       mutation.subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            survey.clear(false, true);
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          } else {
-            // localStorage.removeItem(this.storageId);
+          const draftId = data?.addRecord?.id;
+          if (errors?.length || !draftId) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.form.draftRecords.successSave'
-              ),
-              {
-                error: false,
-              }
+              errors?.[0]?.message ||
+                this.translate.instant(
+                  'models.form.notifications.savingFailed'
+                ),
+              { error: true }
             );
+            errorCallback?.();
+            return;
           }
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
           // Callback to emit save but stay in record addition mode
-          if (callback) {
-            callback({
-              id: data?.addDraftRecord.id,
-              save: {
-                completed: false,
-                hideNewRecord: true,
-              },
-            });
-          }
+          callback?.({
+            id: draftId,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
         },
       });
     } else {
       // Edit last added draft record in the database
-      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+      const mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_DRAFT_RECORD,
         variables: {
           id: draftId,
           data: survey.data,
         },
       });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
+      mutation.subscribe({
+        next: ({ errors }) => {
+          if (errors?.length) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+            errorCallback?.();
+            return;
+          }
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.draftRecords.successEdit'),
@@ -823,17 +881,20 @@ export class FormHelpersService {
               error: false,
             }
           );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
+          // Callback to emit save but stay in record addition mode
+          callback?.({
             id: draftId,
             save: {
               completed: false,
               hideNewRecord: true,
             },
           });
-        }
+        },
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
+        },
       });
     }
   }
@@ -844,18 +905,27 @@ export class FormHelpersService {
    * @param draftId Id of the draft record to delete
    * @param callback callback method
    */
-  public deleteRecordDraft(draftId: string, callback?: any): void {
+  public deleteRecordDraft(draftId: string, callback?: () => void): void {
     this.apollo
-      .mutate<any>({
+      .mutate<DeleteRecordMutationResponse>({
         mutation: DELETE_DRAFT_RECORD,
         variables: {
           id: draftId,
         },
       })
-      .subscribe(() => {
-        if (callback) {
-          callback();
-        }
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+            return;
+          }
+          if (callback) {
+            callback();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

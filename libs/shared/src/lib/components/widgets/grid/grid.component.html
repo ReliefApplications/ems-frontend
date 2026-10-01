@@ -56,11 +56,19 @@
     (edit)="edit.emit($event)"
     (inlineEdition)="onInlineEdition()"
     [widget]="widget"
-    [canUpdate]="canUpdate"
+    [dashboardId]="dashboardId"
+    [widgetKey]="widgetKey"
+    [layoutModifiedAt]="layout?.modifiedAt"
+    [canUpdate]="canUpdate && !recordActionsDisabled"
     [status]="status"
-    [canCreateRecords]="canCreateRecords"
-    [canDownloadRecords]="canDownloadRecords"
-    [canUploadRecords]="canUploadRecords"
+    [canCreateRecords]="
+      canCreateRecords && !recordActionsDisabled && !isDraftLayout
+    "
+    [canDownloadRecords]="canDownloadRecords && !recordActionsDisabled"
+    [canUploadRecords]="
+      canUploadRecords && !recordActionsDisabled && !isDraftLayout
+    "
+    [actionsDisabled]="recordActionsDisabled"
   ></shared-core-grid>
 </ng-template>
 

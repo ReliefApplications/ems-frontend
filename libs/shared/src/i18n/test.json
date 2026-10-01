@@ -222,6 +222,7 @@
     "filter": {
       "apply": "******",
       "clear": "******",
+      "clearAll": "******",
       "empty": "******",
       "few": "******",
       "hide": "******",
@@ -309,6 +310,8 @@
           "noCustomTitle": "******",
           "noDistributionList": "******",
           "noFields": "******",
+          "noRecipient": "******",
+          "noRecipientSeparateEmail": "******",
           "noSubject": "******",
           "noTemplate": "******",
           "preview": "******"
@@ -323,7 +326,8 @@
         },
         "fieldselect": {
           "placeholder": "******",
-          "tooltip": "******"
+          "tooltip": "******",
+          "tooltipTwo": "******"
         },
         "footer": {
           "logo": "******",
@@ -974,6 +978,9 @@
         "noResource": "******",
         "noResourceFields": "******",
         "noSelectedFields": "******",
+        "scheduler": {
+          "invalid": "******"
+        },
         "selectChildFields": "******",
         "selectedNonEmailFields": "******",
         "subscribeExists": "****** {{message}}",
@@ -1033,7 +1040,10 @@
       "name": "******",
       "notification": {
         "create": "******",
+        "language": "******",
+        "languageDescription": "******",
         "list": "******",
+        "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"
       },
@@ -1049,6 +1059,17 @@
         "title": "******"
       },
       "saveAsDraft": "******",
+      "schedule": {
+        "disable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "enable": {
+          "checkbox": "******",
+          "tooltip": "******"
+        },
+        "title": "******"
+      },
       "subscribe": {
         "error": {
           "restricted": "******"
@@ -1110,13 +1131,15 @@
         "confirmationMessage": "****** {{name}} ******"
       },
       "deleteRow": {
-        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******",
+        "draftConfirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
       },
       "display": {
         "submissionMessage": "******"
       },
       "draftRecords": {
         "buttonLoad": "******",
+        "cloneNotice": "******",
         "confirmModal": {
           "confirmDelete": "******",
           "confirmLoad": "******",
@@ -1133,6 +1156,20 @@
         "select": "******",
         "successEdit": "******",
         "successSave": "******"
+      },
+      "file": {
+        "limitReached": "****** {{limit}} ******",
+        "outdated": {
+          "hiddenSingle": "******",
+          "limitReachedHidden": "****** {{limit}} ****** {{count}} ******",
+          "locked": "******",
+          "markAsActive": "******",
+          "markAsOutdated": "******",
+          "removePermanently": "******",
+          "tooltip": "******"
+        },
+        "remove": "******",
+        "select": "******"
       },
       "layout": {
         "delete": {
@@ -1267,11 +1304,15 @@
         "all": "******",
         "select": "******"
       },
+      "fieldRequired": "******",
+      "loadError": "******",
+      "noHistoryYet": "******",
       "preview": "******",
       "range": {
         "clear": "******"
       },
       "renderError": "******",
+      "unknownField": "******",
       "useTableMode": "******"
     },
     "icon": {
@@ -1395,6 +1436,10 @@
         },
         "search": "******",
         "selected": "******",
+        "showOutdatedFiles": {
+          "info": "******",
+          "title": "******"
+        },
         "title": "******",
         "transferAllFrom": "******",
         "transferAllTo": "******"
@@ -1426,6 +1471,7 @@
         "title": "******"
       },
       "sendSeparate": {
+        "csFilter": "******",
         "title": "******"
       },
       "sort": {
@@ -1467,6 +1513,10 @@
         "displayField": "******",
         "filter": {
           "date": {
+            "useExpression": "******",
+            "usePicker": "******"
+          },
+          "select": {
             "useExpression": "******",
             "usePicker": "******"
           }
@@ -1618,14 +1668,18 @@
       },
       "tooltip": {
         "allowFieldAccessibility": "****** {{field}}",
+        "allowFieldDeleteFiles": "****** {{field}}",
         "allowFieldUpdate": "****** {{field}}",
         "allowSelectedFieldsAccessibility": "******",
+        "allowSelectedFieldsDeleteFiles": "******",
         "allowSelectedFieldsUpdate": "******",
         "autoGrantFieldsAccessibility": "******",
         "autoGrantFieldsUpdate": "******",
         "disallowFieldAccessibility": "****** {{field}}",
+        "disallowFieldDeleteFiles": "****** {{field}}",
         "disallowFieldUpdate": "****** {{field}}",
         "disallowSelectedFieldsAccessibility": "******",
+        "disallowSelectedFieldsDeleteFiles": "******",
         "disallowSelectedFieldsUpdate": "******",
         "grantAddRecordsPermission": "******",
         "grantDeleteRecordsPermission": "******",
@@ -1669,9 +1723,12 @@
         "label": "******",
         "noPreviewData": "******",
         "sendseparate": {
-          "list": "******"
+          "alsoToDistributionList": "******",
+          "list": "******",
+          "ownRecipientOnly": "******"
         },
         "separateEmail": "******",
+        "separateEmailToDistributionList": "******",
         "subscriptionList": "******",
         "to": "******"
       }
@@ -2186,6 +2243,7 @@
               "selectAllRecordsActivePage": "******",
               "selectDisplay": "******",
               "sendMail": "******",
+              "separateEmailRecipientRequired": "******",
               "workflow": {
                 "close": "******",
                 "confirm": "******",
@@ -2209,6 +2267,13 @@
               "notify": "******",
               "publish": "******"
             }
+          },
+          "drafts": {
+            "allDrafts": "******",
+            "ownDrafts": "******",
+            "submitted": "******",
+            "visibility": "******",
+            "visibilityTooltip": "******"
           },
           "hint": {
             "actions": {
@@ -2247,6 +2312,7 @@
           },
           "warnings": {
             "add": "******",
+            "drafts": "******",
             "general": "******"
           }
         },
@@ -3239,6 +3305,7 @@
         "builtinHint": "******",
         "custom": "******",
         "docs": "******",
+        "functionDocs": "******",
         "noResults": "******",
         "open": "******",
         "searchPlaceholder": "******",

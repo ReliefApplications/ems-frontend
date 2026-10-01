@@ -22,14 +22,12 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
+import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import {
   captureFieldChangeInitialData,
   fireFieldChangeTriggersForRecordUpdate,
 } from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -39,7 +37,10 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { ConfirmService } from '../../services/confirm/confirm.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
 /**
  * This component is used to display forms
@@ -94,12 +95,32 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** Whether the current survey data changed since the last save/load. */
+  private valueChanged = false;
   /** Evaluated label for the save button (from form expression or default translation) */
   public saveButtonLabel = '';
+  /** Save as draft button label, evaluated from the survey settings */
+  public saveAsDraftButtonLabel = '';
+
+  /** @returns True when drafts can be used: they always belong to a logged user. */
+  public get canUseDrafts(): boolean {
+    return !!this.authService.userValue;
+  }
+
+  /** @returns True when the Save as Draft button should be shown. */
+  public get showSaveAsDraft(): boolean {
+    return (
+      this.canUseDrafts &&
+      ((!this.record && !this.form.uniqueRecord) || !!this.lastDraftRecord)
+    );
+  }
+
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** Captcha token obtained for the current submission, if any */
   private captchaToken: string | null = null;
+  /** Invalidates field history widgets after this form saves a new version. */
+  private fieldHistoryRefresh$ = new Subject<string | undefined>();
   /** As we save the draft record in the db, the local storage is no longer used */
   /** ID for local storage */
   // private storageId = '';
@@ -113,31 +134,31 @@ export class FormComponent
    * @param dialog This is the Angular Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
-   * @param authService This is the service that handles authentication.
    * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
    * @param autoTranslateService Auto-translate text using Azure Translator
+   * @param confirmService This is the service that displays confirmation modals.
+   * @param authService Shared authentication service
    */
   constructor(
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
     private translate: TranslateService,
-    private autoTranslateService: AutoTranslateService
+    private autoTranslateService: AutoTranslateService,
+    private confirmService: ConfirmService,
+    private authService: AuthService
   ) {
     super();
   }
 
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  /** It creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
-    addCustomFunctions(this.authService);
-
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
       structure.completedHtml = `<h3>${this.translate.instant(
@@ -148,9 +169,14 @@ export class FormComponent
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
       this.form.metadata,
-      this.record
+      this.record || this.form.uniqueRecord
+    );
+    this.survey.setPropertyValue(
+      FIELD_HISTORY_REFRESH_PROPERTY,
+      this.fieldHistoryRefresh$
     );
 
+    this.valueChanged = false;
     this.survey.showCompletedPage = false;
     this.updateButtonLabels();
     if (!this.record && !this.form.canCreateRecords) {
@@ -161,6 +187,7 @@ export class FormComponent
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      this.valueChanged = true;
       this.updateButtonLabels();
     });
     this.survey.onComplete.add(() => {
@@ -249,6 +276,7 @@ export class FormComponent
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
     this.saveButtonLabel = labels.saveButtonLabel;
+    this.saveAsDraftButtonLabel = labels.saveAsDraftButtonLabel;
   }
 
   /**
@@ -265,6 +293,7 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     captureFieldChangeInitialData(this.survey);
     this.survey.showCompletedPage = false;
+    this.valueChanged = false;
     this.updateButtonLabels();
     this.save.emit({ completed: false });
     if (this.resetTimeoutListener) {
@@ -328,9 +357,14 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
-    const callback = (details: any) => {
+    const callback = (details: {
+      id?: string;
+      save: { completed: false; hideNewRecord: true };
+    }) => {
       this.surveyActive = true;
       this.lastDraftRecord = details.id;
+      this.disableSaveAsDraft = true;
+      this.valueChanged = false;
       // Updates parent component
       this.save.emit(details.save);
     };
@@ -368,7 +402,12 @@ export class FormComponent
 
     // Ask for a captcha token before saving, when required ( e.g. public forms )
     this.captchaToken = null;
-    if (!this.record && !this.form.uniqueRecord && this.requestCaptchaToken) {
+    if (
+      !this.record &&
+      !this.form.uniqueRecord &&
+      !this.lastDraftRecord &&
+      this.requestCaptchaToken
+    ) {
       this.captchaToken = await this.requestCaptchaToken();
       if (!this.captchaToken) {
         // Submission cancelled: let the user submit again
@@ -418,9 +457,23 @@ export class FormComponent
    */
   private submitRecord(skipValidation: boolean): void {
     let mutation: any;
+    const publishingDraft = !!this.lastDraftRecord;
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
-    // If is an already saved record, edit it
-    if (isRecordUpdate) {
+    // If is a restored draft, publish it
+    if (publishingDraft) {
+      mutation = this.apollo.mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: this.lastDraftRecord,
+          data: this.survey.data,
+          template: this.form.id,
+          lang: this.translate.currentLang,
+          updateDraftStatus: false,
+          skipValidation,
+        },
+      });
+      // If is an already saved record, edit it
+    } else if (isRecordUpdate) {
       const recordId = this.record
         ? this.record.id
         : this.form.uniqueRecord?.id;
@@ -468,17 +521,12 @@ export class FormComponent
           this.surveyActive = true;
           return;
         }
-        if (this.lastDraftRecord) {
-          const callback = () => {
-            this.lastDraftRecord = undefined;
-          };
-          this.formHelpersService.deleteRecordDraft(
-            this.lastDraftRecord,
-            callback
-          );
-        }
+        this.lastDraftRecord = undefined;
         // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form?.uniqueRecord) {
+        if (
+          !publishingDraft &&
+          (data.editRecord || data.addRecord?.form?.uniqueRecord)
+        ) {
           this.survey.clear(false, false);
           if (data.addRecord) {
             this.record = data.addRecord;
@@ -490,9 +538,19 @@ export class FormComponent
         } else {
           this.survey.showCompletedPage = true;
         }
+        this.valueChanged = false;
         this.snackBar.openSnackBar(
           this.translate.instant('components.form.display.submissionMessage')
         );
+        const savedRecord = data.addRecord || data.editRecord;
+        const currentRecord = this.survey.getPropertyValue('record') as
+          | RecordModel
+          | undefined;
+        this.survey.setPropertyValue('record', {
+          ...currentRecord,
+          ...savedRecord,
+        });
+        this.fieldHistoryRefresh$.next(savedRecord?.id);
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form?.uniqueRecord,
@@ -530,6 +588,7 @@ export class FormComponent
     this.formHelpersService.clearTemporaryFilesStorage(
       this.temporaryFilesStorage
     );
+    this.valueChanged = false;
   }
 
   /**
@@ -557,7 +616,28 @@ export class FormComponent
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
+    this.valueChanged = false;
   }
+
+  /**
+   * Asks for confirmation before replacing unsaved data with a draft.
+   *
+   * @returns True when the draft picker can open.
+   */
+  public beforeOpenDrafts = async (): Promise<boolean> => {
+    if (!this.record || !this.valueChanged) {
+      return true;
+    }
+
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.form.update.exit'),
+      content: this.translate.instant('components.form.update.exitMessage'),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    });
+    const value = await firstValueFrom(dialogRef.closed);
+    return !!value;
+  };
 
   /**
    * Open a dialog modal to confirm the recovery of data
@@ -607,6 +687,7 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    this.fieldHistoryRefresh$.complete();
     // Auto-translation timers are cleared by the dispose() patch installed in
     // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
