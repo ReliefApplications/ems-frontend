@@ -1,5 +1,9 @@
 import { JsonObjectProperty, Serializer } from 'survey-core';
-import { SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL } from '../../utils/survey-form-action-labels.util';
+import {
+  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
+  SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
+} from '../../utils/survey-form-action-labels.util';
 import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
 import { init } from './others';
 
@@ -24,6 +28,7 @@ const createSurveyPropertyOwner = (
 
 describe('survey global navigation properties', () => {
   let modalSaveButtonProperty: JsonObjectProperty;
+  let modalSaveAsDraftButtonProperty: JsonObjectProperty;
   let modalLabelOverridesToggleProperty: JsonObjectProperty;
 
   beforeAll(() => {
@@ -32,10 +37,25 @@ describe('survey global navigation properties', () => {
       'survey',
       SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL
     );
+    modalSaveAsDraftButtonProperty = Serializer.getProperty(
+      'survey',
+      SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL
+    );
     modalLabelOverridesToggleProperty = Serializer.getProperty(
       'survey',
       'showAdvancedNavigationLabelOverrides'
     );
+  });
+
+  it('registers the save as draft label in the navigation category', () => {
+    const property = Serializer.getProperty(
+      'survey',
+      SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL
+    );
+
+    expect(property).toBeTruthy();
+    expect(property.category).toBe('navigation');
+    expect(property.isLocalizable).toBe(true);
   });
 
   it('registers modal navigation override properties in the navigation category', () => {
@@ -45,6 +65,9 @@ describe('survey global navigation properties', () => {
 
     expect(modalSaveButtonProperty).toBeTruthy();
     expect(modalSaveButtonProperty.category).toBe('navigation');
+
+    expect(modalSaveAsDraftButtonProperty).toBeTruthy();
+    expect(modalSaveAsDraftButtonProperty.category).toBe('navigation');
   });
 
   it('registers the record creation read-only setting in the data category', () => {
@@ -65,6 +88,7 @@ describe('survey global navigation properties', () => {
     const survey = createSurveyPropertyOwner();
 
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(false);
+    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(false);
   });
 
   it('shows modal override properties when the advanced toggle is enabled', () => {
@@ -77,6 +101,17 @@ describe('survey global navigation properties', () => {
     );
 
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(true);
+    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(true);
+  });
+
+  it('keeps modal override properties visible when only the draft override exists', () => {
+    const survey = createSurveyPropertyOwner({
+      [SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Store draft',
+    });
+
+    expect(modalLabelOverridesToggleProperty.onGetValue(survey)).toBe(true);
+    expect(modalSaveButtonProperty.visibleIf(survey)).toBe(true);
+    expect(modalSaveAsDraftButtonProperty.visibleIf(survey)).toBe(true);
   });
 
   it('keeps modal override properties visible when override values already exist', () => {

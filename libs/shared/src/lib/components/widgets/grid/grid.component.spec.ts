@@ -1,22 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Dialog } from '@angular/cdk/dialog';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   TranslateFakeLoader,
   TranslateLoader,
   TranslateModule,
 } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { of } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
-import { GridWidgetComponent } from './grid.component';
-import { WorkflowService } from '../../../services/workflow/workflow.service';
-import { EmailService } from '../../../services/email/email.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
-import { ConfirmService } from '../../../services/confirm/confirm.service';
-import { ApplicationService } from '../../../services/application/application.service';
+import { RecordVisibility } from '../../../models/record-visibility.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { ApplicationService } from '../../../services/application/application.service';
+import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { EmailService } from '../../../services/email/email.service';
+import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { WorkflowService } from '../../../services/workflow/workflow.service';
+import { GridWidgetComponent } from './grid.component';
 
 describe('GridWidgetComponent', () => {
   let component: GridWidgetComponent;
@@ -58,7 +59,9 @@ describe('GridWidgetComponent', () => {
         { provide: AggregationService, useValue: {} },
         { provide: DashboardService, useValue: dashboardService },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(GridWidgetComponent, { set: { template: '' } })
+      .compileComponents();
 
     fixture = TestBed.createComponent(GridWidgetComponent);
     component = fixture.componentInstance;
@@ -155,5 +158,49 @@ describe('GridWidgetComponent', () => {
     expect(emailService.getEmailDistributionList).toHaveBeenCalledWith(
       'distribution-list-1'
     );
+  });
+
+  it('should derive draft visibility and actions from the selected layout', () => {
+    component.settings = {
+      template: 'template-id',
+      recordVisibility: RecordVisibility.allDrafts,
+      floatingButtons: [{ show: true }],
+    };
+
+    component.onLayoutChange({ recordVisibility: RecordVisibility.submitted });
+
+    expect(component.isDraftLayout).toBe(false);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.submitted
+    );
+    expect(component.gridActions).toHaveLength(1);
+
+    component.onLayoutChange({ recordVisibility: RecordVisibility.allDrafts });
+
+    expect(component.isDraftLayout).toBe(true);
+    // Drafts can still be resumed and deleted from the grid
+    expect(component.recordActionsDisabled).toBe(false);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.allDrafts
+    );
+    expect(component.gridActions).toEqual([]);
+
+    component.onLayoutChange({});
+
+    expect(component.isDraftLayout).toBe(false);
+    expect(component.gridSettings.recordVisibility).toBe(
+      RecordVisibility.submitted
+    );
+  });
+
+  it('should disable actions until the first configured layout is loaded', () => {
+    component.settings = {
+      layouts: ['layout-id'],
+      floatingButtons: [{ show: true }],
+    };
+    component.layout = null;
+
+    expect(component.recordActionsDisabled).toBe(true);
+    expect(component.gridActions).toEqual([]);
   });
 });

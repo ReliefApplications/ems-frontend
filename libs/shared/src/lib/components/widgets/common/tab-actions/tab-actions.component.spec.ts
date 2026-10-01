@@ -100,6 +100,24 @@ describe('TabActionsComponent', () => {
     expect(element.textContent).toContain(`${countKey}.one`);
   });
 
+  it('should warn when a layout displays draft records', () => {
+    const warningKey = 'components.widget.settings.grid.warnings.drafts';
+    const element: HTMLElement = fixture.nativeElement;
+
+    component.layouts = [{ id: '1', recordVisibility: 'submitted' as never }];
+    fixture.detectChanges();
+    expect(component.hasDraftLayouts).toBe(false);
+    expect(element.textContent).not.toContain(warningKey);
+
+    component.layouts = [
+      { id: '1', recordVisibility: 'submitted' as never },
+      { id: '2', recordVisibility: 'ownDrafts' as never },
+    ];
+    fixture.detectChanges();
+    expect(component.hasDraftLayouts).toBe(true);
+    expect(element.textContent).toContain(warningKey);
+  });
+
   it('should open the read-only fields modal with the layout fields when layouts are used', async () => {
     component.layouts = [
       {

@@ -1131,13 +1131,15 @@
         "confirmationMessage": "****** {{name}} ******"
       },
       "deleteRow": {
-        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
+        "confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******",
+        "draftConfirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
       },
       "display": {
         "submissionMessage": "******"
       },
       "draftRecords": {
         "buttonLoad": "******",
+        "cloneNotice": "******",
         "confirmModal": {
           "confirmDelete": "******",
           "confirmLoad": "******",
@@ -2229,6 +2231,13 @@
               "publish": "******"
             }
           },
+          "drafts": {
+            "allDrafts": "******",
+            "ownDrafts": "******",
+            "submitted": "******",
+            "visibility": "******",
+            "visibilityTooltip": "******"
+          },
           "hint": {
             "actions": {
               "add": "******",
@@ -2266,6 +2275,7 @@
           },
           "warnings": {
             "add": "******",
+            "drafts": "******",
             "general": "******"
           }
         },

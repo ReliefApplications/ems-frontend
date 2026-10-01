@@ -12,6 +12,7 @@ export const GET_RESOURCE_LAYOUTS = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         pageInfo {
@@ -35,6 +36,7 @@ export const GET_FORM_LAYOUTS = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         pageInfo {

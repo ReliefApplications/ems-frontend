@@ -49,6 +49,10 @@ import { AggregationGridComponent } from '../../aggregation/aggregation-grid/agg
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { clone } from 'lodash';
+import {
+  isDraftVisibility,
+  RecordVisibility,
+} from '../../../models/record-visibility.model';
 
 /** Component for the grid widget */
 @Component({
@@ -137,7 +141,20 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** @returns list of active grid actions */
   get gridActions() {
+    if (this.recordActionsDisabled || this.isDraftLayout) {
+      return [];
+    }
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+  }
+
+  /** @returns True when the selected layout displays draft records. */
+  get isDraftLayout(): boolean {
+    return isDraftVisibility(this.layout?.recordVisibility);
+  }
+
+  /** @returns True while a configured layout is not loaded yet, so no action targets the wrong records. */
+  get recordActionsDisabled(): boolean {
+    return get(this.settings, 'layouts', []).length > 0 && !this.layout;
   }
 
   /**
@@ -185,6 +202,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
+    delete this.gridSettings.recordVisibility;
     if (this.settings.resource) {
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
@@ -242,6 +260,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               ...this.settings,
               ...this.layout,
               ...{ template: get(this.settings, 'template', null) },
+              recordVisibility:
+                this.layout?.recordVisibility ?? RecordVisibility.submitted,
             };
           });
         return;
@@ -335,6 +355,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param options action options.
    */
   public async onGridAction(options: any): Promise<void> {
+    if (this.recordActionsDisabled || this.isDraftLayout) {
+      return;
+    }
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -347,6 +370,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           variables: {
             first: this.grid.gridData.total,
             filter: this.grid.queryFilter,
+            ...this.grid.recordVisibilityVariables,
           },
         })
       );
@@ -402,6 +426,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 query: GET_RECORD_DETAILS,
                 variables: {
                   id: record.id,
+                  ...this.grid.recordVisibilityVariables,
                 },
               })
             )
@@ -741,6 +766,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       ...this.settings,
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
+      recordVisibility:
+        this.layout?.recordVisibility ?? RecordVisibility.submitted,
     };
   }
 
@@ -798,6 +825,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         sortField: this.grid.sortField || undefined,
         sortOrder: this.grid.sortOrder || undefined,
         styles: this.layout?.query?.style,
+        ...this.grid.recordVisibilityVariables,
         at: undefined,
         skip: this.grid.skip,
       };

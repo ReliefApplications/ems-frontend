@@ -19,6 +19,30 @@
             formControlName="name"
           ></shared-localized-input>
         </div>
+        <div uiFormFieldDirective class="mb-4">
+          <label>{{
+            'components.widget.settings.grid.drafts.visibility' | translate
+          }}</label>
+          <ui-select-menu formControlName="recordVisibility">
+            <ui-select-option
+              *ngFor="let option of recordVisibilityOptions"
+              [value]="option"
+            >
+              {{
+                'components.widget.settings.grid.drafts.' + option | translate
+              }}
+            </ui-select-option>
+          </ui-select-menu>
+          <ui-icon
+            uiSuffix
+            icon="info_outline"
+            variant="grey"
+            [uiTooltip]="
+              'components.widget.settings.grid.drafts.visibilityTooltip'
+                | translate
+            "
+          ></ui-icon>
+        </div>
         <!-- Query builder -->
         <shared-query-builder
           [form]="$any(form.controls!.query)"

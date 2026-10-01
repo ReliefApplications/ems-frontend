@@ -1131,13 +1131,15 @@
         "confirmationMessage": "Do you confirm the deletion of the form {{name}}?"
       },
       "deleteRow": {
-        "confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
+        "confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?",
+        "draftConfirmationMessage": "Do you confirm the permanent deletion of {{quantity}} draft {{rowText}}? This cannot be undone."
       },
       "display": {
         "submissionMessage": "The form has successfully been submitted."
       },
       "draftRecords": {
         "buttonLoad": "Load draft record",
+        "cloneNotice": "You are duplicating a draft. Saving will create a new completed record; the original draft will remain unchanged. Use Save as draft to create a separate draft instead.",
         "confirmModal": {
           "confirmDelete": "Do you really want to delete this draft record?",
           "confirmLoad": "Do you really want to load this draft record?",
@@ -2229,6 +2231,13 @@
               "publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
             }
           },
+          "drafts": {
+            "allDrafts": "All users' draft records",
+            "ownDrafts": "My draft records",
+            "submitted": "Submitted records",
+            "visibility": "Records to display",
+            "visibilityTooltip": "Choose whether the grid shows submitted records, your own draft records, or the draft records of every user"
+          },
           "hint": {
             "actions": {
               "add": "If authorized, user can add new records using selected template",
@@ -2266,6 +2275,7 @@
           },
           "warnings": {
             "add": "Please select a template",
+            "drafts": "Warning: at least one selected layout displays draft records. Some features may be disabled for it.",
             "general": "Warning: actions contain errors"
           }
         },

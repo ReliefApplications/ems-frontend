@@ -1,3 +1,9 @@
+# [2.24.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.21...v2.24.0-rc.22) (2026-09-30)
+
+### Features
+
+- Enable records to be saved as draft ([#2821](https://github.com/ReliefApplications/ems-frontend/issues/2821)) ([e1874a0](https://github.com/ReliefApplications/ems-frontend/commit/e1874a005a01ad6aa1b2944792c4680162535b67))
+
 # [2.24.0-rc.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.20...v2.24.0-rc.21) (2026-09-29)
 
 ### Features

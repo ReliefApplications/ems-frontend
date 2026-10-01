@@ -6,6 +6,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   IconModule,
@@ -37,6 +38,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   styleUrls: ['../form-modal/form-modal.component.scss'],
   imports: [
     CommonModule,
+    AlertModule,
     ButtonModule,
     IconModule,
     RecordSummaryModule,
