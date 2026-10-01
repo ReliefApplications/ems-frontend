@@ -306,7 +306,10 @@ export class FormHelpersService {
                         next: ({ data, errors }) => {
                           if (errors) {
                             this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
+                              this.translate.instant(
+                                'common.notifications.error',
+                                { error: errors[0].message }
+                              ),
                               {
                                 error: true,
                               }

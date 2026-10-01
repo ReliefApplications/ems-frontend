@@ -363,6 +363,7 @@
         "timestamp": "******"
       },
       "emailSent": "******",
+      "error": "****** {{error}}",
       "export": {
         "download": "******",
         "format": "******",
@@ -1798,7 +1799,19 @@
       "severityError": "******",
       "severityWarning": "******",
       "showMatches": "******",
-      "title": "******"
+      "title": "******",
+      "upload": {
+        "errors": {
+          "subtitle": "******",
+          "title": "******"
+        },
+        "row": "****** {{row}}",
+        "rowHeader": "******",
+        "warnings": {
+          "subtitle": "******",
+          "title": "******"
+        }
+      }
     },
     "user": {
       "delete": {
@@ -2086,8 +2099,12 @@
           "help": "******",
           "hiddenMatches": "****** {{count}} ******",
           "questionTitle": "****** {{question}} ******",
+          "saveAnyway": "******",
           "subtitle": "******",
-          "title": "****** {{record}}"
+          "title": "****** {{record}}",
+          "warningHelp": "******",
+          "warningSubtitle": "******",
+          "warningTitle": "******"
         }
       },
       "settings": {

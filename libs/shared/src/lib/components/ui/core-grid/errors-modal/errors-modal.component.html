@@ -2,17 +2,23 @@
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
       {{
-        'components.widget.grid.validation.title'
-          | translate
-            : {
-                record: data.incrementalId
-              }
+        data.title ??
+          ('components.widget.grid.validation.title'
+            | translate
+              : {
+                  record: data.incrementalId
+                })
       }}
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <div class="flex flex-col gap-4">
-      <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
+      <p>
+        {{
+          data.subtitle ??
+            ('components.widget.grid.validation.subtitle' | translate)
+        }}
+      </p>
       <!-- Table container -->
       <div class="overflow-x-hidden shadow-2lg">
         <!-- Table scroll container -->
@@ -20,7 +26,7 @@
           <table cdk-table uiTableWrapper [dataSource]="data.errors">
             <ng-container cdkColumnDef="question">
               <th uiCellHeader *cdkHeaderCellDef scope="col">
-                {{ 'common.field.one' | translate }}
+                {{ data.questionHeader ?? ('common.field.one' | translate) }}
               </th>
               <td uiCell *cdkCellDef="let element">{{ element.question }}</td>
             </ng-container>
@@ -56,7 +62,11 @@
           </table>
         </div>
       </div>
-      <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
+      <p *ngIf="data.help !== ''">
+        {{
+          data.help ?? ('components.widget.grid.validation.help' | translate)
+        }}
+      </p>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
@@ -64,12 +74,13 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
+      *ngIf="!data.hideConfirm"
       category="secondary"
       variant="primary"
       [uiDialogClose]="true"
       cdkFocusInitial
     >
-      {{ 'common.update' | translate }}
+      {{ data.confirmText ?? ('common.update' | translate) }}
     </ui-button>
   </ng-container>
 </ui-dialog>

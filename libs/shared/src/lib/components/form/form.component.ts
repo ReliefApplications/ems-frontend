@@ -40,6 +40,10 @@ import { AutoTranslateService } from '../../services/auto-translate/auto-transla
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import {
+  areOnlyWarnings,
+  getValidationModalData,
+} from '../../utils/validation-errors.util';
 import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
 /**
@@ -338,13 +342,14 @@ export class FormComponent
       '../ui/core-grid/errors-modal/errors-modal.component'
     );
     const dialogRef = this.dialog.open(ErrorsModalComponent, {
-      data: {
-        incrementalId: incrementalId || this.record?.incrementalId || '',
-        errors: errors,
-      },
+      data: getValidationModalData(
+        errors,
+        incrementalId || this.record?.incrementalId || '',
+        this.translate
+      ),
       autoFocus: false,
     });
-    if (onConfirm) {
+    if (onConfirm && areOnlyWarnings(errors)) {
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
         if (res) {
           onConfirm();
@@ -506,7 +511,12 @@ export class FormComponent
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.error', {
+            error: errors[0].message,
+          }),
+          { error: true }
+        );
       } else {
         const validationErrors =
           data.editRecord?.validationErrors || data.addRecord?.validationErrors;

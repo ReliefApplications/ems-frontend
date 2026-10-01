@@ -37,6 +37,7 @@ export const ADD_RECORD = gql`
       validationErrors {
         question
         errors
+        severity
         matches {
           id
           incrementalId
@@ -95,6 +96,7 @@ export const EDIT_RECORD = gql`
       validationErrors {
         question
         errors
+        severity
         matches {
           id
           incrementalId

@@ -144,7 +144,14 @@ export class AuthInterceptorService implements HttpInterceptor {
             err.error && typeof err.error === 'object'
               ? err.error.message
               : err.error;
-          return throwError(() => new Error(errorBody || err.message));
+          // Keep the details the back-end may send with the message ( e.g.
+          // the rows of an uploaded file violating uniqueness rules )
+          return throwError(() =>
+            Object.assign(new Error(errorBody || err.message), {
+              ...(err.error &&
+                typeof err.error === 'object' && { details: err.error }),
+            })
+          );
         })
       );
     };

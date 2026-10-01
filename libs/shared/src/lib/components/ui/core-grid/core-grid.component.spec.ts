@@ -255,4 +255,91 @@ describe('CoreGridComponent', () => {
       ],
     });
   });
+
+  describe('onSaveChanges', () => {
+    let openSnackBar: jest.Mock;
+    let items: any[];
+
+    beforeEach(() => {
+      openSnackBar = jest.fn();
+      Object.assign(component, {
+        snackBar: { openSnackBar },
+        translate: { instant: (key: string) => key },
+      });
+      items = [
+        { id: 'saved', incrementalId: 'R1', name: 'a' },
+        { id: 'rejected', incrementalId: 'R2', name: 'b' },
+        { id: 'invalid', incrementalId: 'R3', name: 'c' },
+      ];
+      // Private state of the grid
+      Object.assign(component, {
+        items,
+        originalItems: items.map((x) => ({ ...x })),
+      });
+      component.updatedItems = [
+        { id: 'saved', name: 'a2' },
+        { id: 'rejected', name: 'b2' },
+        { id: 'invalid', name: 'c2' },
+      ];
+    });
+
+    it('should report the records rejected by the back-end, without failing', async () => {
+      jest.spyOn(component, 'promisedChanges').mockReturnValue([
+        Promise.resolve({ data: { editRecord: { id: 'saved' } } }),
+        // Blocking error ( e.g. uniqueness rule ): no record is returned
+        Promise.resolve({
+          data: { editRecord: null },
+          errors: [{ message: 'A record with the same name already exists.' }],
+        }),
+        Promise.resolve({
+          data: {
+            editRecord: {
+              id: 'invalid',
+              incrementalId: 'R3',
+              validationErrors: [{ question: 'name', errors: ['Required'] }],
+            },
+          },
+        }),
+      ]);
+
+      const hasError = await component.onSaveChanges();
+
+      expect(hasError).toBe(true);
+      const [saved, rejected, invalid] = items;
+      expect(saved.saved).toBe(true);
+      expect(saved.validationErrors).toBeUndefined();
+      expect(rejected.validationErrors).toEqual([
+        {
+          question: 'common.record.one',
+          errors: ['A record with the same name already exists.'],
+        },
+      ]);
+      expect(invalid.validationErrors).toEqual([
+        { question: 'name', errors: ['Required'] },
+      ]);
+      // Only the records which could not be saved are still pending
+      expect(component.updatedItems.map((x) => x.id)).toEqual([
+        'rejected',
+        'invalid',
+      ]);
+      expect(openSnackBar).toHaveBeenCalledTimes(1);
+    });
+
+    it('should save all the records when there is no error', async () => {
+      jest
+        .spyOn(component, 'promisedChanges')
+        .mockReturnValue(
+          ['saved', 'rejected', 'invalid'].map((id) =>
+            Promise.resolve({ data: { editRecord: { id } } })
+          )
+        );
+
+      const hasError = await component.onSaveChanges();
+
+      expect(hasError).toBe(false);
+      expect(component.updatedItems).toEqual([]);
+      expect(items.every((x) => x.saved)).toBe(true);
+      expect(openSnackBar).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -59,6 +59,7 @@ export default {
     '<rootDir>/src/lib/components/query-builder/tab-fields/form-filter/*.spec.ts',
     '<rootDir>/src/lib/components/ui/core-grid/*.spec.ts',
     '<rootDir>/src/lib/components/ui/core-grid/grid/*.spec.ts',
+    '<rootDir>/src/lib/components/ui/core-grid/errors-modal/*.spec.ts',
     '<rootDir>/src/lib/models/*.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',

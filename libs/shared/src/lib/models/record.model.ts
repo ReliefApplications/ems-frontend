@@ -26,12 +26,17 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
-  validationErrors?: {
-    question: string;
-    errors: string[];
-    matches?: UniquenessMatch[];
-    hiddenMatchCount?: number;
-  }[];
+  validationErrors?: ValidationError[];
+}
+
+/** Model for a validation error returned when saving a record. */
+export interface ValidationError {
+  question: string;
+  errors: string[];
+  /** Warnings can be bypassed by the user, errors ( default ) cannot. */
+  severity?: 'error' | 'warning';
+  matches?: UniquenessMatch[];
+  hiddenMatchCount?: number;
 }
 
 /** Model for record graphql query response */

@@ -363,6 +363,7 @@
         "timestamp": "Date / horodatage"
       },
       "emailSent": "E-mail envoyé avec succès.",
+      "error": "Erreur : {{error}}",
       "export": {
         "download": "Télécharger",
         "format": "Format:",
@@ -1801,7 +1802,19 @@
       "severityError": "Bloquer (empêcher l'enregistrement)",
       "severityWarning": "Avertir (laisser l'utilisateur enregistrer quand même)",
       "showMatches": "Afficher les enregistrements correspondants à l'utilisateur (selon ses droits de lecture)",
-      "title": "Règles d'unicité"
+      "title": "Règles d'unicité",
+      "upload": {
+        "errors": {
+          "subtitle": "Le fichier n'a pas été importé, car ces lignes enfreignent des règles d'unicité. Corrigez-les puis importez à nouveau le fichier :",
+          "title": "Fichier non importé"
+        },
+        "row": "Ligne {{row}}",
+        "rowHeader": "Ligne",
+        "warnings": {
+          "subtitle": "Le fichier a été importé, mais ces lignes sont peut-être des doublons d'autres enregistrements :",
+          "title": "Doublons possibles importés"
+        }
+      }
     },
     "user": {
       "delete": {
@@ -2089,8 +2102,12 @@
           "help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
           "hiddenMatches": "+ {{count}} de plus (accès non autorisé)",
           "questionTitle": "Erreurs sur le champ {{question}}:",
+          "saveAnyway": "Enregistrer quand même",
           "subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
-          "title": "L'enregistrement du document {{record}} a échoué"
+          "title": "L'enregistrement du document {{record}} a échoué",
+          "warningHelp": "Il ne s'agit que d'avertissements : vous pouvez vérifier l'enregistrement, ou l'enregistrer quand même.",
+          "warningSubtitle": "L'enregistrement est peut-être un doublon d'enregistrements existants :",
+          "warningTitle": "Doublons possibles détectés"
         }
       },
       "settings": {

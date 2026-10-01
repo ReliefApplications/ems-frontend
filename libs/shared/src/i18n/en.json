@@ -363,6 +363,7 @@
         "timestamp": "Date / Timestamp"
       },
       "emailSent": "Email sent successfully.",
+      "error": "Error: {{error}}",
       "export": {
         "download": "Download",
         "format": "Format:",
@@ -1798,7 +1799,19 @@
       "severityError": "Block (prevent saving)",
       "severityWarning": "Warn (let the user save anyway)",
       "showMatches": "Show matching records to the user (subject to their read permissions)",
-      "title": "Uniqueness rules"
+      "title": "Uniqueness rules",
+      "upload": {
+        "errors": {
+          "subtitle": "The file was not imported, as these rows violate uniqueness rules. Fix them and upload the file again:",
+          "title": "File not imported"
+        },
+        "row": "Row {{row}}",
+        "rowHeader": "Row",
+        "warnings": {
+          "subtitle": "The file was imported, but these rows may duplicate other records:",
+          "title": "Possible duplicates imported"
+        }
+      }
     },
     "user": {
       "delete": {
@@ -2086,8 +2099,12 @@
           "help": "Please edit the record using the 'update' button for more details.",
           "hiddenMatches": "+ {{count}} more (no access)",
           "questionTitle": "Errors on field {{question}}:",
+          "saveAnyway": "Save anyway",
           "subtitle": "These errors where found while saving changes:",
-          "title": "Validation failed for record {{record}}"
+          "title": "Validation failed for record {{record}}",
+          "warningHelp": "These are only warnings: you can review the record, or save it anyway.",
+          "warningSubtitle": "The record may duplicate existing records:",
+          "warningTitle": "Possible duplicates found"
         }
       },
       "settings": {

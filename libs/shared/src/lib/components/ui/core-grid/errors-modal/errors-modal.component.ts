@@ -5,14 +5,24 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
+import { ValidationError } from '../../../../models/record.model';
 
 /** Model for the dialog data */
-interface DialogData {
+export interface ErrorsModalData {
   incrementalId: string;
-  errors: {
-    question: string;
-    errors: string[];
-  }[];
+  errors: ValidationError[];
+  /** Title of the modal. Defaults to the validation failure of the record. */
+  title?: string;
+  /** Text displayed above the errors. */
+  subtitle?: string;
+  /** Text displayed below the errors. Empty to hide it. */
+  help?: string;
+  /** Header of the first column. Defaults to 'field'. */
+  questionHeader?: string;
+  /** Label of the confirm button. Defaults to 'update'. */
+  confirmText?: string;
+  /** Hides the confirm button, when there is nothing to do but close. */
+  hideConfirm?: boolean;
 }
 
 /** Component for the errors modal component */
@@ -41,6 +51,6 @@ export class ErrorsModalComponent {
    */
   constructor(
     public dialogRef: DialogRef<ErrorsModalComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: ErrorsModalData
   ) {}
 }
