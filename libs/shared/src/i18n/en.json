@@ -1794,6 +1794,7 @@
       "messagePlaceholder": "A record with the same values already exists.",
       "messageTokensHint": "Tokens:",
       "name": "Name",
+      "one": "Uniqueness rule",
       "remove": "Remove rule",
       "severity": "Severity",
       "severityError": "Block (prevent saving)",

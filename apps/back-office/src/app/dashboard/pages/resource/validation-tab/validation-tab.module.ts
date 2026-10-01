@@ -11,7 +11,7 @@ import {
   TableModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { EmptyModule } from '@oort-front/shared';
+import { EmptyModule, SkeletonTableModule } from '@oort-front/shared';
 import { ValidationTabRoutingModule } from './validation-tab-routing.module';
 import { ValidationTabComponent } from './validation-tab.component';
 
@@ -28,6 +28,7 @@ import { ValidationTabComponent } from './validation-tab.component';
     TranslateModule,
     OverlayModule,
     EmptyModule,
+    SkeletonTableModule,
     ButtonModule,
     TableModule,
     ChipModule,

@@ -24,6 +24,7 @@ export interface UniquenessMatch {
 
 /** Model for a scoped uniqueness rule configured on a resource. */
 export interface UniquenessRule {
+  id?: string;
   name?: string;
   fields: string[];
   severity: UniquenessRuleSeverity;
@@ -82,6 +83,21 @@ export interface ResourceQueryResponse {
 /** Model for edit resource mutation response object */
 export interface EditResourceMutationResponse {
   editResource: Resource;
+}
+
+/** Model for add uniqueness rule mutation response object */
+export interface AddUniquenessRuleMutationResponse {
+  addUniquenessRule: UniquenessRule;
+}
+
+/** Model for edit uniqueness rule mutation response object */
+export interface EditUniquenessRuleMutationResponse {
+  editUniquenessRule: UniquenessRule;
+}
+
+/** Model for delete uniqueness rule mutation response object */
+export interface DeleteUniquenessRuleMutationResponse {
+  deleteUniquenessRule: UniquenessRule;
 }
 
 /** Model for delete resource mutation response object */

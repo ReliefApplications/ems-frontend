@@ -13,38 +13,12 @@ export const RESTORE_RECORD = gql`
 // === EDIT RESOURCE ===
 /** Edit resource gql mutation definition */
 export const EDIT_RESOURCE = gql`
-  mutation editResource(
-    $id: ID!
-    $permissions: JSON
-    $uniquenessRules: [UniquenessRuleInputType]
-  ) {
-    editResource(
-      id: $id
-      permissions: $permissions
-      uniquenessRules: $uniquenessRules
-    ) {
+  mutation editResource($id: ID!, $permissions: JSON) {
+    editResource(id: $id, permissions: $permissions) {
       id
       name
       createdAt
       fields
-      uniquenessRules {
-        name
-        fields
-        severity
-        message
-        active
-        showMatches
-        condition {
-          field
-          operator
-          value
-        }
-        dateIntersection {
-          startField
-          endField
-          allowAdjacent
-        }
-      }
       forms {
         id
         name

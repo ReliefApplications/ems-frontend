@@ -2,16 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import {
-  EditResourceMutationResponse,
+  AddUniquenessRuleMutationResponse,
+  DeleteUniquenessRuleMutationResponse,
+  EditUniquenessRuleMutationResponse,
   Resource,
+  ResourceQueryResponse,
   UnsubscribeComponent,
   UniquenessRule,
 } from '@oort-front/shared';
-import { EDIT_RESOURCE } from '../graphql/mutations';
+import { GET_RESOURCE_UNIQUENESS_RULES } from './graphql/queries';
+import {
+  ADD_UNIQUENESS_RULE,
+  DELETE_UNIQUENESS_RULE,
+  EDIT_UNIQUENESS_RULE,
+} from './graphql/mutations';
 
 /**
  * Validation tab of resource page. Lists the scoped uniqueness rules
@@ -20,6 +28,9 @@ import { EDIT_RESOURCE } from '../graphql/mutations';
  * optionally restricted to records matching a condition or checked as a
  * date-range overlap, and whether a violation should block saving or only
  * warn the user.
+ *
+ * Rules are loaded each time the tab is opened, and added, edited or deleted
+ * one by one: the list is then loaded again.
  */
 @Component({
   selector: 'app-validation-tab',
@@ -34,6 +45,8 @@ export class ValidationTabComponent
   public resource!: Resource;
   /** Uniqueness rules of the resource */
   public rules: UniquenessRule[] = [];
+  /** Loading state */
+  public loading = true;
   /** Columns to display */
   public displayedColumns: string[] = [
     'name',
@@ -62,7 +75,42 @@ export class ValidationTabComponent
 
   ngOnInit(): void {
     this.resource = get(history.state, 'resource', null);
-    this.rules = this.resource?.uniquenessRules || [];
+    this.fetchRules();
+  }
+
+  /**
+   * Loads the uniqueness rules of the resource, along with the fields they
+   * can use.
+   */
+  private fetchRules(): void {
+    if (!this.resource?.id) {
+      this.loading = false;
+      return;
+    }
+    this.loading = true;
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE_UNIQUENESS_RULES,
+        variables: { id: this.resource.id },
+        // Rules must always be up to date when opening the tab
+        fetchPolicy: 'network-only',
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data, errors }) => {
+          if (errors?.length) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          } else if (data?.resource) {
+            this.resource = { ...this.resource, ...data.resource };
+            this.rules = data.resource.uniquenessRules || [];
+          }
+          this.loading = false;
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
+        },
+      });
   }
 
   /**
@@ -83,7 +131,17 @@ export class ValidationTabComponent
     );
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((rule) => {
       if (rule) {
-        this.save([...this.rules, rule]);
+        this.handleMutation(
+          this.apollo.mutate<AddUniquenessRuleMutationResponse>({
+            mutation: ADD_UNIQUENESS_RULE,
+            variables: { resource: this.resource.id, rule },
+          }),
+          {
+            success: 'common.notifications.objectCreated',
+            error: 'common.notifications.objectNotCreated',
+          },
+          this.getRuleName(rule)
+        );
       }
     });
   }
@@ -109,7 +167,21 @@ export class ValidationTabComponent
     );
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((updated) => {
       if (updated) {
-        this.save(this.rules.map((r) => (r === rule ? updated : r)));
+        this.handleMutation(
+          this.apollo.mutate<EditUniquenessRuleMutationResponse>({
+            mutation: EDIT_UNIQUENESS_RULE,
+            variables: {
+              resource: this.resource.id,
+              id: rule.id,
+              rule: updated,
+            },
+          }),
+          {
+            success: 'common.notifications.objectUpdated',
+            error: 'common.notifications.objectNotUpdated',
+          },
+          this.getRuleName(updated)
+        );
       }
     });
   }
@@ -124,11 +196,11 @@ export class ValidationTabComponent
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('components.uniquenessRules.title'),
+          name: this.translate.instant('components.uniquenessRules.one'),
         }),
         content: this.translate.instant(
           'components.uniquenessRules.delete.confirmationMessage',
-          { name: rule.name || rule.fields.join(' + ') }
+          { name: this.getRuleName(rule) }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmVariant: 'danger',
@@ -137,51 +209,70 @@ export class ValidationTabComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
-        this.save(this.rules.filter((r) => r !== rule));
+        this.handleMutation(
+          this.apollo.mutate<DeleteUniquenessRuleMutationResponse>({
+            mutation: DELETE_UNIQUENESS_RULE,
+            variables: { resource: this.resource.id, id: rule.id },
+          }),
+          {
+            success: 'common.notifications.objectDeleted',
+            error: 'common.notifications.objectNotDeleted',
+          },
+          this.getRuleName(rule)
+        );
       }
     });
   }
 
   /**
-   * Persists the given list of rules.
+   * Gets the name to display for a rule: its own name, or its fields.
    *
-   * @param rules the new list of uniqueness rules
+   * @param rule uniqueness rule
+   * @returns name of the rule
    */
-  private save(rules: UniquenessRule[]): void {
-    this.apollo
-      .mutate<EditResourceMutationResponse>({
-        mutation: EDIT_RESOURCE,
-        variables: {
-          id: this.resource.id,
-          uniquenessRules: rules,
-        },
-      })
-      .subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.resource.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.resource.one'),
-                value: '',
-              })
-            );
-            if (data) {
-              this.resource = data.editResource;
-              this.rules = this.resource.uniquenessRules || [];
-            }
-          }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        },
-      });
+  private getRuleName(rule: UniquenessRule): string {
+    return rule.name || rule.fields.join(' + ');
+  }
+
+  /**
+   * Sends a mutation on a single rule, notifies the user of its result, and
+   * loads the rules again.
+   *
+   * @param mutation mutation to send
+   * @param messages translation keys of the notifications
+   * @param messages.success notification displayed when the mutation succeeds
+   * @param messages.error notification displayed when the mutation fails
+   * @param name name of the rule
+   */
+  private handleMutation(
+    mutation: Observable<{ errors?: readonly { message: string }[] }>,
+    messages: { success: string; error: string },
+    name: string
+  ): void {
+    const type = this.translate.instant('components.uniquenessRules.one');
+    mutation.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ errors }) => {
+        if (errors?.length) {
+          this.snackBar.openSnackBar(
+            this.translate.instant(messages.error, {
+              type,
+              value: name,
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant(messages.success, { type, value: name })
+          );
+        }
+        // The list may have changed even if the mutation failed ( e.g. rule
+        // deleted by someone else )
+        this.fetchRules();
+      },
+      error: (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+      },
+    });
   }
 }
