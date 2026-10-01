@@ -1802,7 +1802,6 @@
       "severity": "Gravité",
       "severityError": "Bloquer (empêcher l'enregistrement)",
       "severityWarning": "Avertir (laisser l'utilisateur enregistrer quand même)",
-      "showMatches": "Afficher les enregistrements correspondants à l'utilisateur (selon ses droits de lecture)",
       "title": "Règles d'unicité",
       "upload": {
         "errors": {
@@ -2101,7 +2100,6 @@
         },
         "validation": {
           "help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
-          "hiddenMatches": "+ {{count}} de plus (accès non autorisé)",
           "questionTitle": "Erreurs sur le champ {{question}}:",
           "saveAnyway": "Enregistrer quand même",
           "subtitle": "Ces erreurs furent détectées durant l'enregistrement :",

@@ -63,22 +63,6 @@ describe('ErrorsModalComponent', () => {
     expect(text).toContain('common.update');
   });
 
-  it('shows the matching records of a uniqueness rule', async () => {
-    const text = await render({
-      incrementalId: '2026-P1',
-      errors: [
-        {
-          question: 'org_code',
-          errors: ['Already used'],
-          matches: [{ id: '1', incrementalId: '2026-P7' }],
-          hiddenMatchCount: 2,
-        },
-      ],
-    });
-    expect(text).toContain('2026-P7');
-    expect(text).toContain('components.widget.grid.validation.hiddenMatches');
-  });
-
   it('uses the custom texts when provided', async () => {
     const text = await render({
       incrementalId: '',

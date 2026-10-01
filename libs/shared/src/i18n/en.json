@@ -1799,7 +1799,6 @@
       "severity": "Severity",
       "severityError": "Block (prevent saving)",
       "severityWarning": "Warn (let the user save anyway)",
-      "showMatches": "Show matching records to the user (subject to their read permissions)",
       "title": "Uniqueness rules",
       "upload": {
         "errors": {
@@ -2098,7 +2097,6 @@
         },
         "validation": {
           "help": "Please edit the record using the 'update' button for more details.",
-          "hiddenMatches": "+ {{count}} more (no access)",
           "questionTitle": "Errors on field {{question}}:",
           "saveAnyway": "Save anyway",
           "subtitle": "These errors where found while saving changes:",

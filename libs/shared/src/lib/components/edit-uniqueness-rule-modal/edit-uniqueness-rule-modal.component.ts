@@ -115,7 +115,6 @@ export class EditUniquenessRuleModalComponent {
       severity: rule.severity,
       message: rule.message || undefined,
       active: rule.active,
-      showMatches: rule.showMatches,
       condition: rule.condition?.length
         ? rule.condition.map((c: any) => ({
             field: c.field,
@@ -149,7 +148,6 @@ export class EditUniquenessRuleModalComponent {
       severity: [rule?.severity || 'error', Validators.required],
       message: [rule?.message || ''],
       active: [rule?.active !== false],
-      showMatches: [!!rule?.showMatches],
       condition: new FormArray<FormGroup>(
         (rule?.condition || []).map((c) => this.createConditionGroup(c))
       ),

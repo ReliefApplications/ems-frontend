@@ -38,11 +38,6 @@ export const ADD_RECORD = gql`
         question
         errors
         severity
-        matches {
-          id
-          incrementalId
-        }
-        hiddenMatchCount
       }
     }
   }
@@ -97,11 +92,6 @@ export const EDIT_RECORD = gql`
         question
         errors
         severity
-        matches {
-          id
-          incrementalId
-        }
-        hiddenMatchCount
       }
     }
   }

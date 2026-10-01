@@ -1,5 +1,5 @@
 import { Form } from './form.model';
-import { Resource, UniquenessMatch } from './resource.model';
+import { Resource } from './resource.model';
 import { User } from './user.model';
 
 /** Model for version attributes. */
@@ -35,8 +35,6 @@ export interface ValidationError {
   errors: string[];
   /** Warnings can be bypassed by the user, errors ( default ) cannot. */
   severity?: 'error' | 'warning';
-  matches?: UniquenessMatch[];
-  hiddenMatchCount?: number;
 }
 
 /** Model for record graphql query response */

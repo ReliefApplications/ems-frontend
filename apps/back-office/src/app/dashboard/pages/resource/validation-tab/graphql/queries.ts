@@ -13,7 +13,6 @@ export const GET_RESOURCE_UNIQUENESS_RULES = gql`
         severity
         message
         active
-        showMatches
         condition {
           field
           operator

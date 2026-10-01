@@ -1799,7 +1799,6 @@
       "severity": "******",
       "severityError": "******",
       "severityWarning": "******",
-      "showMatches": "******",
       "title": "******",
       "upload": {
         "errors": {
@@ -2098,7 +2097,6 @@
         },
         "validation": {
           "help": "******",
-          "hiddenMatches": "****** {{count}} ******",
           "questionTitle": "****** {{question}} ******",
           "saveAnyway": "******",
           "subtitle": "******",
