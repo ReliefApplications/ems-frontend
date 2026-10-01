@@ -2103,7 +2103,8 @@
           "title": "****** {{record}}",
           "warningHelp": "******",
           "warningSubtitle": "******",
-          "warningTitle": "******"
+          "warningTitle": "******",
+          "warnings": "******"
         }
       },
       "settings": {

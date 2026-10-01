@@ -1808,8 +1808,8 @@
         "row": "Row {{row}}",
         "rowHeader": "Row",
         "warnings": {
-          "subtitle": "The file was imported, but these rows may duplicate other records:",
-          "title": "Possible duplicates imported"
+          "subtitle": "The file was imported, but these rows generated warnings:",
+          "title": "File imported with warnings"
         }
       }
     },
@@ -2102,8 +2102,9 @@
           "subtitle": "These errors where found while saving changes:",
           "title": "Validation failed for record {{record}}",
           "warningHelp": "These are only warnings: you can review the record, or save it anyway.",
-          "warningSubtitle": "The record may duplicate existing records:",
-          "warningTitle": "Possible duplicates found"
+          "warningSubtitle": "These warnings were generated while saving:",
+          "warningTitle": "Validation warnings",
+          "warnings": "Warnings"
         }
       },
       "settings": {

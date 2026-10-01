@@ -20,10 +20,28 @@ export interface UploadReportRow {
 export const areOnlyWarnings = (errors?: ValidationError[] | null): boolean =>
   !!errors?.length && errors.every((error) => error.severity === 'warning');
 
+/** Displayed instead of the field, for errors which are not about a field */
+const NO_FIELD = '-';
+
+/**
+ * Formats validation errors for the errors modal, which lists them by field.
+ * Uniqueness rules are not about a single field: their name is not displayed
+ * as if it was one.
+ *
+ * @param errors validation errors returned by the back-end
+ * @returns errors to display
+ */
+export const toDisplayedErrors = (
+  errors?: ValidationError[] | null
+): ValidationError[] =>
+  (errors || []).map((error) =>
+    error.severity ? { ...error, question: NO_FIELD } : error
+  );
+
 /**
  * Builds the data of the errors modal for the validation errors returned
- * when saving a record. When they are all warnings, the modal offers to save
- * the record anyway instead of presenting them as a failure.
+ * when saving a record. When they are all warnings, the modal presents them
+ * as such, and offers to save the record anyway.
  *
  * @param errors validation errors returned by the back-end
  * @param incrementalId incremental id of the record, if any
@@ -36,8 +54,9 @@ export const getValidationModalData = (
   translate: TranslateService
 ): ErrorsModalData => ({
   incrementalId,
-  errors,
+  errors: toDisplayedErrors(errors),
   ...(areOnlyWarnings(errors) && {
+    severity: 'warning',
     title: translate.instant('components.widget.grid.validation.warningTitle'),
     subtitle: translate.instant(
       'components.widget.grid.validation.warningSubtitle'
@@ -64,14 +83,15 @@ export const getUploadReportModalData = (
   type: 'errors' | 'warnings',
   translate: TranslateService
 ): ErrorsModalData | null => {
-  const errors = (Array.isArray(rows) ? rows : []).flatMap((row) =>
-    (row[type] || []).map((violation) => ({
-      ...violation,
-      question: `${translate.instant('components.uniquenessRules.upload.row', {
+  // One line per row, with all its messages
+  const errors = (Array.isArray(rows) ? rows : [])
+    .map((row) => ({
+      question: translate.instant('components.uniquenessRules.upload.row', {
         row: row.row,
-      })} · ${violation.question}`,
+      }),
+      errors: (row[type] || []).flatMap((violation) => violation.errors),
     }))
-  );
+    .filter((row) => row.errors.length);
   if (!errors.length) {
     return null;
   }
@@ -79,6 +99,7 @@ export const getUploadReportModalData = (
   return {
     incrementalId: '',
     errors,
+    severity: type === 'warnings' ? 'warning' : 'error',
     title: translate.instant(`${prefix}.title`),
     subtitle: translate.instant(`${prefix}.subtitle`),
     help: '',

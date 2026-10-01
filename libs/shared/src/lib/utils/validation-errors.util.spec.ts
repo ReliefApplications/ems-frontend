@@ -3,6 +3,7 @@ import {
   areOnlyWarnings,
   getUploadReportModalData,
   getValidationModalData,
+  toDisplayedErrors,
 } from './validation-errors.util';
 
 /** Translate service stub, returning the key and its parameters */
@@ -40,6 +41,26 @@ describe('validation errors utils', () => {
     });
   });
 
+  describe('toDisplayedErrors', () => {
+    it('does not display the name of uniqueness rules as a field', () => {
+      expect(
+        toDisplayedErrors([
+          { question: 'name', errors: ['Required'] },
+          { question: 'My rule', errors: ['Duplicate'], severity: 'warning' },
+          { question: 'Other rule', errors: ['Duplicate'], severity: 'error' },
+        ])
+      ).toEqual([
+        { question: 'name', errors: ['Required'] },
+        { question: '-', errors: ['Duplicate'], severity: 'warning' },
+        { question: '-', errors: ['Duplicate'], severity: 'error' },
+      ]);
+    });
+
+    it('returns an empty list when there is no error', () => {
+      expect(toDisplayedErrors(undefined)).toEqual([]);
+    });
+  });
+
   describe('getValidationModalData', () => {
     it('keeps the default texts of the modal for blocking errors', () => {
       const errors = [{ question: 'a', errors: ['x'] }];
@@ -49,24 +70,31 @@ describe('validation errors utils', () => {
       });
     });
 
-    it('offers to save anyway when there are only warnings', () => {
-      const errors = [
-        { question: 'a', errors: ['x'], severity: 'warning' as const },
-      ];
-      const data = getValidationModalData(errors, '', translate);
-      expect(data.errors).toEqual(errors);
+    it('presents warnings as such, and offers to save anyway', () => {
+      const data = getValidationModalData(
+        [{ question: 'My rule', errors: ['x'], severity: 'warning' }],
+        '',
+        translate
+      );
+      expect(data.errors).toEqual([
+        { question: '-', errors: ['x'], severity: 'warning' },
+      ]);
+      expect(data.severity).toEqual('warning');
       expect(data.confirmText).toEqual(
         'components.widget.grid.validation.saveAnyway'
       );
       expect(data.title).toEqual(
         'components.widget.grid.validation.warningTitle'
       );
+      expect(data.subtitle).toEqual(
+        'components.widget.grid.validation.warningSubtitle'
+      );
       expect(data.hideConfirm).toBeUndefined();
     });
   });
 
   describe('getUploadReportModalData', () => {
-    it('lists the violations of each row, without confirm button', () => {
+    it('lists the messages of each row, without the name of the rules', () => {
       const data = getUploadReportModalData(
         [
           {
@@ -81,14 +109,20 @@ describe('validation errors utils', () => {
         'errors',
         translate
       );
-      expect(data?.errors.map((x) => x.question)).toEqual([
-        'components.uniquenessRules.upload.row:{"row":3} · org_code',
-        'components.uniquenessRules.upload.row:{"row":3} · name + country',
-        'components.uniquenessRules.upload.row:{"row":5} · org_code',
+      expect(data?.errors).toEqual([
+        {
+          question: 'components.uniquenessRules.upload.row:{"row":3}',
+          errors: ['Duplicate', 'Duplicate too'],
+        },
+        {
+          question: 'components.uniquenessRules.upload.row:{"row":5}',
+          errors: ['Duplicate'],
+        },
       ]);
       expect(data?.title).toEqual(
         'components.uniquenessRules.upload.errors.title'
       );
+      expect(data?.severity).toEqual('error');
       expect(data?.hideConfirm).toBe(true);
       expect(data?.help).toEqual('');
     });
@@ -100,6 +134,7 @@ describe('validation errors utils', () => {
         translate
       );
       expect(data?.errors).toHaveLength(1);
+      expect(data?.severity).toEqual('warning');
       expect(data?.title).toEqual(
         'components.uniquenessRules.upload.warnings.title'
       );

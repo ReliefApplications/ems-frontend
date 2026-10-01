@@ -45,6 +45,10 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
+import {
+  areOnlyWarnings,
+  toDisplayedErrors,
+} from '../../../../utils/validation-errors.util';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { GridLayout } from '../models/grid-layout.model';
@@ -1380,7 +1384,8 @@ export class GridComponent
     const dialogRef = this.dialog.open(ErrorsModalComponent, {
       data: {
         incrementalId: item.incrementalId,
-        errors: item.validationErrors,
+        errors: toDisplayedErrors(item.validationErrors),
+        severity: areOnlyWarnings(item.validationErrors) ? 'warning' : 'error',
       },
       autoFocus: false,
     });

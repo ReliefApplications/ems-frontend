@@ -1,6 +1,10 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">
+    <h3 class="font-semibold flex items-center gap-2">
+      <ui-icon
+        [icon]="data.severity === 'warning' ? 'warning' : 'error'"
+        [variant]="data.severity === 'warning' ? 'warning' : 'danger'"
+      ></ui-icon>
       {{
         data.title ??
           ('components.widget.grid.validation.title'
@@ -32,7 +36,12 @@
             </ng-container>
             <ng-container cdkColumnDef="errors">
               <th uiCellHeader *cdkHeaderCellDef scope="col">
-                {{ 'common.errors.few' | translate }}
+                {{
+                  (data.severity === 'warning'
+                    ? 'components.widget.grid.validation.warnings'
+                    : 'common.errors.few'
+                  ) | translate
+                }}
               </th>
               <td uiCell *cdkCellDef="let element">
                 <ul>

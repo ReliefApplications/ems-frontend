@@ -310,7 +310,7 @@ describe('CoreGridComponent', () => {
       expect(saved.validationErrors).toBeUndefined();
       expect(rejected.validationErrors).toEqual([
         {
-          question: 'common.record.one',
+          question: '-',
           errors: ['A record with the same name already exists.'],
         },
       ]);

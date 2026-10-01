@@ -5,6 +5,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 import { ValidationError } from '../../../../models/record.model';
 
 /** Model for the dialog data */
@@ -23,6 +24,8 @@ export interface ErrorsModalData {
   confirmText?: string;
   /** Hides the confirm button, when there is nothing to do but close. */
   hideConfirm?: boolean;
+  /** Whether the modal reports errors ( default ) or only warnings. */
+  severity?: 'error' | 'warning';
 }
 
 /** Component for the errors modal component */
@@ -34,6 +37,7 @@ export interface ErrorsModalData {
     DialogModule,
     ButtonModule,
     TableModule,
+    IconModule,
   ],
   selector: 'shared-errors-modal',
   templateUrl: './errors-modal.component.html',

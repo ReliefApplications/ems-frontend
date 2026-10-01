@@ -82,6 +82,31 @@ describe('ErrorsModalComponent', () => {
     expect(text).not.toContain('common.update');
   });
 
+  it('shows an error icon and an errors column by default', async () => {
+    const text = await render({
+      incrementalId: '2026-P1',
+      errors: [{ question: 'org_code', errors: ['Already used'] }],
+    });
+    const icon = fixture.nativeElement.querySelector('h3 ui-icon');
+    expect(icon.getAttribute('ng-reflect-icon')).toEqual('error');
+    expect(icon.getAttribute('ng-reflect-variant')).toEqual('danger');
+    expect(text).toContain('common.errors.few');
+    expect(text).not.toContain('components.widget.grid.validation.warnings');
+  });
+
+  it('shows a warning icon and a warnings column for warnings', async () => {
+    const text = await render({
+      incrementalId: '',
+      errors: [{ question: '-', errors: ['Already used'] }],
+      severity: 'warning',
+    });
+    const icon = fixture.nativeElement.querySelector('h3 ui-icon');
+    expect(icon.getAttribute('ng-reflect-icon')).toEqual('warning');
+    expect(icon.getAttribute('ng-reflect-variant')).toEqual('warning');
+    expect(text).toContain('components.widget.grid.validation.warnings');
+    expect(text).not.toContain('common.errors.few');
+  });
+
   it('hides the help and the confirm button when asked to', async () => {
     const text = await render({
       incrementalId: '',

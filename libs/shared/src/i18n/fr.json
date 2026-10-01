@@ -1811,8 +1811,8 @@
         "row": "Ligne {{row}}",
         "rowHeader": "Ligne",
         "warnings": {
-          "subtitle": "Le fichier a été importé, mais ces lignes sont peut-être des doublons d'autres enregistrements :",
-          "title": "Doublons possibles importés"
+          "subtitle": "Le fichier a été importé, mais ces lignes ont généré des avertissements :",
+          "title": "Fichier importé avec des avertissements"
         }
       }
     },
@@ -2105,8 +2105,9 @@
           "subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
           "title": "L'enregistrement du document {{record}} a échoué",
           "warningHelp": "Il ne s'agit que d'avertissements : vous pouvez vérifier l'enregistrement, ou l'enregistrer quand même.",
-          "warningSubtitle": "L'enregistrement est peut-être un doublon d'enregistrements existants :",
-          "warningTitle": "Doublons possibles détectés"
+          "warningSubtitle": "Ces avertissements ont été générés durant l'enregistrement :",
+          "warningTitle": "Avertissements de validation",
+          "warnings": "Avertissements"
         }
       },
       "settings": {

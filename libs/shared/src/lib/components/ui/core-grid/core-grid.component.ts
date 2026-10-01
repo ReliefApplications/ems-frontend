@@ -960,7 +960,8 @@ export class CoreGridComponent
   ): ValidationError[] {
     return [
       {
-        question: this.translate.instant('common.record.one'),
+        // The error is about the record, not one of its fields
+        question: '-',
         errors: errors?.length
           ? errors.map((x) => x.message)
           : [this.translate.instant('models.form.notifications.savingFailed')],
