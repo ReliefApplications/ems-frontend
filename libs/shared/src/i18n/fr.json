@@ -1771,11 +1771,7 @@
       "active": "Active",
       "add": "Ajouter une règle",
       "condition": {
-        "add": "Ajouter une condition",
-        "equals": "est égal à",
-        "notEquals": "n'est pas égal à",
-        "title": "Appliquer uniquement si...",
-        "valuePlaceholder": "Valeur"
+        "title": "Appliquer uniquement si..."
       },
       "dateIntersection": {
         "allowAdjacent": "Autoriser les périodes contiguës (les périodes adjacentes ne sont pas un conflit)",

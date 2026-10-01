@@ -73,4 +73,63 @@ describe('EditUniquenessRuleModalComponent', () => {
       expect(component.value.messageTranslations).toBeUndefined();
     });
   });
+
+  describe('condition', () => {
+    const filter = {
+      logic: 'or' as const,
+      filters: [
+        { field: 'status', operator: 'eq', value: 'Open' },
+        {
+          logic: 'and',
+          filters: [{ field: 'urgent', operator: 'eq', value: true }],
+        },
+      ],
+    };
+
+    it('loads the filter of an existing rule in the filter builder', () => {
+      const component = createComponent({
+        fields: ['org_code'],
+        severity: 'error',
+        condition: filter,
+      });
+      const condition = component.conditionForm.getRawValue();
+      expect(condition.logic).toEqual('or');
+      expect(condition.filters).toHaveLength(2);
+      expect(condition.filters[0]).toMatchObject(filter.filters[0]);
+      expect(condition.filters[1].filters[0]).toMatchObject({
+        field: 'urgent',
+        operator: 'eq',
+        value: true,
+      });
+    });
+
+    it('saves the filter built in the filter builder', () => {
+      const component = createComponent({
+        fields: ['org_code'],
+        severity: 'error',
+        condition: filter,
+      });
+      const condition = component.value.condition;
+      expect(condition?.logic).toEqual('or');
+      expect(condition?.filters[0]).toMatchObject(filter.filters[0]);
+    });
+
+    it('saves no filter when the rule applies to all records', () => {
+      expect(createComponent().value.condition).toBeUndefined();
+      expect(
+        createComponent({
+          fields: ['org_code'],
+          severity: 'error',
+          condition: null,
+        }).value.condition
+      ).toBeUndefined();
+      expect(
+        createComponent({
+          fields: ['org_code'],
+          severity: 'error',
+          condition: { logic: 'and', filters: [] },
+        }).value.condition
+      ).toBeUndefined();
+    });
+  });
 });

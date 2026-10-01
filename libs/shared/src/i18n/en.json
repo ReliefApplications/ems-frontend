@@ -1768,11 +1768,7 @@
       "active": "Active",
       "add": "Add a rule",
       "condition": {
-        "add": "Add a condition",
-        "equals": "equals",
-        "notEquals": "does not equal",
-        "title": "Only apply when...",
-        "valuePlaceholder": "Value"
+        "title": "Only apply when..."
       },
       "dateIntersection": {
         "allowAdjacent": "Allow ranges to touch (adjacent periods are not a conflict)",

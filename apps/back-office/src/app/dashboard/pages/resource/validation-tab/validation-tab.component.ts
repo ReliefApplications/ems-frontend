@@ -9,6 +9,7 @@ import {
   AddUniquenessRuleMutationResponse,
   DeleteUniquenessRuleMutationResponse,
   EditUniquenessRuleMutationResponse,
+  Metadata,
   Resource,
   ResourceQueryResponse,
   UnsubscribeComponent,
@@ -126,6 +127,7 @@ export class ValidationTabComponent
         disableClose: true,
         data: {
           fields: this.resource.fields,
+          filterFields: this.filterFields,
         },
       }
     );
@@ -162,6 +164,7 @@ export class ValidationTabComponent
         data: {
           rule,
           fields: this.resource.fields,
+          filterFields: this.filterFields,
         },
       }
     );
@@ -222,6 +225,20 @@ export class ValidationTabComponent
         );
       }
     });
+  }
+
+  /**
+   * Fields rules can be restricted with, as expected by the filter builder:
+   * the fields of the resource itself, as rules are checked on the data of a
+   * record before it is saved.
+   *
+   * @returns fields available in the filter of a rule
+   */
+  private get filterFields(): Metadata[] {
+    const fieldNames = (this.resource.fields || []).map((x: any) => x.name);
+    return (this.resource.metadata || []).filter(
+      (x) => x.filterable !== false && fieldNames.includes(x.name)
+    );
   }
 
   /**

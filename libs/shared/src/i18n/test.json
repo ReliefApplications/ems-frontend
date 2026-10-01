@@ -1768,11 +1768,7 @@
       "active": "******",
       "add": "******",
       "condition": {
-        "add": "******",
-        "equals": "******",
-        "notEquals": "******",
-        "title": "******",
-        "valuePlaceholder": "******"
+        "title": "******"
       },
       "dateIntersection": {
         "allowAdjacent": "******",

@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -19,36 +19,23 @@ import {
   SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
-import {
-  UniquenessCondition,
-  UniquenessRule,
-} from '../../models/resource.model';
+import { UniquenessRule } from '../../models/resource.model';
 import {
   LocalizedString,
   resolveLocalizedString,
 } from '../../models/localized-string.model';
 import { LocalizedInputComponent } from '../controls/public-api';
+import { FilterModule } from '../filter/filter.module';
+import { createFilterGroup } from '../query-builder/query-builder-forms';
 
 /** Data passed to the edit uniqueness rule modal */
 export interface EditUniquenessRuleModalData {
   rule?: UniquenessRule;
+  /** Fields of the resource */
   fields: any[];
+  /** Fields of the resource, as expected by the filter builder ( metadata ) */
+  filterFields?: any[];
 }
-
-/**
- * Turns a condition value typed as free text back into its likely original
- * type - only 'true'/'false' are special-cased, everything else (including
- * numeric-looking strings) is kept as-is, since field values are compared
- * for strict equality against what is actually stored on records.
- *
- * @param raw the raw string entered by the user
- * @returns the coerced value
- */
-const coerceConditionValue = (raw: string): any => {
-  if (raw === 'true') return true;
-  if (raw === 'false') return false;
-  return raw;
-};
 
 /**
  * Whether a message is entered in at least one language.
@@ -67,7 +54,7 @@ const hasTranslations = (
  * Modal used to add or edit a single scoped uniqueness rule of a resource.
  * A rule lists one or more fields that must be unique (alone, or in
  * combination) across all records of the resource, optionally restricted
- * to records matching a condition or checked as a date-range overlap, and
+ * to records matching a filter or checked as a date-range overlap, and
  * whether a violation should block saving or only warn the user.
  */
 @Component({
@@ -85,6 +72,7 @@ const hasTranslations = (
     SelectMenuModule,
     TooltipModule,
     LocalizedInputComponent,
+    FilterModule,
   ],
   selector: 'shared-edit-uniqueness-rule-modal',
   templateUrl: './edit-uniqueness-rule-modal.component.html',
@@ -115,12 +103,12 @@ export class EditUniquenessRuleModalComponent {
   ) {}
 
   /**
-   * The 'only apply when' conditions form array.
+   * The 'only apply when' filter form.
    *
-   * @returns the condition form array
+   * @returns the filter form group
    */
-  get conditions(): FormArray<FormGroup> {
-    return this.form.get('condition') as FormArray<FormGroup>;
+  get conditionForm(): UntypedFormGroup {
+    return this.form.get('condition') as UntypedFormGroup;
   }
 
   /**
@@ -142,13 +130,9 @@ export class EditUniquenessRuleModalComponent {
         undefined,
       messageTranslations: hasTranslations(message) ? message : undefined,
       active: rule.active,
-      condition: rule.condition?.length
-        ? rule.condition.map((c: any) => ({
-            field: c.field,
-            operator: c.operator,
-            value: coerceConditionValue(c.value),
-          }))
-        : undefined,
+      // Same filter as the one of layouts. Without any condition, the rule
+      // applies to all records
+      condition: rule.condition?.filters?.length ? rule.condition : undefined,
       dateIntersection:
         rule.dateIntersectionEnabled &&
         rule.dateIntersection?.startField &&
@@ -180,9 +164,7 @@ export class EditUniquenessRuleModalComponent {
           : rule?.message || '') as LocalizedString,
       ],
       active: [rule?.active !== false],
-      condition: new FormArray<FormGroup>(
-        (rule?.condition || []).map((c) => this.createConditionGroup(c))
-      ),
+      condition: createFilterGroup(rule?.condition ?? null),
       dateIntersectionEnabled: [
         !!(
           rule?.dateIntersection?.startField && rule?.dateIntersection?.endField
@@ -194,37 +176,6 @@ export class EditUniquenessRuleModalComponent {
         allowAdjacent: [!!rule?.dateIntersection?.allowAdjacent],
       }),
     });
-  }
-
-  /**
-   * Builds a form group for a single 'only apply when' condition.
-   *
-   * @param condition existing condition to populate the group with, if any
-   * @returns the form group
-   */
-  private createConditionGroup(condition?: UniquenessCondition): FormGroup {
-    return this.fb.group({
-      field: [condition?.field || '', Validators.required],
-      operator: [condition?.operator || 'eq', Validators.required],
-      value: [
-        condition?.value !== undefined ? String(condition.value) : '',
-        Validators.required,
-      ],
-    });
-  }
-
-  /** Adds a new, empty condition. */
-  addCondition(): void {
-    this.conditions.push(this.createConditionGroup());
-  }
-
-  /**
-   * Removes a condition.
-   *
-   * @param index index of the condition to remove
-   */
-  removeCondition(index: number): void {
-    this.conditions.removeAt(index);
   }
 
   /** Closes the modal, sending the rule back to the caller. */

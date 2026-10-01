@@ -14,16 +14,22 @@ export const GET_RESOURCE_UNIQUENESS_RULES = gql`
         message
         messageTranslations
         active
-        condition {
-          field
-          operator
-          value
-        }
+        condition
         dateIntersection {
           startField
           endField
           allowAdjacent
         }
+      }
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
       }
       canUpdate
     }

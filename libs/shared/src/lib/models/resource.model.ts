@@ -9,13 +9,6 @@ import { Record } from './record.model';
 /** Severity of a uniqueness rule violation */
 export type UniquenessRuleSeverity = 'error' | 'warning';
 
-/** A single 'only apply when' condition of a uniqueness rule. */
-export interface UniquenessCondition {
-  field: string;
-  operator: 'eq' | 'ne';
-  value: any;
-}
-
 /** Model for a scoped uniqueness rule configured on a resource. */
 export interface UniquenessRule {
   id?: string;
@@ -27,8 +20,8 @@ export interface UniquenessRule {
   messageTranslations?: { [locale: string]: string | undefined } | null;
   /** Whether the rule is enforced. Defaults to true. */
   active?: boolean;
-  /** Restricts the rule to records matching all these conditions. */
-  condition?: UniquenessCondition[];
+  /** Restricts the rule to the records matching this filter, in the same format as the filters of layouts. */
+  condition?: { logic: 'and' | 'or'; filters: any[] } | null;
   /** When set, checks for overlapping date ranges instead of an exact value match. */
   dateIntersection?: {
     startField: string;
