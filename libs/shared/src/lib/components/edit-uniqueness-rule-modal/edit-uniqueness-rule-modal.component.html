@@ -53,13 +53,12 @@
       </div>
       <div uiFormFieldDirective>
         <label>{{ 'components.uniquenessRules.message' | translate }}</label>
-        <input
-          type="text"
+        <shared-localized-input
           formControlName="message"
           [placeholder]="
             'components.uniquenessRules.messagePlaceholder' | translate
           "
-        />
+        ></shared-localized-input>
         <p class="mt-1 text-xs text-gray-500">
           {{ 'components.uniquenessRules.messageTokensHint' | translate }}
           <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{{

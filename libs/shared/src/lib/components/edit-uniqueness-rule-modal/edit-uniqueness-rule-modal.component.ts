@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   ButtonModule,
@@ -23,6 +23,11 @@ import {
   UniquenessCondition,
   UniquenessRule,
 } from '../../models/resource.model';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../models/localized-string.model';
+import { LocalizedInputComponent } from '../controls/public-api';
 
 /** Data passed to the edit uniqueness rule modal */
 export interface EditUniquenessRuleModalData {
@@ -46,6 +51,19 @@ const coerceConditionValue = (raw: string): any => {
 };
 
 /**
+ * Whether a message is entered in at least one language.
+ *
+ * @param value message, as a plain text or by language
+ * @returns true if the message is a non-empty set of translations
+ */
+const hasTranslations = (
+  value?: LocalizedString | null
+): value is Partial<Record<string, string>> =>
+  !!value &&
+  typeof value !== 'string' &&
+  Object.values(value).some((text) => !!text);
+
+/**
  * Modal used to add or edit a single scoped uniqueness rule of a resource.
  * A rule lists one or more fields that must be unique (alone, or in
  * combination) across all records of the resource, optionally restricted
@@ -66,6 +84,7 @@ const coerceConditionValue = (raw: string): any => {
     IconModule,
     SelectMenuModule,
     TooltipModule,
+    LocalizedInputComponent,
   ],
   selector: 'shared-edit-uniqueness-rule-modal',
   templateUrl: './edit-uniqueness-rule-modal.component.html',
@@ -86,11 +105,13 @@ export class EditUniquenessRuleModalComponent {
    * @param fb Used to build the reactive form.
    * @param dialogRef Reference to the current dialog.
    * @param data Data passed to the modal (the rule being edited, if any, and the resource fields).
+   * @param translate Angular translate service.
    */
   constructor(
     private fb: FormBuilder,
     public dialogRef: DialogRef<UniquenessRule>,
-    @Inject(DIALOG_DATA) public data: EditUniquenessRuleModalData
+    @Inject(DIALOG_DATA) public data: EditUniquenessRuleModalData,
+    private translate: TranslateService
   ) {}
 
   /**
@@ -109,11 +130,17 @@ export class EditUniquenessRuleModalComponent {
    */
   get value(): UniquenessRule {
     const rule = this.form.getRawValue();
+    // The message is entered by language. Its value in the current language is
+    // also saved as the plain message, used when there is no translation
+    const message: LocalizedString = rule.message ?? '';
     return {
       name: rule.name || undefined,
       fields: rule.fields,
       severity: rule.severity,
-      message: rule.message || undefined,
+      message:
+        resolveLocalizedString(message, this.translate.currentLang) ||
+        undefined,
+      messageTranslations: hasTranslations(message) ? message : undefined,
       active: rule.active,
       condition: rule.condition?.length
         ? rule.condition.map((c: any) => ({
@@ -146,7 +173,12 @@ export class EditUniquenessRuleModalComponent {
       name: [rule?.name || ''],
       fields: [rule?.fields || [], Validators.required],
       severity: [rule?.severity || 'error', Validators.required],
-      message: [rule?.message || ''],
+      // Rules saved before messages could be translated only have a message
+      message: [
+        (hasTranslations(rule?.messageTranslations)
+          ? rule?.messageTranslations
+          : rule?.message || '') as LocalizedString,
+      ],
       active: [rule?.active !== false],
       condition: new FormArray<FormGroup>(
         (rule?.condition || []).map((c) => this.createConditionGroup(c))

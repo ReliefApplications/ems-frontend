@@ -23,6 +23,8 @@ export interface UniquenessRule {
   fields: string[];
   severity: UniquenessRuleSeverity;
   message?: string;
+  /** Translations of the message, by language. The message is used when there is none. */
+  messageTranslations?: { [locale: string]: string | undefined } | null;
   /** Whether the rule is enforced. Defaults to true. */
   active?: boolean;
   /** Restricts the rule to records matching all these conditions. */

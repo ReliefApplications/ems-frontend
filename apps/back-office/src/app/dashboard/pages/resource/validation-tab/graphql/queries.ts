@@ -12,6 +12,7 @@ export const GET_RESOURCE_UNIQUENESS_RULES = gql`
         fields
         severity
         message
+        messageTranslations
         active
         condition {
           field
