@@ -239,11 +239,16 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           name
           id
           notificationType
+          schedule {
+            scheduleEnabled
+          }
+          status
           language
           createdBy
           isDraft
           isDeleted
           draftStepper
+          lastExecution
           attachments
         }
       }
@@ -566,10 +571,15 @@ export const EDIT_CUSTOM_TEMPLATE = gql`
 
 /** Graphql query for getting  CUSTOM_TEMPLATES */
 export const GET_CUSTOM_TEMPLATES = gql`
-  query CustomTemplates($applicationId: ID, $isFromEmailNotification: Boolean) {
+  query CustomTemplates(
+    $applicationId: ID
+    $isFromEmailNotification: Boolean
+    $ids: [ID!]
+  ) {
     customTemplates(
       applicationId: $applicationId
       isFromEmailNotification: $isFromEmailNotification
+      ids: $ids
     ) {
       totalCount
       edges {

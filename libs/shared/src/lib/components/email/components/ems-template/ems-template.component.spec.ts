@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -79,6 +80,8 @@ describe('EmsTemplateComponent', () => {
       disableSaveAndProceed: new BehaviorSubject<boolean>(false),
       disableFormSteps: new Subject<any>(),
       enableAllSteps: new Subject<boolean>(),
+      datasetSave: new EventEmitter<boolean>(),
+      loading: false,
     };
 
     await TestBed.configureTestingModule({
@@ -115,6 +118,63 @@ describe('EmsTemplateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('releases the dataset step when validation cannot be completed', async () => {
+    const snackBar = TestBed.inject(SnackbarService);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    emailServiceMock.checkDatasetsValid = jest
+      .fn()
+      .mockRejectedValue(new Error('Validation unavailable'));
+    emailServiceMock.disableSaveAndProceed.next(true);
+    component.currentStep = 1;
+
+    await component.next();
+
+    expect(emailServiceMock.loading).toBe(false);
+    expect(emailServiceMock.disableSaveAndProceed.value).toBe(false);
+    expect(snackBar.openSnackBar).toHaveBeenCalledWith(
+      'common.notifications.dataNotRecovered',
+      { error: true }
+    );
+  });
+
+  it('keeps the dataset step blocked when validation finds invalid data', async () => {
+    emailServiceMock.checkDatasetsValid = jest.fn().mockResolvedValue({
+      valid: false,
+      badData: ['Block 1'],
+    });
+    component.currentStep = 1;
+
+    await component.next();
+
+    expect(component.currentStep).toBe(1);
+    expect(emailServiceMock.loading).toBe(false);
+    expect(emailServiceMock.disableSaveAndProceed.value).toBe(true);
+  });
+
+  it('runs only one dataset validation while Next is clicked repeatedly', async () => {
+    let resolveValidation!: (result: {
+      valid: boolean;
+      badData: string[];
+    }) => void;
+    emailServiceMock.checkDatasetsValid = jest.fn(
+      () =>
+        new Promise((resolve) => {
+          resolveValidation = resolve;
+        })
+    );
+    component.currentStep = 1;
+
+    const firstNavigation = component.next();
+    await component.next();
+    resolveValidation({ valid: true, badData: [] });
+    await firstNavigation;
+
+    expect(emailServiceMock.checkDatasetsValid).toHaveBeenCalledTimes(1);
+    expect(component.currentStep).toBe(2);
+    expect(emailServiceMock.loading).toBe(false);
+    expect(emailServiceMock.disableSaveAndProceed.value).toBe(false);
   });
 
   describe('getDataSetToSkipOptions', () => {

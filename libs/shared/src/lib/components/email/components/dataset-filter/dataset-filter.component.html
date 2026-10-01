@@ -59,25 +59,60 @@
         </div>
       </div>
       <!-- For phase 2 -->
-      <div class="w-1/2 content-center text-center">
-        <ui-checkbox
-          formControlName="individualEmail"
-          [(ngModel)]="separateEmail"
-        >
-          <ng-container ngProjectAs="label">{{
-            'components.select.distribution.separateEmail' | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <ui-checkbox
+      <div class="flex w-1/2 flex-col justify-center gap-2">
+        <div class="flex items-center gap-2">
+          <ui-checkbox
+            class="whitespace-nowrap"
+            formControlName="individualEmail"
+            [(ngModel)]="separateEmail"
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.select.distribution.separateEmail' | translate
+            }}</ng-container>
+          </ui-checkbox>
+          <button
+            type="button"
+            class="flex shrink-0 cursor-help border-0 bg-transparent p-0"
+            [attr.aria-label]="
+              'components.select.distribution.sendseparate.description'
+                | translate
+            "
+            [uiTooltip]="
+              'components.select.distribution.sendseparate.description'
+                | translate
+            "
+          >
+            <ui-icon icon="help_outline" variant="grey"></ui-icon>
+          </button>
+        </div>
+        <div
           *ngIf="query.get('individualEmail').value"
-          class="mt-2"
-          formControlName="individualEmailToDistributionList"
+          class="flex items-center gap-2"
         >
-          <ng-container ngProjectAs="label">{{
-            'components.select.distribution.separateEmailToDistributionList'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
+          <ui-checkbox
+            class="whitespace-nowrap"
+            formControlName="individualEmailToDistributionList"
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.select.distribution.separateEmailToDistributionList'
+                | translate
+            }}</ng-container>
+          </ui-checkbox>
+          <button
+            type="button"
+            class="flex shrink-0 cursor-help border-0 bg-transparent p-0"
+            [attr.aria-label]="
+              'components.select.distribution.sendseparate.alsoToDistributionList'
+                | translate
+            "
+            [uiTooltip]="
+              'components.select.distribution.sendseparate.alsoToDistributionList'
+                | translate
+            "
+          >
+            <ui-icon icon="help_outline" variant="grey"></ui-icon>
+          </button>
+        </div>
       </div>
     </div>
 

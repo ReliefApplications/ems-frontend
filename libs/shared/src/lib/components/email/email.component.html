@@ -95,46 +95,60 @@
                     {{ element.name }}
                   </td>
                 </ng-container>
-                <ng-container cdkColumnDef="alerttype">
+                <ng-container cdkColumnDef="delivery">
                   <th uiCellHeader *cdkHeaderCellDef scope="col">
                     <span class="headerTitle">
-                      {{ 'components.email.notification.type' | translate }}
+                      {{ 'components.email.notification.delivery' | translate }}
                     </span>
                   </th>
                   <td uiCell *cdkCellDef="let element">
-                    <button
-                      type="button"
-                      class="cursor-text py-0.5 px-2 font-medium text-blue-600 rounded-full flex focus:ring-4 bg-blue-50 dark:border-blue-500"
-                    >
-                      <svg
-                        class="w-3 h-3 mt-1 text-blue-500 me-2"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"
-                        />
-                        <path
-                          d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"
-                        />
-                      </svg>
-                      {{ element.notificationType }}
-                    </button>
+                    <shared-email-delivery
+                      [schedule]="element.schedule"
+                    ></shared-email-delivery>
                   </td>
                 </ng-container>
 
-                <ng-container cdkColumnDef="createdby">
+                <ng-container cdkColumnDef="status">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{ 'common.status' | translate }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    <shared-status-options
+                      [status]="element.status"
+                      [isDraft]="element.isDraft"
+                    ></shared-status-options>
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="configuredBy">
                   <th uiCellHeader *cdkHeaderCellDef scope="col">
                     <span class="headerTitle">
                       {{
-                        'models.customNotification.lastExecution' | translate
+                        'components.email.notification.configuredBy' | translate
                       }}
                     </span>
                   </th>
                   <td uiCell *cdkCellDef="let element">
-                    {{ element?.createdBy?.name }}
+                    {{ element?.createdBy?.name || '-' }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="lastExecution">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{
+                        'components.email.notification.lastExecution'
+                          | translate
+                      }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    {{
+                      (element.lastExecution
+                        | sharedDate : 'short' : executionTimezone) || '-'
+                    }}
                   </td>
                 </ng-container>
                 <div

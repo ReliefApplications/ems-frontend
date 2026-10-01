@@ -18,6 +18,7 @@ import { DatasetFilterComponent } from './dataset-filter.component';
 // The component only needs the application service token from the library
 // barrel; importing the real barrel drags in every widget of the library.
 jest.mock('../../../../../index', () => ({
+  // eslint-disable-next-line jsdoc/require-jsdoc
   ApplicationService: class {},
   ContentType: { form: 'form', workflow: 'workflow', dashboard: 'dashboard' },
 }));
@@ -70,6 +71,10 @@ describe('DatasetFilterComponent', () => {
           (options.csFilters ?? []).map((filter) => new FormControl(filter))
         ),
       }),
+      navigateSettings: new FormGroup({
+        field: new FormControl(null),
+      }),
+      navigateToPage: new FormControl(false),
     });
 
   beforeEach(async () => {
@@ -79,7 +84,10 @@ describe('DatasetFilterComponent', () => {
       appendFields: EmailService.prototype.appendFields,
       disableSaveAndProceed: new BehaviorSubject<boolean>(false),
       disableSaveAsDraft: new BehaviorSubject<boolean>(false),
+      title: new BehaviorSubject<string>('Block 1'),
+      index: new BehaviorSubject<number>(0),
       buildCommonServiceFields: jest.fn(),
+      updateSeparateEmail: jest.fn(() => false),
     };
 
     await TestBed.configureTestingModule({
@@ -123,6 +131,21 @@ describe('DatasetFilterComponent', () => {
     emailServiceMock.computedCommonServiceFields = [{ name: 'Country' }];
 
     expect(component.csFilterReferenceFields).toEqual([{ name: 'Country' }]);
+  });
+
+  it('loads existing resource metadata only once during initialization', () => {
+    component.activeTab = { index: 0, blockHeaderCount: 1 };
+    component.tabs = [
+      { index: 0, blockHeaderCount: 1, title: 'Block 1', active: true },
+    ];
+    const getResourceData = jest
+      .spyOn(component, 'getResourceData')
+      .mockImplementation(() => undefined);
+
+    component.ngOnInit();
+
+    expect(getResourceData).toHaveBeenCalledTimes(1);
+    expect(getResourceData).toHaveBeenCalledWith(false);
   });
 
   describe('dataset token settings for the Common Services filter', () => {

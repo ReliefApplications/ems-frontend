@@ -1,38 +1,26 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { EmailService } from '../../email.service';
 import { CreateNotificationComponent } from './create-notification.component';
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
 
 describe('CreateNotificationComponent', () => {
-  let component: CreateNotificationComponent;
-  let fixture: ComponentFixture<CreateNotificationComponent>;
+  it('shows language names in the current and target languages', () => {
+    const emailService = {
+      datasetsForm: new FormGroup({}),
+      notificationTypes: [],
+    } as unknown as EmailService;
+    const translate = {
+      currentLang: 'en',
+      defaultLang: 'en',
+      getLangs: () => ['en', 'fr'],
+    } as TranslateService;
+    const component = new CreateNotificationComponent(
+      emailService,
+      {} as SnackbarService,
+      translate
+    );
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [CreateNotificationComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-      ],
-      providers: [TranslateService],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CreateNotificationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component.getLanguageLabel('fr')).toBe('French / Français');
   });
 });

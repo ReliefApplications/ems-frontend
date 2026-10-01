@@ -32,7 +32,7 @@ import { ApplicationService } from '../../../services/application/application.se
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom, map, Observable, of, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
@@ -509,14 +509,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     // Send email using backend mail service.
     if (options.sendMail) {
       const selectedIds = clone(this.grid.selectedRows);
-      this.emailService.getCustomTemplates().subscribe({
+      this.emailService.getCustomTemplates(options.templates || []).subscribe({
         next: ({ data }) => {
-          const allTemplateData = data.customTemplates.edges.map(
-            (x: any) => x.node
-          );
-          const templates = allTemplateData.filter((template: any) =>
-            options.templates?.includes(template.id)
-          );
+          const templates = data.customTemplates.edges.map((x: any) => x.node);
           if (templates.length === 0) {
             // no template found, skip
             this.snackBar.openSnackBar(
@@ -526,15 +521,18 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               { error: true }
             );
           } else {
-            this.emailService.getEmailDistributionList().subscribe({
-              next: async ({ data }) => {
-                const allDistributionLists =
-                  data.emailDistributionLists.edges.map((x: any) => x.node);
-
-                const distributionList = allDistributionLists.filter(
-                  (dl: any) => options.distributionList === dl.id
-                )[0];
-
+            const distributionListQuery: Observable<unknown> =
+              options.distributionList
+                ? this.emailService
+                    .getEmailDistributionList(options.distributionList)
+                    .pipe(
+                      map(
+                        ({ data }) => data.emailDistributionLists.edges[0]?.node
+                      )
+                    )
+                : of(undefined);
+            distributionListQuery.subscribe({
+              next: async (distributionList) => {
                 // Open email template selection
                 const { EmailTemplateModalComponent } = await import(
                   '../../email-template-modal/email-template-modal.component'
@@ -554,9 +552,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 );
                 if (value?.template) {
                   const selectedId = value?.template;
-                  const template = templates.filter(
-                    (x: any) => x.id === selectedId
-                  )[0];
+                  const template = templates.find(
+                    (item: any) => item.id === selectedId
+                  );
                   if (template) {
                     const emailQuery = this.buildEmailQuery(
                       selectedIds,

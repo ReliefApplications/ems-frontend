@@ -1,20 +1,24 @@
 <div [formGroup]="scheduleForm">
-  <div class="my-2">
-    <ui-checkbox
-      formControlName="scheduleEnabled"
-      uiTooltip="{{
-        this.scheduleForm.get('scheduleEnabled')?.value
-          ? ('components.email.schedule.disable.tooltip' | translate)
-          : ('components.email.schedule.enable.tooltip' | translate)
-      }}"
-    >
+  <div class="my-2 flex items-center gap-1">
+    <ui-checkbox formControlName="scheduleEnabled">
       <ng-container ngProjectAs="label">{{
         'components.email.schedule.title' | translate
       }}</ng-container>
     </ui-checkbox>
+    <button
+      type="button"
+      class="flex cursor-help border-0 bg-transparent p-0"
+      [attr.aria-label]="'components.email.schedule.description' | translate"
+      [uiTooltip]="'components.email.schedule.description' | translate"
+    >
+      <ui-icon icon="help_outline" variant="grey"></ui-icon>
+    </button>
   </div>
   <div *ngIf="this.scheduleForm.get('scheduleEnabled')?.value">
     <ng-container ngProjectAs="content" class="flex flex-col">
+      <p class="mb-2 text-sm text-gray-500">
+        {{ 'components.email.schedule.timezoneNotice' | translate }}
+      </p>
       <!-- Show readable value of the schedule -->
       <ui-alert
         *ngIf="this.scheduleForm.get('cronValue')?.value && scheduleCron.valid"

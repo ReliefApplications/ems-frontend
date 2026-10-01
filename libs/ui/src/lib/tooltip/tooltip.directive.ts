@@ -33,6 +33,10 @@ export class TooltipDirective implements OnDestroy {
   @Input() uiTooltipPosition: TooltipPosition = 'bottom';
   /** Overlay reference */
   private overlayRef!: OverlayRef;
+  /** Whether the pointer is currently over the host. */
+  private isHovered = false;
+  /** Whether keyboard focus is currently within the host. */
+  private isFocused = false;
 
   /**
    * Tooltip directive.
@@ -137,6 +141,22 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseenter')
   onMouseEnter() {
+    this.isHovered = true;
+    this.showHint();
+  }
+
+  /** Show the tooltip when its host receives keyboard focus. */
+  @HostListener('focusin')
+  onFocusIn() {
+    this.isFocused = true;
+    this.showHint();
+  }
+
+  /** Create and display the tooltip overlay. */
+  private showHint() {
+    if (this.overlayRef?.hasAttached()) {
+      return;
+    }
     if (this.enableBy !== 'default') {
       this.tooltipDisabled = this.disableTooltipByCase();
     }
@@ -157,7 +177,22 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseleave')
   onMouseLeave() {
-    this.removeHint();
+    this.isHovered = false;
+    this.removeHintIfInactive();
+  }
+
+  /** Remove the tooltip when keyboard focus leaves its host. */
+  @HostListener('focusout')
+  onFocusOut() {
+    this.isFocused = false;
+    this.removeHintIfInactive();
+  }
+
+  /** Remove the tooltip only after both pointer and keyboard leave the host. */
+  private removeHintIfInactive() {
+    if (!this.isHovered && !this.isFocused) {
+      this.removeHint();
+    }
   }
 
   /**

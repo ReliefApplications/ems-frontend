@@ -20,6 +20,6 @@
     *ngFor="let language of languageOptions"
     (click)="onSelectLanguage(language.code)"
   >
-    {{ language.currentName }} / {{ language.nativeName }}
+    {{ language.label }}
   </button>
 </ui-menu>

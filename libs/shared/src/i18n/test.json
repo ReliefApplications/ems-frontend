@@ -514,6 +514,7 @@
     "status": "******",
     "status_active": "******",
     "status_archived": "******",
+    "status_draft": "******",
     "status_pending": "******",
     "step": {
       "few": "******",
@@ -1031,10 +1032,15 @@
       },
       "name": "******",
       "notification": {
+        "configuredBy": "******",
         "create": "******",
+        "delivery": "******",
         "language": "******",
         "languageDescription": "******",
+        "lastExecution": "******",
         "list": "******",
+        "manual": "******",
+        "scheduled": "******",
         "selectLanguage": "******",
         "type": "******",
         "validTitle": "******"
@@ -1052,6 +1058,7 @@
       },
       "saveAsDraft": "******",
       "schedule": {
+        "description": "******",
         "disable": {
           "checkbox": "******",
           "tooltip": "******"
@@ -1060,6 +1067,7 @@
           "checkbox": "******",
           "tooltip": "******"
         },
+        "timezoneNotice": "******",
         "title": "******"
       },
       "subscribe": {
@@ -1716,6 +1724,7 @@
         "noPreviewData": "******",
         "sendseparate": {
           "alsoToDistributionList": "******",
+          "description": "******",
           "list": "******",
           "ownRecipientOnly": "******"
         },

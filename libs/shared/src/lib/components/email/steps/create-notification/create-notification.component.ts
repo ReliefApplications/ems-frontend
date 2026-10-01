@@ -4,7 +4,7 @@ import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { getLanguageNativeName } from '../../../../utils/languages';
+import { getLanguageDisplayLabel } from '../../../../utils/languages';
 import { takeUntil } from 'rxjs';
 
 /**
@@ -33,13 +33,13 @@ export class CreateNotificationComponent
   private snackBars: any[] = [];
 
   /**
-   * Native display name for a language code, shown in the language dropdown.
+   * Bilingual display name for a language code, shown in the language dropdown.
    *
    * @param lang ISO language code.
-   * @returns The language native name.
+   * @returns The language name in the current and target languages.
    */
   public getLanguageLabel(lang: string): string {
-    return getLanguageNativeName(lang);
+    return getLanguageDisplayLabel(lang, this.translate);
   }
 
   /**

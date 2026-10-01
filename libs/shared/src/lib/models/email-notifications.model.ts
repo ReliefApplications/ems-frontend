@@ -6,6 +6,21 @@ import { GraphqlNodesResponse } from './graphql-query.model';
 export const EMAIL_NOTIFICATION_TYPES = ['email', 'alert', 'push notification'];
 export type EmailNotificationTypes = (typeof EMAIL_NOTIFICATION_TYPES)[number];
 
+/** Supported lifecycle statuses for email notifications. */
+export const EMAIL_NOTIFICATION_STATUSES = [
+  'active',
+  'pending',
+  'archived',
+] as const;
+export type EmailNotificationStatus =
+  (typeof EMAIL_NOTIFICATION_STATUSES)[number];
+
+/** Email notification scheduling configuration. */
+export interface EmailNotificationSchedule {
+  scheduleEnabled?: boolean | null;
+  cronValue?: string | null;
+}
+
 /**
  * Email notification item
  */
@@ -19,6 +34,8 @@ export interface EmailNotification {
   name: string;
   id: string;
   notificationType: EmailNotificationTypes;
+  schedule?: EmailNotificationSchedule | null;
+  status: EmailNotificationStatus;
   /** ISO language code the notification renders its data in (e.g. 'en', 'uk'). */
   language?: string;
   createdBy: {
@@ -27,6 +44,7 @@ export interface EmailNotification {
   };
   isDraft: boolean;
   isDeleted: boolean;
+  lastExecution: string | null;
   draftStepper: any;
   __typename: string;
   attachments: EmailNotificationAttachment;

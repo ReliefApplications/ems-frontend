@@ -15,17 +15,18 @@ import {
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs/operators';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { getLanguageName, getLanguageNativeName } from '../../utils/languages';
+import {
+  getLanguageDisplayLabel,
+  getLanguageNativeName,
+} from '../../utils/languages';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /** Language option displayed in the switcher. */
 interface LanguageOption {
   /** Language code. */
   code: string;
-  /** Language name in the active language. */
-  currentName: string;
-  /** Language native name. */
-  nativeName: string;
+  /** Language name in the active language and its native name. */
+  label: string;
 }
 
 /**
@@ -172,8 +173,7 @@ export class LanguageSwitchComponent
       .filter((code: string) => code !== language)
       .map((code: string) => ({
         code,
-        currentName: getLanguageName(code, this.translate),
-        nativeName: getLanguageNativeName(code),
+        label: getLanguageDisplayLabel(code, this.translate),
       }));
   }
 }

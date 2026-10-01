@@ -514,6 +514,7 @@
     "status": "Statut",
     "status_active": "Actif",
     "status_archived": "Archivé",
+    "status_draft": "Brouillon",
     "status_pending": "Inactif",
     "step": {
       "few": "Etape",
@@ -1031,10 +1032,15 @@
       },
       "name": "Email",
       "notification": {
+        "configuredBy": "Configuré par",
         "create": "Créer une notification",
+        "delivery": "Mode d'envoi",
         "language": "Langue",
         "languageDescription": "La langue utilisée pour afficher les données de cette notification (champs traduits et valeurs de choix).",
+        "lastExecution": "Dernière exécution (UTC)",
         "list": "Liste des notifications",
+        "manual": "Manuel",
+        "scheduled": "Planifié",
         "selectLanguage": "Sélectionner une langue",
         "type": "Type d'alerte",
         "validTitle": "Veuillez saisir un titre"
@@ -1052,6 +1058,7 @@
       },
       "saveAsDraft": "Enregistrer comme brouillon",
       "schedule": {
+        "description": "Envoie automatiquement cette notification selon la planification configurée. Les heures utilisent UTC.",
         "disable": {
           "checkbox": "Désactiver",
           "tooltip": "Cliquez pour désactiver le planificateur"
@@ -1060,6 +1067,7 @@
           "checkbox": "Activer le planificateur",
           "tooltip": "Cliquez pour activer le planificateur"
         },
+        "timezoneNotice": "Les planifications s'exécutent en temps universel coordonné (UTC).",
         "title": "Planifier les alertes"
       },
       "subscribe": {
@@ -1718,7 +1726,8 @@
         "label": "Nom de la liste de distribution*",
         "noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
         "sendseparate": {
-          "alsoToDistributionList": "Chacun de ces e-mails est également envoyé à la liste de distribution.",
+          "alsoToDistributionList": "Pour chaque enregistrement du jeu de données, envoie également un e-mail à la liste de distribution configurée.",
+          "description": "Pour chaque enregistrement du jeu de données, envoie un e-mail séparé à chaque destinataire identifié à partir des champs et filtres ci-dessous. Le bloc de jeu de données séparé contient uniquement cet enregistrement.",
           "list": "Envoyer des e-mails à des destinataires distincts",
           "ownRecipientOnly": "Chacun de ces e-mails est envoyé uniquement à son propre destinataire."
         },
