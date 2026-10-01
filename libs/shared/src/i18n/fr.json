@@ -1795,7 +1795,6 @@
       "fields": "Champs",
       "message": "Message affiché à l'utilisateur",
       "messagePlaceholder": "Un enregistrement avec les mêmes valeurs existe déjà.",
-      "messageTokensHint": "Jetons :",
       "name": "Nom",
       "one": "Règle d'unicité",
       "remove": "Supprimer la règle",
