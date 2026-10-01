@@ -45,7 +45,9 @@
             <div uiChipList>
               <ui-chip
                 class="!rounded-lg"
-                [variant]="element.severity === 'warning' ? 'warning' : 'danger'"
+                [variant]="
+                  element.severity === 'warning' ? 'warning' : 'danger'
+                "
               >
                 {{
                   (element.severity === 'warning'

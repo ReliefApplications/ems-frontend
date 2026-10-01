@@ -107,7 +107,9 @@
               }}</label>
               <ui-select-menu formControlName="operator">
                 <ui-select-option value="eq">
-                  {{ 'components.uniquenessRules.condition.equals' | translate }}
+                  {{
+                    'components.uniquenessRules.condition.equals' | translate
+                  }}
                 </ui-select-option>
                 <ui-select-option value="ne">
                   {{
@@ -174,8 +176,7 @@
           </div>
           <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
             <label>{{
-              'components.uniquenessRules.dateIntersection.endField'
-                | translate
+              'components.uniquenessRules.dateIntersection.endField' | translate
             }}</label>
             <ui-select-menu formControlName="endField">
               <ui-select-option
