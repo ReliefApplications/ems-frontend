@@ -38,6 +38,7 @@ import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
   Record,
+  ValidationError,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
@@ -779,7 +780,7 @@ export class CoreGridComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
-        if (data?.editRecord.data) {
+        if (data?.editRecord?.data) {
           const editedData = data.editRecord.data;
           this.apollo
             .query<ResourceQueryResponse>({
@@ -878,43 +879,47 @@ export class CoreGridComponent
         delete item.saved;
         delete item.validationErrors;
       }
+      // Mutations are sent, and answered, in the order of the updated items
+      const editedIds = this.updatedItems.map((x) => x.id);
       return Promise.all(this.promisedChanges()).then((allRes) => {
-        if (allRes) {
-          const hasErrors = allRes.filter((item: any) => {
-            if (item.data.editRecord.validationErrors) {
-              return item.data.editRecord.validationErrors.length;
-            }
-          });
-          if (hasErrors.length > 0) {
-            this.grid?.expandActionsColumn();
-          }
-        }
-        for (const res of allRes) {
-          const resRecord: Record = res.data.editRecord;
-          const updatedIndex = this.updatedItems.findIndex(
-            (x) => x.id === resRecord.id
-          );
-          const item = this.items.find((x) => x.id === resRecord.id);
-          if (resRecord?.validationErrors?.length) {
+        let hasErrors = false;
+        allRes.forEach((res, index) => {
+          const id = editedIds[index];
+          const resRecord: Record | null | undefined = res.data?.editRecord;
+          const updatedIndex = this.updatedItems.findIndex((x) => x.id === id);
+          const item = this.items.find((x) => x.id === id);
+          // The edition can be rejected as a whole ( e.g. because of a blocking
+          // uniqueness rule ): no record is returned then, only the reason, to
+          // display the same way as validation errors
+          const validationErrors = resRecord
+            ? resRecord.validationErrors
+            : this.getEditionErrors(res.errors);
+          if (validationErrors?.length) {
+            hasErrors = true;
             // if the item has an error, save the error with the item object
-            this.updatedItems[updatedIndex].incrementalId =
-              resRecord.incrementalId;
-            this.updatedItems[updatedIndex].validationErrors =
-              resRecord.validationErrors;
-            item.incrementalId = resRecord.incrementalId;
-            item.validationErrors = resRecord.validationErrors;
+            const incrementalId =
+              resRecord?.incrementalId ?? item?.incrementalId ?? id;
+            this.updatedItems[updatedIndex].incrementalId = incrementalId;
+            this.updatedItems[updatedIndex].validationErrors = validationErrors;
+            if (item) {
+              item.incrementalId = incrementalId;
+              item.validationErrors = validationErrors;
+            }
           } else {
             // if no errors, the item has been saved in the database
             // remove the item from updatedItems list
             this.updatedItems.splice(updatedIndex, 1);
             // save the new value of the item in the originalItems list
             const originalIndex = this.originalItems.findIndex(
-              (x) => x.id === resRecord.id
+              (x) => x.id === id
             );
             this.originalItems[originalIndex] = item;
             // add a property to indicate the item is saved
             item.saved = true;
           }
+        });
+        if (hasErrors) {
+          this.grid?.expandActionsColumn();
         }
         this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
@@ -941,6 +946,27 @@ export class CoreGridComponent
     } else {
       return Promise.resolve(false);
     }
+  }
+
+  /**
+   * Builds the validation errors to display for a record whose edition has
+   * been rejected by the back-end.
+   *
+   * @param errors GraphQL errors returned by the mutation, if any
+   * @returns validation errors of the record
+   */
+  private getEditionErrors(
+    errors?: readonly { message: string }[]
+  ): ValidationError[] {
+    return [
+      {
+        // The error is about the record, not one of its fields
+        question: '-',
+        errors: errors?.length
+          ? errors.map((x) => x.message)
+          : [this.translate.instant('models.form.notifications.savingFailed')],
+      },
+    ];
   }
 
   /**

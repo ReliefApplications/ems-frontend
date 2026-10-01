@@ -8,6 +8,11 @@ import { RestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { Dialog } from '@angular/cdk/dialog';
+import {
+  getUploadReportModalData,
+  UploadReportRow,
+} from '../../utils/validation-errors.util';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -40,12 +45,14 @@ export class DownloadService {
    * @param translate Angular translate service
    * @param restService Shared rest service
    * @param document document
+   * @param dialog Dialog service
    */
   constructor(
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private dialog: Dialog
   ) {}
 
   /**
@@ -312,21 +319,46 @@ export class DownloadService {
     formData.append('excelFile', file, file.name);
     return this.restService.post(path, formData, { headers }).pipe(
       tap({
-        next: () => {
+        next: (res: any) => {
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.ready'
           );
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          // The file was imported, but some rows may duplicate other records
+          this.showUploadReport(res?.warnings, 'warnings');
         },
-        error: (err) => {
+        error: (err: any) => {
           snackBarSpinner.instance.message = this.getUploadErrorMessage(err);
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          // The file was rejected because of some of its rows
+          this.showUploadReport(err?.details?.errors, 'errors');
         },
       })
     );
+  }
+
+  /**
+   * Lists, in a modal, the rows of an uploaded file violating uniqueness
+   * rules, if any.
+   *
+   * @param rows rows reported by the back-end
+   * @param type whether the rows carry errors ( file rejected ) or warnings ( file imported )
+   */
+  private async showUploadReport(
+    rows: UploadReportRow[] | undefined,
+    type: 'errors' | 'warnings'
+  ): Promise<void> {
+    const data = getUploadReportModalData(rows, type, this.translate);
+    if (!data) {
+      return;
+    }
+    const { ErrorsModalComponent } = await import(
+      '../../components/ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, { data, autoFocus: false });
   }
 
   /**

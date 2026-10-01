@@ -35,6 +35,9 @@ export class LocalizedInputComponent implements ControlValueAccessor {
   /** Render as `<input>` (default) or `<textarea>`. */
   @Input() type: 'text' | 'textarea' = 'text';
 
+  /** Placeholder displayed while the active locale has no value. */
+  @Input() placeholder = '';
+
   /** List of locales rendered as tabs, exposed for the template. */
   readonly locales = SUPPORTED_LOCALES;
 

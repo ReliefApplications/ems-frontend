@@ -4,6 +4,7 @@
     "accessDenied": "Access denied",
     "account": "Account",
     "actions": "Actions",
+    "active": "Active",
     "activity": {
       "few": "Activities",
       "none": "No activity",
@@ -173,6 +174,7 @@
     "deleteObject": "Delete {{name}}",
     "deleted": "Deleted",
     "desc": "Descending",
+    "discard": "Discard",
     "dismiss": "Dismiss",
     "display": "Display",
     "distributionList": {
@@ -242,6 +244,7 @@
     "hide": "Hide",
     "history": "History",
     "id": "Id",
+    "inactive": "Inactive",
     "input": {
       "dateRange": "Date range",
       "none": "-- None --",
@@ -360,6 +363,7 @@
         "timestamp": "Date / Timestamp"
       },
       "emailSent": "Email sent successfully.",
+      "error": "Error: {{error}}",
       "export": {
         "download": "Download",
         "format": "Format:",
@@ -556,6 +560,11 @@
       "few": "Users",
       "none": "No user",
       "one": "User"
+    },
+    "validation": {
+      "few": "Validation",
+      "none": "No validation",
+      "one": "Validation"
     },
     "value": {
       "few": "Values",
@@ -1755,6 +1764,50 @@
         "title": "Template type"
       }
     },
+    "uniquenessRules": {
+      "active": "Active",
+      "add": "Add a rule",
+      "condition": {
+        "title": "Only apply when..."
+      },
+      "dateIntersection": {
+        "allowAdjacent": "Allow ranges to touch (adjacent periods are not a conflict)",
+        "endField": "End date field",
+        "startField": "Start date field",
+        "title": "Records must not have overlapping date ranges"
+      },
+      "delete": {
+        "confirmationMessage": "Do you confirm the deletion of the rule {{name}}?"
+      },
+      "description": "Configure uniqueness rules",
+      "edit": "Edit rule",
+      "empty": "No uniqueness rule configured. Records can be created and edited freely.",
+      "errors": {
+        "fieldsRequired": "Select at least one field for this rule."
+      },
+      "fields": "Fields",
+      "message": "Message shown to the user",
+      "messagePlaceholder": "A record with the same values already exists.",
+      "name": "Name",
+      "one": "Uniqueness rule",
+      "remove": "Remove rule",
+      "severity": "Severity",
+      "severityError": "Block (prevent saving)",
+      "severityWarning": "Warn (let the user save anyway)",
+      "title": "Uniqueness rules",
+      "upload": {
+        "errors": {
+          "subtitle": "The file was not imported, as these rows violate uniqueness rules. Fix them and upload the file again:",
+          "title": "File not imported"
+        },
+        "row": "Row {{row}}",
+        "rowHeader": "Row",
+        "warnings": {
+          "subtitle": "The file was imported, but these rows generated warnings:",
+          "title": "File imported with warnings"
+        }
+      }
+    },
     "user": {
       "delete": {
         "confirmationMessage": "Do you confirm the deletion of the user {{name}}?",
@@ -2040,8 +2093,13 @@
         "validation": {
           "help": "Please edit the record using the 'update' button for more details.",
           "questionTitle": "Errors on field {{question}}:",
+          "saveAnyway": "Save anyway",
           "subtitle": "These errors where found while saving changes:",
-          "title": "Validation failed for record {{record}}"
+          "title": "Validation failed for record {{record}}",
+          "warningHelp": "These are only warnings: you can review the record, or save it anyway.",
+          "warningSubtitle": "These warnings were generated while saving:",
+          "warningTitle": "Validation warnings",
+          "warnings": "Warnings"
         }
       },
       "settings": {

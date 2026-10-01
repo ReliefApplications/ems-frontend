@@ -40,6 +40,10 @@ import { AutoTranslateService } from '../../services/auto-translate/auto-transla
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import {
+  areOnlyWarnings,
+  getValidationModalData,
+} from '../../utils/validation-errors.util';
 import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
 
 /**
@@ -117,6 +121,8 @@ export class FormComponent
 
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
+  /** Captcha token obtained for the current submission, if any */
+  private captchaToken: string | null = null;
   /** Invalidates field history widgets after this form saves a new version. */
   private fieldHistoryRefresh$ = new Subject<string | undefined>();
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -318,25 +324,38 @@ export class FormComponent
   }
 
   /**
-   * Show errors using ErrorsModalComponent
+   * Show errors using ErrorsModalComponent. Blocking errors have no way to
+   * be bypassed; non-blocking warnings (e.g. a uniqueness rule with a
+   * 'warning' severity) let the user save anyway, in which case onConfirm
+   * is called to resubmit the record with validation skipped.
    *
    * @param errors list of validation errors
    * @param incrementalId record incremental id
+   * @param onConfirm called if the user chooses to save despite the warnings
    */
   private async showLocalErrors(
     errors: any[],
-    incrementalId?: string
+    incrementalId?: string,
+    onConfirm?: () => void
   ): Promise<void> {
     const { ErrorsModalComponent } = await import(
       '../ui/core-grid/errors-modal/errors-modal.component'
     );
-    this.dialog.open(ErrorsModalComponent, {
-      data: {
-        incrementalId: incrementalId || this.record?.incrementalId || '',
-        errors: errors,
-      },
+    const dialogRef = this.dialog.open(ErrorsModalComponent, {
+      data: getValidationModalData(
+        errors,
+        incrementalId || this.record?.incrementalId || '',
+        this.translate
+      ),
       autoFocus: false,
     });
+    if (onConfirm && areOnlyWarnings(errors)) {
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        if (res) {
+          onConfirm();
+        }
+      });
+    }
   }
 
   /**
@@ -384,19 +403,18 @@ export class FormComponent
         question.value = result;
       }
     });
-    let mutation: any;
     this.surveyActive = false;
 
     // Ask for a captcha token before saving, when required ( e.g. public forms )
-    let captchaToken: string | null = null;
+    this.captchaToken = null;
     if (
       !this.record &&
       !this.form.uniqueRecord &&
       !this.lastDraftRecord &&
       this.requestCaptchaToken
     ) {
-      captchaToken = await this.requestCaptchaToken();
-      if (!captchaToken) {
+      this.captchaToken = await this.requestCaptchaToken();
+      if (!this.captchaToken) {
         // Submission cancelled: let the user submit again
         this.survey.clear(false, true);
         this.surveyActive = true;
@@ -430,9 +448,22 @@ export class FormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
-    const publishingDraft = !!this.lastDraftRecord;
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
     fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
+    this.submitRecord(false);
+  }
+
+  /**
+   * Sends the addRecord / editRecord mutation for the current survey data.
+   *
+   * @param skipValidation when true, save even if a non-blocking (warning)
+   * uniqueness rule is violated - used to resubmit after the user confirms
+   * the warning modal.
+   */
+  private submitRecord(skipValidation: boolean): void {
+    let mutation: any;
+    const publishingDraft = !!this.lastDraftRecord;
+    const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
     // If is a restored draft, publish it
     if (publishingDraft) {
       mutation = this.apollo.mutate<EditRecordMutationResponse>({
@@ -443,6 +474,7 @@ export class FormComponent
           template: this.form.id,
           lang: this.translate.currentLang,
           updateDraftStatus: false,
+          skipValidation,
         },
       });
       // If is an already saved record, edit it
@@ -457,6 +489,7 @@ export class FormComponent
           data: this.survey.data,
           template:
             this.form.id !== this.record?.form?.id ? this.form.id : null,
+          skipValidation,
         },
       });
       // Else create a new one
@@ -464,11 +497,12 @@ export class FormComponent
       mutation = this.apollo.mutate<AddRecordMutationResponse>({
         // As unauthenticated users cannot read the other record fields, only
         // make sure the record has been created when submitting with a captcha
-        mutation: captchaToken ? ADD_RECORD_PUBLIC : ADD_RECORD,
+        mutation: this.captchaToken ? ADD_RECORD_PUBLIC : ADD_RECORD,
         variables: {
           form: this.form.id,
           data: this.survey.data,
-          ...(captchaToken && { captchaToken }),
+          ...(this.captchaToken && { captchaToken: this.captchaToken }),
+          skipValidation,
         },
       });
     }
@@ -477,12 +511,20 @@ export class FormComponent
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.error', {
+            error: errors[0].message,
+          }),
+          { error: true }
+        );
       } else {
-        if (data.editRecord?.validationErrors?.length) {
+        const validationErrors =
+          data.editRecord?.validationErrors || data.addRecord?.validationErrors;
+        if (validationErrors?.length) {
           this.showLocalErrors(
-            data.editRecord.validationErrors,
-            data.editRecord.incrementalId
+            validationErrors,
+            data.editRecord?.incrementalId || data.addRecord?.incrementalId,
+            () => this.submitRecord(true)
           );
           this.save.emit({ completed: false });
           this.survey.clear(false, true);

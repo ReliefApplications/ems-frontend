@@ -140,7 +140,18 @@ export class AuthInterceptorService implements HttpInterceptor {
               // redirect user to the logout page
             }
           }
-          return throwError(() => new Error(err.error || err.message));
+          const errorBody =
+            err.error && typeof err.error === 'object'
+              ? err.error.message
+              : err.error;
+          // Keep the details the back-end may send with the message ( e.g.
+          // the rows of an uploaded file violating uniqueness rules )
+          return throwError(() =>
+            Object.assign(new Error(errorBody || err.message), {
+              ...(err.error &&
+                typeof err.error === 'object' && { details: err.error }),
+            })
+          );
         })
       );
     };
