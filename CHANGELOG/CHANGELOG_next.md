@@ -1,3 +1,9 @@
+# [2.24.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.22...v2.24.0-rc.23) (2026-10-01)
+
+### Features
+
+- Build uniqueness constraints in resources ([#2931](https://github.com/ReliefApplications/ems-frontend/issues/2931)) ([e8321c4](https://github.com/ReliefApplications/ems-frontend/commit/e8321c43c91ae2f8a94b380821f95417cd24b0e1)), closes [Ab#134989](https://github.com/Ab/issues/134989)
+
 # [2.24.0-rc.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.21...v2.24.0-rc.22) (2026-09-30)
 
 ### Features
