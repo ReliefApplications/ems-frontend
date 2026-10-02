@@ -904,8 +904,13 @@ export class FormHelpersService {
    *
    * @param draftId Id of the draft record to delete
    * @param callback callback method
+   * @param errorCallback callback method called when deletion fails
    */
-  public deleteRecordDraft(draftId: string, callback?: () => void): void {
+  public deleteRecordDraft(
+    draftId: string,
+    callback?: () => void,
+    errorCallback?: () => void
+  ): void {
     this.apollo
       .mutate<DeleteRecordMutationResponse>({
         mutation: DELETE_DRAFT_RECORD,
@@ -915,8 +920,9 @@ export class FormHelpersService {
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
+          if (errors?.length) {
             this.snackBar.openSnackBar(errors[0].message, { error: true });
+            errorCallback?.();
             return;
           }
           if (callback) {
@@ -925,6 +931,7 @@ export class FormHelpersService {
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          errorCallback?.();
         },
       });
   }

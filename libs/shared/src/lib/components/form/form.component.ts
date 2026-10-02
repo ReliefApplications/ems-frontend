@@ -585,6 +585,9 @@ export class FormComponent
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
     this.valueChanged = false;
+    this.snackBar.openSnackBar(
+      this.translate.instant('components.form.draftRecords.successLoad')
+    );
   }
 
   /**

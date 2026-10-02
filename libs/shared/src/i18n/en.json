@@ -1130,6 +1130,7 @@
         "submissionMessage": "The form has successfully been submitted."
       },
       "draftRecords": {
+        "autoSaveSuccess": "Draft successfully saved on",
         "buttonLoad": "Load draft record",
         "cloneNotice": "You are duplicating a draft. Saving will create a new completed record; the original draft will remain unchanged. Use Save as draft to create a separate draft instead.",
         "confirmModal": {
@@ -1140,13 +1141,16 @@
         },
         "creationDate": "Creation date",
         "delete": "Delete this draft",
+        "listLoadError": "Draft records could not be loaded.",
         "load": "Load this draft",
+        "modificationDate": "Last updated",
         "noDrafts": "No draft available.",
         "preview": "Preview this draft",
         "previewTitle": "Draft record",
         "save": "Save as draft",
         "select": "Select draft record",
         "successEdit": "Successfully edited draft",
+        "successLoad": "Draft record successfully loaded",
         "successSave": "Successfully saved as draft"
       },
       "file": {

@@ -61,6 +61,7 @@ import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-rea
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { RecordVisibility } from '../../models/record-visibility.model';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Interface of Dialog data.
@@ -102,6 +103,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SpinnerModule,
     SurveyModule,
     DraftRecordComponent,
+    DateModule,
   ],
 })
 export class FormModalComponent
@@ -159,6 +161,10 @@ export class FormModalComponent
   private autoSavePending = false;
   /** Incremented on every user edit to detect stale auto-save responses. */
   private autoSaveRevision = 0;
+  /** Invalidates auto-save responses after the active draft changes. */
+  private autoSaveGeneration = 0;
+  /** Time of the latest successful automatic draft save. */
+  public lastAutoSavedAt?: Date;
 
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
@@ -202,7 +208,7 @@ export class FormModalComponent
   ) {
     super();
     this.autoSaveSubject
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(5000), takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.autoSaveEnabled) {
           this.performAutoSave();
@@ -974,13 +980,15 @@ export class FormModalComponent
     }
 
     const revision = this.autoSaveRevision;
+    const generation = this.autoSaveGeneration;
+    const draftId = this.lastDraftRecord;
     this.autoSavePromise = new Promise<void>((resolve) => {
-      if (this.lastDraftRecord) {
+      if (draftId) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
-              id: this.lastDraftRecord,
+              id: draftId,
               data: this.survey.data,
             },
           })
@@ -989,13 +997,14 @@ export class FormModalComponent
             next: ({ errors }) => {
               this.handleAutoSaveResponse(
                 errors,
-                this.lastDraftRecord,
+                draftId,
                 revision,
+                generation,
                 resolve
               );
             },
             error: (err: unknown) => {
-              this.handleAutoSaveError(err, resolve);
+              this.handleAutoSaveError(err, generation, resolve);
             },
           });
       } else {
@@ -1015,11 +1024,12 @@ export class FormModalComponent
                 errors,
                 data?.addRecord?.id,
                 revision,
+                generation,
                 resolve
               );
             },
             error: (err: unknown) => {
-              this.handleAutoSaveError(err, resolve);
+              this.handleAutoSaveError(err, generation, resolve);
             },
           });
       }
@@ -1032,14 +1042,20 @@ export class FormModalComponent
    * @param errors GraphQL errors, if any.
    * @param savedDraftId Saved draft id.
    * @param revision Change revision captured when the auto-save started.
+   * @param generation Active draft generation captured when auto-save started.
    * @param resolve Resolves the current auto-save promise.
    */
   private handleAutoSaveResponse(
     errors: readonly { message: string }[] | undefined,
     savedDraftId: string | undefined,
     revision: number,
+    generation: number,
     resolve: () => void
   ): void {
+    if (generation !== this.autoSaveGeneration) {
+      this.finishAutoSave(resolve);
+      return;
+    }
     if (errors?.length || !savedDraftId) {
       const message =
         errors?.[0]?.message ||
@@ -1053,6 +1069,7 @@ export class FormModalComponent
       if (this.autoSaveRevision === revision) {
         this.valueChanged = false;
       }
+      this.lastAutoSavedAt = new Date();
     }
     this.finishAutoSave(resolve);
   }
@@ -1061,9 +1078,18 @@ export class FormModalComponent
    * Handles a draft auto-save transport error.
    *
    * @param err Transport error.
+   * @param generation Active draft generation captured when auto-save started.
    * @param resolve Resolves the current auto-save promise.
    */
-  private handleAutoSaveError(err: unknown, resolve: () => void): void {
+  private handleAutoSaveError(
+    err: unknown,
+    generation: number,
+    resolve: () => void
+  ): void {
+    if (generation !== this.autoSaveGeneration) {
+      this.finishAutoSave(resolve);
+      return;
+    }
     const message = err instanceof Error ? err.message : String(err);
     this.snackBar.openSnackBar(message, { error: true });
     this.finishAutoSave(resolve);
@@ -1124,10 +1150,15 @@ export class FormModalComponent
    * @param id if of the draft record loaded
    */
   public onLoadDraftRecord(id: string): void {
+    this.autoSaveGeneration++;
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
     this.valueChanged = false;
     this.autoSaveEnabled = true;
+    this.lastAutoSavedAt = undefined;
+    this.snackBar.openSnackBar(
+      this.translate.instant('components.form.draftRecords.successLoad')
+    );
   }
 
   /**

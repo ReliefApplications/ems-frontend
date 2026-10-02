@@ -40,8 +40,18 @@ export interface AddRecordMutationResponse {
 }
 
 /** Model for draft records graphql query response */
+export interface DraftRecordSummary {
+  id: string;
+  createdAt: string;
+  modifiedAt: string;
+}
+
+/** Model for draft records graphql query response */
 export interface DraftRecordsQueryResponse {
-  records: Record[];
+  draftRecords: {
+    edges: { node: DraftRecordSummary }[];
+    totalCount: number;
+  };
 }
 
 /** Model for edit record graphql mutation response */

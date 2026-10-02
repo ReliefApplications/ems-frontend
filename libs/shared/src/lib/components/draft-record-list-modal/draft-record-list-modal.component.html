@@ -5,96 +5,90 @@
     </h3>
   </ng-container>
 
-  <ng-container ngProjectAs="content" *ngIf="!loading; else loadingTmpl">
-    <ng-container *ngIf="!empty; else emptyTmpl">
-      <!-- Table container -->
-      <div class="mt-4 overflow-x-hidden shadow-2lg">
-        <!-- Table scroll container -->
-        <div class="overflow-x-auto">
-          <table cdk-table uiTableWrapper [dataSource]="draftRecords">
-            <ng-container cdkColumnDef="createdAt">
-              <th uiCellHeader *cdkHeaderCellDef scope="col">
-                <span class="headerTitle">
-                  {{ 'components.form.draftRecords.creationDate' | translate }}
-                </span>
-              </th>
-              <td
-                uiCell
-                *cdkCellDef="let element"
-                class="!text-gray-900 !font-medium max-w-[30vw]"
-              >
-                {{ element.createdAt | sharedDate : 'short' }}
-              </td>
-            </ng-container>
-
-            <ng-container cdkColumnDef="actions">
-              <th uiCellHeader *cdkHeaderCellDef scope="col"></th>
-              <td uiCell class="flex justify-end" *cdkCellDef="let element">
-                <div class="flex items-center">
-                  <ui-button
-                    [isIcon]="true"
-                    icon="refresh"
-                    variant="primary"
-                    [disabled]="loading"
-                    uiTooltip=" {{
-                      'components.form.draftRecords.load' | translate
-                    }}"
-                    (click)="onClose(element)"
-                  >
-                  </ui-button>
-                  <ui-button
-                    [isIcon]="true"
-                    icon="visibility"
-                    variant="primary"
-                    [disabled]="loading"
-                    uiTooltip=" {{
-                      'components.form.draftRecords.preview' | translate
-                    }}"
-                    (click)="onPreview(element)"
-                  >
-                  </ui-button>
-                  <ui-button
-                    [isIcon]="true"
-                    icon="delete"
-                    variant="danger"
-                    [disabled]="loading"
-                    uiTooltip=" {{
-                      'components.form.draftRecords.delete' | translate
-                    }}"
-                    (click)="onDelete(element)"
-                  >
-                  </ui-button>
-                </div>
-              </td>
-            </ng-container>
-
-            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-            <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-        </div>
-      </div>
-    </ng-container>
+  <ng-container ngProjectAs="content">
+    <kendo-grid
+      class="mt-4"
+      [loading]="loading"
+      [data]="dataset"
+      [pageable]="pagerSettings"
+      [skip]="pageInfo.skip"
+      [pageSize]="pageInfo.take"
+      [sortable]="{ allowUnsort: false, mode: 'single' }"
+      [sort]="sort"
+      (pageChange)="onPage($event)"
+      (sortChange)="onSort($event)"
+    >
+      <kendo-grid-column
+        field="createdAt"
+        [title]="'components.form.draftRecords.creationDate' | translate"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.createdAt | sharedDate : 'medium' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column
+        field="modifiedAt"
+        [title]="'components.form.draftRecords.modificationDate' | translate"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.modifiedAt | sharedDate : 'medium' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column [sortable]="false" [width]="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="flex items-center justify-end">
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                loadingDraftId === dataItem.id && loadingDraftAction === 'load'
+                  ? 'hourglass_top'
+                  : 'refresh'
+              "
+              variant="primary"
+              [disabled]="loading || !!loadingDraftId"
+              uiTooltip="{{ 'components.form.draftRecords.load' | translate }}"
+              (click)="onClose(dataItem)"
+            ></ui-button>
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                loadingDraftId === dataItem.id &&
+                loadingDraftAction === 'preview'
+                  ? 'hourglass_top'
+                  : 'visibility'
+              "
+              variant="primary"
+              [disabled]="loading || !!loadingDraftId"
+              uiTooltip="{{
+                'components.form.draftRecords.preview' | translate
+              }}"
+              (click)="onPreview(dataItem)"
+            ></ui-button>
+            <ui-button
+              [isIcon]="true"
+              icon="delete"
+              variant="danger"
+              [disabled]="loading || !!loadingDraftId"
+              uiTooltip="{{
+                'components.form.draftRecords.delete' | translate
+              }}"
+              (click)="onDelete(dataItem)"
+            ></ui-button>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <ng-template kendoGridNoRecordsTemplate>
+        <shared-empty
+          *ngIf="!loading"
+          [title]="'components.form.draftRecords.noDrafts' | translate"
+        ></shared-empty>
+      </ng-template>
+    </kendo-grid>
   </ng-container>
 
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose variant="default">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>
-
-<!-- Empty indicator -->
-<ng-template #emptyTmpl>
-  <shared-empty
-    [title]="'components.form.draftRecords.noDrafts' | translate"
-  ></shared-empty>
-</ng-template>
-
-<!-- Loading indicator -->
-<ng-template #loadingTmpl>
-  <shared-skeleton-table
-    class="my-4 mx-0 w-full"
-    [columns]="displayedColumnsForSkeleton"
-  >
-  </shared-skeleton-table>
-</ng-template>
