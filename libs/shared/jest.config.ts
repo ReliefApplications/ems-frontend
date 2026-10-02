@@ -45,6 +45,7 @@ export default {
     '<rootDir>/src/lib/components/language-switch/language-switch.component.spec.ts',
     '<rootDir>/src/lib/components/form/form.component.spec.ts',
     '<rootDir>/src/lib/components/form-modal/form-modal-autosave.spec.ts',
+    '<rootDir>/src/lib/components/draft-record-list-modal/*.spec.ts',
     '<rootDir>/src/lib/components/ui/core-grid/core-grid.component.spec.ts',
     '<rootDir>/src/lib/components/widgets/grid/grid.component.spec.ts',
     '<rootDir>/src/lib/components/record-summary/*.spec.ts',

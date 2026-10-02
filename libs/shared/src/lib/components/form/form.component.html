@@ -9,7 +9,7 @@
   <shared-draft-record
     *ngIf="canUseDrafts"
     [survey]="survey"
-    [formId]="form.id ?? ''"
+    [form]="form"
     [beforeOpenDrafts]="beforeOpenDrafts"
     (loadDraft)="onLoadDraftRecord($event)"
   ></shared-draft-record>

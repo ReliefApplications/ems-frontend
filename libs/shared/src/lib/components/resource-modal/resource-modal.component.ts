@@ -16,6 +16,7 @@ import {
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Factory for creating scroll strategy
@@ -48,6 +49,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     TabsModule,
     SurveyModule,
     DraftRecordComponent,
+    DateModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

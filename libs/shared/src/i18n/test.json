@@ -1139,6 +1139,7 @@
         "submissionMessage": "******"
       },
       "draftRecords": {
+        "autoSaveSuccess": "******",
         "buttonLoad": "******",
         "cloneNotice": "******",
         "confirmModal": {
@@ -1149,13 +1150,16 @@
         },
         "creationDate": "******",
         "delete": "******",
+        "listLoadError": "******",
         "load": "******",
+        "modificationDate": "******",
         "noDrafts": "******",
         "preview": "******",
         "previewTitle": "******",
         "save": "******",
         "select": "******",
         "successEdit": "******",
+        "successLoad": "******",
         "successSave": "******"
       },
       "file": {

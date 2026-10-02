@@ -11,7 +11,7 @@
         <shared-draft-record
           *ngIf="showSaveAsDraft"
           [survey]="survey"
-          [formId]="form?.id ?? ''"
+          [form]="form!"
           [beforeOpenDrafts]="beforeOpenDrafts"
           (loadDraft)="onLoadDraftRecord($event)"
         ></shared-draft-record>
@@ -52,6 +52,16 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
+    <div
+      *ngIf="lastAutoSavedAt"
+      class="mr-auto flex items-center gap-1 text-sm text-green-700"
+    >
+      <ui-icon icon="check_circle" variant="success" [size]="18"></ui-icon>
+      <span>
+        {{ 'components.form.draftRecords.autoSaveSuccess' | translate }}
+        {{ lastAutoSavedAt | sharedDate : 'medium' }}
+      </span>
+    </div>
     <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
