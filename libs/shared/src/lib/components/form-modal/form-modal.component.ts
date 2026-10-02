@@ -62,6 +62,10 @@ import { AutoTranslateService } from '../../services/auto-translate/auto-transla
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { RecordVisibility } from '../../models/record-visibility.model';
 import { DateModule } from '../../pipes/date/date.module';
+import {
+  areOnlyWarnings,
+  getValidationModalData,
+} from '../../utils/validation-errors.util';
 
 /**
  * Interface of Dialog data.
@@ -488,25 +492,65 @@ export class FormModalComponent
   }
 
   /**
-   * Show errors using ErrorsModalComponent
+   * Show errors using ErrorsModalComponent. When the errors are only
+   * warnings ( e.g. a uniqueness rule with a 'warning' severity ), the user
+   * can choose to save anyway, in which case onConfirm is called to submit
+   * the record again, with validation skipped.
    *
    * @param errors list of validation errors
    * @param incrementalId record incremental id
+   * @param onConfirm called if the user chooses to save despite the warnings
    */
   private async showLocalErrors(
     errors: any[],
-    incrementalId?: string
+    incrementalId?: string,
+    onConfirm?: () => void
   ): Promise<void> {
     const { ErrorsModalComponent } = await import(
       '../ui/core-grid/errors-modal/errors-modal.component'
     );
-    this.dialog.open(ErrorsModalComponent, {
-      data: {
-        incrementalId: incrementalId || this.record?.incrementalId || '',
-        errors: errors,
-      },
+    const dialogRef = this.dialog.open(ErrorsModalComponent, {
+      data: getValidationModalData(
+        errors,
+        incrementalId || this.record?.incrementalId || '',
+        this.translate
+      ),
       autoFocus: false,
     });
+    if (onConfirm && areOnlyWarnings(errors)) {
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        if (res) {
+          this.saving = true;
+          this.autoSaveEnabled = false;
+          onConfirm();
+        }
+      });
+    }
+  }
+
+  /**
+   * Handles the validation errors returned when saving a record, if any:
+   * nothing has been saved, so the modal stays open and shows them.
+   *
+   * @param record record returned by the mutation
+   * @param onConfirm called if the user chooses to save despite the warnings
+   * @returns whether there are validation errors
+   */
+  private handleValidationErrors(
+    record: Record | null | undefined,
+    onConfirm: () => void
+  ): boolean {
+    if (!record?.validationErrors?.length) {
+      return false;
+    }
+    this.showLocalErrors(
+      record.validationErrors,
+      record.incrementalId,
+      onConfirm
+    );
+    this.saving = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
+    return true;
   }
 
   /**
@@ -572,12 +616,28 @@ export class FormModalComponent
     // await Promise.allSettled(promises);
     await this.formHelpersService.createTemporaryRecords(survey);
 
+    if (this.data.recordId && !this.isMultiEdition) {
+      fireFieldChangeTriggersForRecordUpdate(this.survey, true);
+    }
+    this.submitRecord(survey, false);
+    survey.showCompletedPage = true;
+  }
+
+  /**
+   * Sends the mutation creating or updating the record(s) with the data of
+   * the survey.
+   *
+   * @param survey current survey
+   * @param skipValidation when true, save even if a non-blocking ( warning )
+   * uniqueness rule is violated: used to submit again after the user confirms
+   * the warning modal.
+   */
+  private submitRecord(survey: any, skipValidation: boolean): void {
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
-        fireFieldChangeTriggersForRecordUpdate(this.survey, true);
-        this.updateData(this.data.recordId, survey);
+        this.updateData(this.data.recordId, survey, skipValidation);
       }
     } else if (this.lastDraftRecord) {
       this.apollo
@@ -589,16 +649,27 @@ export class FormModalComponent
             template: this.data.template,
             lang: this.translate.currentLang,
             updateDraftStatus: false,
+            skipValidation,
           },
         })
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.error', {
+                  error: errors[0].message,
+                }),
+                { error: true }
+              );
               this.saving = false;
               this.autoSaveEnabled = this.canAutoSaveDraft;
+            } else if (
+              this.handleValidationErrors(data?.editRecord, () =>
+                this.submitRecord(survey, true)
+              )
+            ) {
+              // The draft has not been published
+              return;
             } else {
               this.lastDraftRecord = undefined;
               this.valueChanged = false;
@@ -629,17 +700,28 @@ export class FormModalComponent
             form: this.data.template,
             data: survey.data,
             cloneRecordId: this.data.cloneRecordId,
+            skipValidation,
           },
         })
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.error', {
+                  error: errors[0].message,
+                }),
+                { error: true }
+              );
               this.ngZone.run(() => {
                 this.dialogRef.close();
               });
+            } else if (
+              this.handleValidationErrors(data?.addRecord, () =>
+                this.submitRecord(survey, true)
+              )
+            ) {
+              // The record has not been created
+              return;
             } else {
               if (this.lastDraftRecord) {
                 const callback = () => {
@@ -670,7 +752,6 @@ export class FormModalComponent
           },
         });
     }
-    survey.showCompletedPage = true;
   }
 
   /**
@@ -678,8 +759,10 @@ export class FormModalComponent
    *
    * @param id record id.
    * @param survey current survey.
+   * @param skipValidation when true, save even if a non-blocking ( warning )
+   * uniqueness rule is violated.
    */
-  public updateData(id: any, survey: any): void {
+  public updateData(id: any, survey: any, skipValidation = false): void {
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -689,11 +772,16 @@ export class FormModalComponent
           template: this.data.template,
           lang: this.translate.currentLang,
           ...(this.record?.draft && { updateDraftStatus: false }),
+          skipValidation,
         },
       })
       .subscribe({
         next: ({ errors, data }) => {
-          this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+          this.handleRecordMutationResponse(
+            { data, errors },
+            'editRecord',
+            () => this.updateData(id, survey, true)
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -748,10 +836,12 @@ export class FormModalComponent
    * @param response.data response data
    * @param response.errors response errors
    * @param responseType response type
+   * @param onConfirm called if the user chooses to save despite the warnings
    */
   private handleRecordMutationResponse(
     response: { data: any; errors: any },
-    responseType: 'editRecords' | 'editRecord'
+    responseType: 'editRecords' | 'editRecord',
+    onConfirm?: () => void
   ) {
     const { data, errors } = response;
     const type =
@@ -776,7 +866,8 @@ export class FormModalComponent
         ) {
           this.showLocalErrors(
             data.editRecord.validationErrors,
-            data.editRecord.incrementalId
+            data.editRecord.incrementalId,
+            onConfirm
           );
           this.saving = false;
           this.autoSaveEnabled = this.canAutoSaveDraft;

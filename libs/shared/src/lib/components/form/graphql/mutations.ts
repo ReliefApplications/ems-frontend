@@ -7,8 +7,14 @@ export const ADD_RECORD = gql`
     $data: JSON!
     $display: Boolean
     $draft: Boolean
+    $skipValidation: Boolean
   ) {
-    addRecord(form: $form, data: $data, draft: $draft) {
+    addRecord(
+      form: $form
+      data: $data
+      draft: $draft
+      skipValidation: $skipValidation
+    ) {
       id
       incrementalId
       draft
@@ -27,6 +33,11 @@ export const ADD_RECORD = gql`
           }
           data
         }
+      }
+      validationErrors {
+        question
+        errors
+        severity
       }
     }
   }
@@ -56,6 +67,7 @@ export const EDIT_RECORD = gql`
     $lang: String
     $draft: Boolean
     $updateDraftStatus: Boolean
+    $skipValidation: Boolean
   ) {
     editRecord(
       id: $id
@@ -65,6 +77,7 @@ export const EDIT_RECORD = gql`
       lang: $lang
       draft: $draft
       updateDraftStatus: $updateDraftStatus
+      skipValidation: $skipValidation
     ) {
       id
       incrementalId
@@ -78,6 +91,7 @@ export const EDIT_RECORD = gql`
       validationErrors {
         question
         errors
+        severity
       }
     }
   }

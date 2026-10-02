@@ -6,6 +6,30 @@ import { Layout } from './layout.model';
 import { Metadata } from './metadata.model';
 import { Record } from './record.model';
 
+/** Severity of a uniqueness rule violation */
+export type UniquenessRuleSeverity = 'error' | 'warning';
+
+/** Model for a scoped uniqueness rule configured on a resource. */
+export interface UniquenessRule {
+  id?: string;
+  name?: string;
+  fields: string[];
+  severity: UniquenessRuleSeverity;
+  message?: string;
+  /** Translations of the message, by language. The message is used when there is none. */
+  messageTranslations?: { [locale: string]: string | undefined } | null;
+  /** Whether the rule is enforced. Defaults to true. */
+  active?: boolean;
+  /** Restricts the rule to the records matching this filter, in the same format as the filters of layouts. */
+  condition?: { logic: 'and' | 'or'; filters: any[] } | null;
+  /** When set, checks for overlapping date ranges instead of an exact value match. */
+  dateIntersection?: {
+    startField: string;
+    endField: string;
+    allowAdjacent?: boolean;
+  };
+}
+
 /** Model for Resource object. */
 export interface Resource {
   id?: string;
@@ -17,6 +41,7 @@ export interface Resource {
   createdAt?: Date;
   records?: Connection<Record>;
   fields?: any;
+  uniquenessRules?: UniquenessRule[];
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
@@ -45,6 +70,21 @@ export interface ResourceQueryResponse {
 /** Model for edit resource mutation response object */
 export interface EditResourceMutationResponse {
   editResource: Resource;
+}
+
+/** Model for add uniqueness rule mutation response object */
+export interface AddUniquenessRuleMutationResponse {
+  addUniquenessRule: UniquenessRule;
+}
+
+/** Model for edit uniqueness rule mutation response object */
+export interface EditUniquenessRuleMutationResponse {
+  editUniquenessRule: UniquenessRule;
+}
+
+/** Model for delete uniqueness rule mutation response object */
+export interface DeleteUniquenessRuleMutationResponse {
+  deleteUniquenessRule: UniquenessRule;
 }
 
 /** Model for delete resource mutation response object */
