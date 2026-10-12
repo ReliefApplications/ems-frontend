@@ -79,8 +79,6 @@ export class DraftRecordListModalComponent
   public loading = true;
   /** Selected draft currently being loaded for an action. */
   public loadingDraftId?: string;
-  /** Action currently loading the selected draft. */
-  public loadingDraftAction?: 'load' | 'preview';
   /** Identifies the latest list request so stale responses are ignored. */
   private requestVersion = 0;
   /** Identifies the latest full-draft action request. */
@@ -190,7 +188,7 @@ export class DraftRecordListModalComponent
    * @param element Selected draft summary
    */
   async onPreview(element: DraftRecordSummary): Promise<void> {
-    const requestVersion = this.startDraftAction(element.id, 'preview');
+    const requestVersion = this.startDraftAction(element.id);
     try {
       const record = await this.loadDraft(element.id);
       if (requestVersion !== this.actionRequestVersion) return;
@@ -201,6 +199,9 @@ export class DraftRecordListModalComponent
       this.dialog.open(DraftRecordModalComponent, {
         data: { form: this.data.form, data: record.data },
       });
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.form.draftRecords.successLoad')
+      );
     } catch (err) {
       if (requestVersion === this.actionRequestVersion) {
         this.showLoadError(err);
@@ -208,7 +209,6 @@ export class DraftRecordListModalComponent
     } finally {
       if (requestVersion === this.actionRequestVersion) {
         this.loadingDraftId = undefined;
-        this.loadingDraftAction = undefined;
       }
     }
   }
@@ -280,7 +280,7 @@ export class DraftRecordListModalComponent
       return;
     }
     if (!value) return;
-    const requestVersion = this.startDraftAction(element.id, 'load');
+    const requestVersion = this.startDraftAction(element.id);
     try {
       const record = await this.loadDraft(element.id);
       if (requestVersion !== this.actionRequestVersion) return;
@@ -289,7 +289,6 @@ export class DraftRecordListModalComponent
       if (requestVersion === this.actionRequestVersion) {
         this.showLoadError(err);
         this.loadingDraftId = undefined;
-        this.loadingDraftAction = undefined;
       }
     }
   }
@@ -319,12 +318,10 @@ export class DraftRecordListModalComponent
    * Marks a full-draft request as the active action.
    *
    * @param id Selected draft id
-   * @param action Selected draft action
    * @returns Active action request version
    */
-  private startDraftAction(id: string, action: 'load' | 'preview'): number {
+  private startDraftAction(id: string): number {
     this.loadingDraftId = id;
-    this.loadingDraftAction = action;
     return ++this.actionRequestVersion;
   }
 

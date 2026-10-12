@@ -150,6 +150,29 @@ describe('DraftRecordListModalComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(record);
   });
 
+  it('opens the preview and notifies once the draft is loaded', async () => {
+    const record = { id: 'draft-id', data: { name: 'draft' } };
+    const apollo = {
+      query: jest.fn().mockReturnValue(of({ data: { record } })),
+    } as unknown as Apollo;
+    const component = createComponent(apollo);
+
+    await component.onPreview({
+      id: 'draft-id',
+      createdAt: '2026-10-01T10:00:00Z',
+      modifiedAt: '2026-10-01T11:00:00Z',
+    });
+
+    expect(dialog.open).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.objectContaining({ data: { form, data: record.data } })
+    );
+    expect(snackBar.openSnackBar).toHaveBeenCalledWith(
+      'components.form.draftRecords.successLoad'
+    );
+    expect(component.loadingDraftId).toBeUndefined();
+  });
+
   it('keeps the picker open and reports lazy-load failures', async () => {
     const apollo = {
       query: jest
