@@ -14,7 +14,8 @@
         [formControl]="targetFieldControl"
       ></kendo-dropdownlist>
     </div>
-    <div class="flex flex-col gap-1 flex-1">
+    <!-- A single allowed language is applied to every file: nothing to pick -->
+    <div *ngIf="!fixedLanguage" class="flex flex-col gap-1 flex-1">
       <kendo-label
         [for]="languageDropdown"
         [text]="'components.filesUpload.language' | translate"

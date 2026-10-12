@@ -11,6 +11,8 @@ export const FILES_UPLOAD_QUESTION_TYPE = 'filesupload';
 export const FILES_MANAGEMENT_QUESTION_TYPE = 'filesmanagement';
 /** Property of the files management question hiding the survey's file questions. */
 export const HIDE_FILE_QUESTIONS_PROPERTY = 'hideFileQuestions';
+/** Property of the files upload question restricting the languages offered. */
+export const ALLOWED_LANGUAGES_PROPERTY = 'allowedLanguages';
 /** Class toggled on hidden file questions ( see survey.scss ). */
 export const FILE_QUESTION_HIDDEN_CLASS = 'file-question--hidden';
 /** Key under which the file questions visibility handler is tracked on a survey. */
@@ -73,19 +75,44 @@ export const getSurveyLanguages = (
 };
 
 /**
+ * Restricts a form's languages to the ones a files upload question allows
+ * ( its "Allowed languages" ). No restriction, or a restriction matching none
+ * of the form's languages ( e.g. the translations were removed from the form
+ * since ), keeps every language of the form.
+ *
+ * @param languages Languages of the form ( see {@link getSurveyLanguages} )
+ * @param allowedLanguages Allowed language codes, empty / undefined for no restriction
+ * @returns Languages to offer, in form order
+ */
+export const restrictLanguages = (
+  languages: string[],
+  allowedLanguages: string[] | undefined
+): string[] => {
+  const restricted = languages.filter((language) =>
+    (allowedLanguages ?? []).includes(language)
+  );
+  return restricted.length ? restricted : languages;
+};
+
+/**
  * Builds the language choices for the files upload question.
  *
  * @param survey Survey to inspect
  * @param availableLanguages Languages available in the system ( environment ), default one first
  * @param translate Angular translation service, to display the language names
+ * @param allowedLanguages Languages allowed by the question, empty for every language of the form
  * @returns Language choices
  */
 export const getLanguageChoices = (
   survey: SurveyModel | undefined,
   availableLanguages: string[],
-  translate: TranslateService
+  translate: TranslateService,
+  allowedLanguages: string[] = []
 ): WidgetChoice[] =>
-  getSurveyLanguages(survey, availableLanguages).map((code) => ({
+  restrictLanguages(
+    getSurveyLanguages(survey, availableLanguages),
+    allowedLanguages
+  ).map((code) => ({
     value: code,
     text: getLanguageName(code, translate),
   }));

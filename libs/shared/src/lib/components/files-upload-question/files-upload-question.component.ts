@@ -26,6 +26,7 @@ import { getFileIcon, isStoredFile } from '../../services/file/file.utils';
 import { FileItemActionsComponent } from '../../survey/components/file-item-actions/public-api';
 import { FilesUploadQuestion } from '../../survey/components/files-upload';
 import {
+  ALLOWED_LANGUAGES_PROPERTY,
   checkFileRestrictions,
   getFileQuestionChoices,
   getFileQuestions,
@@ -91,8 +92,10 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
 
   /** Choices of the target file question dropdown */
   public targetFieldChoices: WidgetChoice[] = [];
-  /** Choices of the language dropdown ( languages of the form ) */
+  /** Choices of the language dropdown ( languages of the form allowed by the question ) */
   public languageChoices: WidgetChoice[] = [];
+  /** Whether the language is imposed by the question: a single language is offered */
+  public fixedLanguage = false;
   /** Selected target file question */
   public targetFieldControl = new FormControl<string | null>(null);
   /** Selected language, applied to the files added from now on */
@@ -147,8 +150,12 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
     this.languageChoices = getLanguageChoices(
       this.survey,
       this.environment?.availableLanguages ?? [],
-      this.translate
+      this.translate,
+      this.question?.getPropertyValue(ALLOWED_LANGUAGES_PROPERTY) as
+        | string[]
+        | undefined
     );
+    this.fixedLanguage = this.languageChoices.length === 1;
     this.targetFieldControl.setValue(
       this.pickChoice(
         this.targetFieldChoices,
@@ -169,10 +176,11 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
       !!this.survey?.isDesignMode ||
       !!this.survey?.isDisplayMode ||
       !!this.question?.isReadOnly;
-    [this.targetFieldControl, this.languageControl].forEach((control) =>
-      this.disabled
-        ? control.disable({ emitEvent: false })
-        : control.enable({ emitEvent: false })
+    this.toggleControl(this.targetFieldControl, !this.disabled);
+    // An imposed language leaves nothing to pick ( dropdown hidden )
+    this.toggleControl(
+      this.languageControl,
+      !this.disabled && !this.fixedLanguage
     );
     this.updateTargetRestrictions();
     this.computeRows();
@@ -304,6 +312,23 @@ export class FilesUploadQuestionComponent implements OnInit, OnDestroy {
     return choices.some((choice) => choice.value === value)
       ? (value as string)
       : choices[0]?.value ?? null;
+  }
+
+  /**
+   * Enables / disables a dropdown control without notifying its subscribers.
+   *
+   * @param control Control to update
+   * @param enabled Whether the control must be enabled
+   */
+  private toggleControl(
+    control: FormControl<string | null>,
+    enabled: boolean
+  ): void {
+    if (enabled) {
+      control.enable({ emitEvent: false });
+    } else {
+      control.disable({ emitEvent: false });
+    }
   }
 
   /**

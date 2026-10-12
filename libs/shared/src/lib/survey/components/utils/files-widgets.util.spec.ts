@@ -9,6 +9,7 @@ import {
   getKendoFileRestrictions,
   getLanguageChoices,
   getSurveyLanguages,
+  restrictLanguages,
   registerFileQuestionsVisibility,
   shouldHideFileQuestions,
   syncFileQuestionsVisibility,
@@ -154,6 +155,28 @@ describe('files widgets utils', () => {
       const choices = getLanguageChoices(survey, ['en', 'fr'], translate);
       expect(choices.map((choice) => choice.value)).toEqual(['en', 'fr']);
       expect(choices[1].text).toBe('French');
+    });
+
+    it('restricts the languages to the allowed ones, in form order', () => {
+      expect(restrictLanguages(['en', 'fr', 'uk'], ['uk', 'fr'])).toEqual([
+        'fr',
+        'uk',
+      ]);
+      const survey = new SurveyModel({
+        title: { default: 'Hello', fr: 'Bonjour' },
+      });
+      expect(
+        getLanguageChoices(survey, ['en', 'fr'], translate, ['fr']).map(
+          (choice) => choice.value
+        )
+      ).toEqual(['fr']);
+    });
+
+    it('keeps every language without restriction, or when the restriction matches none of them', () => {
+      expect(restrictLanguages(['en', 'fr'], [])).toEqual(['en', 'fr']);
+      expect(restrictLanguages(['en', 'fr'], undefined)).toEqual(['en', 'fr']);
+      // Translation removed from the form since the restriction was set
+      expect(restrictLanguages(['en', 'fr'], ['de'])).toEqual(['en', 'fr']);
     });
   });
 

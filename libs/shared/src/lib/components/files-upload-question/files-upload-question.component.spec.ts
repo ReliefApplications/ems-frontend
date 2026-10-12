@@ -153,11 +153,47 @@ describe('FilesUploadQuestionComponent', () => {
     expect(component.languageControl.value).toBe('en');
   });
 
+  it('offers only the allowed languages, imposing a single one', () => {
+    component.question = createQuestion({
+      targetField: 'cover',
+      allowedLanguages: ['fr'],
+    });
+    component.refresh();
+    expect(component.languageChoices.map((c) => c.value)).toEqual(['fr']);
+    expect(component.languageControl.value).toBe('fr');
+    expect(component.fixedLanguage).toBe(true);
+    expect(component.languageControl.disabled).toBe(true);
+
+    // Several allowed languages: the user picks one of them
+    component.question = createQuestion({
+      targetField: 'cover',
+      allowedLanguages: ['fr', 'en'],
+    });
+    component.refresh();
+    expect(component.languageChoices.map((c) => c.value)).toEqual(['en', 'fr']);
+    expect(component.fixedLanguage).toBe(false);
+    expect(component.languageControl.disabled).toBe(false);
+  });
+
+  it('ignores an allowed languages restriction matching none of the form languages', () => {
+    component.question = createQuestion({
+      targetField: 'cover',
+      allowedLanguages: ['de'],
+      defaultLanguage: 'fr',
+    });
+    component.refresh();
+    expect(component.languageChoices.map((c) => c.value)).toEqual(['en', 'fr']);
+    expect(component.languageControl.value).toBe('fr');
+    expect(component.fixedLanguage).toBe(false);
+    expect(component.languageControl.disabled).toBe(false);
+  });
+
   it('is disabled in the form builder and in read-only surveys', () => {
     survey.setDesignMode(true);
     component.refresh();
     expect(component.disabled).toBe(true);
     expect(component.targetFieldControl.disabled).toBe(true);
+    expect(component.languageControl.disabled).toBe(true);
 
     survey.setDesignMode(false);
     survey.mode = 'display';
@@ -168,6 +204,7 @@ describe('FilesUploadQuestionComponent', () => {
     component.refresh();
     expect(component.disabled).toBe(false);
     expect(component.targetFieldControl.disabled).toBe(false);
+    expect(component.languageControl.disabled).toBe(false);
   });
 
   it('adds picked files to the target question, tagged with the language', () => {

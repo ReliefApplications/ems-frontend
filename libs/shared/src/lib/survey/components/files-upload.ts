@@ -12,6 +12,7 @@ import { FilesUploadQuestionComponent } from '../../components/files-upload-ques
 import { DomService } from '../../services/dom/dom.service';
 import { registerCustomPropertyHelp } from '../localization';
 import {
+  ALLOWED_LANGUAGES_PROPERTY,
   FILE_QUESTION_TYPE,
   FILES_UPLOAD_QUESTION_TYPE,
   getFileQuestionChoices,
@@ -37,6 +38,7 @@ export const FILES_UPLOAD_ALLOWED_PROPERTIES = [
   'title',
   'description',
   'targetField',
+  ALLOWED_LANGUAGES_PROPERTY,
   'defaultLanguage',
   'visible',
   'visibleIf',
@@ -55,6 +57,8 @@ export const FILES_UPLOAD_ALLOWED_PROPERTIES = [
 export interface FilesUploadQuestion extends SurveyQuestion {
   /** Name of the file question selected by default */
   targetField?: string;
+  /** Languages the user can tag files with, empty for every language of the form */
+  allowedLanguages?: string[];
   /** Language selected by default */
   defaultLanguage?: string;
   /** Rendered Angular component */
@@ -66,9 +70,10 @@ export interface FilesUploadQuestion extends SurveyQuestion {
  * letting the user pick one of the survey's file questions and add files to
  * it, tagged with a language, without navigating to that question, while
  * listing every file of the survey waiting to be uploaded. Its `targetField`
- * / `defaultLanguage` properties are part of the form structure and only
- * preselect the dropdowns: the files end up in the target file question's
- * value and are uploaded when the record is saved, like any other file.
+ * / `allowedLanguages` / `defaultLanguage` properties are part of the form
+ * structure ( so each form of a resource configures its own ) and only drive
+ * the dropdowns: the files end up in the target file question's value and
+ * are uploaded when the record is saved, like any other file.
  *
  * @param injector Parent Angular injector
  * @param componentCollection SurveyJS custom component collection
@@ -116,9 +121,9 @@ export const init = (
         'Document type ( file question ) selected by default. Added files are placed in it and follow its restrictions ( accepted types, maximum size, number of files ). Users can pick another document type of the form when filling it.'
       );
       Serializer.addProperty(FILES_UPLOAD_QUESTION_TYPE, {
-        name: 'defaultLanguage',
+        name: `${ALLOWED_LANGUAGES_PROPERTY}:multiplevalues`,
         category: 'general',
-        displayName: 'Default language',
+        displayName: 'Allowed languages',
         visibleIndex: 4,
         choices: (
           question: FilesUploadQuestion,
@@ -134,8 +139,34 @@ export const init = (
         },
       });
       registerCustomPropertyHelp(
+        ALLOWED_LANGUAGES_PROPERTY,
+        'Languages the user can tag files with, among the languages of the form: the system language and the languages of the form translations that the system supports. Leave empty to offer all of them. With a single allowed language, every file gets that language and the language cannot be changed.'
+      );
+      Serializer.addProperty(FILES_UPLOAD_QUESTION_TYPE, {
+        name: 'defaultLanguage',
+        category: 'general',
+        displayName: 'Default language',
+        visibleIndex: 5,
+        dependsOn: [ALLOWED_LANGUAGES_PROPERTY],
+        choices: (
+          question: FilesUploadQuestion,
+          choicesCallback: (choices: WidgetChoice[]) => void
+        ) => {
+          choicesCallback(
+            getLanguageChoices(
+              question.survey as SurveyModel | undefined,
+              availableLanguages,
+              translate,
+              question.getPropertyValue(ALLOWED_LANGUAGES_PROPERTY) as
+                | string[]
+                | undefined
+            )
+          );
+        },
+      });
+      registerCustomPropertyHelp(
         'defaultLanguage',
-        'Language selected by default when the form opens. Available languages are the system language and the languages of the form translations that the system supports, like the language switch of the public forms.'
+        'Language selected by default when the form opens, among the allowed languages.'
       );
     },
     onLoaded: (question: FilesUploadQuestion): void => {

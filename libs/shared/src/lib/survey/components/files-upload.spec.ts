@@ -98,11 +98,28 @@ describe('files upload question', () => {
       'description',
       'tooltip',
       'targetField',
+      'allowedLanguages',
       'defaultLanguage',
     ].forEach((property) =>
       expect(FILES_UPLOAD_ALLOWED_PROPERTIES).toContain(property)
     );
   });
+
+  /**
+   * Resolves the property grid choices of a question property.
+   *
+   * @param question Question being edited
+   * @param name Property name
+   * @returns Choices offered by the property
+   */
+  const choicesOf = (question: FilesUploadQuestion, name: string): any[] => {
+    const callback = jest.fn();
+    Serializer.findProperty(FILES_UPLOAD_QUESTION_TYPE, name).getChoices(
+      question,
+      callback
+    );
+    return callback.mock.calls[0][0];
+  };
 
   it('registers a question keeping its own properties in the structure', () => {
     const survey = createSurvey();
@@ -120,23 +137,55 @@ describe('files upload question', () => {
   it('offers the file questions and the form languages in the property grid', () => {
     const survey = createSurvey();
     const question = survey.getQuestionByName('upload') as FilesUploadQuestion;
-    const choicesOf = (name: string) => {
-      const callback = jest.fn();
-      Serializer.findProperty(FILES_UPLOAD_QUESTION_TYPE, name).getChoices(
-        question,
-        callback
-      );
-      return callback.mock.calls[0][0];
-    };
 
-    expect(choicesOf('targetField')).toEqual([
+    expect(choicesOf(question, 'targetField')).toEqual([
       { value: 'attachments', text: 'Attachments' },
       { value: 'cover', text: 'cover' },
     ]);
-    expect(choicesOf('defaultLanguage').map((c: any) => c.value)).toEqual([
-      'en',
+    expect(
+      choicesOf(question, 'allowedLanguages').map((c: any) => c.value)
+    ).toEqual(['en', 'fr']);
+    expect(
+      choicesOf(question, 'defaultLanguage').map((c: any) => c.value)
+    ).toEqual(['en', 'fr']);
+  });
+
+  it('restricts the default language to the allowed languages, kept in the structure', () => {
+    const survey = new SurveyModel({
+      title: { default: 'Files', fr: 'Fichiers' },
+      elements: [
+        { type: 'file', name: 'cover' },
+        {
+          type: FILES_UPLOAD_QUESTION_TYPE,
+          name: 'upload',
+          allowedLanguages: ['fr'],
+        },
+      ],
+    });
+    const question = survey.getQuestionByName('upload') as FilesUploadQuestion;
+
+    // SurveyJS arrays carry extra properties: compare their items
+    expect([...question.getPropertyValue('allowedLanguages')]).toEqual(['fr']);
+    expect(survey.toJSON().pages[0].elements[1].allowedLanguages).toEqual([
       'fr',
     ]);
+    // Multi-select in the property grid, refreshing the default language
+    expect(
+      Serializer.findProperty(FILES_UPLOAD_QUESTION_TYPE, 'allowedLanguages')
+        .type
+    ).toBe('multiplevalues');
+    expect(
+      Serializer.findProperty(
+        FILES_UPLOAD_QUESTION_TYPE,
+        'allowedLanguages'
+      ).getDependedProperties()
+    ).toContain('defaultLanguage');
+    expect(
+      choicesOf(question, 'allowedLanguages').map((c: any) => c.value)
+    ).toEqual(['en', 'fr']);
+    expect(
+      choicesOf(question, 'defaultLanguage').map((c: any) => c.value)
+    ).toEqual(['fr']);
   });
 
   it('renders the component inside the question and refreshes it on file changes', () => {
