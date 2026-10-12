@@ -151,18 +151,69 @@ export class TabFieldsComponent implements OnInit, OnChanges {
     this.setSelectedFields();
   }
 
-  /** Adds all currently available fields to the selected fields list. */
+  /**
+   * Checks whether a field matches a search text ( case insensitive ).
+   * Empty search text matches every field.
+   *
+   * @param field Field to test
+   * @param searchText Search text
+   * @returns True if the field should be displayed
+   */
+  public matchesSearch(field: any, searchText: string): boolean {
+    return (
+      searchText.length < 1 ||
+      field.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
+
+  /**
+   * Available fields matching the current search.
+   *
+   * @returns Available fields currently displayed
+   */
+  public get visibleAvailableFields(): any[] {
+    return this.availableFields.filter((field) =>
+      this.matchesSearch(field, this.searchAvailable)
+    );
+  }
+
+  /**
+   * Selected fields matching the current search.
+   *
+   * @returns Selected fields currently displayed
+   */
+  public get visibleSelectedFields(): any[] {
+    return this.selectedFields.filter((field) =>
+      this.matchesSearch(field, this.searchSelected)
+    );
+  }
+
+  /**
+   * Adds all available fields matching the current search to the selected
+   * fields list.
+   */
   public addAllFields(): void {
-    for (const field of this.availableFields) {
+    for (const field of this.visibleAvailableFields) {
       this.form.push(addNewField(field, true));
       this.droppedFields.emit(field);
     }
     this.setSelectedFields();
   }
 
-  /** Removes every selected field from the layout. */
+  /** Removes every selected field matching the current search from the layout. */
   public removeAllFields(): void {
-    this.form.clear();
+    if (this.searchSelected.length < 1) {
+      this.form.clear();
+    } else {
+      // Iterate backwards so removals do not shift the remaining indexes
+      for (let index = this.selectedFields.length - 1; index >= 0; index--) {
+        if (
+          this.matchesSearch(this.selectedFields[index], this.searchSelected)
+        ) {
+          this.form.removeAt(index);
+        }
+      }
+    }
     this.setSelectedFields();
   }
 
@@ -242,7 +293,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
       return index;
     } else {
       const filteredList = list.filter((x) =>
-        x.name.toLowerCase().includes(searchText.toLowerCase())
+        this.matchesSearch(x, searchText)
       );
       const item = filteredList[index];
       return list.findIndex((x) => x.name === item.name);

@@ -133,4 +133,38 @@ describe('TabFieldsComponent', () => {
       'first',
     ]);
   });
+
+  it('only moves the fields matching the search when transferring all fields', () => {
+    component.form = new UntypedFormArray([]);
+    component.fields = [
+      { name: 'firstName', type: { kind: 'SCALAR' } },
+      { name: 'lastName', type: { kind: 'SCALAR' } },
+      { name: 'age', type: { kind: 'SCALAR' } },
+    ];
+    component.ngOnChanges();
+
+    // Only the fields matching the available search are added
+    component.searchAvailable = 'NAME';
+    component.addAllFields();
+
+    expect(component.form.getRawValue().map((field) => field.name)).toEqual([
+      'firstName',
+      'lastName',
+    ]);
+    expect(component.availableFields.map((field) => field.name)).toEqual([
+      'age',
+    ]);
+
+    // Only the fields matching the selected search are removed
+    component.searchSelected = 'last';
+    component.removeAllFields();
+
+    expect(component.form.getRawValue().map((field) => field.name)).toEqual([
+      'firstName',
+    ]);
+    expect(component.availableFields.map((field) => field.name)).toEqual([
+      'lastName',
+      'age',
+    ]);
+  });
 });
