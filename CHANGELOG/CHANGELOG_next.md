@@ -1,3 +1,9 @@
+# [2.24.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.23...v2.24.0-rc.24) (2026-10-12)
+
+### Features
+
+- Add new surveyjs widgets to manage files ([#2949](https://github.com/ReliefApplications/ems-frontend/issues/2949)) ([5a316ad](https://github.com/ReliefApplications/ems-frontend/commit/5a316ad649a827640971f13948301324ec251305)), closes [AB#138121](https://github.com/AB/issues/138121)
+
 # [2.24.0-rc.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.22...v2.24.0-rc.23) (2026-10-01)
 
 ### Features
