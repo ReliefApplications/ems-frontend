@@ -32,6 +32,7 @@ export const GET_GRID_RESOURCE_META = gql`
             createdAt
             modifiedAt
             display
+            recordVisibility
           }
         }
         pageInfo {
@@ -62,6 +63,7 @@ export const GET_GRID_FORM_META = gql`
             createdAt
             modifiedAt
             display
+            recordVisibility
           }
         }
         pageInfo {

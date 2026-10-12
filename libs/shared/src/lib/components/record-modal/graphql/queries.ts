@@ -4,10 +4,11 @@ import { gql } from 'apollo-angular';
 
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
-    record(id: $id) {
+  query GetRecordById($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
       incrementalId
+      draft
       data
       createdAt
       modifiedAt

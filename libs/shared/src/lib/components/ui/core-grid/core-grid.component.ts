@@ -38,6 +38,7 @@ import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
   Record,
+  ValidationError,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
@@ -59,6 +60,10 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { resolveLocalizedString } from '../../../models/localized-string.model';
 import {
+  isDraftVisibility,
+  RecordVisibility,
+} from '../../../models/record-visibility.model';
+import {
   GridColumnConfigurationMap,
   GridColumnConfigurationService,
 } from '../../../services/grid-layout/grid-column-configuration.service';
@@ -67,6 +72,11 @@ import {
  * Default file name when exporting grid data.
  */
 const DEFAULT_FILE_NAME = 'Records';
+
+/** Draft visibility variables accepted by record queries. */
+interface RecordVisibilityVariables {
+  recordVisibility?: RecordVisibility;
+}
 
 /**
  * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
@@ -152,6 +162,8 @@ export class CoreGridComponent
   @Input() canDownloadRecords = false;
   /** Whether records can be uploaded */
   @Input() canUploadRecords = false;
+  /** Whether all record actions must be disabled. */
+  @Input() actionsDisabled = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -263,6 +275,18 @@ export class CoreGridComponent
   /** @returns grid styling rules */
   get style(): any {
     return this.settings.query?.style || null;
+  }
+
+  /** @returns Draft visibility variables for generated record queries. */
+  public get recordVisibilityVariables(): RecordVisibilityVariables {
+    return this.isDraftGrid
+      ? { recordVisibility: this.settings.recordVisibility }
+      : {};
+  }
+
+  /** @returns True when this grid displays draft records instead of submitted records. */
+  public get isDraftGrid(): boolean {
+    return isDraftVisibility(this.settings?.recordVisibility);
   }
 
   // === FILTERING ===
@@ -475,7 +499,64 @@ export class CoreGridComponent
   ngOnChanges(changes?: SimpleChanges): void {
     if (changes?.settings || changes?.defaultLayout) {
       this.configureGrid();
+    } else if (changes?.actionsDisabled) {
+      this.configureActions();
     }
+  }
+
+  /** Applies the configured action policy without rebuilding the data query. */
+  private configureActions(): void {
+    const configuredActions: GridActions = {
+      add:
+        get(this.settings, 'actions.addRecord', false) &&
+        this.settings.template,
+      history: get(this.settings, 'actions.history', false),
+      update: get(this.settings, 'actions.update', false),
+      delete: get(this.settings, 'actions.delete', false),
+      convert: get(this.settings, 'actions.convert', false),
+      export: get(this.settings, 'actions.export', false),
+      import: get(this.settings, 'actions.import', false),
+      showDetails: get(this.settings, 'actions.showDetails', true),
+      navigateToPage: get(this.settings, 'actions.navigateToPage', false),
+      navigateSettings: {
+        field: get(this.settings, 'actions.navigateSettings.field', false),
+        pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+        title: get(this.settings, 'actions.navigateSettings.title', ''),
+      },
+      remove: get(this.settings, 'actions.remove', false),
+    };
+    if (this.actionsDisabled) {
+      this.actions = {
+        add: false,
+        update: false,
+        delete: false,
+        history: false,
+        convert: false,
+        export: false,
+        import: false,
+        showDetails: configuredActions.showDetails,
+        navigateToPage: false,
+        navigateSettings: configuredActions.navigateSettings,
+        remove: false,
+      };
+    } else if (this.isDraftGrid) {
+      // Drafts can be resumed, permanently deleted, viewed and exported.
+      // They have no history, cannot be converted, and added or imported
+      // records would not be drafts.
+      this.actions = {
+        ...configuredActions,
+        add: false,
+        history: false,
+        convert: false,
+        import: false,
+      };
+    } else {
+      this.actions = configuredActions;
+    }
+    this.editable =
+      !this.actionsDisabled &&
+      !this.isDraftGrid &&
+      this.settings.actions?.inlineEdition;
   }
 
   /**
@@ -496,27 +577,7 @@ export class CoreGridComponent
       ? JSON.parse(this.settings.contextFilters)
       : this.contextFilters;
 
-    // define row actions
-    this.actions = {
-      add:
-        get(this.settings, 'actions.addRecord', false) &&
-        this.settings.template,
-      history: get(this.settings, 'actions.history', false),
-      update: get(this.settings, 'actions.update', false),
-      delete: get(this.settings, 'actions.delete', false),
-      convert: get(this.settings, 'actions.convert', false),
-      export: get(this.settings, 'actions.export', false),
-      import: get(this.settings, 'actions.import', false),
-      showDetails: get(this.settings, 'actions.showDetails', true),
-      navigateToPage: get(this.settings, 'actions.navigateToPage', false),
-      navigateSettings: {
-        field: get(this.settings, 'actions.navigateSettings.field', false),
-        pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
-        title: get(this.settings, 'actions.navigateSettings.title', ''),
-      },
-      remove: get(this.settings, 'actions.remove', false),
-    };
-    this.editable = this.settings.actions?.inlineEdition;
+    this.configureActions();
     if (!isNil(this.settings.actions?.search)) {
       this.searchable = this.settings.actions?.search;
     }
@@ -553,10 +614,14 @@ export class CoreGridComponent
             sortFields:
               this.sortFields.length > 0 ? this.sortFields : undefined,
             styles: this.style,
-            actions: this.settings.customRowActions || null,
+            actions:
+              this.actionsDisabled || this.isDraftGrid
+                ? null
+                : this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
+            ...this.recordVisibilityVariables,
           },
           fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
@@ -715,7 +780,7 @@ export class CoreGridComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
-        if (data?.editRecord.data) {
+        if (data?.editRecord?.data) {
           const editedData = data.editRecord.data;
           this.apollo
             .query<ResourceQueryResponse>({
@@ -744,6 +809,7 @@ export class CoreGridComponent
                       variables: {
                         id: item.id,
                         data: editedData,
+                        ...this.recordVisibilityVariables,
                       },
                     })
                     .pipe(takeUntil(this.destroy$))
@@ -813,43 +879,47 @@ export class CoreGridComponent
         delete item.saved;
         delete item.validationErrors;
       }
+      // Mutations are sent, and answered, in the order of the updated items
+      const editedIds = this.updatedItems.map((x) => x.id);
       return Promise.all(this.promisedChanges()).then((allRes) => {
-        if (allRes) {
-          const hasErrors = allRes.filter((item: any) => {
-            if (item.data.editRecord.validationErrors) {
-              return item.data.editRecord.validationErrors.length;
-            }
-          });
-          if (hasErrors.length > 0) {
-            this.grid?.expandActionsColumn();
-          }
-        }
-        for (const res of allRes) {
-          const resRecord: Record = res.data.editRecord;
-          const updatedIndex = this.updatedItems.findIndex(
-            (x) => x.id === resRecord.id
-          );
-          const item = this.items.find((x) => x.id === resRecord.id);
-          if (resRecord?.validationErrors?.length) {
+        let hasErrors = false;
+        allRes.forEach((res, index) => {
+          const id = editedIds[index];
+          const resRecord: Record | null | undefined = res.data?.editRecord;
+          const updatedIndex = this.updatedItems.findIndex((x) => x.id === id);
+          const item = this.items.find((x) => x.id === id);
+          // The edition can be rejected as a whole ( e.g. because of a blocking
+          // uniqueness rule ): no record is returned then, only the reason, to
+          // display the same way as validation errors
+          const validationErrors = resRecord
+            ? resRecord.validationErrors
+            : this.getEditionErrors(res.errors);
+          if (validationErrors?.length) {
+            hasErrors = true;
             // if the item has an error, save the error with the item object
-            this.updatedItems[updatedIndex].incrementalId =
-              resRecord.incrementalId;
-            this.updatedItems[updatedIndex].validationErrors =
-              resRecord.validationErrors;
-            item.incrementalId = resRecord.incrementalId;
-            item.validationErrors = resRecord.validationErrors;
+            const incrementalId =
+              resRecord?.incrementalId ?? item?.incrementalId ?? id;
+            this.updatedItems[updatedIndex].incrementalId = incrementalId;
+            this.updatedItems[updatedIndex].validationErrors = validationErrors;
+            if (item) {
+              item.incrementalId = incrementalId;
+              item.validationErrors = validationErrors;
+            }
           } else {
             // if no errors, the item has been saved in the database
             // remove the item from updatedItems list
             this.updatedItems.splice(updatedIndex, 1);
             // save the new value of the item in the originalItems list
             const originalIndex = this.originalItems.findIndex(
-              (x) => x.id === resRecord.id
+              (x) => x.id === id
             );
             this.originalItems[originalIndex] = item;
             // add a property to indicate the item is saved
             item.saved = true;
           }
+        });
+        if (hasErrors) {
+          this.grid?.expandActionsColumn();
         }
         this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
@@ -876,6 +946,27 @@ export class CoreGridComponent
     } else {
       return Promise.resolve(false);
     }
+  }
+
+  /**
+   * Builds the validation errors to display for a record whose edition has
+   * been rejected by the back-end.
+   *
+   * @param errors GraphQL errors returned by the mutation, if any
+   * @returns validation errors of the record
+   */
+  private getEditionErrors(
+    errors?: readonly { message: string }[]
+  ): ValidationError[] {
+    return [
+      {
+        // The error is about the record, not one of its fields
+        question: '-',
+        errors: errors?.length
+          ? errors.map((x) => x.message)
+          : [this.translate.instant('models.form.notifications.savingFailed')],
+      },
+    ];
   }
 
   /**
@@ -1101,6 +1192,25 @@ export class CoreGridComponent
     pageUrl?: string;
     html?: string;
   }): void {
+    const disabledActions = [
+      'add',
+      'edit',
+      'save',
+      'goTo',
+      'update',
+      'history',
+      'convert',
+      'delete',
+      'remove',
+    ];
+    if (this.actionsDisabled && disabledActions.includes(event.action)) {
+      return;
+    }
+    // Inline edition, history and conversion are not available for drafts
+    const draftDisabledActions = ['add', 'edit', 'save', 'history', 'convert'];
+    if (this.isDraftGrid && draftDisabledActions.includes(event.action)) {
+      return;
+    }
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -1320,6 +1430,7 @@ export class CoreGridComponent
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
           parentComponent: this,
+          ...this.recordVisibilityVariables,
         },
         autoFocus: false,
       });
@@ -1348,6 +1459,7 @@ export class CoreGridComponent
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         template: this.settings.template || null,
+        ...this.recordVisibilityVariables,
       },
       autoFocus: false,
     });
@@ -1385,7 +1497,9 @@ export class CoreGridComponent
             : this.translate.instant('common.row.one'),
       }),
       content: this.translate.instant(
-        'components.form.deleteRow.confirmationMessage',
+        this.isDraftGrid
+          ? 'components.form.deleteRow.draftConfirmationMessage'
+          : 'components.form.deleteRow.confirmationMessage',
         {
           quantity: rowsSelected,
           rowText:
@@ -1404,6 +1518,7 @@ export class CoreGridComponent
             mutation: DELETE_RECORDS,
             variables: {
               ids,
+              hardDelete: this.isDraftGrid,
             },
           })
           .pipe(takeUntil(this.destroy$))
@@ -1603,6 +1718,7 @@ export class CoreGridComponent
       fileName: this.fileName,
       email: e.email,
       resource: this.settings.resource,
+      ...this.recordVisibilityVariables,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1671,6 +1787,7 @@ export class CoreGridComponent
         sortOrder: this.sortOrder,
         sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
         styles: this.style,
+        ...this.recordVisibilityVariables,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
         }),

@@ -13,6 +13,7 @@ export const GET_RESOURCE_LAYOUTS = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         pageInfo {

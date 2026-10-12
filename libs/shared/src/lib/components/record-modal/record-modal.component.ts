@@ -26,6 +26,7 @@ import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { CoreGridComponent } from '../ui/core-grid/core-grid.component';
+import { RecordVisibility } from '../../models/record-visibility.model';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -38,6 +39,7 @@ interface DialogData {
   isTemporary?: boolean;
   temporaryRecordData?: any;
   parentComponent?: CoreGridComponent;
+  recordVisibility?: RecordVisibility;
 }
 
 /**
@@ -153,6 +155,7 @@ export class RecordModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id: this.data.recordId,
+              recordVisibility: this.data.recordVisibility,
             },
           })
         ).then(({ data }) => {
@@ -266,6 +269,7 @@ export class RecordModalComponent
       data: {
         template: this.form.id,
         prefillData: this.record?.data,
+        isDraftClone: this.record?.draft === true,
         cloneRecordId: this.record?.id,
         askForConfirm: false,
       },

@@ -17,8 +17,8 @@ export const CONVERT_RECORD = gql`
 
 /** Graphl request for deleting multiple records by their ids */
 export const DELETE_RECORDS = gql`
-  mutation deleteRecords($ids: [ID]!) {
-    deleteRecords(ids: $ids)
+  mutation deleteRecords($ids: [ID]!, $hardDelete: Boolean) {
+    deleteRecords(ids: $ids, hardDelete: $hardDelete)
   }
 `;
 

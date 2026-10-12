@@ -23,6 +23,7 @@ import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
 import { Layout } from '../../../models/layout.model';
+import { isDraftVisibility } from '../../../models/record-visibility.model';
 import {
   Resource,
   ResourceQueryResponse,
@@ -118,6 +119,14 @@ export class GridSettingsComponent
   public distributionLists: any[] = [];
   /** Layouts currently selected in the widget */
   public selectedLayouts: Layout[] = [];
+
+  /** @returns True when at least one selected layout displays draft records. */
+  get hasDraftLayouts(): boolean {
+    return this.selectedLayouts.some((layout) =>
+      isDraftVisibility(layout.recordVisibility)
+    );
+  }
+
   /** Available email templates */
   public emailTemplates: any[] = [];
 

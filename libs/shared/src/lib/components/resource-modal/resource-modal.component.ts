@@ -6,6 +6,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   IconModule,
@@ -15,6 +16,7 @@ import {
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Factory for creating scroll strategy
@@ -37,6 +39,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   styleUrls: ['../form-modal/form-modal.component.scss'],
   imports: [
     CommonModule,
+    AlertModule,
     ButtonModule,
     IconModule,
     RecordSummaryModule,
@@ -46,6 +49,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     TabsModule,
     SurveyModule,
     DraftRecordComponent,
+    DateModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

@@ -28,6 +28,7 @@
     [ngModel]="values[activeLocale] || ''"
     (ngModelChange)="onInput($event)"
     [disabled]="disabled"
+    [placeholder]="placeholder"
   />
   <textarea
     *ngIf="type === 'textarea'"
@@ -36,5 +37,6 @@
     [ngModel]="values[activeLocale] || ''"
     (ngModelChange)="onInput($event)"
     [disabled]="disabled"
+    [placeholder]="placeholder"
   ></textarea>
 </div>
