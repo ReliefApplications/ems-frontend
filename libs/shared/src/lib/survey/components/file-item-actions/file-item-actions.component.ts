@@ -20,7 +20,7 @@ import { File, FileService } from '../../../services/file/file.service';
   imports: [NgIf, ButtonModule, IconModule, TooltipModule, TranslateModule],
   template: `
     <ui-icon
-      *ngIf="outdated"
+      *ngIf="outdated && showOutdatedWarning"
       class="file-item-actions__warning"
       icon="warning"
       variant="warning"
@@ -86,6 +86,8 @@ export class FileItemActionsComponent {
   @Input() file?: File;
   /** Whether the file is currently marked as outdated */
   @Input() outdated = false;
+  /** Whether a warning icon is displayed for outdated files ( off when the outdated state is shown elsewhere ) */
+  @Input() showOutdatedWarning = true;
   /** Whether the download action is displayed */
   @Input() canDownload = false;
   /** Whether the file can be marked as outdated / active */

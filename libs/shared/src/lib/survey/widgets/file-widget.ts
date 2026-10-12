@@ -17,6 +17,7 @@ import { FileItemActionsComponent } from '../components/file-item-actions/public
 import { FileQuestionActionsComponent } from '../components/file-question-actions/public-api';
 import { isOutdatedFile, isStoredFile } from '../../services/file/file.utils';
 import { TranslateService } from '@ngx-translate/core';
+import { applyFileQuestionVisibility } from '../components/utils/files-widgets.util';
 
 /**
  * Set document properties based on value expressions
@@ -588,6 +589,8 @@ export const init = (
       // preview loading).
       filePreviewQuestion.__pdfPreviewObserver?.disconnect();
       const sync = (): void => {
+        // Hidden when a Files management question of the survey asks for it
+        applyFileQuestionVisibility(survey, htmlElement);
         updatePdfPreview(question, htmlElement);
         updateFileItems(
           filePreviewQuestion,
