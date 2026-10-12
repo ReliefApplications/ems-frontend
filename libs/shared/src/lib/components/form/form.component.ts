@@ -97,8 +97,6 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
   /** Whether the current survey data changed since the last save/load. */
   private valueChanged = false;
   /** Evaluated label for the save button (from form expression or default translation) */
@@ -189,8 +187,6 @@ export class FormComponent
     // Auto-translation is wired centrally in FormBuilderService.createSurvey;
     // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
       this.valueChanged = true;
       this.updateButtonLabels();
     });
@@ -368,7 +364,6 @@ export class FormComponent
     }) => {
       this.surveyActive = true;
       this.lastDraftRecord = details.id;
-      this.disableSaveAsDraft = true;
       this.valueChanged = false;
       // Updates parent component
       this.save.emit(details.save);
@@ -625,7 +620,6 @@ export class FormComponent
    */
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
     this.valueChanged = false;
     this.snackBar.openSnackBar(
       this.translate.instant('components.form.draftRecords.successLoad')

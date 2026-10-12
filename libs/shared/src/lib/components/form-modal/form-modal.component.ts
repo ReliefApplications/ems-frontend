@@ -135,8 +135,6 @@ export class FormModalComponent
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
   /** Whether the current survey data changed since the last save/load. */
   private valueChanged = false;
   /** Available pages*/
@@ -167,8 +165,8 @@ export class FormModalComponent
   private autoSaveRevision = 0;
   /** Invalidates auto-save responses after the active draft changes. */
   private autoSaveGeneration = 0;
-  /** Time of the latest successful automatic draft save. */
-  public lastAutoSavedAt?: Date;
+  /** Time of the latest successful draft save, manual or automatic. */
+  public lastDraftSavedAt?: Date;
 
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
@@ -357,8 +355,6 @@ export class FormModalComponent
     // Auto-translation is wired centrally in FormBuilderService.createSurvey;
     // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
       this.valueChanged = true;
       this.autoSaveRevision++;
       this.updateButtonLabels();
@@ -1155,12 +1151,11 @@ export class FormModalComponent
     } else {
       if (savedDraftId) {
         this.lastDraftRecord = savedDraftId;
-        this.disableSaveAsDraft = true;
       }
       if (this.autoSaveRevision === revision) {
         this.valueChanged = false;
       }
-      this.lastAutoSavedAt = new Date();
+      this.lastDraftSavedAt = new Date();
     }
     this.finishAutoSave(resolve);
   }
@@ -1214,8 +1209,8 @@ export class FormModalComponent
     const callback = (details: { id?: string }) => {
       const hasNewChanges = this.autoSaveRevision !== revision;
       this.lastDraftRecord = details.id;
-      this.disableSaveAsDraft = !hasNewChanges;
       this.valueChanged = hasNewChanges;
+      this.lastDraftSavedAt = new Date();
       this.saving = false;
       this.autoSaveEnabled = this.canAutoSaveDraft;
       if (hasNewChanges) {
@@ -1243,10 +1238,9 @@ export class FormModalComponent
   public onLoadDraftRecord(id: string): void {
     this.autoSaveGeneration++;
     this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
     this.valueChanged = false;
     this.autoSaveEnabled = true;
-    this.lastAutoSavedAt = undefined;
+    this.lastDraftSavedAt = undefined;
     this.snackBar.openSnackBar(
       this.translate.instant('components.form.draftRecords.successLoad')
     );

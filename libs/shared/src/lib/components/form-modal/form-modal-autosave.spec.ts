@@ -28,13 +28,12 @@ describe('FormModalComponent draft auto-save', () => {
     jest.advanceTimersByTime(5000);
 
     expect(apollo.mutate).not.toHaveBeenCalled();
-    expect(component.disableSaveAsDraft).toBe(false);
 
     await component.saveAsDraft();
 
     expect(saveAsDraft).toHaveBeenCalledTimes(1);
     expect(component.lastDraftRecord).toBe('manual-draft-id');
-    expect(component.disableSaveAsDraft).toBe(true);
+    expect(component.lastDraftSavedAt).toBeInstanceOf(Date);
     component.ngOnDestroy();
   });
 
@@ -53,7 +52,7 @@ describe('FormModalComponent draft auto-save', () => {
 
     expect(apollo.mutate).toHaveBeenCalledTimes(1);
     expect(component.lastDraftRecord).toBe('draft-id');
-    expect(component.lastAutoSavedAt).toBeInstanceOf(Date);
+    expect(component.lastDraftSavedAt).toBeInstanceOf(Date);
     component.ngOnDestroy();
   });
 
@@ -82,7 +81,7 @@ describe('FormModalComponent draft auto-save', () => {
     response.complete();
 
     expect(component.lastDraftRecord).toBe('selected-draft-id');
-    expect(component.lastAutoSavedAt).toBeUndefined();
+    expect(component.lastDraftSavedAt).toBeUndefined();
     component.ngOnDestroy();
   });
 
