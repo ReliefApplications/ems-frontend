@@ -1139,6 +1139,7 @@
         "submissionMessage": "Le formulaire a été sauvegardé."
       },
       "draftRecords": {
+        "autoSaveSuccess": "Brouillon enregistré avec succès le",
         "buttonLoad": "Charger un brouillon",
         "cloneNotice": "Vous dupliquez un brouillon. L'enregistrement créera un nouvel enregistrement finalisé ; le brouillon d'origine restera inchangé. Utilisez Enregistrer comme brouillon pour créer un autre brouillon.",
         "confirmModal": {
@@ -1149,13 +1150,16 @@
         },
         "creationDate": "Date de création",
         "delete": "Supprimer ce brouillon",
+        "listLoadError": "Les brouillons n'ont pas pu être chargés.",
         "load": "Charger ce brouillon",
+        "modificationDate": "Dernière modification",
         "noDrafts": "Aucun enregistrement brouillon disponible",
         "preview": "Prévisualiser ce brouillon",
         "previewTitle": "Enregistrement brouillon",
         "save": "Enregistrer comme brouillon",
         "select": "Sélectionner le brouillon",
         "successEdit": "Brouillon modifié avec succès",
+        "successLoad": "Brouillon chargé avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
       },
       "file": {

@@ -30,6 +30,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { of } from 'rxjs';
+import { DateModule } from '../../pipes/date/date.module';
 
 describe('FormComponent', () => {
   let component: FormComponent;
@@ -92,6 +93,7 @@ describe('FormComponent', () => {
       ],
       declarations: [FormComponent],
       imports: [
+        DateModule,
         DialogCdkModule,
         HttpClientModule,
         RouterTestingModule,

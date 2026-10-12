@@ -9,7 +9,7 @@
   <shared-draft-record
     *ngIf="canUseDrafts"
     [survey]="survey"
-    [formId]="form.id ?? ''"
+    [form]="form"
     [beforeOpenDrafts]="beforeOpenDrafts"
     (loadDraft)="onLoadDraftRecord($event)"
   ></shared-draft-record>
@@ -37,7 +37,17 @@
 <!-- Floating div for form buttons actions -->
 <ng-container *ngIf="surveyActive">
   <ui-fixed-wrapper>
-    <div class="flex justify-end gap-2 flex-wrap">
+    <div class="flex w-full items-center justify-end gap-2 flex-wrap">
+      <div
+        *ngIf="lastDraftSavedAt"
+        class="mr-auto flex items-center gap-1 text-sm text-green-700"
+      >
+        <ui-icon icon="check_circle" variant="success" [size]="18"></ui-icon>
+        <span>
+          {{ 'components.form.draftRecords.autoSaveSuccess' | translate }}
+          {{ lastDraftSavedAt | sharedDate : 'medium' }}
+        </span>
+      </div>
       <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
         <ui-button
           *ngIf="pages.length > 1"
@@ -54,15 +64,10 @@
           >{{ 'common.next' | translate }}</ui-button
         >
       </ng-container>
-      <ui-button
-        *ngIf="showSaveAsDraft"
-        [disabled]="disableSaveAsDraft"
-        (click)="saveAsDraft()"
-        >{{
-          saveAsDraftButtonLabel ||
-            ('components.form.draftRecords.save' | translate)
-        }}</ui-button
-      >
+      <ui-button *ngIf="showSaveAsDraft" (click)="saveAsDraft()">{{
+        saveAsDraftButtonLabel ||
+          ('components.form.draftRecords.save' | translate)
+      }}</ui-button>
       <ui-button variant="primary" category="secondary" (click)="submit()">{{
         saveButtonLabel || ('common.save' | translate)
       }}</ui-button>
