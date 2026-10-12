@@ -97,6 +97,8 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
+  /** Time of the latest successful draft save. */
+  public lastDraftSavedAt?: Date;
   /** Whether the current survey data changed since the last save/load. */
   private valueChanged = false;
   /** Evaluated label for the save button (from form expression or default translation) */
@@ -365,6 +367,7 @@ export class FormComponent
       this.surveyActive = true;
       this.lastDraftRecord = details.id;
       this.valueChanged = false;
+      this.lastDraftSavedAt = new Date();
       // Updates parent component
       this.save.emit(details.save);
     };
@@ -621,6 +624,7 @@ export class FormComponent
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
     this.valueChanged = false;
+    this.lastDraftSavedAt = undefined;
     this.snackBar.openSnackBar(
       this.translate.instant('components.form.draftRecords.successLoad')
     );
