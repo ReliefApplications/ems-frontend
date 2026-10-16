@@ -1,14 +1,17 @@
+<!-- Scrollable grid with sized columns: scrolls horizontally when narrow,
+     the actions column staying in view -->
 <kendo-grid
   class="files-management-question"
   [data]="rows"
   [sortable]="true"
   [sort]="sort"
   (sortChange)="onSortChange($event)"
-  [scrollable]="'none'"
+  [scrollable]="'scrollable'"
 >
   <kendo-grid-column
     field="file.name"
     [title]="'components.filesManagement.fileName' | translate"
+    [width]="200"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <span class="inline-flex items-center gap-2">
@@ -20,10 +23,12 @@
   <kendo-grid-column
     field="fieldTitle"
     [title]="'components.filesManagement.field' | translate"
+    [width]="150"
   ></kendo-grid-column>
   <kendo-grid-column
     field="languageLabel"
     [title]="'components.filesManagement.language' | translate"
+    [width]="120"
   >
     <ng-template kendoGridCellTemplate let-dataItem>
       <span *ngIf="dataItem.languageLabel; else noLanguageTmpl">
@@ -69,6 +74,7 @@
     [title]="'common.actions' | translate"
     [sortable]="false"
     [width]="140"
+    [sticky]="true"
   >
     <!-- Same actions as the file questions -->
     <ng-template kendoGridCellTemplate let-dataItem>

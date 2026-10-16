@@ -7,3 +7,29 @@
     width: 100%;
   }
 }
+
+// Auto-height grid: it never scrolls vertically, yet Kendo's scrollable mode
+// reserves a vertical scrollbar in the content and pads the header to match,
+// through a wrapper carrying an extra border. The two scrolling areas end up
+// a few pixels apart, so the sticky actions header and cells did not line up.
+// Dropping the unused gutter gives both areas the same width.
+:host ::ng-deep kendo-grid {
+  .k-grid-header {
+    padding: 0 !important;
+  }
+
+  .k-grid-header-wrap {
+    margin-inline-end: 0;
+    border-inline-end-width: 0;
+  }
+
+  .k-grid-content {
+    overflow-y: hidden;
+  }
+
+  // The grid border already closes the sticky column on the right
+  .k-grid-header-sticky:last-child,
+  .k-grid-content-sticky:last-child {
+    border-inline-end-width: 0;
+  }
+}
