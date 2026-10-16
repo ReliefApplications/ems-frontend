@@ -22,6 +22,7 @@ import {
   syncFileQuestionsVisibility,
   keepsFilesOnComplete,
   registerHiddenFileQuestionsValues,
+  observeFileQuestionsValues,
 } from './files-widgets.util';
 
 /** Translate service surface used to display language names */
@@ -489,5 +490,59 @@ describe('hidden file questions values', () => {
       kind: 'files',
       storage: [{ name: 'a.txt', content: 'id' }],
     });
+  });
+});
+
+describe('file questions values observation', () => {
+  it('runs the handler however the file questions values change, until stopped', () => {
+    const survey = createSurvey();
+    const handler = jest.fn();
+
+    const stop = observeFileQuestionsValues(survey, 'widget', handler);
+
+    // Single value changes, through the survey or the question
+    survey.setValue('attachments', [{ name: 'a.pdf', content: 'data:a' }]);
+    expect(handler).toHaveBeenCalledTimes(1);
+    survey.getQuestionByName('cover').value = [
+      { name: 'b.png', content: 'id' },
+    ];
+    expect(handler).toHaveBeenCalledTimes(2);
+    // Replacing the array of an already valued question
+    survey.getQuestionByName('cover').value = [
+      { name: 'b.png', content: 'id', outdated: true },
+    ];
+    expect(handler).toHaveBeenCalledTimes(3);
+    // Non file questions are ignored
+    survey.setValue('comment', 'text');
+    expect(handler).toHaveBeenCalledTimes(3);
+
+    // Bulk loads do not fire survey.onValueChanged but update the questions
+    survey.data = { attachments: [{ name: 'c.pdf', content: 'form/blob' }] };
+    expect(handler).toHaveBeenCalledTimes(5);
+    survey.clear();
+    expect(handler).toHaveBeenCalledTimes(6);
+
+    stop();
+    survey.setValue('attachments', [{ name: 'd.pdf', content: 'data:d' }]);
+    expect(handler).toHaveBeenCalledTimes(6);
+  });
+
+  it('replaces the handler registered under the same key', () => {
+    const survey = createSurvey();
+    const first = jest.fn();
+    const second = jest.fn();
+
+    observeFileQuestionsValues(survey, 'widget', first);
+    observeFileQuestionsValues(survey, 'widget', second);
+    survey.setValue('attachments', [{ name: 'a.pdf', content: 'data:a' }]);
+
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it('does nothing without a survey', () => {
+    expect(() =>
+      observeFileQuestionsValues(undefined, 'k', jest.fn())()
+    ).not.toThrow();
   });
 });

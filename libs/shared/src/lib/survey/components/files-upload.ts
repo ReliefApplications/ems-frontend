@@ -6,17 +6,16 @@ import {
   Serializer,
   SvgRegistry,
   SurveyModel,
-  ValueChangedEvent,
 } from 'survey-core';
 import { FilesUploadQuestionComponent } from '../../components/files-upload-question/files-upload-question.component';
 import { DomService } from '../../services/dom/dom.service';
 import { registerCustomPropertyHelp } from '../localization';
 import {
   ALLOWED_LANGUAGES_PROPERTY,
-  FILE_QUESTION_TYPE,
   FILES_UPLOAD_QUESTION_TYPE,
   getFileQuestionChoices,
   getLanguageChoices,
+  observeFileQuestionsValues,
   WidgetChoice,
 } from './utils/files-widgets.util';
 import {
@@ -189,20 +188,20 @@ export const init = (
       componentRef.instance.refresh();
       componentRef.changeDetectorRef.detectChanges();
 
-      // Keep the list of files to upload in sync with the files of the survey
-      const valueChangedHandler = (
-        _: SurveyModel,
-        options: ValueChangedEvent
-      ): void => {
-        if (options.question?.getType() === FILE_QUESTION_TYPE) {
+      // Keep the list of files to upload in sync with the files of the survey,
+      // however they change ( user edits, draft record loaded once the form
+      // is rendered )
+      const stopObserving = observeFileQuestionsValues(
+        survey,
+        question.id,
+        () => {
           componentRef.instance.refresh();
           componentRef.changeDetectorRef.detectChanges();
         }
-      };
-      survey?.onValueChanged.add(valueChangedHandler);
+      );
 
       addGridTeardown(componentRef, () => {
-        survey?.onValueChanged.remove(valueChangedHandler);
+        stopObserving();
         question.filesUploadComponentRef = undefined;
       });
       registerGridForCleanup(survey, componentRef, domService);

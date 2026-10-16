@@ -227,4 +227,34 @@ describe('files upload question', () => {
       appended[1]
     );
   });
+
+  it('follows a bulk data load, which does not fire onValueChanged', () => {
+    const survey = createSurvey();
+    const question = survey.getQuestionByName('upload') as FilesUploadQuestion;
+    const element = document.createElement('div');
+    element.innerHTML = '<div class="sd-question__content"></div>';
+    const customQuestion = ComponentCollection.Instance.getCustomQuestionByName(
+      FILES_UPLOAD_QUESTION_TYPE
+    ) as any;
+
+    customQuestion.json.onAfterRender(question, element);
+    const ref = appended[0];
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(1);
+
+    // A draft record loaded once the form is rendered assigns survey.data
+    survey.data = {
+      cover: [{ name: 'draft.png', content: 'form-id/blob', draft: true }],
+    };
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(2);
+
+    survey.clear();
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(3);
+
+    // A replaced component no longer follows the files
+    customQuestion.json.onAfterRender(question, element);
+    survey.data = { cover: [{ name: 'a.png', content: 'data:x' }] };
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(3);
+    expect(appended[1].instance.refresh).toHaveBeenCalledTimes(2);
+    survey.dispose();
+  });
 });

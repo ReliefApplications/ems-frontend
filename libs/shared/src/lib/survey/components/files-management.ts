@@ -5,15 +5,14 @@ import {
   Serializer,
   SvgRegistry,
   SurveyModel,
-  ValueChangedEvent,
 } from 'survey-core';
 import { FilesManagementQuestionComponent } from '../../components/files-management-question/files-management-question.component';
 import { DomService } from '../../services/dom/dom.service';
 import { registerCustomPropertyHelp } from '../localization';
 import {
-  FILE_QUESTION_TYPE,
   FILES_MANAGEMENT_QUESTION_TYPE,
   HIDE_FILE_QUESTIONS_PROPERTY,
+  observeFileQuestionsValues,
   registerFileQuestionsVisibility,
   syncFileQuestionsVisibility,
 } from './utils/files-widgets.util';
@@ -122,24 +121,24 @@ export const init = (
       componentRef.instance.refresh();
       componentRef.changeDetectorRef.detectChanges();
 
-      // Keep the table in sync with the files of the survey
-      const valueChangedHandler = (
-        _: SurveyModel,
-        options: ValueChangedEvent
-      ): void => {
-        if (options.question?.getType() === FILE_QUESTION_TYPE) {
+      // Keep the table in sync with the files of the survey,
+      // however they change ( user edits, draft record loaded once the form
+      // is rendered )
+      const stopObserving = observeFileQuestionsValues(
+        survey,
+        question.id,
+        () => {
           componentRef.instance.refresh();
           componentRef.changeDetectorRef.detectChanges();
         }
-      };
-      survey?.onValueChanged.add(valueChangedHandler);
+      );
 
       // Hide the file questions when the question is configured so
       registerFileQuestionsVisibility(survey, element.ownerDocument);
       syncFileQuestionsVisibility(survey, element.ownerDocument);
 
       addGridTeardown(componentRef, () => {
-        survey?.onValueChanged.remove(valueChangedHandler);
+        stopObserving();
         question.filesManagementComponentRef = undefined;
       });
       registerGridForCleanup(survey, componentRef, domService);

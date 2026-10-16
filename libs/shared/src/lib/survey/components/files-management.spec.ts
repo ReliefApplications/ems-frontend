@@ -155,4 +155,38 @@ describe('files management question', () => {
     survey.dispose();
     expect(domService.removeComponentFromBody).toHaveBeenCalledWith(ref);
   });
+
+  it('follows a bulk data load, which does not fire onValueChanged', () => {
+    const survey = createSurvey(false);
+    const question = survey.getQuestionByName(
+      'management'
+    ) as FilesManagementQuestion;
+    const element = document.createElement('div');
+    element.innerHTML = '<div class="sd-question__content"></div>';
+    const customQuestion = ComponentCollection.Instance.getCustomQuestionByName(
+      FILES_MANAGEMENT_QUESTION_TYPE
+    ) as any;
+
+    customQuestion.json.onAfterRender(question, element);
+    const ref = appended[0];
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(1);
+
+    // A draft record loaded once the form is rendered assigns survey.data
+    survey.data = {
+      attachments: [
+        { name: 'draft.png', content: 'form-id/blob', draft: true },
+      ],
+    };
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(2);
+
+    survey.clear();
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(3);
+
+    // A replaced component no longer follows the files
+    customQuestion.json.onAfterRender(question, element);
+    survey.data = { attachments: [{ name: 'a.png', content: 'data:x' }] };
+    expect(ref.instance.refresh).toHaveBeenCalledTimes(3);
+    expect(appended[1].instance.refresh).toHaveBeenCalledTimes(2);
+    survey.dispose();
+  });
 });

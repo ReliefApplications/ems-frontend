@@ -392,3 +392,39 @@ export const registerHiddenFileQuestionsValues = (
   // Fired before SurveyJS clears the invisible values
   survey.onCompleting.add(apply);
 };
+
+/** Key prefix of the file question value handlers registered by a files widget. */
+const VALUE_HANDLER_KEY = '__fileQuestionsValuesHandler';
+
+/**
+ * Runs a handler whenever the value of one of the survey's file questions
+ * changes, however it changes. `survey.onValueChanged` is not fired when the
+ * values are loaded in bulk ( `survey.data = ...`, e.g. a draft record loaded
+ * once the form is rendered, or `survey.clear()` ), while the `value` property
+ * of the questions is updated in every case.
+ *
+ * @param survey Survey owning the file questions
+ * @param key Key of the registration, unique per observer ( e.g. the id of the
+ * widget question ): registering again under the same key replaces the handler
+ * @param handler Handler to run
+ * @returns Function removing the handler
+ */
+export const observeFileQuestionsValues = (
+  survey: SurveyModel | undefined,
+  key: string,
+  handler: () => void
+): (() => void) => {
+  const questions = getFileQuestions(survey);
+  const registration = `${VALUE_HANDLER_KEY}:${key}`;
+  questions.forEach((question) =>
+    question.registerFunctionOnPropertyValueChanged(
+      'value',
+      () => handler(),
+      registration
+    )
+  );
+  return () =>
+    questions.forEach((question) =>
+      question.unRegisterFunctionOnPropertyValueChanged('value', registration)
+    );
+};
