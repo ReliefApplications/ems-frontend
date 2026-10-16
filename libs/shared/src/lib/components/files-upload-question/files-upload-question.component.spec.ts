@@ -364,6 +364,19 @@ describe('FilesUploadQuestionComponent', () => {
     ]);
   });
 
+  it('keeps listing the files saved with a draft until the record is submitted', () => {
+    survey.setValue('attachments', [
+      stored,
+      // Saved in the back-end storage by a draft save
+      { name: 'draft.png', content: 'form-id/blob', draft: true, lang: 'fr' },
+    ]);
+    component.refresh();
+
+    expect(component.rows.map((row) => [row.file.name, row.canRemove])).toEqual(
+      [['draft.png', true]]
+    );
+  });
+
   it('removes a file to upload through the file question itself', () => {
     const file = { name: 'a.png', content: 'data:a' };
     survey.setValue('cover', [file]);

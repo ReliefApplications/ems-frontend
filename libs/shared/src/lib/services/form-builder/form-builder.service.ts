@@ -15,6 +15,7 @@ import {
   surveyLocalization,
 } from 'survey-core';
 import { QuestionFile } from '../../survey/types';
+import { registerHiddenFileQuestionsValues } from '../../survey/components/utils/files-widgets.util';
 import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
@@ -157,6 +158,8 @@ export class FormBuilderService {
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+    // File questions hidden by a Files management question keep their files
+    registerHiddenFileQuestionsValues(survey);
     /** Apply placeholders with limitations to all file type questions */
     survey.onGetQuestionTitle.add((_, options) => {
       if (options.question instanceof QuestionFileModel) {

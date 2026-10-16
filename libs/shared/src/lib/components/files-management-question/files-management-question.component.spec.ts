@@ -45,6 +45,26 @@ describe('FilesManagementQuestionComponent', () => {
   const attachments = (): QuestionFile =>
     survey.getQuestionByName('attachments') as QuestionFile;
 
+  it('shows the files saved with a draft as pending, removable by anyone', () => {
+    survey.setValue('attachments', [
+      { name: 'draft.png', content: 'form-id/blob', draft: true },
+    ]);
+    attachments().canDeleteFiles = false;
+    component.refresh();
+
+    expect(
+      component.rows.map((row) => [
+        row.file.name,
+        row.status,
+        row.canRemove,
+        row.permanentRemoval,
+      ])
+    ).toEqual([
+      ['draft.png', 'pending', true, false],
+      ['cover.png', 'active', true, false],
+    ]);
+  });
+
   it('lists every file of the survey with its document type, language and status', () => {
     component.refresh();
 

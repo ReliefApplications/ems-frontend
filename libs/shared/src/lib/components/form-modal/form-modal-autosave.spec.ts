@@ -38,7 +38,7 @@ describe('FormModalComponent draft auto-save', () => {
   });
 
   it('auto-saves five seconds after the latest user edit', async () => {
-    const { apollo, component, survey } = createComponent(false);
+    const { apollo, component, survey, uploadFiles } = createComponent(false);
     await component.ngOnInit();
 
     survey.setValue('title', 'First edit');
@@ -49,10 +49,49 @@ describe('FormModalComponent draft auto-save', () => {
     expect(apollo.mutate).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(1);
+    await flushPromises();
 
+    // Picked files are saved in the back-end storage before the draft
+    expect(uploadFiles).toHaveBeenCalledTimes(1);
+    expect(uploadFiles).toHaveBeenCalledWith(
+      survey,
+      expect.any(Object),
+      'form-id',
+      { draft: true }
+    );
     expect(apollo.mutate).toHaveBeenCalledTimes(1);
     expect(component.lastDraftRecord).toBe('draft-id');
     expect(component.lastDraftSavedAt).toBeInstanceOf(Date);
+    component.ngOnDestroy();
+  });
+
+  it('does not auto-save the draft when a file upload fails', async () => {
+    const { apollo, component, snackBar, survey, uploadFiles } =
+      createComponent(false);
+    uploadFiles.mockRejectedValueOnce([
+      { question: 'documents', file: { name: 'report.pdf' } },
+    ]);
+    await component.ngOnInit();
+
+    survey.setValue('title', 'Edit');
+    jest.advanceTimersByTime(5000);
+    await flushPromises();
+
+    expect(uploadFiles).toHaveBeenCalledTimes(1);
+    expect(apollo.mutate).not.toHaveBeenCalled();
+    expect(component.lastDraftRecord).toBeUndefined();
+    expect(snackBar.openSnackBar).toHaveBeenCalledWith('upload-error', {
+      error: true,
+    });
+
+    // The next edit tries again
+    survey.setValue('title', 'Another edit');
+    jest.advanceTimersByTime(5000);
+    await flushPromises();
+
+    expect(uploadFiles).toHaveBeenCalledTimes(2);
+    expect(apollo.mutate).toHaveBeenCalledTimes(1);
+    expect(component.lastDraftRecord).toBe('draft-id');
     component.ngOnDestroy();
   });
 
@@ -97,6 +136,7 @@ describe('FormModalComponent draft auto-save', () => {
     saveAsDraft: jest.Mock;
     snackBar: { openSnackBar: jest.Mock };
     survey: SurveyModel;
+    uploadFiles: jest.Mock;
   } {
     const survey = new SurveyModel({
       elements: [{ type: 'text', name: 'title' }],
@@ -132,10 +172,13 @@ describe('FormModalComponent draft auto-save', () => {
       (
         _survey: SurveyModel,
         _formId: string,
+        _temporaryFilesStorage: Record<string, File[]>,
         _draftId?: string,
         callback?: (details: { id?: string }) => void
       ) => callback?.({ id: 'manual-draft-id' })
     );
+    const uploadFiles = jest.fn().mockResolvedValue(undefined);
+    const getUploadErrorMessage = jest.fn().mockReturnValue('upload-error');
     const snackBar = { openSnackBar: jest.fn() };
     const component = new FormModalComponent(
       {
@@ -151,13 +194,28 @@ describe('FormModalComponent draft auto-save', () => {
       apollo as unknown as Apollo,
       snackBar as unknown as SnackbarService,
       formBuilderService,
-      { saveAsDraft } as unknown as FormHelpersService,
+      {
+        saveAsDraft,
+        uploadFiles,
+        getUploadErrorMessage,
+      } as unknown as FormHelpersService,
       {} as ConfirmService,
       { instant: (key: string) => key } as unknown as TranslateService,
       { run: (callback: () => void) => callback() } as NgZone,
       autoTranslateService
     );
 
-    return { apollo, component, saveAsDraft, snackBar, survey };
+    return { apollo, component, saveAsDraft, snackBar, survey, uploadFiles };
+  }
+
+  /**
+   * Flushes the pending promise callbacks, which the fake timers do not: a
+   * real macrotask turn drains every microtask queued so far.
+   *
+   * @returns Resolves once the promise callbacks ran
+   */
+  function flushPromises(): Promise<void> {
+    const { setImmediate } = jest.requireActual('timers');
+    return new Promise((resolve) => setImmediate(resolve));
   }
 });

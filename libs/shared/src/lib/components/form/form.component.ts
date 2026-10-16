@@ -374,6 +374,7 @@ export class FormComponent
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form.id as string,
+      this.temporaryFilesStorage,
       this.lastDraftRecord,
       callback
     );
@@ -427,15 +428,9 @@ export class FormComponent
         this.form?.id
       );
     } catch (errors) {
-      /** If there is any upload errors, save them for display */
-      const uploadErrors = (errors as { question: string; file: File }[]).map(
-        (error) => {
-          return `${error.question}: ${error.file.name}`;
-        }
-      );
+      /** If there is any upload errors, display them */
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed') +
-          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        this.formHelpersService.getUploadErrorMessage(errors),
         { error: true }
       );
       this.survey.clear(false, true);

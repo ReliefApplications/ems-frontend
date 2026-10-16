@@ -453,33 +453,25 @@ export class FormModalComponent
     if (this.autoSavePromise) {
       await this.autoSavePromise;
     }
-    let uploadErrors;
-    /** If any file attached, first upload them before record creation */
-    if (
-      !isNil(this.temporaryFilesStorage) &&
-      Object.keys(this.temporaryFilesStorage).length
-    ) {
-      try {
-        await this.formHelpersService.uploadFiles(
-          this.survey,
-          this.temporaryFilesStorage,
-          this.form?.id as string
-        );
-      } catch (errors) {
-        /** If there is any upload errors, save them for display */
-        uploadErrors = (errors as { question: string; file: File }[]).map(
-          (error) => {
-            return `${error.question}: ${error.file.name}`;
-          }
-        );
-      }
+    let uploadErrorMessage: string | undefined;
+    /** First upload the pending files of the survey before record creation */
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string
+      );
+    } catch (errors) {
+      /** If there is any upload errors, save them for display */
+      uploadErrorMessage =
+        this.formHelpersService.getUploadErrorMessage(errors);
     }
-    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
+    if (!this.survey?.hasErrors() && isNil(uploadErrorMessage)) {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed') +
-          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        uploadErrorMessage ??
+          this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
       this.saving = false;
@@ -1066,61 +1058,96 @@ export class FormModalComponent
       return;
     }
 
-    const revision = this.autoSaveRevision;
     const generation = this.autoSaveGeneration;
     const draftId = this.lastDraftRecord;
     this.autoSavePromise = new Promise<void>((resolve) => {
-      if (draftId) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: draftId,
-              data: this.survey.data,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              this.handleAutoSaveResponse(
-                errors,
-                draftId,
-                revision,
-                generation,
-                resolve
-              );
-            },
-            error: (err: unknown) => {
-              this.handleAutoSaveError(err, generation, resolve);
-            },
-          });
-      } else {
-        this.apollo
-          .mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.form?.id,
-              data: this.survey.data,
-              draft: true,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors, data }) => {
-              this.handleAutoSaveResponse(
-                errors,
-                data?.addRecord?.id,
-                revision,
-                generation,
-                resolve
-              );
-            },
-            error: (err: unknown) => {
-              this.handleAutoSaveError(err, generation, resolve);
-            },
-          });
-      }
+      // Picked files are saved in the back-end storage before the draft, so
+      // their data URLs never reach the database
+      this.uploadDraftFiles().then((uploaded) => {
+        if (!uploaded || generation !== this.autoSaveGeneration) {
+          this.finishAutoSave(resolve);
+          return;
+        }
+        // Captured once the files are stored: replacing them by their stored
+        // reference counts as a change of the survey
+        const revision = this.autoSaveRevision;
+        if (draftId) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: draftId,
+                data: this.survey.data,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  draftId,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        } else {
+          this.apollo
+            .mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.form?.id,
+                data: this.survey.data,
+                draft: true,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors, data }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  data?.addRecord?.id,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        }
+      });
     });
+  }
+
+  /**
+   * Saves the picked files of the survey in the back-end storage before an
+   * automatic draft save. They reach their final storage when the record is
+   * submitted.
+   *
+   * @returns True when every picked file is saved.
+   */
+  private async uploadDraftFiles(): Promise<boolean> {
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string,
+        { draft: true }
+      );
+      return true;
+    } catch (errors) {
+      this.snackBar.openSnackBar(
+        this.formHelpersService.getUploadErrorMessage(errors),
+        { error: true }
+      );
+      return false;
+    }
   }
 
   /**
@@ -1224,6 +1251,7 @@ export class FormModalComponent
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form?.id as string,
+      this.temporaryFilesStorage,
       this.lastDraftRecord,
       callback,
       errorCallback
