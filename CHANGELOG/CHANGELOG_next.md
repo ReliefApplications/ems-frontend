@@ -1,3 +1,9 @@
+# [2.24.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.24...v2.24.0-rc.25) (2026-10-16)
+
+### Bug Fixes
+
+- draft records now correctly store files ([#2952](https://github.com/ReliefApplications/ems-frontend/issues/2952)) ([d41742e](https://github.com/ReliefApplications/ems-frontend/commit/d41742e4c0cdc4820810d19197e6a997bcdc1655)), closes [AB#138121](https://github.com/AB/issues/138121)
+
 # [2.24.0-rc.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.23...v2.24.0-rc.24) (2026-10-12)
 
 ### Features
