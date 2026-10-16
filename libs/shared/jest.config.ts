@@ -65,6 +65,7 @@ export default {
     '<rootDir>/src/lib/components/ui/core-grid/errors-modal/*.spec.ts',
     '<rootDir>/src/lib/components/edit-uniqueness-rule-modal/*.spec.ts',
     '<rootDir>/src/lib/models/*.spec.ts',
+    '<rootDir>/src/lib/services/auth/*.spec.ts',
     '<rootDir>/src/lib/survey/global-properties/*.spec.ts',
     '<rootDir>/src/lib/utils/*.spec.ts',
     '<rootDir>/src/lib/utils/filter/*.spec.ts',
