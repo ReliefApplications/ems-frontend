@@ -1185,6 +1185,7 @@
         "preview": "Preview this draft",
         "previewTitle": "Draft record",
         "save": "Save as draft",
+        "saving": "Saving draft…",
         "select": "Select draft record",
         "successEdit": "Successfully edited draft",
         "successLoad": "Draft record successfully loaded",

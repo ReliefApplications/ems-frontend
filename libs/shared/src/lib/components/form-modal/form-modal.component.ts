@@ -60,8 +60,8 @@ import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-upd
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
 import { RecordVisibility } from '../../models/record-visibility.model';
-import { DateModule } from '../../pipes/date/date.module';
 import {
   areOnlyWarnings,
   getValidationModalData,
@@ -107,7 +107,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SpinnerModule,
     SurveyModule,
     DraftRecordComponent,
-    DateModule,
+    DraftSaveStatusComponent,
   ],
 })
 export class FormModalComponent
@@ -167,6 +167,8 @@ export class FormModalComponent
   private autoSaveGeneration = 0;
   /** Time of the latest successful draft save, manual or automatic. */
   public lastDraftSavedAt?: Date;
+  /** Whether a draft save, manual or automatic, is in progress. */
+  public draftSaving = false;
 
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
@@ -1060,6 +1062,7 @@ export class FormModalComponent
 
     const generation = this.autoSaveGeneration;
     const draftId = this.lastDraftRecord;
+    this.draftSaving = true;
     this.autoSavePromise = new Promise<void>((resolve) => {
       // Picked files are saved in the back-end storage before the draft, so
       // their data URLs never reach the database
@@ -1217,6 +1220,7 @@ export class FormModalComponent
     const shouldReplay = this.autoSavePending;
     this.autoSavePending = false;
     this.autoSavePromise = null;
+    this.draftSaving = false;
     resolve();
     if (shouldReplay && this.autoSaveEnabled) {
       this.performAutoSave();
@@ -1233,12 +1237,14 @@ export class FormModalComponent
       await this.autoSavePromise;
     }
     const revision = this.autoSaveRevision;
+    this.draftSaving = true;
     const callback = (details: { id?: string }) => {
       const hasNewChanges = this.autoSaveRevision !== revision;
       this.lastDraftRecord = details.id;
       this.valueChanged = hasNewChanges;
       this.lastDraftSavedAt = new Date();
       this.saving = false;
+      this.draftSaving = false;
       this.autoSaveEnabled = this.canAutoSaveDraft;
       if (hasNewChanges) {
         this.performAutoSave();
@@ -1246,6 +1252,7 @@ export class FormModalComponent
     };
     const errorCallback = () => {
       this.saving = false;
+      this.draftSaving = false;
       this.autoSaveEnabled = this.canAutoSaveDraft;
     };
     this.formHelpersService.saveAsDraft(

@@ -198,7 +198,10 @@ describe('FormHelpersService files upload', () => {
       });
 
       expect(uploadBlob).toHaveBeenCalledTimes(1);
-      expect(uploadBlob).toHaveBeenCalledWith(raw, 'file', 'form-id');
+      // Silent: no upload snackbars during a draft save
+      expect(uploadBlob).toHaveBeenCalledWith(raw, 'file', 'form-id', {
+        silent: true,
+      });
       // Document management is not involved in drafts
       expect(uploadFile).not.toHaveBeenCalled();
       expect(updateFile).not.toHaveBeenCalled();
@@ -402,6 +405,7 @@ describe('FormHelpersService files upload', () => {
       expect(uploadBlob).toHaveBeenCalledTimes(1);
       expect(uploadBlob.mock.calls[0][0].name).toBe('a.txt');
       expect(uploadBlob.mock.calls[0][2]).toBe('form-id');
+      expect(uploadBlob.mock.calls[0][3]).toEqual({ silent: false });
       expect(survey.getValue('documents')).toEqual([
         { name: 'a.txt', content: 'form-id/new-blob' },
         // The draft flag is dropped: the back-end storage is final

@@ -261,11 +261,13 @@ export class FormHelpersService {
           ? { driveId: result.driveId, itemId: result.itemId }
           : null;
       }
-      // Default behavior, use app builder back-end
+      // Default behavior, use app builder back-end. Draft saves run in the
+      // background ( auto-save ): no upload feedback
       const path = await this.downloadService.uploadBlob(
         file,
         BlobType.RECORD_FILE,
-        formId
+        formId,
+        { silent: draft }
       );
       return path || null;
     };

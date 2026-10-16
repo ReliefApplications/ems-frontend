@@ -97,6 +97,8 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
+  /** Whether a draft save is in progress. */
+  public draftSaving = false;
   /** Time of the latest successful draft save. */
   public lastDraftSavedAt?: Date;
   /** Whether the current survey data changed since the last save/load. */
@@ -360,6 +362,7 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
+    this.draftSaving = true;
     const callback = (details: {
       id?: string;
       save: { completed: false; hideNewRecord: true };
@@ -368,15 +371,20 @@ export class FormComponent
       this.lastDraftRecord = details.id;
       this.valueChanged = false;
       this.lastDraftSavedAt = new Date();
+      this.draftSaving = false;
       // Updates parent component
       this.save.emit(details.save);
+    };
+    const errorCallback = () => {
+      this.draftSaving = false;
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form.id as string,
       this.temporaryFilesStorage,
       this.lastDraftRecord,
-      callback
+      callback,
+      errorCallback
     );
   }
 

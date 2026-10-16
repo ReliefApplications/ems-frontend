@@ -38,16 +38,11 @@
 <ng-container *ngIf="surveyActive">
   <ui-fixed-wrapper>
     <div class="flex w-full items-center justify-end gap-2 flex-wrap">
-      <div
-        *ngIf="lastDraftSavedAt"
-        class="mr-auto flex items-center gap-1 text-sm text-green-700"
-      >
-        <ui-icon icon="check_circle" variant="success" [size]="18"></ui-icon>
-        <span>
-          {{ 'components.form.draftRecords.autoSaveSuccess' | translate }}
-          {{ lastDraftSavedAt | sharedDate : 'medium' }}
-        </span>
-      </div>
+      <shared-draft-save-status
+        class="mr-auto"
+        [saving]="draftSaving"
+        [savedAt]="lastDraftSavedAt"
+      ></shared-draft-save-status>
       <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
         <ui-button
           *ngIf="pages.length > 1"

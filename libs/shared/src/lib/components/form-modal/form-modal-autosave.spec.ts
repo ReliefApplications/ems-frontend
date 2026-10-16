@@ -32,6 +32,7 @@ describe('FormModalComponent draft auto-save', () => {
     await component.saveAsDraft();
 
     expect(saveAsDraft).toHaveBeenCalledTimes(1);
+    expect(component.draftSaving).toBe(false);
     expect(component.lastDraftRecord).toBe('manual-draft-id');
     expect(component.lastDraftSavedAt).toBeInstanceOf(Date);
     component.ngOnDestroy();
@@ -47,9 +48,13 @@ describe('FormModalComponent draft auto-save', () => {
     jest.advanceTimersByTime(4999);
 
     expect(apollo.mutate).not.toHaveBeenCalled();
+    expect(component.draftSaving).toBe(false);
 
     jest.advanceTimersByTime(1);
+    // Saving indicator while the files and the draft are saved
+    expect(component.draftSaving).toBe(true);
     await flushPromises();
+    expect(component.draftSaving).toBe(false);
 
     // Picked files are saved in the back-end storage before the draft
     expect(uploadFiles).toHaveBeenCalledTimes(1);
