@@ -1,3 +1,9 @@
+# [2.24.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.25...v2.24.0-rc.26) (2026-10-16)
+
+### Bug Fixes
+
+- loading draft record not showing files ([0a2b2a5](https://github.com/ReliefApplications/ems-frontend/commit/0a2b2a51a99791e42d6f51df4cba7861c7835720))
+
 # [2.24.0-rc.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.24...v2.24.0-rc.25) (2026-10-16)
 
 ### Bug Fixes
