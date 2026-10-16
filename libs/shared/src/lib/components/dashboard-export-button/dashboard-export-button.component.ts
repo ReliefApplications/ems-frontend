@@ -35,6 +35,13 @@ import {
   resolveLocalizedString,
 } from '../../models/localized-string.model';
 
+/** Uniform page margin applied when exporting to A4. */
+const A4_EXPORT_MARGIN = '1cm';
+/** A4 page width in PDF points ( kendo-drawing maps 1 CSS px to 1pt ). */
+const A4_WIDTH_PT = 595;
+/** Points per centimeter ( 72pt / 2.54cm ), used to size the A4 margin. */
+const PT_PER_CM = 72 / 2.54;
+
 /**
  * Shared dashboard export button.
  * Open a menu.
@@ -173,19 +180,93 @@ export class DashboardExportButtonComponent {
   }): Promise<string> {
     this.createWrapper();
     const { includeHeaderFooter, paperSize } = pdfConfig;
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
+    const isA4 = paperSize === 'A4';
+    let a4StyleEl: HTMLStyleElement | null = null;
+    try {
+      if (includeHeaderFooter) {
+        this.addHeaderAndFooter();
+      }
 
-    const drawing = await drawDOM(this.wrapper, {
-      paperSize,
-    });
-    const pdfData = await exportPDF(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
+      const drawOptions: Record<string, unknown> = { paperSize };
+      if (isA4) {
+        a4StyleEl = this.applyA4ExportLayout();
+        Object.assign(drawOptions, {
+          landscape: false,
+          margin: A4_EXPORT_MARGIN,
+          keepTogether: 'gridster-item',
+          scale: this.getA4Scale(),
+        });
+      }
+
+      const drawing = await drawDOM(this.wrapper, drawOptions);
+      return await exportPDF(drawing);
+    } finally {
+      if (includeHeaderFooter) {
+        this.removeHeaderAndFooter();
+      }
+      if (a4StyleEl) {
+        this.removeA4ExportLayout(a4StyleEl);
+      }
+      this.removeWrapper();
     }
-    this.removeWrapper();
-    return pdfData;
+  }
+
+  /**
+   * Computes the scale factor so the wrapper's content fits within the
+   * printable width of an A4 page ( page width minus margins ), capped at 1
+   * so smaller content is never scaled up.
+   *
+   * @returns Scale factor to pass to drawDOM.
+   */
+  private getA4Scale(): number {
+    const printableWidthPt = A4_WIDTH_PT - PT_PER_CM * 2;
+    const contentWidth = this.wrapper.scrollWidth;
+    if (!contentWidth) {
+      return 1;
+    }
+    return Math.min(1, printableWidthPt / contentWidth);
+  }
+
+  /**
+   * Applies a temporary export layout so gridster widgets, which are
+   * normally absolutely positioned in a grid, stack vertically in a
+   * single column for A4 pagination.
+   *
+   * @returns The injected style element, to be removed after export via
+   * removeA4ExportLayout.
+   */
+  private applyA4ExportLayout(): HTMLStyleElement {
+    this.renderer.addClass(this.wrapper, 'pdf-a4-export');
+    const style = this.renderer.createElement('style');
+    style.innerHTML = `
+      .pdf-a4-export gridster {
+        height: auto !important;
+        width: 100% !important;
+        display: block !important;
+      }
+      .pdf-a4-export gridster-item {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        margin: 0 0 16px 0 !important;
+      }
+    `;
+    this.renderer.appendChild(this.document.head, style);
+    return style;
+  }
+
+  /**
+   * Removes the temporary A4 export layout styles applied by
+   * applyA4ExportLayout, restoring the dashboard to its normal grid layout.
+   *
+   * @param style Style element previously injected by applyA4ExportLayout.
+   */
+  private removeA4ExportLayout(style: HTMLStyleElement): void {
+    this.renderer.removeClass(this.wrapper, 'pdf-a4-export');
+    this.renderer.removeChild(this.document.head, style);
   }
 
   /**
