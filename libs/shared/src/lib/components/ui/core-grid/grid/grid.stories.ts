@@ -25,9 +25,7 @@ import { Apollo } from 'apollo-angular';
 import { DownloadService } from '../../../../services/download/download.service';
 import { SnackbarService } from '@oort-front/ui';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
-/**
- *
- */
+/** Mock translation loader returning static translations for the stories */
 export class TranslateHttpLoaderMock implements TranslateLoader {
   // eslint-disable-next-line jsdoc/require-returns, jsdoc/require-jsdoc
   getTranslation(): Observable<any> {

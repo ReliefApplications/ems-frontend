@@ -242,9 +242,9 @@ export class EmailService {
   userTableFields: string[] = [];
   /** Combined computed fields for the CS filter UI (static + dynamic user-table fields). */
   public computedCommonServiceFields: any[] = [];
-  /** In-flight request for {@link getUserTableFields}, shared by concurrent callers. */
+  /** In-flight request for `getUserTableFields`, shared by concurrent callers. */
   private userTableFieldsPromise?: Promise<void>;
-  /** In-flight request for {@link buildCommonServiceFields}, shared by concurrent callers. */
+  /** In-flight request for `buildCommonServiceFields`, shared by concurrent callers. */
   private commonServiceFieldsPromise?: Promise<void>;
   /** display types */
   public displayTypes: any[] = [
@@ -542,6 +542,8 @@ export class EmailService {
    * Fetches scalar user-table fields from the Common Service GraphQL endpoint.
    * Idempotent — skips the call if fields are already loaded, and concurrent
    * callers share the same in-flight request instead of each firing their own.
+   *
+   * @returns Promise resolved once the user-table fields are loaded
    */
   async getUserTableFields(): Promise<void> {
     if (this.userTableFields.length > 0) return;
@@ -569,6 +571,8 @@ export class EmailService {
    * the dynamic user-table fields fetched from the CS endpoint.
    * Idempotent — skips if already built, and concurrent callers share the same
    * in-flight build instead of each pushing their own copy of the fields.
+   *
+   * @returns Promise resolved once the computed fields are built
    */
   async buildCommonServiceFields(): Promise<void> {
     if (this.computedCommonServiceFields.length > 0) return;
@@ -578,7 +582,11 @@ export class EmailService {
     return this.commonServiceFieldsPromise;
   }
 
-  /** Performs the actual field-list build for {@link buildCommonServiceFields}. */
+  /**
+   * Performs the actual field-list build for `buildCommonServiceFields`.
+   *
+   * @returns Promise resolved once the fields are pushed
+   */
   private async doBuildCommonServiceFields(): Promise<void> {
     await this.getUserTableFields();
     this.commonServiceFields.forEach((ele: any) => {

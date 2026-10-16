@@ -12,7 +12,7 @@ import { EditorControlComponent } from '../controls/public-api';
 import { BehaviorSubject } from 'rxjs';
 import { cloneDeep } from 'lodash';
 
-/**  */
+/** SurveyJS question rendering a rich text editor */
 @Component({
   selector: 'app-editor-question',
   standalone: true,

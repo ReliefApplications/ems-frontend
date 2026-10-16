@@ -18,6 +18,7 @@ import { DatasetFilterComponent } from './dataset-filter.component';
 // The component only needs the application service token from the library
 // barrel; importing the real barrel drags in every widget of the library.
 jest.mock('../../../../../index', () => ({
+  /** Stub of the application service token */
   ApplicationService: class {},
   ContentType: { form: 'form', workflow: 'workflow', dashboard: 'dashboard' },
 }));

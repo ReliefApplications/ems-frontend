@@ -15,7 +15,10 @@ import { PreviewTemplateModalComponent } from '../../components/templates/compon
 // Lazily loaded by previewCustomTemplate; only its identity matters here
 jest.mock(
   '../../components/templates/components/preview-template-modal/preview-template-modal.component',
-  () => ({ PreviewTemplateModalComponent: class {} })
+  () => ({
+    /** Stub of the preview template modal */
+    PreviewTemplateModalComponent: class {},
+  })
 );
 
 describe('EmailService', () => {

@@ -266,8 +266,7 @@ export class SelectMenuComponent
   /**
    * Record on change
    *
-   * @param fn
-   * event that took place
+   * @param fn callback to call when the value changes
    */
   registerOnChange(fn: (value: any) => void) {
     if (!this.onChange) {
@@ -278,8 +277,7 @@ export class SelectMenuComponent
   /**
    * Record on touch
    *
-   * @param fn
-   * event that took place
+   * @param fn callback to call when the control is touched
    */
   registerOnTouched(fn: () => void) {
     if (!this.onTouch) {

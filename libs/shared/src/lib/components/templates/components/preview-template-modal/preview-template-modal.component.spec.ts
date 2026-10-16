@@ -12,7 +12,10 @@ import { EmailService } from '../../../email/email.service';
 import { PreviewTemplateModalComponent } from './preview-template-modal.component';
 
 // The modal only needs the module for its template, which is overridden below
-jest.mock('../../../email/email.module', () => ({ EmailModule: class {} }));
+jest.mock('../../../email/email.module', () => ({
+  /** Stub of the email module */
+  EmailModule: class {},
+}));
 
 describe('PreviewTemplateModalComponent', () => {
   let fixture: ComponentFixture<PreviewTemplateModalComponent>;

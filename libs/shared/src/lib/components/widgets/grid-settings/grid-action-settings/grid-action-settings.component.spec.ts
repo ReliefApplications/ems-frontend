@@ -15,12 +15,18 @@ import { GridActionSettingsComponent } from './grid-action-settings.component';
 // Lazily loaded by addEmailTemplate; the dialog itself is mocked
 jest.mock(
   '../../../templates/components/template-modal/template-modal.component',
-  () => ({ TemplateModalComponent: class {} })
+  () => ({
+    /** Stub of the template modal */
+    TemplateModalComponent: class {},
+  })
 );
 // Only opened by addDistributionList; importing it drags in the whole email module
 jest.mock(
   '../../../distribution-lists/components/distribution-modal/distribution-modal.component',
-  () => ({ DistributionModalComponent: class {} })
+  () => ({
+    /** Stub of the distribution modal */
+    DistributionModalComponent: class {},
+  })
 );
 
 describe('GridActionSettingsComponent', () => {

@@ -4,9 +4,7 @@ import { TooltipModule } from './tooltip.module';
 import { TooltipPosition, tooltipPositions } from './types/tooltip-positions';
 import { Component, Input } from '@angular/core';
 
-/**
- *
- */
+/** Dummy component hosting a button with the tooltip directive */
 @Component({
   selector: 'ui-tooltip-dummy',
   template: ` <button [uiTooltip]="tooltip" [uiTooltipPosition]="position">
@@ -14,13 +12,9 @@ import { Component, Input } from '@angular/core';
   </button>`,
 })
 class TooltipDummyComponent {
-  /**
-   *
-   */
+  /** Tooltip text */
   @Input() public tooltip = '';
-  /**
-   *
-   */
+  /** Tooltip position */
   @Input() public position: TooltipPosition = 'bottom';
 }
 
