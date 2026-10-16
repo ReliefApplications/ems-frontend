@@ -1,9 +1,16 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Question as SurveyQuestion, SurveyModel } from 'survey-core';
+import {
+  ComponentCollection,
+  Question as SurveyQuestion,
+  Serializer,
+  SurveyModel,
+} from 'survey-core';
 import {
   applyFileQuestionVisibility,
   checkFileRestrictions,
   FILE_QUESTION_HIDDEN_CLASS,
+  HIDE_FILE_QUESTIONS_PROPERTY,
+  FILES_MANAGEMENT_QUESTION_TYPE,
   getFileQuestionChoices,
   getFileQuestions,
   getKendoFileRestrictions,
@@ -13,6 +20,8 @@ import {
   registerFileQuestionsVisibility,
   shouldHideFileQuestions,
   syncFileQuestionsVisibility,
+  keepsFilesOnComplete,
+  registerHiddenFileQuestionsValues,
 } from './files-widgets.util';
 
 /** Translate service surface used to display language names */
@@ -350,6 +359,135 @@ describe('files widgets utils', () => {
       (management as any).isVisible = true;
       handler(survey, { question: { getType: () => 'text' } });
       expect(wrapper.classList).not.toContain(FILE_QUESTION_HIDDEN_CLASS);
+    });
+  });
+});
+
+describe('hidden file questions values', () => {
+  beforeAll(() => {
+    // Minimal Files management question, enough for the visibility rule
+    ComponentCollection.Instance.add({
+      name: FILES_MANAGEMENT_QUESTION_TYPE,
+      questionJSON: { type: 'html' },
+    });
+    Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
+      name: `${HIDE_FILE_QUESTIONS_PROPERTY}:boolean`,
+    });
+  });
+
+  afterAll(() => {
+    ComponentCollection.Instance.clear();
+  });
+
+  /**
+   * Builds a survey with every kind of file question.
+   *
+   * @param management Files management question definition, if any
+   * @returns Survey
+   */
+  const createSurvey = (management?: Record<string, unknown>) =>
+    new SurveyModel({
+      elements: [
+        { type: 'text', name: 'kind' },
+        ...(management ? [management] : []),
+        { type: 'file', name: 'visibleFiles' },
+        { type: 'file', name: 'storage', visible: false },
+        {
+          type: 'file',
+          name: 'conditional',
+          visibleIf: '{kind} = "other"',
+        },
+        {
+          type: 'file',
+          name: 'explicit',
+          visible: false,
+          clearIfInvisible: 'onComplete',
+        },
+      ],
+    });
+  const hiding = {
+    type: FILES_MANAGEMENT_QUESTION_TYPE,
+    name: 'management',
+    [HIDE_FILE_QUESTIONS_PROPERTY]: true,
+  };
+  const clearing = (survey: SurveyModel) =>
+    ['visibleFiles', 'storage', 'conditional', 'explicit'].map(
+      (name) => survey.getQuestionByName(name).clearIfInvisible
+    );
+
+  it('keeps the files of the questions hidden by a files management question, unless they define their own rule', () => {
+    const survey = createSurvey(hiding);
+
+    registerHiddenFileQuestionsValues(survey);
+
+    expect(clearing(survey)).toEqual(['none', 'none', 'default', 'onComplete']);
+    expect(keepsFilesOnComplete(survey.getQuestionByName('storage'))).toBe(
+      true
+    );
+    expect(keepsFilesOnComplete(survey.getQuestionByName('conditional'))).toBe(
+      false
+    );
+    expect(keepsFilesOnComplete(survey.getQuestionByName('explicit'))).toBe(
+      false
+    );
+    survey.setValue('kind', 'other');
+    expect(keepsFilesOnComplete(survey.getQuestionByName('conditional'))).toBe(
+      true
+    );
+
+    survey.data = {
+      storage: [{ name: 'a.txt', content: 'id' }],
+      conditional: [{ name: 'b.txt', content: 'id' }],
+      explicit: [{ name: 'c.txt', content: 'id' }],
+    };
+    survey.completeLastPage();
+    expect(survey.data).toEqual({
+      storage: [{ name: 'a.txt', content: 'id' }],
+    });
+  });
+
+  it('leaves SurveyJS clear hidden file questions without a files management question hiding them', () => {
+    const noManagement = createSurvey();
+    const notHiding = createSurvey({
+      ...hiding,
+      [HIDE_FILE_QUESTIONS_PROPERTY]: false,
+    });
+
+    registerHiddenFileQuestionsValues(noManagement);
+    registerHiddenFileQuestionsValues(notHiding);
+
+    for (const survey of [noManagement, notHiding]) {
+      expect(clearing(survey)).toEqual([
+        'default',
+        'default',
+        'default',
+        'onComplete',
+      ]);
+      survey.data = { storage: [{ name: 'a.txt', content: 'id' }] };
+      survey.completeLastPage();
+      expect(survey.data).toEqual({});
+    }
+  });
+
+  it('follows the visibility of the files management question', () => {
+    const survey = createSurvey({ ...hiding, visibleIf: '{kind} = "files"' });
+    registerHiddenFileQuestionsValues(survey);
+    expect(clearing(survey)[1]).toBe('default');
+
+    survey.setValue('kind', 'files');
+    expect(clearing(survey)[1]).toBe('none');
+
+    survey.setValue('kind', 'other');
+    expect(clearing(survey)[1]).toBe('default');
+
+    // Re-evaluated right before SurveyJS clears the invisible values
+    survey.setValue('kind', 'files');
+    survey.getQuestionByName('storage').clearIfInvisible = 'default';
+    survey.setValue('storage', [{ name: 'a.txt', content: 'id' }]);
+    survey.completeLastPage();
+    expect(survey.data).toEqual({
+      kind: 'files',
+      storage: [{ name: 'a.txt', content: 'id' }],
     });
   });
 });

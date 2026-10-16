@@ -17,6 +17,7 @@ import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { DateModule } from '../../pipes/date/date.module';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
 
 /**
  * Factory for creating scroll strategy
@@ -50,6 +51,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     SurveyModule,
     DraftRecordComponent,
     DateModule,
+    DraftSaveStatusComponent,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
@@ -81,6 +83,7 @@ export class ResourceModalComponent extends FormModalComponent {
       this.formHelpersService.saveAsDraft(
         this.survey,
         this.form?.id as string,
+        this.temporaryFilesStorage,
         this.lastDraftRecord,
         callback
       );

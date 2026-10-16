@@ -60,8 +60,8 @@ import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-upd
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
 import { RecordVisibility } from '../../models/record-visibility.model';
-import { DateModule } from '../../pipes/date/date.module';
 import {
   areOnlyWarnings,
   getValidationModalData,
@@ -107,7 +107,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SpinnerModule,
     SurveyModule,
     DraftRecordComponent,
-    DateModule,
+    DraftSaveStatusComponent,
   ],
 })
 export class FormModalComponent
@@ -167,6 +167,8 @@ export class FormModalComponent
   private autoSaveGeneration = 0;
   /** Time of the latest successful draft save, manual or automatic. */
   public lastDraftSavedAt?: Date;
+  /** Whether a draft save, manual or automatic, is in progress. */
+  public draftSaving = false;
 
   /** @returns True when the Save as Draft button should be shown. */
   public get showSaveAsDraft(): boolean {
@@ -453,33 +455,25 @@ export class FormModalComponent
     if (this.autoSavePromise) {
       await this.autoSavePromise;
     }
-    let uploadErrors;
-    /** If any file attached, first upload them before record creation */
-    if (
-      !isNil(this.temporaryFilesStorage) &&
-      Object.keys(this.temporaryFilesStorage).length
-    ) {
-      try {
-        await this.formHelpersService.uploadFiles(
-          this.survey,
-          this.temporaryFilesStorage,
-          this.form?.id as string
-        );
-      } catch (errors) {
-        /** If there is any upload errors, save them for display */
-        uploadErrors = (errors as { question: string; file: File }[]).map(
-          (error) => {
-            return `${error.question}: ${error.file.name}`;
-          }
-        );
-      }
+    let uploadErrorMessage: string | undefined;
+    /** First upload the pending files of the survey before record creation */
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string
+      );
+    } catch (errors) {
+      /** If there is any upload errors, save them for display */
+      uploadErrorMessage =
+        this.formHelpersService.getUploadErrorMessage(errors);
     }
-    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
+    if (!this.survey?.hasErrors() && isNil(uploadErrorMessage)) {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed') +
-          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        uploadErrorMessage ??
+          this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
       this.saving = false;
@@ -1066,61 +1060,97 @@ export class FormModalComponent
       return;
     }
 
-    const revision = this.autoSaveRevision;
     const generation = this.autoSaveGeneration;
     const draftId = this.lastDraftRecord;
+    this.draftSaving = true;
     this.autoSavePromise = new Promise<void>((resolve) => {
-      if (draftId) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: draftId,
-              data: this.survey.data,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              this.handleAutoSaveResponse(
-                errors,
-                draftId,
-                revision,
-                generation,
-                resolve
-              );
-            },
-            error: (err: unknown) => {
-              this.handleAutoSaveError(err, generation, resolve);
-            },
-          });
-      } else {
-        this.apollo
-          .mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: this.form?.id,
-              data: this.survey.data,
-              draft: true,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors, data }) => {
-              this.handleAutoSaveResponse(
-                errors,
-                data?.addRecord?.id,
-                revision,
-                generation,
-                resolve
-              );
-            },
-            error: (err: unknown) => {
-              this.handleAutoSaveError(err, generation, resolve);
-            },
-          });
-      }
+      // Picked files are saved in the back-end storage before the draft, so
+      // their data URLs never reach the database
+      this.uploadDraftFiles().then((uploaded) => {
+        if (!uploaded || generation !== this.autoSaveGeneration) {
+          this.finishAutoSave(resolve);
+          return;
+        }
+        // Captured once the files are stored: replacing them by their stored
+        // reference counts as a change of the survey
+        const revision = this.autoSaveRevision;
+        if (draftId) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: draftId,
+                data: this.survey.data,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  draftId,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        } else {
+          this.apollo
+            .mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.form?.id,
+                data: this.survey.data,
+                draft: true,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors, data }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  data?.addRecord?.id,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        }
+      });
     });
+  }
+
+  /**
+   * Saves the picked files of the survey in the back-end storage before an
+   * automatic draft save. They reach their final storage when the record is
+   * submitted.
+   *
+   * @returns True when every picked file is saved.
+   */
+  private async uploadDraftFiles(): Promise<boolean> {
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string,
+        { draft: true }
+      );
+      return true;
+    } catch (errors) {
+      this.snackBar.openSnackBar(
+        this.formHelpersService.getUploadErrorMessage(errors),
+        { error: true }
+      );
+      return false;
+    }
   }
 
   /**
@@ -1190,6 +1220,7 @@ export class FormModalComponent
     const shouldReplay = this.autoSavePending;
     this.autoSavePending = false;
     this.autoSavePromise = null;
+    this.draftSaving = false;
     resolve();
     if (shouldReplay && this.autoSaveEnabled) {
       this.performAutoSave();
@@ -1206,12 +1237,14 @@ export class FormModalComponent
       await this.autoSavePromise;
     }
     const revision = this.autoSaveRevision;
+    this.draftSaving = true;
     const callback = (details: { id?: string }) => {
       const hasNewChanges = this.autoSaveRevision !== revision;
       this.lastDraftRecord = details.id;
       this.valueChanged = hasNewChanges;
       this.lastDraftSavedAt = new Date();
       this.saving = false;
+      this.draftSaving = false;
       this.autoSaveEnabled = this.canAutoSaveDraft;
       if (hasNewChanges) {
         this.performAutoSave();
@@ -1219,11 +1252,13 @@ export class FormModalComponent
     };
     const errorCallback = () => {
       this.saving = false;
+      this.draftSaving = false;
       this.autoSaveEnabled = this.canAutoSaveDraft;
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form?.id as string,
+      this.temporaryFilesStorage,
       this.lastDraftRecord,
       callback,
       errorCallback

@@ -1,0 +1,16 @@
+<div
+  *ngIf="saving; else saved"
+  class="flex items-center gap-1 text-sm text-gray-500"
+>
+  <ui-spinner size="small" variant="grey"></ui-spinner>
+  <span>{{ 'components.form.draftRecords.saving' | translate }}</span>
+</div>
+<ng-template #saved>
+  <div *ngIf="savedAt" class="flex items-center gap-1 text-sm text-green-700">
+    <ui-icon icon="check_circle" variant="success" [size]="18"></ui-icon>
+    <span>
+      {{ 'components.form.draftRecords.autoSaveSuccess' | translate }}
+      {{ savedAt | sharedDate : 'medium' }}
+    </span>
+  </div>
+</ng-template>

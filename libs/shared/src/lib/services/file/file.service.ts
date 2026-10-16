@@ -42,6 +42,12 @@ export interface File {
   outdatedAt?: string;
   /** Language the file was uploaded for ( tagged by the Files upload question ). */
   lang?: string;
+  /**
+   * Saved in the back-end storage along with a draft record. The file reaches
+   * its final storage ( document management, when configured ) when the
+   * record is submitted.
+   */
+  draft?: boolean;
 }
 
 /**

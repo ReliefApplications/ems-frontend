@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
+import { of, throwError } from 'rxjs';
 import { SurveyModel } from 'survey-core';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
@@ -113,5 +114,360 @@ describe('FormHelpersService', () => {
 
     expect(options.value).toBe('');
     expect(options.isExists).toBe(true);
+  });
+});
+
+describe('FormHelpersService files upload', () => {
+  let service: FormHelpersService;
+  let uploadFile: jest.Mock;
+  let updateFile: jest.Mock;
+  let uploadBlob: jest.Mock;
+  let getFileBlob: jest.Mock;
+  let mutate: jest.Mock;
+  let openSnackBar: jest.Mock;
+  const environment: { csApiUrl?: string } = {};
+
+  const dataUrl = 'data:text/plain;base64,aGVsbG8=';
+  const otherDataUrl = 'data:text/plain;base64,d29ybGQ=';
+  const stored = { driveId: 'drive', itemId: 'stored-item' };
+  const uploaded = { driveId: 'drive', itemId: 'new-item' };
+  const draftPath = 'form-id/draft-blob';
+  const draftFile = {
+    name: 'draft.txt',
+    type: 'text/plain',
+    content: draftPath,
+    draft: true,
+  };
+
+  const createSurvey = (data: Record<string, unknown>) => {
+    const survey = new SurveyModel({
+      elements: [
+        { type: 'file', name: 'documents', allowMultiple: true },
+        { type: 'file', name: 'copies', allowMultiple: true },
+      ],
+    });
+    survey.data = data;
+    return survey;
+  };
+
+  beforeEach(() => {
+    environment.csApiUrl = 'https://cs';
+    uploadFile = jest.fn().mockResolvedValue(uploaded);
+    updateFile = jest.fn().mockResolvedValue(undefined);
+    uploadBlob = jest.fn().mockResolvedValue('form-id/new-blob');
+    getFileBlob = jest
+      .fn()
+      .mockReturnValue(of(new Blob(['hello'], { type: 'text/plain' })));
+    mutate = jest
+      .fn()
+      .mockReturnValue(of({ data: { addRecord: { id: 'draft-id' } } }));
+    openSnackBar = jest.fn();
+    TestBed.configureTestingModule({
+      providers: [
+        FormHelpersService,
+        { provide: 'environment', useValue: environment },
+        { provide: Apollo, useValue: { mutate } },
+        { provide: SnackbarService, useValue: { openSnackBar } },
+        { provide: ConfirmService, useValue: {} },
+        { provide: TranslateService, useValue: { instant: (k: string) => k } },
+        { provide: AuthService, useValue: {} },
+        { provide: DownloadService, useValue: { uploadBlob, getFileBlob } },
+        {
+          provide: DocumentManagementService,
+          useValue: { uploadFile, updateFile },
+        },
+        { provide: FileService, useValue: {} },
+      ],
+    });
+    service = TestBed.inject(FormHelpersService);
+  });
+
+  describe('draft save', () => {
+    it('saves picked files in the back-end storage, flagged as draft files', async () => {
+      const raw = new File(['hello'], 'a.txt', { type: 'text/plain' });
+      const survey = createSurvey({
+        documents: [
+          { name: 'a.txt', type: 'text/plain', content: dataUrl },
+          { name: 'stored.pdf', content: stored },
+          draftFile,
+        ],
+      });
+
+      await service.uploadFiles(survey, { documents: [raw] }, 'form-id', {
+        draft: true,
+      });
+
+      expect(uploadBlob).toHaveBeenCalledTimes(1);
+      // Silent: no upload snackbars during a draft save
+      expect(uploadBlob).toHaveBeenCalledWith(raw, 'file', 'form-id', {
+        silent: true,
+      });
+      // Document management is not involved in drafts
+      expect(uploadFile).not.toHaveBeenCalled();
+      expect(updateFile).not.toHaveBeenCalled();
+      expect(getFileBlob).not.toHaveBeenCalled();
+      expect(survey.getValue('documents')).toEqual([
+        {
+          name: 'a.txt',
+          type: 'text/plain',
+          content: 'form-id/new-blob',
+          draft: true,
+        },
+        { name: 'stored.pdf', content: stored },
+        draftFile,
+      ]);
+    });
+
+    it('rebuilds files restored from a record saved before their upload', async () => {
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', type: 'text/plain', content: dataUrl }],
+      });
+
+      await service.uploadFiles(survey, {}, 'form-id', { draft: true });
+
+      const [file] = uploadBlob.mock.calls[0];
+      expect(file).toBeInstanceOf(File);
+      expect(file.name).toBe('a.txt');
+      expect(file.type).toBe('text/plain');
+      expect(survey.getValue('documents')[0].draft).toBe(true);
+    });
+  });
+
+  describe('submission with document management', () => {
+    it('uploads picked files and moves draft files to document management', async () => {
+      const raw = new File(['hello'], 'a.txt', { type: 'text/plain' });
+      const survey = createSurvey({
+        documents: [
+          { name: 'a.txt', type: 'text/plain', content: dataUrl },
+          draftFile,
+          { name: 'legacy.pdf', content: 'form-id/legacy-blob' },
+          { name: 'stored.pdf', content: stored },
+        ],
+      });
+      uploadFile.mockImplementation((file: File) =>
+        Promise.resolve({
+          driveId: 'drive',
+          itemId: `item-${file.name}`,
+        })
+      );
+
+      await service.uploadFiles(survey, { documents: [raw] }, 'form-id');
+
+      expect(uploadBlob).not.toHaveBeenCalled();
+      expect(getFileBlob).toHaveBeenCalledTimes(1);
+      expect(getFileBlob).toHaveBeenCalledWith(
+        `download/file/${draftPath}`,
+        'text/plain'
+      );
+      expect(uploadFile).toHaveBeenCalledTimes(2);
+      expect(uploadFile.mock.calls[0][0]).toBe(raw);
+      const movedFile = uploadFile.mock.calls[1][0];
+      expect(movedFile).toBeInstanceOf(File);
+      expect(movedFile.name).toBe('draft.txt');
+      expect(movedFile.type).toBe('text/plain');
+      expect(uploadFile.mock.calls[1][1].name).toBe('documents');
+      expect(survey.getValue('documents')).toEqual([
+        {
+          name: 'a.txt',
+          type: 'text/plain',
+          content: { driveId: 'drive', itemId: 'item-a.txt' },
+        },
+        {
+          name: 'draft.txt',
+          type: 'text/plain',
+          content: { driveId: 'drive', itemId: 'item-draft.txt' },
+        },
+        { name: 'legacy.pdf', content: 'form-id/legacy-blob' },
+        { name: 'stored.pdf', content: stored },
+      ]);
+      // Stored files get their properties synced on submission
+      expect(updateFile).toHaveBeenCalledTimes(1);
+      expect(updateFile.mock.calls[0][0]).toEqual({
+        name: 'stored.pdf',
+        content: stored,
+      });
+    });
+
+    it('skips the files of a question cleared on completion, keeps the ones of a hidden storage question', async () => {
+      const survey = new SurveyModel({
+        elements: [
+          { type: 'text', name: 'kind' },
+          {
+            type: 'file',
+            name: 'conditional',
+            allowMultiple: true,
+            visibleIf: '{kind} = "other"',
+          },
+          {
+            type: 'file',
+            name: 'storage',
+            allowMultiple: true,
+            visible: false,
+            clearIfInvisible: 'none',
+          },
+        ],
+      });
+      survey.data = {
+        conditional: [{ ...draftFile, name: 'conditional.txt' }],
+        storage: [{ ...draftFile, name: 'storage.txt' }],
+      };
+
+      await service.uploadFiles(survey, {}, 'form-id');
+
+      expect(uploadFile).toHaveBeenCalledTimes(1);
+      expect(uploadFile.mock.calls[0][0].name).toBe('storage.txt');
+      expect(survey.getValue('storage')).toEqual([
+        { name: 'storage.txt', type: 'text/plain', content: uploaded },
+      ]);
+      expect(survey.getValue('conditional')[0].draft).toBe(true);
+    });
+
+    it('shares the upload of a picked file with its copies', async () => {
+      const raw = new File(['hello'], 'a.txt', { type: 'text/plain' });
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', type: 'text/plain', content: dataUrl }],
+        copies: [{ name: 'a.txt', type: 'text/plain', content: dataUrl }],
+      });
+
+      await service.uploadFiles(survey, { documents: [raw] }, 'form-id');
+
+      expect(uploadFile).toHaveBeenCalledTimes(1);
+      expect(uploadFile.mock.calls[0][0]).toBe(raw);
+      expect(survey.getValue('documents')[0].content).toEqual(uploaded);
+      expect(survey.getValue('copies')[0].content).toEqual(uploaded);
+    });
+
+    it('keeps the files that failed pending and reports them', async () => {
+      uploadFile.mockImplementation((file: File) =>
+        file.name === 'b.txt' ? Promise.reject(null) : Promise.resolve(uploaded)
+      );
+      getFileBlob.mockReturnValue(throwError(() => new Error('not found')));
+      const survey = createSurvey({
+        documents: [
+          { name: 'a.txt', content: dataUrl },
+          { name: 'b.txt', content: otherDataUrl },
+          draftFile,
+        ],
+      });
+
+      let errors: unknown;
+      await service.uploadFiles(survey, {}, 'form-id').catch((e) => {
+        errors = e;
+      });
+
+      expect(errors).toEqual([
+        {
+          question: 'documents',
+          file: expect.objectContaining({ name: 'b.txt' }),
+        },
+        { question: 'documents', file: { name: 'draft.txt' } },
+      ]);
+      expect(service.getUploadErrorMessage(errors)).toBe(
+        'models.form.notifications.savingFailed\ndocuments: b.txt\ndocuments: draft.txt'
+      );
+      expect(survey.getValue('documents')).toEqual([
+        { name: 'a.txt', content: uploaded },
+        { name: 'b.txt', content: otherDataUrl },
+        draftFile,
+      ]);
+    });
+
+    it('treats an upload without stored reference as a failure', async () => {
+      uploadFile.mockResolvedValue(null);
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', content: dataUrl }],
+      });
+
+      await expect(service.uploadFiles(survey, {}, 'form-id')).rejects.toEqual([
+        {
+          question: 'documents',
+          file: expect.objectContaining({ name: 'a.txt' }),
+        },
+      ]);
+      expect(survey.getValue('documents')[0].content).toBe(dataUrl);
+    });
+  });
+
+  describe('submission without document management', () => {
+    beforeEach(() => {
+      environment.csApiUrl = undefined;
+    });
+
+    it('uploads picked files to the back-end storage and keeps draft files there', async () => {
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', content: dataUrl }, draftFile],
+      });
+
+      await service.uploadFiles(survey, {}, 'form-id');
+
+      expect(uploadFile).not.toHaveBeenCalled();
+      expect(getFileBlob).not.toHaveBeenCalled();
+      expect(uploadBlob).toHaveBeenCalledTimes(1);
+      expect(uploadBlob.mock.calls[0][0].name).toBe('a.txt');
+      expect(uploadBlob.mock.calls[0][2]).toBe('form-id');
+      expect(uploadBlob.mock.calls[0][3]).toEqual({ silent: false });
+      expect(survey.getValue('documents')).toEqual([
+        { name: 'a.txt', content: 'form-id/new-blob' },
+        // The draft flag is dropped: the back-end storage is final
+        { name: 'draft.txt', type: 'text/plain', content: draftPath },
+      ]);
+    });
+  });
+
+  describe('saveAsDraft', () => {
+    it('saves the picked files in the back-end storage before the draft', async () => {
+      const survey = createSurvey({
+        documents: [
+          { name: 'a.txt', content: dataUrl },
+          { name: 'stored.pdf', content: stored },
+        ],
+      });
+      const callback = jest.fn();
+
+      await service.saveAsDraft(survey, 'form-id', {}, undefined, callback);
+
+      expect(uploadBlob).toHaveBeenCalledTimes(1);
+      expect(uploadFile).not.toHaveBeenCalled();
+      expect(updateFile).not.toHaveBeenCalled();
+      expect(mutate).toHaveBeenCalledTimes(1);
+      expect(mutate.mock.calls[0][0].variables).toEqual({
+        form: 'form-id',
+        data: {
+          documents: [
+            { name: 'a.txt', content: 'form-id/new-blob', draft: true },
+            { name: 'stored.pdf', content: stored },
+          ],
+        },
+      });
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'draft-id' })
+      );
+    });
+
+    it('does not save a draft when a file upload fails', async () => {
+      uploadBlob.mockRejectedValue(undefined);
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', content: dataUrl }],
+      });
+      const callback = jest.fn();
+      const errorCallback = jest.fn();
+
+      await service.saveAsDraft(
+        survey,
+        'form-id',
+        {},
+        'draft-id',
+        callback,
+        errorCallback
+      );
+
+      expect(mutate).not.toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
+      expect(errorCallback).toHaveBeenCalledTimes(1);
+      expect(openSnackBar).toHaveBeenCalledWith(
+        'models.form.notifications.savingFailed\ndocuments: a.txt',
+        { error: true }
+      );
+    });
   });
 });

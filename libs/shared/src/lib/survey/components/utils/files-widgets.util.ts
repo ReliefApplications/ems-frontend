@@ -247,6 +247,21 @@ export const checkFileRestrictions = (
 };
 
 /**
+ * Whether a file question keeps its value when the record is submitted:
+ * SurveyJS clears the values of invisible questions on completion, unless the
+ * question ( or the survey ) opts out. See
+ * {@link registerHiddenFileQuestionsValues} for the file questions hidden by
+ * a Files management question.
+ *
+ * @param question File question
+ * @returns True when the files of the question are saved on submission
+ */
+export const keepsFilesOnComplete = (question: SurveyQuestion): boolean =>
+  question.isVisible ||
+  question.clearIfInvisible === 'none' ||
+  (question.survey as SurveyModel | undefined)?.clearInvisibleValues === 'none';
+
+/**
  * Whether the survey's file questions must be hidden: a visible files
  * management question asks for it. Never in the form builder, where the file
  * questions must stay reachable to configure their restrictions.
@@ -340,4 +355,40 @@ export const registerFileQuestionsVisibility = (
       syncFileQuestionsVisibility(survey, document);
     }
   });
+};
+
+/**
+ * Keeps the files of the file questions hidden by a Files management question
+ * when the record is submitted. Such a question is a storage for the files
+ * added through Files upload questions: when the designer also hides it from
+ * SurveyJS ( `visible: false` ), SurveyJS would clear its value on completion,
+ * once the files are uploaded. File questions defining their own rule, a
+ * visibility condition ( `visibleIf` ) or a clearing setting, are left to
+ * SurveyJS. The rule follows the Files management question visibility.
+ *
+ * @param survey Survey owning the file questions
+ */
+export const registerHiddenFileQuestionsValues = (
+  survey: SurveyModel
+): void => {
+  const managed = getFileQuestions(survey).filter(
+    (question) => !question.visibleIf && question.clearIfInvisible === 'default'
+  );
+  if (!managed.length) {
+    return;
+  }
+  const apply = (): void => {
+    const keep = shouldHideFileQuestions(survey);
+    managed.forEach((question) => {
+      question.clearIfInvisible = keep ? 'none' : 'default';
+    });
+  };
+  apply();
+  survey.onVisibleChanged.add((_, options) => {
+    if (options.question.getType() === FILES_MANAGEMENT_QUESTION_TYPE) {
+      apply();
+    }
+  });
+  // Fired before SurveyJS clears the invisible values
+  survey.onCompleting.add(apply);
 };

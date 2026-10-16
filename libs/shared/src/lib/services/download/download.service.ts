@@ -388,17 +388,22 @@ export class DownloadService {
    * @param file The file to upload
    * @param type Either 'file' or 'style'
    * @param entity ID of the entity the file is related to
+   * @param options Upload options
+   * @param options.silent Whether to skip the progress / result snackbars ( e.g. background draft saves )
    * @returns The path of the uploaded file
    */
   uploadBlob(
     file: any,
     type: BlobType,
-    entity: string
+    entity: string,
+    options: { silent?: boolean } = {}
   ): Promise<string | void> {
-    const snackBarRef = this.createLoadingSnackbarRef(
-      'common.notifications.file.upload.processing'
-    );
-    const snackBarInstance = snackBarRef.instance.nestedComponent.instance;
+    const snackBarRef = options.silent
+      ? null
+      : this.createLoadingSnackbarRef(
+          'common.notifications.file.upload.processing'
+        );
+    const snackBarInstance = snackBarRef?.instance.nestedComponent.instance;
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -411,27 +416,33 @@ export class DownloadService {
         next: (res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            snackBarInstance.message = this.translate.instant(
-              'common.notifications.file.upload.ready'
-            );
-            snackBarInstance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            if (snackBarInstance && snackBarRef) {
+              snackBarInstance.message = this.translate.instant(
+                'common.notifications.file.upload.ready'
+              );
+              snackBarInstance.loading = false;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            }
             resolve(path);
           } else {
-            snackBarInstance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarInstance.loading = false;
-            snackBarInstance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            if (snackBarInstance && snackBarRef) {
+              snackBarInstance.message = this.translate.instant(
+                'common.notifications.file.upload.error'
+              );
+              snackBarInstance.loading = false;
+              snackBarInstance.error = true;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            }
             reject();
           }
         },
         error: (error) => {
-          snackBarInstance.message = error.message;
-          snackBarInstance.loading = false;
-          snackBarInstance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          if (snackBarInstance && snackBarRef) {
+            snackBarInstance.message = error.message;
+            snackBarInstance.loading = false;
+            snackBarInstance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          }
           reject();
         },
       });
