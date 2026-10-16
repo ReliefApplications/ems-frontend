@@ -1,3 +1,8 @@
+<div class="self-end" *ngIf="resource.canUpdate">
+  <ui-button category="secondary" variant="primary" (click)="onAddForm()">
+    {{ 'models.form.create' | translate }}
+  </ui-button>
+</div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->

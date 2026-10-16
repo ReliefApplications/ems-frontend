@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import {
+  AddFormMutationResponse,
   DeleteFormMutationResponse,
   Form,
   Resource,
@@ -10,6 +12,7 @@ import {
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { DELETE_FORM } from './graphql/mutations';
+import { ADD_FORM } from '../../forms/graphql/mutations';
 import get from 'lodash/get';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
@@ -28,7 +31,7 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Resource
    */
-  private resource!: Resource;
+  public resource!: Resource;
   /**
    * Forms
    */
@@ -59,15 +62,93 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param dialog Dialog service
+   * @param router Angular router
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private router: Router
   ) {
     super();
+  }
+
+  /**
+   * Opens the form creation modal for the current resource.
+   */
+  async onAddForm(): Promise<void> {
+    try {
+      const { AddFormModalComponent } = await import(
+        '../../../../components/add-form-modal/add-form-modal.component'
+      );
+      const dialogRef = this.dialog.open<
+        { name: string; template: string | null },
+        { resourceId?: string },
+        InstanceType<typeof AddFormModalComponent>
+      >(AddFormModalComponent, {
+        data: { resourceId: this.resource.id },
+      });
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+        if (value) {
+          this.apollo
+            .mutate<AddFormMutationResponse>({
+              mutation: ADD_FORM,
+              variables: {
+                name: value.name,
+                resource: this.resource.id,
+                template: value.template,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.form.one')
+                          .toLowerCase(),
+                        error: errors[0].message,
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else if (data) {
+                  this.router.navigate([
+                    '/resources',
+                    this.resource.id,
+                    'forms',
+                    data.addForm.id,
+                    'builder',
+                  ]);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.form.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
+    } catch (error) {
+      this.snackBar.openSnackBar(
+        error instanceof Error ? error.message : String(error),
+        { error: true }
+      );
+    }
   }
 
   ngOnInit(): void {

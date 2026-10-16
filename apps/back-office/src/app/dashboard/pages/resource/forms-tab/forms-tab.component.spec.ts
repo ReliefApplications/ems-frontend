@@ -8,7 +8,14 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { DialogModule } from '@angular/cdk/dialog';
-import { SkeletonTableModule } from '@oort-front/shared';
+import { Dialog } from '@angular/cdk/dialog';
+import { Resource, SkeletonTableModule } from '@oort-front/shared';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+
+const dialog = {
+  open: jest.fn(() => ({ closed: of(undefined) })),
+};
 
 describe('FormsTabComponent', () => {
   let component: FormsTabComponent;
@@ -28,7 +35,11 @@ describe('FormsTabComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService],
+      providers: [
+        TranslateService,
+        { provide: Dialog, useValue: dialog },
+        { provide: Router, useValue: { navigate: jest.fn() } },
+      ],
     }).compileComponents();
   });
 
@@ -40,5 +51,17 @@ describe('FormsTabComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('opens the form modal scoped to the current resource', async () => {
+    (component as unknown as { resource: Resource }).resource = {
+      id: 'resource-id',
+    } as Resource;
+
+    await component.onAddForm();
+
+    expect(dialog.open).toHaveBeenCalledWith(expect.any(Function), {
+      data: { resourceId: 'resource-id' },
+    });
   });
 });
