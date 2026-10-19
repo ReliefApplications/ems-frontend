@@ -28,6 +28,7 @@ type DialogResultI = {
   | {
       type: 'pdf';
       paperSize: string;
+      orientation: 'portrait' | 'landscape';
     }
 );
 
@@ -60,8 +61,16 @@ export class DashboardExportModalComponent {
     { value: 'png', label: 'PNG' },
     { value: 'jpeg', label: 'JPEG' },
   ];
-  /** Supported paper sizes */
-  public paperSizes = [{ value: 'auto', label: 'Auto' }];
+  /** Supported paper sizes ( first one is the default ) */
+  public paperSizes = [
+    { value: 'A4', label: 'A4' },
+    { value: 'auto', label: 'Auto' },
+  ];
+  /** Supported page orientations */
+  public orientations = [
+    { value: 'portrait', label: 'common.notifications.export.portrait' },
+    { value: 'landscape', label: 'common.notifications.export.landscape' },
+  ];
 
   /**
    * Dashboard export modal.
@@ -98,6 +107,7 @@ export class DashboardExportModalComponent {
           : {
               // PDF export fields
               paperSize: new FormControl(this.paperSizes[0].value),
+              orientation: new FormControl(this.orientations[0].value),
             }
       )
     );
