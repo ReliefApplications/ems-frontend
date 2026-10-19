@@ -1,3 +1,9 @@
+# [2.24.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.26...v2.24.0-rc.27) (2026-10-19)
+
+### Features
+
+- Multi-pages PDF export ([#2953](https://github.com/ReliefApplications/ems-frontend/issues/2953)) ([2586198](https://github.com/ReliefApplications/ems-frontend/commit/2586198345b9da306c90fbd1770f880acc351ce4)), closes [AB#134828](https://github.com/AB/issues/134828)
+
 # [2.24.0-rc.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.25...v2.24.0-rc.26) (2026-10-16)
 
 ### Bug Fixes
