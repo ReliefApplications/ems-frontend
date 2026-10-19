@@ -196,10 +196,38 @@ ui-checkbox {
     format('truetype');
 }
 
+// Material icons in TrueType format, only used by the dashboard export.
+// The PDF engine can only embed same-origin TrueType fonts, and the regular
+// Material icons fonts are loaded from Google Fonts as woff2.
+@font-face {
+  font-family: 'Material Icons Export';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../../../../assets/fonts/MaterialIcons/MaterialIcons-Regular.ttf')
+    format('truetype');
+}
+
+@font-face {
+  font-family: 'Material Icons Outlined Export';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../../../../assets/fonts/MaterialIcons/MaterialIconsOutlined-Regular.ttf')
+    format('truetype');
+}
+
 // Style needed for dashboard export to work
 .k-pdf-export {
   font-family: 'DejaVu Sans', Roboto, 'Helvetica Neue', sans-serif;
   overflow: visible !important;
+  // Use the embeddable icon fonts. Material Symbols are mapped to Material
+  // Icons Outlined, as the symbols font is too heavy to ship.
+  .material-icons {
+    font-family: 'Material Icons Export';
+  }
+  .material-icons-outlined,
+  .material-symbols-outlined {
+    font-family: 'Material Icons Outlined Export';
+  }
   .export-hide {
     display: none;
     i {
