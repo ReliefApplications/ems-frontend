@@ -56,6 +56,17 @@ interface PdfExportConfig {
 const PAPER_SIZES: Record<string, [number, number]> = {
   A4: [595.28, 841.89],
 };
+/**
+ * Icon fonts used by the PDF export ( see .k-pdf-export in styles ).
+ * Material Symbols are rendered with the Material Icons Outlined font.
+ */
+const PDF_ICON_FONTS = [
+  { selector: '.material-icons', family: 'Material Icons Export' },
+  {
+    selector: '.material-icons-outlined, .material-symbols-outlined',
+    family: 'Material Icons Outlined Export',
+  },
+];
 
 /**
  * Shared dashboard export button.
@@ -185,6 +196,7 @@ export class DashboardExportButtonComponent {
     if (includeHeaderFooter) {
       this.addHeaderAndFooter();
     }
+    const restoreIcons = await this.useIconCodepoints();
 
     let pdfData: string;
     if (paperSize === 'auto') {
@@ -222,11 +234,57 @@ export class DashboardExportButtonComponent {
       });
     }
 
+    restoreIcons();
     if (includeHeaderFooter) {
       this.removeHeaderAndFooter();
     }
     this.removeWrapper();
     return pdfData;
+  }
+
+  /**
+   * Replace Material icon names with their codepoint character, for the
+   * time of the export. The PDF engine cannot apply font ligatures, so an
+   * icon name like 'add' would otherwise be drawn as letters.
+   * Also makes sure the embeddable icon fonts are loaded, so the icons are
+   * measured with the right glyphs.
+   *
+   * @returns Function restoring the icon names
+   */
+  private async useIconCodepoints(): Promise<() => void> {
+    const { MATERIAL_ICONS_CODEPOINTS, MATERIAL_ICONS_OUTLINED_CODEPOINTS } =
+      await import('./material-icons-codepoints');
+    const codepoints = [
+      MATERIAL_ICONS_CODEPOINTS,
+      MATERIAL_ICONS_OUTLINED_CODEPOINTS,
+    ];
+    const replaced: { node: Text; text: string }[] = [];
+    PDF_ICON_FONTS.forEach(({ selector }, index) => {
+      this.wrapper.querySelectorAll(selector).forEach((icon: Element) => {
+        icon.childNodes.forEach((node) => {
+          if (node.nodeType !== Node.TEXT_NODE) {
+            return;
+          }
+          const text = node as Text;
+          const codepoint = codepoints[index][text.data.trim()];
+          if (codepoint) {
+            replaced.push({ node: text, text: text.data });
+            // Only change the text node value, so Angular bindings stay valid
+            text.data = String.fromCodePoint(codepoint);
+          }
+        });
+      });
+    });
+    try {
+      await Promise.all(
+        PDF_ICON_FONTS.map(({ family }) =>
+          this.document.fonts.load(`24px "${family}"`)
+        )
+      );
+    } catch {
+      // Fonts are embedded by the PDF engine anyway, only measures may be off
+    }
+    return () => replaced.forEach(({ node, text }) => (node.data = text));
   }
 
   /**
