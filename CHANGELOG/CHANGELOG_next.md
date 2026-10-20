@@ -1,3 +1,9 @@
+# [2.24.0-rc.28](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.27...v2.24.0-rc.28) (2026-10-20)
+
+### Bug Fixes
+
+- Select menu could show value text instead of display text ([9b57988](https://github.com/ReliefApplications/ems-frontend/commit/9b57988de04b2b4b94603bc3f3c29f9f695fa14d))
+
 # [2.24.0-rc.27](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.26...v2.24.0-rc.27) (2026-10-19)
 
 ### Features
