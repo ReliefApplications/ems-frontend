@@ -1,9 +1,12 @@
 import { TranslateService } from '@ngx-translate/core';
 import {
   areOnlyWarnings,
+  areUniquenessErrors,
+  getUniquenessViolations,
   getUploadReportModalData,
   getValidationModalData,
   toDisplayedErrors,
+  UNIQUENESS_ERROR_CODE,
 } from './validation-errors.util';
 
 /** Translate service stub, returning the key and its parameters */
@@ -90,6 +93,82 @@ describe('validation errors utils', () => {
         'components.widget.grid.validation.warningSubtitle'
       );
       expect(data.hideConfirm).toBeUndefined();
+    });
+
+    it('explains the record was not saved for blocking uniqueness violations', () => {
+      const data = getValidationModalData(
+        [{ question: 'My rule', errors: ['x'], severity: 'error' }],
+        '',
+        translate
+      );
+      expect(data.errors).toEqual([
+        { question: '-', errors: ['x'], severity: 'error' },
+      ]);
+      expect(data.severity).toBeUndefined();
+      expect(data.title).toEqual('components.uniquenessRules.blocked.title');
+      expect(data.subtitle).toEqual(
+        'components.uniquenessRules.blocked.subtitle'
+      );
+      expect(data.help).toEqual('');
+      expect(data.hideConfirm).toBe(true);
+      expect(data.confirmText).toBeUndefined();
+    });
+  });
+
+  describe('areUniquenessErrors', () => {
+    it('is true only when all the errors are blocking uniqueness violations', () => {
+      expect(
+        areUniquenessErrors([
+          { question: 'a', errors: ['x'], severity: 'error' },
+          { question: 'b', errors: ['y'], severity: 'error' },
+        ])
+      ).toBe(true);
+      expect(
+        areUniquenessErrors([
+          { question: 'a', errors: ['x'], severity: 'error' },
+          { question: 'b', errors: ['y'] },
+        ])
+      ).toBe(false);
+      expect(
+        areUniquenessErrors([
+          { question: 'a', errors: ['x'], severity: 'warning' },
+        ])
+      ).toBe(false);
+      expect(areUniquenessErrors([])).toBe(false);
+      expect(areUniquenessErrors(null)).toBe(false);
+    });
+  });
+
+  describe('getUniquenessViolations', () => {
+    const violations = [
+      { question: 'org_code', errors: ['Code already used'] },
+      { question: 'name + country', errors: ['Duplicate'] },
+    ];
+
+    it('lists the violations of uniqueness errors, as blocking errors', () => {
+      expect(
+        getUniquenessViolations([
+          { message: 'Forbidden', extensions: { code: 'FORBIDDEN' } },
+          {
+            message: 'Code already used Duplicate',
+            extensions: { code: UNIQUENESS_ERROR_CODE, violations },
+          },
+        ])
+      ).toEqual(violations.map((x) => ({ ...x, severity: 'error' })));
+    });
+
+    it('returns nothing for other errors', () => {
+      expect(getUniquenessViolations(undefined)).toEqual([]);
+      expect(getUniquenessViolations([])).toEqual([]);
+      expect(getUniquenessViolations([{ message: 'Internal error' }])).toEqual(
+        []
+      );
+      // Uniqueness errors raised without the list of rules
+      expect(
+        getUniquenessViolations([
+          { message: 'Duplicate', extensions: { code: UNIQUENESS_ERROR_CODE } },
+        ])
+      ).toEqual([]);
     });
   });
 

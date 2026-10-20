@@ -20,6 +20,49 @@ export interface UploadReportRow {
 export const areOnlyWarnings = (errors?: ValidationError[] | null): boolean =>
   !!errors?.length && errors.every((error) => error.severity === 'warning');
 
+/**
+ * Whether the validation errors are all blocking uniqueness violations, which
+ * are the only errors with an 'error' severity: survey validation errors have
+ * no severity.
+ *
+ * @param errors validation errors
+ * @returns true if the errors are all blocking uniqueness violations
+ */
+export const areUniquenessErrors = (
+  errors?: ValidationError[] | null
+): boolean =>
+  !!errors?.length && errors.every((error) => error.severity === 'error');
+
+/**
+ * Code of the GraphQL errors thrown by the back-end when a record violates
+ * blocking uniqueness rules
+ */
+export const UNIQUENESS_ERROR_CODE = 'UNIQUENESS_RULE_VIOLATED';
+
+/**
+ * Extracts the blocking uniqueness violations from the errors of a record
+ * mutation, if any. The back-end rejects the record with an error listing the
+ * violated rules in its extensions, so they can be displayed as warnings are,
+ * for the user to fix the record.
+ *
+ * @param errors errors returned by the mutation
+ * @returns the violations, as validation errors
+ */
+export const getUniquenessViolations = (
+  errors?:
+    | readonly { message?: string; extensions?: Record<string, any> }[]
+    | null
+): ValidationError[] =>
+  (errors || []).flatMap((error) =>
+    error?.extensions?.['code'] === UNIQUENESS_ERROR_CODE &&
+    Array.isArray(error.extensions['violations'])
+      ? error.extensions['violations'].map((violation: ValidationError) => ({
+          ...violation,
+          severity: 'error' as const,
+        }))
+      : []
+  );
+
 /** Displayed instead of the field, for errors which are not about a field */
 const NO_FIELD = '-';
 
@@ -41,7 +84,9 @@ export const toDisplayedErrors = (
 /**
  * Builds the data of the errors modal for the validation errors returned
  * when saving a record. When they are all warnings, the modal presents them
- * as such, and offers to save the record anyway.
+ * as such, and offers to save the record anyway. When they are all blocking
+ * uniqueness violations, the modal explains the record was not saved: the
+ * user can only fix it and save it again.
  *
  * @param errors validation errors returned by the back-end
  * @param incrementalId incremental id of the record, if any
@@ -55,6 +100,12 @@ export const getValidationModalData = (
 ): ErrorsModalData => ({
   incrementalId,
   errors: toDisplayedErrors(errors),
+  ...(areUniquenessErrors(errors) && {
+    title: translate.instant('components.uniquenessRules.blocked.title'),
+    subtitle: translate.instant('components.uniquenessRules.blocked.subtitle'),
+    help: '',
+    hideConfirm: true,
+  }),
   ...(areOnlyWarnings(errors) && {
     severity: 'warning',
     title: translate.instant('components.widget.grid.validation.warningTitle'),

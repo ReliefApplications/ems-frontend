@@ -1800,6 +1800,10 @@
     "uniquenessRules": {
       "active": "******",
       "add": "******",
+      "blocked": {
+        "subtitle": "******",
+        "title": "******"
+      },
       "condition": {
         "title": "******"
       },

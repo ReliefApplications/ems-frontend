@@ -42,6 +42,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
 import {
   areOnlyWarnings,
+  getUniquenessViolations,
   getValidationModalData,
 } from '../../utils/validation-errors.util';
 import { FIELD_HISTORY_REFRESH_PROPERTY } from '../../survey/components/field-history';
@@ -512,12 +513,18 @@ export class FormComponent
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.error', {
-            error: errors[0].message,
-          }),
-          { error: true }
-        );
+        // Blocking uniqueness violations are listed, for the user to fix them
+        const violations = getUniquenessViolations(errors);
+        if (violations.length) {
+          this.showLocalErrors(violations);
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.error', {
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+        }
       } else {
         const validationErrors =
           data.editRecord?.validationErrors || data.addRecord?.validationErrors;

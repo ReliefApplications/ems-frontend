@@ -39,6 +39,14 @@
       <div *ngIf="loading; else surveyTmpl" class="h-full flex">
         <ui-spinner class="m-auto block"></ui-spinner>
       </div>
+      <!-- Blocks the whole dialog while the record is saved: nothing can be edited until the back-end answers.
+      Positioned against the dialog itself ( its closest positioned ancestor ), so it is not limited to the scrolled content -->
+      <div
+        *ngIf="saving"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/70 cursor-wait"
+      >
+        <ui-spinner></ui-spinner>
+      </div>
       <ng-template #surveyTmpl>
         <ui-alert
           *ngIf="data.isDraftClone"
@@ -67,7 +75,7 @@
         *ngIf="pages.length > 1"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isFirstPage"
+        [disabled]="!survey || survey.isFirstPage || saving"
       >
         {{ 'common.previous' | translate }}
       </ui-button>
@@ -77,7 +85,7 @@
         *ngIf="pages.length > 1"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isLastPage"
+        [disabled]="!survey || survey.isLastPage || saving"
       >
         {{ 'common.next' | translate }}
       </ui-button>

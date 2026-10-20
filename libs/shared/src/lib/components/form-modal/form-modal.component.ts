@@ -64,6 +64,7 @@ import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status
 import { RecordVisibility } from '../../models/record-visibility.model';
 import {
   areOnlyWarnings,
+  getUniquenessViolations,
   getValidationModalData,
 } from '../../utils/validation-errors.util';
 
@@ -519,6 +520,27 @@ export class FormModalComponent
   }
 
   /**
+   * Handles the errors returned by a record mutation. Nothing has been saved,
+   * so the modal stays open for the user to fix the record and save it again:
+   * blocking uniqueness violations are listed in the errors modal, other
+   * errors are notified.
+   *
+   * @param errors errors returned by the mutation
+   * @param message notification displayed for errors other than uniqueness
+   * violations
+   */
+  private handleMutationErrors(errors: readonly any[], message: string): void {
+    const violations = getUniquenessViolations(errors);
+    if (violations.length) {
+      this.showLocalErrors(violations);
+    } else {
+      this.snackBar.openSnackBar(message, { error: true });
+    }
+    this.saving = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
+  }
+
+  /**
    * Handles the validation errors returned when saving a record, if any:
    * nothing has been saved, so the modal stays open and shows them.
    *
@@ -549,7 +571,9 @@ export class FormModalComponent
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
-    this.survey?.clear(false);
+    // Leave the completed state, keeping the data and the current page: if the
+    // record cannot be saved, the user goes on editing it where they were
+    this.survey?.clear(false, false);
 
     // If survey has errors, cancel edition
     if (this.survey?.hasErrors()) {
@@ -645,14 +669,12 @@ export class FormModalComponent
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(
+              this.handleMutationErrors(
+                errors,
                 this.translate.instant('common.notifications.error', {
                   error: errors[0].message,
-                }),
-                { error: true }
+                })
               );
-              this.saving = false;
-              this.autoSaveEnabled = this.canAutoSaveDraft;
             } else if (
               this.handleValidationErrors(data?.editRecord, () =>
                 this.submitRecord(survey, true)
@@ -696,15 +718,14 @@ export class FormModalComponent
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(
+              // The record has not been created: the modal stays open, so the
+              // user can fix the record instead of starting over
+              this.handleMutationErrors(
+                errors,
                 this.translate.instant('common.notifications.error', {
                   error: errors[0].message,
-                }),
-                { error: true }
+                })
               );
-              this.ngZone.run(() => {
-                this.dialogRef.close();
-              });
             } else if (
               this.handleValidationErrors(data?.addRecord, () =>
                 this.submitRecord(survey, true)
@@ -839,15 +860,13 @@ export class FormModalComponent
         ? this.translate.instant('common.record.few')
         : this.translate.instant('common.record.one');
     if (errors) {
-      this.snackBar.openSnackBar(
+      this.handleMutationErrors(
+        errors,
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
+          error: errors[0].message,
+        })
       );
-      this.saving = false;
-      this.autoSaveEnabled = this.canAutoSaveDraft;
     } else {
       if (data) {
         if (

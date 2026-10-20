@@ -1800,6 +1800,10 @@
     "uniquenessRules": {
       "active": "Active",
       "add": "Add a rule",
+      "blocked": {
+        "subtitle": "The record was not saved, as it violates uniqueness rules. Review it and save it again:",
+        "title": "Record not saved"
+      },
       "condition": {
         "title": "Only apply when..."
       },

@@ -1803,6 +1803,10 @@
     "uniquenessRules": {
       "active": "Active",
       "add": "Ajouter une règle",
+      "blocked": {
+        "subtitle": "L'enregistrement n'a pas été sauvegardé, car il enfreint des règles d'unicité. Vérifiez-le puis sauvegardez-le à nouveau :",
+        "title": "Enregistrement non sauvegardé"
+      },
       "condition": {
         "title": "Appliquer uniquement si..."
       },
