@@ -27,6 +27,11 @@ type SurveyPropertyOwner = {
   [key: string]: unknown;
 };
 
+/** Default maximum size per file of a file question, in bytes ( 7MB ) */
+export const DEFAULT_FILE_MAX_SIZE = 7 * 1024 * 1024;
+/** Hard limit of the maximum size per file of a file question, in bytes ( 100MB ) */
+export const FILE_MAX_SIZE_LIMIT = 100 * 1024 * 1024;
+
 /** Property-grid toggle used to reveal modal-specific label overrides. */
 const ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY =
   'showAdvancedNavigationLabelOverrides';
@@ -150,8 +155,15 @@ export const init = (environment: any): void => {
 
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
-  /** Size per file is mandatory */
-  serializer.getProperty('file', 'maxSize').isRequired = true;
+  /** Size per file is mandatory, and capped to the limit */
+  const maxSizeProperty = serializer.getProperty('file', 'maxSize');
+  maxSizeProperty.isRequired = true;
+  maxSizeProperty.minValue = 1;
+  maxSizeProperty.maxValue = FILE_MAX_SIZE_LIMIT;
+  registerCustomPropertyHelp(
+    'maxSize',
+    `Maximum size per file, in bytes. Defaults to 7MB (${DEFAULT_FILE_MAX_SIZE}) and cannot exceed 100MB (${FILE_MAX_SIZE_LIMIT}).`
+  );
 
   serializer.addProperty('file', {
     category: 'general',
@@ -367,6 +379,6 @@ export const init = (environment: any): void => {
 export const render = (question: Question): void => {
   // define the default max size for files
   if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
-    (question as QuestionFileModel).maxSize = 7340032;
+    (question as QuestionFileModel).maxSize = DEFAULT_FILE_MAX_SIZE;
   }
 };
