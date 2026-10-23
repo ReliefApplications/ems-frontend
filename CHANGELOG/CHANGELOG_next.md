@@ -1,3 +1,9 @@
+# [2.24.0-rc.29](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.28...v2.24.0-rc.29) (2026-10-23)
+
+### Features
+
+- Increase file upload limit to 100MB ([#2954](https://github.com/ReliefApplications/ems-frontend/issues/2954)) ([9039357](https://github.com/ReliefApplications/ems-frontend/commit/9039357a963f37ff689636504ad34a707ecee82b)), closes [AB#134731](https://github.com/AB/issues/134731)
+
 # [2.24.0-rc.28](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.27...v2.24.0-rc.28) (2026-10-20)
 
 ### Bug Fixes
