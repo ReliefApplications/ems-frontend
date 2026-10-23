@@ -390,9 +390,12 @@
         },
         "upload": {
           "error": "Something went wrong during the upload",
+          "failed": "{{failed}} of {{total}} file(s) could not be uploaded",
           "maxFileSize": "Maximum file size is {{size}} MB.",
           "processing": "Uploading file...",
-          "ready": "File uploaded"
+          "progress": "Uploading file {{current}} of {{total}}...",
+          "ready": "File uploaded",
+          "uploaded": "{{total}} file(s) uploaded"
         }
       },
       "formatInvalid": "Please upload a valid .{{format}} file.",

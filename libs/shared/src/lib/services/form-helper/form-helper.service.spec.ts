@@ -131,6 +131,11 @@ describe('FormHelpersService files upload', () => {
   const otherDataUrl = 'data:text/plain;base64,d29ybGQ=';
   const objectUrl = 'blob:http://localhost/picked';
   let revokeObjectURL: jest.Mock;
+  let openComponentSnackBar: jest.Mock;
+  /** Spinner of the last opened progress snackbar, and its messages */
+  let spinner: { message: string; loading: boolean; error?: boolean };
+  let messages: string[];
+  let triggerSnackBar: jest.Mock;
   const stored = { driveId: 'drive', itemId: 'stored-item' };
   const uploaded = { driveId: 'drive', itemId: 'new-item' };
   const draftPath = 'form-id/draft-blob';
@@ -166,14 +171,50 @@ describe('FormHelpersService files upload', () => {
       .fn()
       .mockReturnValue(of({ data: { addRecord: { id: 'draft-id' } } }));
     openSnackBar = jest.fn();
+    messages = [];
+    triggerSnackBar = jest.fn();
+    openComponentSnackBar = jest.fn((_, config) => {
+      spinner = {
+        /**
+         * Records each message shown in the snackbar
+         *
+         * @param value Message shown
+         */
+        set message(value: string) {
+          messages.push(value);
+        },
+        /**
+         * Last message shown in the snackbar
+         *
+         * @returns Last message
+         */
+        get message() {
+          return messages[messages.length - 1];
+        },
+        loading: config.data.loading,
+      };
+      spinner.message = config.data.message;
+      return {
+        instance: { nestedComponent: { instance: spinner }, triggerSnackBar },
+      };
+    });
     TestBed.configureTestingModule({
       providers: [
         FormHelpersService,
         { provide: 'environment', useValue: environment },
         { provide: Apollo, useValue: { mutate } },
-        { provide: SnackbarService, useValue: { openSnackBar } },
+        {
+          provide: SnackbarService,
+          useValue: { openSnackBar, openComponentSnackBar },
+        },
         { provide: ConfirmService, useValue: {} },
-        { provide: TranslateService, useValue: { instant: (k: string) => k } },
+        {
+          provide: TranslateService,
+          useValue: {
+            instant: (k: string, params?: Record<string, unknown>) =>
+              params ? `${k} ${JSON.stringify(params)}` : k,
+          },
+        },
         { provide: AuthService, useValue: {} },
         { provide: DownloadService, useValue: { uploadBlob, getFileBlob } },
         {
@@ -206,6 +247,8 @@ describe('FormHelpersService files upload', () => {
       expect(uploadBlob).toHaveBeenCalledWith(raw, 'file', 'form-id', {
         silent: true,
       });
+      // Background save: no progress snackbar
+      expect(openComponentSnackBar).not.toHaveBeenCalled();
       // Document management is not involved in drafts
       expect(uploadFile).not.toHaveBeenCalled();
       expect(updateFile).not.toHaveBeenCalled();
@@ -326,6 +369,17 @@ describe('FormHelpersService files upload', () => {
       );
       expect(uploadFile).toHaveBeenCalledTimes(2);
       expect(uploadFile.mock.calls[0][0]).toBe(raw);
+      expect(uploadFile.mock.calls[0][2]).toEqual({ silent: true });
+      // One snackbar for both uploads, counting the files as they go
+      expect(openComponentSnackBar).toHaveBeenCalledTimes(1);
+      expect(messages).toEqual([
+        'common.notifications.file.upload.progress {"current":1,"total":2}',
+        'common.notifications.file.upload.progress {"current":2,"total":2}',
+        'common.notifications.file.upload.uploaded {"total":2}',
+      ]);
+      expect(spinner.loading).toBe(false);
+      expect(spinner.error).toBe(false);
+      expect(triggerSnackBar).toHaveBeenCalledWith(3000);
       const movedFile = uploadFile.mock.calls[1][0];
       expect(movedFile).toBeInstanceOf(File);
       expect(movedFile.name).toBe('draft.txt');
@@ -400,6 +454,11 @@ describe('FormHelpersService files upload', () => {
       expect(uploadFile.mock.calls[0][0]).toBe(raw);
       expect(survey.getValue('documents')[0].content).toEqual(uploaded);
       expect(survey.getValue('copies')[0].content).toEqual(uploaded);
+      // The copy counts as a single upload
+      expect(messages).toEqual([
+        'common.notifications.file.upload.progress {"current":1,"total":1}',
+        'common.notifications.file.upload.uploaded {"total":1}',
+      ]);
     });
 
     it('keeps the files that failed pending and reports them', async () => {
@@ -435,6 +494,14 @@ describe('FormHelpersService files upload', () => {
         { name: 'b.txt', content: otherDataUrl },
         draftFile,
       ]);
+      // Failures are counted in the progress and reported in the result
+      expect(messages).toEqual([
+        'common.notifications.file.upload.progress {"current":1,"total":3}',
+        'common.notifications.file.upload.progress {"current":2,"total":3}',
+        'common.notifications.file.upload.progress {"current":3,"total":3}',
+        'common.notifications.file.upload.failed {"failed":2,"total":3}',
+      ]);
+      expect(spinner.error).toBe(true);
     });
 
     it('treats an upload without stored reference as a failure', async () => {
@@ -470,7 +537,8 @@ describe('FormHelpersService files upload', () => {
       expect(uploadBlob).toHaveBeenCalledTimes(1);
       expect(uploadBlob.mock.calls[0][0].name).toBe('a.txt');
       expect(uploadBlob.mock.calls[0][2]).toBe('form-id');
-      expect(uploadBlob.mock.calls[0][3]).toEqual({ silent: false });
+      // Progress is reported for all the files at once
+      expect(uploadBlob.mock.calls[0][3]).toEqual({ silent: true });
       expect(survey.getValue('documents')).toEqual([
         { name: 'a.txt', content: 'form-id/new-blob' },
         // The draft flag is dropped: the back-end storage is final

@@ -390,9 +390,12 @@
         },
         "upload": {
           "error": "Un problème est survenu lors de l'import",
+          "failed": "{{failed}} fichier(s) sur {{total}} n'ont pas pu être importés",
           "maxFileSize": "La taille maximale du fichier est de {{size}} Mo.",
           "processing": "Fichier en cours d'importation...",
-          "ready": "Fichier importé"
+          "progress": "Import du fichier {{current}} sur {{total}}...",
+          "ready": "Fichier importé",
+          "uploaded": "{{total}} fichier(s) importé(s)"
         }
       },
       "formatInvalid": "Veuillez importer un fichier de format .{{format}}.",

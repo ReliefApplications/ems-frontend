@@ -380,13 +380,34 @@ export class DocumentManagementService {
    *
    * @param file file to upload
    * @param question related question from where to extract body params on cs upload
+   * @param options Upload options
+   * @param options.silent Whether to skip the progress / result snackbars ( e.g. grouped uploads )
    * @returns http upload request
    */
-  async uploadFile(file: any, question: Question): Promise<any> {
-    const snackBarRef = this.triggerFileDownloadMessage(
-      'common.notifications.file.upload.processing'
-    );
-    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+  async uploadFile(
+    file: any,
+    question: Question,
+    options: { silent?: boolean } = {}
+  ): Promise<any> {
+    const snackBarRef = options.silent
+      ? null
+      : this.triggerFileDownloadMessage(
+          'common.notifications.file.upload.processing'
+        );
+    /**
+     * Shows the upload result in the snackbar, if any.
+     *
+     * @param translationKey Result message translation key
+     * @param error Whether the upload failed
+     */
+    const notify = (translationKey: string, error = false) => {
+      const spinner = snackBarRef?.instance.nestedComponent?.instance;
+      if (!spinner) return;
+      spinner.message = this.translate.instant(translationKey);
+      spinner.loading = false;
+      spinner.error = error;
+      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+    };
     let fileStream;
     const bodyFilter = Object.create({});
     const occurrenceId = question.getPropertyValue('Occurrence');
@@ -422,12 +443,7 @@ export class DocumentManagementService {
         }
       });
     } catch (error) {
-      snackBarSpinner.instance.message = this.translate.instant(
-        'common.notifications.file.upload.error'
-      );
-      snackBarSpinner.instance.loading = false;
-      snackBarSpinner.instance.error = true;
-      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      notify('common.notifications.file.upload.error', true);
       return null;
     }
     const body = {
@@ -447,23 +463,14 @@ export class DocumentManagementService {
         .subscribe({
           next: (data) => {
             const { itemId, driveId } = data;
-            snackBarSpinner.instance.message = this.translate.instant(
-              'common.notifications.file.upload.ready'
-            );
-            snackBarSpinner.instance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            notify('common.notifications.file.upload.ready');
             resolve({
               driveId,
               itemId,
             });
           },
           error: () => {
-            snackBarSpinner.instance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarSpinner.instance.loading = false;
-            snackBarSpinner.instance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            notify('common.notifications.file.upload.error', true);
             reject(null);
           },
         });
