@@ -228,6 +228,22 @@ describe('FileService', () => {
       expect(anchor.click).toHaveBeenCalled();
     });
 
+    it('downloads a picked file from its object URL', () => {
+      const anchor = { href: '', download: '', click: jest.fn() } as any;
+      jest.spyOn(document, 'createElement').mockReturnValue(anchor);
+      const file: File = {
+        name: 'picked.pdf',
+        content: 'blob:http://localhost/picked',
+      };
+
+      service.download(file);
+
+      expect(anchor.href).toBe('blob:http://localhost/picked');
+      expect(anchor.download).toBe('picked.pdf');
+      expect(anchor.click).toHaveBeenCalled();
+      expect(downloadService.getFile).not.toHaveBeenCalled();
+    });
+
     it('downloads a server-stored file via the download service', () => {
       const file: File = {
         name: 'sheet.csv',

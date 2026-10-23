@@ -25,11 +25,12 @@ import {
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
 import {
-  dataUrlToFile,
   getFileIcon,
   isDraftFile,
   isPendingFile,
+  localUrlToFile,
   removeFileExtension,
+  revokeFileUrl,
 } from '../file/file.utils';
 import { keepsFilesOnComplete } from '../../survey/components/utils/files-widgets.util';
 
@@ -316,7 +317,7 @@ export class FormHelpersService {
         } else {
           file = isDraftFile(item)
             ? await this.getDraftFile(item)
-            : raw ?? dataUrlToFile(key, item.name, item.type);
+            : raw ?? (await localUrlToFile(key, item.name, item.type));
           content = await upload(file as globalThis.File, question);
         }
         if (isNil(content)) {
@@ -350,6 +351,9 @@ export class FormHelpersService {
         question.value = updated;
       }
     });
+    // The uploaded files are referenced by their storage from now on: release
+    // the object URLs of the picked ones
+    resolved.forEach((_, key) => revokeFileUrl({ content: key }));
     /** Throw error if any file upload has failed */
     if (failedFilesToUpload.length) {
       throw failedFilesToUpload;

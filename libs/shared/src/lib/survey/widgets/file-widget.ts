@@ -15,7 +15,11 @@ import { File } from '../../services/file/file.service';
 import { DomService } from '../../services/dom/dom.service';
 import { FileItemActionsComponent } from '../components/file-item-actions/public-api';
 import { FileQuestionActionsComponent } from '../components/file-question-actions/public-api';
-import { isOutdatedFile, isStoredFile } from '../../services/file/file.utils';
+import {
+  isLocalFileUrl,
+  isOutdatedFile,
+  isStoredFile,
+} from '../../services/file/file.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { applyFileQuestionVisibility } from '../components/utils/files-widgets.util';
 
@@ -137,9 +141,12 @@ const removePdfPreview = (
   htmlElement.querySelector(`iframe.${PDF_PREVIEW_FRAME_CLASS}`)?.remove();
   // Revoke through the question-held reference rather than the iframe src, so
   // the blob is also released when SurveyJS already tore down the iframe.
+  // Only the URLs created by the preview are revoked: the object URL of a
+  // picked file belongs to the question value until the file is uploaded.
   const url = (question as any).__pdfPreviewUrl;
-  if (url && url.indexOf('blob:') === 0) URL.revokeObjectURL(url);
+  if (url && (question as any).__pdfPreviewUrlOwned) URL.revokeObjectURL(url);
   (question as any).__pdfPreviewUrl = undefined;
+  (question as any).__pdfPreviewUrlOwned = undefined;
 };
 
 /**
@@ -178,9 +185,9 @@ const updatePdfPreview = (
   const displayed = getDisplayedFiles(question);
   const file = displayed.length === 1 ? displayed[0] : null;
   const kind = file ? getPreviewKind(file.name, file.type ?? '') : null;
-  // previewValue holds the downloaded file content (data / http URL), already
-  // resolved by the survey's onDownloadFile handler for stored files, in the
-  // order of the question value.
+  // previewValue holds the downloaded file content (object / data / http URL),
+  // already resolved by the survey's onDownloadFile handler for stored files,
+  // in the order of the question value.
   const preview = file
     ? question.previewValue?.[(question.value as File[]).indexOf(file)]
     : null;
@@ -204,18 +211,29 @@ const updatePdfPreview = (
   wrapper.dataset['pdfPreviewKey'] = key;
   htmlElement.classList.add(PDF_PREVIEW_CLASS);
 
-  const inject = (src: string): void => {
+  /**
+   * Renders the preview iframe.
+   *
+   * @param src Preview URL
+   * @param owned Whether the preview created the URL ( and must revoke it )
+   */
+  const inject = (src: string, owned: boolean): void => {
     // Discard if a newer file superseded us or the slot was re-rendered.
     if (!wrapper.isConnected || wrapper.dataset['pdfPreviewKey'] !== key) {
-      if (src.indexOf('blob:') === 0) URL.revokeObjectURL(src);
+      if (owned) URL.revokeObjectURL(src);
       return;
     }
     wrapper.querySelector(`iframe.${PDF_PREVIEW_FRAME_CLASS}`)?.remove();
     const previous = (question as any).__pdfPreviewUrl;
-    if (previous && previous !== src && previous.indexOf('blob:') === 0) {
+    if (
+      previous &&
+      previous !== src &&
+      (question as any).__pdfPreviewUrlOwned
+    ) {
       URL.revokeObjectURL(previous);
     }
     (question as any).__pdfPreviewUrl = src;
+    (question as any).__pdfPreviewUrlOwned = owned;
     const iframe = document.createElement('iframe');
     iframe.classList.add(PDF_PREVIEW_FRAME_CLASS);
     iframe.title = file.name;
@@ -223,19 +241,23 @@ const updatePdfPreview = (
     wrapper.appendChild(iframe);
   };
 
-  if (content.indexOf('data:') === 0) {
-    // Convert to a blob URL: browsers handle large PDFs better than data:
-    // iframes. Force the PDF MIME type — stored files may lack one, and an
-    // octet-stream src makes the browser download the file instead of
-    // rendering it inline.
+  if (isLocalFileUrl(content)) {
+    // Picked files: re-wrap the blob with the PDF MIME type. Stored files may
+    // lack one, and an octet-stream src makes the browser download the file
+    // instead of rendering it inline. Legacy data URLs get converted to a
+    // blob URL on the way: browsers handle large PDFs better than data:
+    // iframes.
     fetch(content)
-      .then((response) => response.arrayBuffer())
-      .then((buffer) => {
-        const blob = new Blob([buffer], { type: 'application/pdf' });
-        inject(URL.createObjectURL(blob));
+      .then((response) => response.blob())
+      .then((blob) => {
+        const pdf =
+          blob.type === 'application/pdf'
+            ? blob
+            : new Blob([blob], { type: 'application/pdf' });
+        inject(URL.createObjectURL(pdf), true);
       });
   } else {
-    inject(content);
+    inject(content, false);
   }
 };
 

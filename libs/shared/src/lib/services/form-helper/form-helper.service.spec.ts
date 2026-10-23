@@ -129,6 +129,8 @@ describe('FormHelpersService files upload', () => {
 
   const dataUrl = 'data:text/plain;base64,aGVsbG8=';
   const otherDataUrl = 'data:text/plain;base64,d29ybGQ=';
+  const objectUrl = 'blob:http://localhost/picked';
+  let revokeObjectURL: jest.Mock;
   const stored = { driveId: 'drive', itemId: 'stored-item' };
   const uploaded = { driveId: 'drive', itemId: 'new-item' };
   const draftPath = 'form-id/draft-blob';
@@ -152,6 +154,8 @@ describe('FormHelpersService files upload', () => {
 
   beforeEach(() => {
     environment.csApiUrl = 'https://cs';
+    revokeObjectURL = jest.fn();
+    (URL as any).revokeObjectURL = revokeObjectURL;
     uploadFile = jest.fn().mockResolvedValue(uploaded);
     updateFile = jest.fn().mockResolvedValue(undefined);
     uploadBlob = jest.fn().mockResolvedValue('form-id/new-blob');
@@ -230,6 +234,67 @@ describe('FormHelpersService files upload', () => {
       expect(file.name).toBe('a.txt');
       expect(file.type).toBe('text/plain');
       expect(survey.getValue('documents')[0].draft).toBe(true);
+    });
+  });
+
+  describe('picked files', () => {
+    afterEach(() => {
+      delete (globalThis as any).fetch;
+    });
+
+    it('uploads the picked file and releases its object URL', async () => {
+      const raw = new File(['hello'], 'a.txt', { type: 'text/plain' });
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', type: 'text/plain', content: objectUrl }],
+        copies: [{ name: 'a.txt', type: 'text/plain', content: objectUrl }],
+      });
+
+      await service.uploadFiles(survey, { documents: [raw] }, 'form-id');
+
+      expect(uploadFile).toHaveBeenCalledTimes(1);
+      expect(uploadFile.mock.calls[0][0]).toBe(raw);
+      expect(survey.getValue('documents')[0].content).toEqual(uploaded);
+      expect(survey.getValue('copies')[0].content).toEqual(uploaded);
+      expect(revokeObjectURL).toHaveBeenCalledTimes(1);
+      expect(revokeObjectURL).toHaveBeenCalledWith(objectUrl);
+    });
+
+    it('reads the file back from its object URL when the picked file is not at hand', async () => {
+      const fetchMock = jest.fn(() =>
+        Promise.resolve({
+          blob: () =>
+            Promise.resolve(new Blob(['hello'], { type: 'text/plain' })),
+        })
+      );
+      (globalThis as any).fetch = fetchMock;
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', type: 'text/plain', content: objectUrl }],
+      });
+
+      await service.uploadFiles(survey, {}, 'form-id');
+
+      expect(fetchMock).toHaveBeenCalledWith(objectUrl);
+      const [file] = uploadFile.mock.calls[0];
+      expect(file).toBeInstanceOf(File);
+      expect(file.name).toBe('a.txt');
+      expect(file.type).toBe('text/plain');
+      expect(survey.getValue('documents')[0].content).toEqual(uploaded);
+      expect(revokeObjectURL).toHaveBeenCalledWith(objectUrl);
+    });
+
+    it('keeps the object URL of a file that failed to upload', async () => {
+      uploadFile.mockRejectedValue(null);
+      const raw = new File(['hello'], 'a.txt', { type: 'text/plain' });
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', type: 'text/plain', content: objectUrl }],
+      });
+
+      await expect(
+        service.uploadFiles(survey, { documents: [raw] }, 'form-id')
+      ).rejects.toEqual([{ question: 'documents', file: raw }]);
+
+      expect(survey.getValue('documents')[0].content).toBe(objectUrl);
+      expect(revokeObjectURL).not.toHaveBeenCalled();
     });
   });
 
