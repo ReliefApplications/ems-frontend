@@ -27,6 +27,12 @@ import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
 import { AutoTranslateService } from '../auto-translate/auto-translate.service';
 import { toSurveyLocale } from '../../utils/languages';
+import {
+  createFileUrl,
+  isLocalFileUrl,
+  isPendingFile,
+  revokeFileUrl,
+} from '../file/file.utils';
 
 /**
  * Shared form builder service.
@@ -261,6 +267,7 @@ export class FormBuilderService {
    * @param options Options regarding the files
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    this.releaseClearedFiles(options);
     if (options.question.allowMultiple) {
       // Filtering the temp storage to remove the file based on filename
       if (temporaryFilesStorage[options.name]) {
@@ -299,30 +306,45 @@ export class FormBuilderService {
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }
-    let content: any[] = [];
-    options.files.forEach((file: any) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        content = content.concat([
-          {
-            name: file.name,
-            type: file.type,
-            content: fileReader.result,
-            file,
-          },
-        ]);
-        if (content.length === options.files.length) {
-          options.callback(
-            'success',
-            content.map((fileContent) => ({
-              file: fileContent.file,
-              content: fileContent.content,
-            }))
-          );
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
+    // The question value only holds an object URL of each picked file: the
+    // file content stays on disk until the upload ( a data URL would load it
+    // in memory several times over, which crashes the tab with large files ).
+    options.callback(
+      'success',
+      options.files.map((file: globalThis.File) => ({
+        file,
+        content: createFileUrl(file),
+      }))
+    );
+  }
+
+  /**
+   * Releases the object URLs of the files removed from a file question, unless
+   * another file question of the survey still holds a copy of the file.
+   *
+   * @param options Options of the clear files event
+   */
+  private releaseClearedFiles(options: any): void {
+    type FileItem = { name: string; content?: unknown };
+    const value: FileItem[] = Array.isArray(options.value)
+      ? options.value
+      : options.value
+      ? [options.value]
+      : [];
+    const removed = isNil(options.fileName)
+      ? value
+      : value.filter((file) => file.name === options.fileName);
+    const survey: SurveyModel | undefined = options.question?.survey;
+    const others = (survey?.getAllQuestions() ?? [])
+      .filter((q) => q !== options.question && q instanceof QuestionFileModel)
+      .flatMap((q) => (Array.isArray(q.value) ? q.value : []) as FileItem[]);
+    removed
+      .filter(
+        (file) =>
+          isPendingFile(file) &&
+          !others.some((other) => other.content === file.content)
+      )
+      .forEach((file) => revokeFileUrl(file));
   }
 
   /**
@@ -353,6 +375,7 @@ export class FormBuilderService {
     // Default behavior
     if (typeof options.content === 'string') {
       if (
+        isLocalFileUrl(options.content) ||
         options.content.indexOf('base64') !== -1 ||
         options.content.indexOf('http') !== -1
       ) {

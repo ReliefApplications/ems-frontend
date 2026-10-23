@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { from, Observable, of } from 'rxjs';
+import { isLocalFileUrl } from './file.utils';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 /** Snackbar duration in ms */
@@ -127,7 +128,7 @@ export class FileService {
     file: File
   ): Observable<{ url: string; revoke: boolean }> | null {
     if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
+      if (isLocalFileUrl(file.content)) {
         return of({ url: file.content, revoke: false });
       }
       const path = `download/file/${file.content}`;
@@ -171,7 +172,7 @@ export class FileService {
    */
   public download(file: File): void {
     if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
+      if (isLocalFileUrl(file.content)) {
         const downloadLink = this.document.createElement('a');
         downloadLink.href = file.content;
         downloadLink.download = file.name;

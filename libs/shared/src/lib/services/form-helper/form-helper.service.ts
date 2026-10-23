@@ -25,13 +25,18 @@ import {
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
 import {
-  dataUrlToFile,
   getFileIcon,
   isDraftFile,
   isPendingFile,
+  localUrlToFile,
   removeFileExtension,
+  revokeFileUrl,
 } from '../file/file.utils';
 import { keepsFilesOnComplete } from '../../survey/components/utils/files-widgets.util';
+import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
+
+/** Display duration of the files upload result snackbar, in ms */
+const SNACKBAR_DURATION = 3000;
 
 /** Details returned after a draft save. */
 interface DraftSaveDetails {
@@ -248,6 +253,8 @@ export class FormHelpersService {
     }
     // Is using document management system: never for drafts
     const useDocumentManagement = !!this.environment.csApiUrl && !draft;
+    // Progress is reported for all the files at once ( see below ): the
+    // individual uploads stay silent
     const upload = async (
       file: globalThis.File,
       question: QuestionFileModel
@@ -255,19 +262,19 @@ export class FormHelpersService {
       if (useDocumentManagement) {
         const result = await this.documentManagementService.uploadFile(
           file,
-          question
+          question,
+          { silent: true }
         );
         return result?.driveId && result?.itemId
           ? { driveId: result.driveId, itemId: result.itemId }
           : null;
       }
-      // Default behavior, use app builder back-end. Draft saves run in the
-      // background ( auto-save ): no upload feedback
+      // Default behavior, use app builder back-end
       const path = await this.downloadService.uploadBlob(
         file,
         BlobType.RECORD_FILE,
         formId,
-        { silent: draft }
+        { silent: true }
       );
       return path || null;
     };
@@ -298,6 +305,16 @@ export class FormHelpersService {
     });
     pending.sort((a, b) => Number(!!b.raw) - Number(!!a.raw));
 
+    // Whether the draft file stays in the back-end storage, without upload
+    const staysInStorage = (item: File) =>
+      isDraftFile(item) && !useDocumentManagement;
+    // Files actually uploaded: copies share an upload, draft files may stay
+    // where they are. Draft saves run in the background ( auto-save ): no
+    // upload feedback
+    const total = this.countUploads(pending, staysInStorage);
+    const progress =
+      !draft && total > 0 ? this.openUploadProgress(total) : null;
+
     /** Final content per pending content ( data URL or draft file path ) */
     const resolved = new Map<string, File['content']>();
     const failedFilesToUpload: UploadFileError[] = [];
@@ -310,23 +327,26 @@ export class FormHelpersService {
       let file: { name: string } = { name: item.name };
       try {
         let content: File['content'] | null;
-        if (isDraftFile(item) && !useDocumentManagement) {
+        if (staysInStorage(item)) {
           // The back-end storage is the final storage of the draft file
           content = key;
         } else {
           file = isDraftFile(item)
             ? await this.getDraftFile(item)
-            : raw ?? dataUrlToFile(key, item.name, item.type);
+            : raw ?? (await localUrlToFile(key, item.name, item.type));
           content = await upload(file as globalThis.File, question);
+          progress?.next();
         }
         if (isNil(content)) {
           throw new Error(`Upload of ${item.name} failed`);
         }
         resolved.set(key, content);
       } catch {
+        if (!staysInStorage(item)) progress?.next();
         failedFilesToUpload.push({ question: question.name, file });
       }
     }
+    progress?.done(failedFilesToUpload.length);
 
     // Replace the processed files by their storage reference, the failed
     // ones stay as they are
@@ -350,10 +370,90 @@ export class FormHelpersService {
         question.value = updated;
       }
     });
+    // The uploaded files are referenced by their storage from now on: release
+    // the object URLs of the picked ones
+    resolved.forEach((_, key) => revokeFileUrl({ content: key }));
     /** Throw error if any file upload has failed */
     if (failedFilesToUpload.length) {
       throw failedFilesToUpload;
     }
+  }
+
+  /**
+   * Counts the uploads needed by the pending files: copies of a file share a
+   * single upload, and the files kept where they are need none.
+   *
+   * @param pending Pending files
+   * @param skipped Whether a pending file is kept where it is
+   * @returns Number of uploads
+   */
+  private countUploads(
+    pending: PendingUpload[],
+    skipped: (item: File) => boolean
+  ): number {
+    const rawKeys = new Set(
+      pending.filter(({ raw }) => raw).map(({ item }) => item.content)
+    );
+    const copies = new Set(
+      pending
+        .filter(
+          ({ item, raw }) =>
+            !raw && !skipped(item) && !rawKeys.has(item.content)
+        )
+        .map(({ item }) => item.content)
+    );
+    return rawKeys.size + copies.size;
+  }
+
+  /**
+   * Opens the snackbar reporting the progress of a files upload, one file at
+   * a time, then its result.
+   *
+   * @param total Number of files to upload
+   * @returns Progress handle
+   */
+  private openUploadProgress(total: number): {
+    next: () => void;
+    done: (failed: number) => void;
+  } {
+    const message = (current: number) =>
+      this.translate.instant('common.notifications.file.upload.progress', {
+        current,
+        total,
+      });
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      { duration: 0, data: { message: message(1), loading: true } }
+    );
+    const spinner = (): SnackbarSpinnerComponent | undefined =>
+      snackBarRef?.instance?.nestedComponent?.instance;
+    let current = 0;
+    return {
+      next: () => {
+        current = Math.min(current + 1, total);
+        const instance = spinner();
+        // Announce the next file while it uploads
+        if (instance && current < total) {
+          instance.message = message(current + 1);
+        }
+      },
+      done: (failed: number) => {
+        const instance = spinner();
+        if (!instance) return;
+        instance.message = failed
+          ? this.translate.instant('common.notifications.file.upload.failed', {
+              failed,
+              total,
+            })
+          : this.translate.instant(
+              'common.notifications.file.upload.uploaded',
+              { total }
+            );
+        instance.loading = false;
+        instance.error = !!failed;
+        snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      },
+    };
   }
 
   /**

@@ -390,9 +390,12 @@
         },
         "upload": {
           "error": "******",
+          "failed": "{{failed}} ****** {{total}} ******",
           "maxFileSize": "****** {{size}} ******",
           "processing": "******",
-          "ready": "******"
+          "progress": "****** {{current}} ****** {{total}} ******",
+          "ready": "******",
+          "uploaded": "{{total}} ******"
         }
       },
       "formatInvalid": "****** {{format}} ******",

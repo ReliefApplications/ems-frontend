@@ -1,11 +1,16 @@
-import { JsonObjectProperty, Serializer } from 'survey-core';
+import { JsonObjectProperty, QuestionFileModel, Serializer } from 'survey-core';
 import {
   SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
   SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
 } from '../../utils/survey-form-action-labels.util';
 import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
-import { init } from './others';
+import {
+  DEFAULT_FILE_MAX_SIZE,
+  FILE_MAX_SIZE_LIMIT,
+  init,
+  render,
+} from './others';
 
 type SurveyPropertyOwner = {
   getPropertyValue: (propertyName: string) => string;
@@ -121,5 +126,38 @@ describe('survey global navigation properties', () => {
 
     expect(modalLabelOverridesToggleProperty.onGetValue(survey)).toBe(true);
     expect(modalSaveButtonProperty.visibleIf(survey)).toBe(true);
+  });
+});
+
+describe('survey file question size properties', () => {
+  beforeAll(() => {
+    init({ apiUrl: '', csApiUrl: '' });
+  });
+
+  it('caps the maximum size per file to 100MB', () => {
+    const property = Serializer.getProperty('file', 'maxSize');
+
+    expect(property.isRequired).toBe(true);
+    expect(property.minValue).toBe(1);
+    expect(property.maxValue).toBe(FILE_MAX_SIZE_LIMIT);
+    expect(FILE_MAX_SIZE_LIMIT).toBe(100 * 1024 * 1024);
+  });
+
+  it('defaults the maximum size per file to 7MB', () => {
+    const question = new QuestionFileModel('file');
+
+    render(question as any);
+
+    expect(question.maxSize).toBe(DEFAULT_FILE_MAX_SIZE);
+    expect(DEFAULT_FILE_MAX_SIZE).toBe(7 * 1024 * 1024);
+  });
+
+  it('keeps an explicitly configured maximum size per file', () => {
+    const question = new QuestionFileModel('file');
+    question.maxSize = 50 * 1024 * 1024;
+
+    render(question as any);
+
+    expect(question.maxSize).toBe(50 * 1024 * 1024);
   });
 });
