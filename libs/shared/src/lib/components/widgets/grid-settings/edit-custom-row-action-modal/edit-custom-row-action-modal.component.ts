@@ -19,6 +19,8 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { EditorControlComponent } from '../../../controls/editor-control/editor-control.component';
+import { LocalizedInputComponent } from '../../../controls/localized-input/localized-input.component';
+import { LocalizePipe } from '../../../../pipes/localize/localize.pipe';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { ActionButton } from '../../grid/action-button.type';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -68,6 +70,8 @@ interface DialogData {
     ToggleModule,
     EditorModule,
     EditorControlComponent,
+    LocalizedInputComponent,
+    LocalizePipe,
     DividerModule,
     TabsModule,
     IconModule,

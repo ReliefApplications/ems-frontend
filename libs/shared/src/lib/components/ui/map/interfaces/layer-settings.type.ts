@@ -5,6 +5,7 @@ import {
   PopupElement,
 } from '../../../../models/layer.model';
 import { FaIconName } from '@oort-front/ui';
+import { LocalizedString } from '../../../../models/localized-string.model';
 
 export type GeoJSON =
   | Geometry
@@ -20,7 +21,7 @@ export type GeometryType = 'Point' | 'Polygon';
 /** Layer documents interface declaration */
 export interface LayerFormData {
   id?: string;
-  name: string;
+  name: LocalizedString;
   type: string;
   visibility: boolean;
   opacity: number;
@@ -44,8 +45,8 @@ export interface LayerFormData {
     };
   };
   popupInfo: {
-    title: string;
-    description: string;
+    title: LocalizedString;
+    description: LocalizedString;
     popupElements: PopupElement[];
     fieldsInfo?: Fields[];
   };

@@ -1,31 +1,42 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { EMPTY } from 'rxjs';
 import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
-import { ErrorsModalComponent } from './errors-modal.component';
+  ErrorsModalComponent,
+  ErrorsModalData,
+} from './errors-modal.component';
 import {
   TranslateModule,
-  TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
 
-describe('ExpandedCommentComponent', () => {
-  let component: ErrorsModalComponent;
+describe('ErrorsModalComponent', () => {
   let fixture: ComponentFixture<ErrorsModalComponent>;
 
-  beforeEach(async () => {
+  /**
+   * Creates the modal with the given data.
+   *
+   * @param data data of the modal
+   * @returns text displayed in the modal
+   */
+  const render = async (data: ErrorsModalData): Promise<string> => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
-        { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
+        {
+          provide: DialogRef,
+          useValue: {
+            close: jest.fn(),
+            closed: EMPTY,
+            addPanelClass: jest.fn(),
+            removePanelClass: jest.fn(),
+            updateSize: jest.fn(),
+          },
+        },
+        { provide: DIALOG_DATA, useValue: data },
       ],
-      declarations: [ErrorsModalComponent],
       imports: [
-        DialogCdkModule,
+        ErrorsModalComponent,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -34,15 +45,77 @@ describe('ExpandedCommentComponent', () => {
         }),
       ],
     }).compileComponents();
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(ErrorsModalComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
+    return fixture.nativeElement.textContent;
+  };
+
+  it('shows the errors of a record, with the default texts', async () => {
+    const text = await render({
+      incrementalId: '2026-P1',
+      errors: [{ question: 'org_code', errors: ['Already used'] }],
+    });
+    expect(fixture.componentInstance).toBeTruthy();
+    expect(text).toContain('org_code');
+    expect(text).toContain('Already used');
+    expect(text).toContain('components.widget.grid.validation.title');
+    expect(text).toContain('components.widget.grid.validation.help');
+    expect(text).toContain('common.update');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('uses the custom texts when provided', async () => {
+    const text = await render({
+      incrementalId: '',
+      errors: [{ question: 'org_code', errors: ['Already used'] }],
+      title: 'Possible duplicates',
+      subtitle: 'Custom subtitle',
+      help: 'Custom help',
+      questionHeader: 'Row',
+      confirmText: 'Save anyway',
+    });
+    expect(text).toContain('Possible duplicates');
+    expect(text).toContain('Custom subtitle');
+    expect(text).toContain('Custom help');
+    expect(text).toContain('Row');
+    expect(text).toContain('Save anyway');
+    expect(text).not.toContain('components.widget.grid.validation.title');
+    expect(text).not.toContain('common.update');
+  });
+
+  it('shows an error icon and an errors column by default', async () => {
+    const text = await render({
+      incrementalId: '2026-P1',
+      errors: [{ question: 'org_code', errors: ['Already used'] }],
+    });
+    const icon = fixture.nativeElement.querySelector('h3 ui-icon');
+    expect(icon.getAttribute('ng-reflect-icon')).toEqual('error');
+    expect(icon.getAttribute('ng-reflect-variant')).toEqual('danger');
+    expect(text).toContain('common.errors.few');
+    expect(text).not.toContain('components.widget.grid.validation.warnings');
+  });
+
+  it('shows a warning icon and a warnings column for warnings', async () => {
+    const text = await render({
+      incrementalId: '',
+      errors: [{ question: '-', errors: ['Already used'] }],
+      severity: 'warning',
+    });
+    const icon = fixture.nativeElement.querySelector('h3 ui-icon');
+    expect(icon.getAttribute('ng-reflect-icon')).toEqual('warning');
+    expect(icon.getAttribute('ng-reflect-variant')).toEqual('warning');
+    expect(text).toContain('components.widget.grid.validation.warnings');
+    expect(text).not.toContain('common.errors.few');
+  });
+
+  it('hides the help and the confirm button when asked to', async () => {
+    const text = await render({
+      incrementalId: '',
+      errors: [{ question: 'Row 3', errors: ['Already used'] }],
+      help: '',
+      hideConfirm: true,
+    });
+    expect(text).not.toContain('components.widget.grid.validation.help');
+    expect(text).not.toContain('common.update');
+    expect(text).toContain('common.close');
   });
 });

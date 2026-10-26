@@ -1,0 +1,139 @@
+<div class="overflow-x-auto">
+  <table cdk-table uiTableWrapper [dataSource]="rows" [trackBy]="trackByIndex">
+    <ng-container cdkColumnDef="variable">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.variable' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        {{ element.displayName }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="date">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.date' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        {{ element.createdAt | sharedDate : 'shortDate' }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="time">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.time' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        {{ element.createdAt | sharedDate : 'shortTime' }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="person">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.person' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        {{ element.createdBy }}
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="action">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.action' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        <div [innerHTML]="element.chip"></div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="originalValue">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.originalValue' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw] history-value-cell-old"
+      >
+        <span
+          *ngIf="element.renderError; else originalValueTmpl"
+          class="italic text-gray-400"
+          >{{ 'components.history.renderError' | translate }}</span
+        >
+        <ng-template #originalValueTmpl>
+          <div
+            class="history-value-container"
+            [class.history-value-container-expandable]="element.expandable"
+            [class.history-value-container-collapsed]="
+              element.expandable && !element.expanded
+            "
+          >
+            <div class="history-value" [innerHTML]="element.oldHtml"></div>
+          </div>
+        </ng-template>
+        <!-- Expand / Collapse button -->
+        <ui-button
+          *ngIf="element.expandable && !element.renderError"
+          variant="primary"
+          size="small"
+          [isIcon]="true"
+          [icon]="
+            element.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+          "
+          class="history-value-toggle"
+          [uiTooltip]="
+            (element.expanded
+              ? 'components.history.collapseValue'
+              : 'components.history.expandValue'
+            ) | translate
+          "
+          (click)="toggleHistoryValue(element)"
+        ></ui-button>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="modifiedValue">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'components.history.columns.modifiedValue' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium max-w-[30vw]"
+      >
+        <span
+          *ngIf="element.renderError; else modifiedValueTmpl"
+          class="italic text-gray-400"
+          >{{ 'components.history.renderError' | translate }}</span
+        >
+        <ng-template #modifiedValueTmpl>
+          <div
+            class="history-value-container"
+            [class.history-value-container-expandable]="element.expandable"
+            [class.history-value-container-collapsed]="
+              element.expandable && !element.expanded
+            "
+          >
+            <div class="history-value" [innerHTML]="element.newHtml"></div>
+          </div>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+    <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+  </table>
+</div>

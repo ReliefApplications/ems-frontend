@@ -3,17 +3,21 @@ import { gql } from 'apollo-angular';
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
-    record(id: $id) {
+  query OnSelectGetRecordById($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
+      incrementalId
+      draft
       data
       createdAt
       modifiedAt
       createdBy {
         name
+        username
       }
       modifiedBy {
         name
+        username
       }
       form {
         id
@@ -29,9 +33,10 @@ export const GET_RECORD_BY_ID = gql`
 // === GET RECORD DETAILS ===
 /** Graphql request for getting record details by its id */
 export const GET_RECORD_DETAILS = gql`
-  query GetRecordDetails($id: ID!) {
-    record(id: $id) {
+  query GetRecordDetails($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
+      draft
       data
       createdAt
       modifiedAt
@@ -87,6 +92,7 @@ export const GET_USER_ROLES_PERMISSIONS = gql`
     resource(id: $resource) {
       canCreateRecords
       canDownloadRecords
+      canUploadRecords
     }
   }
 `;

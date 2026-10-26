@@ -53,7 +53,7 @@
           <!-- Dashboard export -->
           <shared-dashboard-export-button
             *ngIf="showName || actionButtons.length > 0"
-            [title]="dashboard.name"
+            [title]="dashboard.nameTranslations || dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
 
@@ -77,6 +77,7 @@
     class="flex-1"
     [loading]="loading"
     [widgets]="widgets"
+    [dashboardId]="dashboard?.id"
     [options]="dashboard?.gridOptions"
     (changeStep)="changeStep.emit($event)"
   ></shared-widget-grid>

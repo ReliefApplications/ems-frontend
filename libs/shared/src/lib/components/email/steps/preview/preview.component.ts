@@ -143,6 +143,28 @@ export class PreviewComponent
     }
   }
 
+  /**
+   * Whether a separate-email block also delivers to the distribution list.
+   * General flow: read the matching dataset's toggle. Grid action: true when a
+   * distribution list is present (the single grid dataset is always-on).
+   *
+   * @param blockName the separate-email block name (the dataset name).
+   * @returns true if the block's separate emails also go to the distribution list.
+   */
+  blockGoesToDistributionList(blockName: string): boolean {
+    if (this.emailService.isGridAction) {
+      return (
+        this.distributionListTo?.length > 0 ||
+        this.distributionListCc?.length > 0 ||
+        this.distributionListBcc?.length > 0
+      );
+    }
+    const datasets =
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? [];
+    const dataset = datasets.find((d: any) => d.name === blockName);
+    return !!dataset?.individualEmailToDistributionList;
+  }
+
   ngOnInit() {
     const datasets = this.emailService.datasetsForm.get(
       'datasets'
@@ -158,6 +180,8 @@ export class PreviewComponent
       this.distributionListTo = this.emailService.emailDistributionList?.to;
       this.distributionListCc = this.emailService.emailDistributionList?.cc;
       this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
+      this.distributionListSeparate =
+        this.emailService.distributionListSeparate ?? [];
     }
 
     this.query = this.emailService.datasetsForm.value;
@@ -291,6 +315,11 @@ export class PreviewComponent
             previewData?.dataQuery?.queryName || '';
           this.query.datasets[0].query.fields =
             previewData?.dataQuery?.fields || [];
+          if (previewData?.sendSeparateEmail) {
+            this.query.datasets[0].individualEmail = true;
+            this.query.datasets[0].individualEmailFields =
+              previewData?.separateEmailFields ?? [];
+          }
         }
         if (this.emailService.allPreviewData.length > 0) {
           this.emailService.allPreviewData[0]['emailDistributionList'] =

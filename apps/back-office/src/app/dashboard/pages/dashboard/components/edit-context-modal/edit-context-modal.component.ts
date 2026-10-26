@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   PageContextT,
+  QueryBuilderService,
   ReferenceData,
   ReferenceDataQueryResponse,
   Resource,
@@ -19,7 +20,7 @@ import {
   ResourceSelectComponent,
   ReferenceDataSelectComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import {
@@ -94,11 +95,13 @@ export class EditContextModalComponent
    * Component for selecting the dashboard context datasource
    *
    * @param apollo apollo client
+   * @param queryBuilder Shared query builder service
    * @param data initial context
    * @param dialogRef dialog reference
    */
   constructor(
     private apollo: Apollo,
+    private queryBuilder: QueryBuilderService,
     @Inject(DIALOG_DATA) public data: PageContextT,
     public dialogRef: DialogRef<EditContextModalComponent>
   ) {
@@ -199,21 +202,31 @@ export class EditContextModalComponent
       });
   }
 
-  /** Updates the options for the display field select */
+  /**
+   * Updates the options for the display field select.
+   * Only scalar fields are selectable, so the display field can always be
+   * queried & filtered by the context selector records query.
+   */
   private updateDisplayFieldOptions(): void {
     if (this.resource) {
-      this.availableFields =
-        this.resource?.fields
-          ?.map((x: any) => x.name)
-          ?.sort((field1: string, field2: string) => {
-            return field1.localeCompare(field2);
-          }) ?? [];
+      this.queryBuilder.isDoneLoading$
+        .pipe(filter(Boolean), take(1), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.availableFields = this.queryBuilder
+            .getFields(this.resource?.queryName as string)
+            .filter((x) => x.type?.kind === 'SCALAR')
+            .map((x) => x.name)
+            .sort((field1: string, field2: string) => {
+              return field1.localeCompare(field2);
+            });
+        });
     } else if (this.refData) {
       // TODO: When frontend changes about referenceData fields are merged,
       // swap to the commented line to remove any casting
       // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
       this.availableFields =
         this.refData?.fields
+          ?.filter((x: any) => !['object', 'array'].includes(x.type))
           ?.map((x: any) => x.name)
           ?.sort((field1: string, field2) => {
             return field1.localeCompare(field2);

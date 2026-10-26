@@ -5,6 +5,8 @@ import {
   surveyLocalization,
 } from 'survey-core';
 import { Question, QuestionComment } from '../types';
+import { AZURE_SUPPORTED_LANGUAGES } from '../constants/azure-languages.const';
+import { TRANSLATE_SOURCE_QUESTION_TYPE } from '../property-editors/translate-source-question.editor';
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
  *
@@ -27,6 +29,30 @@ export const init = (
         default: false,
         category: 'general',
         visibleIf: (obj: null | QuestionComment) => Boolean(obj?.readOnly),
+      });
+      Serializer.addProperty('comment', {
+        name: 'translateField',
+        type: TRANSLATE_SOURCE_QUESTION_TYPE,
+        category: 'translation',
+        visibleIndex: 1,
+        displayName: 'Translate from question',
+      });
+      Serializer.addProperty('comment', {
+        name: 'translateTo',
+        type: 'string',
+        category: 'translation',
+        visibleIndex: 2,
+        displayName: 'Language to translate to',
+        visibleIf: (obj: QuestionComment) => !!obj?.translateField,
+        choices: AZURE_SUPPORTED_LANGUAGES,
+      });
+      Serializer.addProperty('comment', {
+        name: 'translateIf:condition',
+        category: 'logic',
+        visibleIndex: 10,
+        displayName: 'Translate if',
+        visibleIf: (obj: QuestionComment) =>
+          !!obj?.translateField && !!obj?.translateTo,
       });
     },
     isDefaultRender: true,

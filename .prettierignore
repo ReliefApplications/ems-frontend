@@ -1,11 +1,27 @@
+# Dependencies
+node_modules
+
+# Compiled output
+/dist
+dist
+/widgets
+tmp
+/out-tsc
+.angular
+
 # Test
 /coverage
 
 # Doc
 /documentation
+libs/shared/documentation.json
+libs/ui/documentation.json
 
-# Widgets
-/widgets
+# IDEs and editors
+/.idea
+.vscode
+.settings
 
-# Dist
-/dist
+# Misc
+/.sass-cache
+/typings

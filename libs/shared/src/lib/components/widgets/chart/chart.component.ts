@@ -137,9 +137,11 @@ export class ChartComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}.png`;
   }
 
   /**

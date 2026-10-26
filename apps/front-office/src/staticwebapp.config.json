@@ -15,6 +15,22 @@
     {
       "route": "/worker-basic.min.js",
       "headers": { "Cache-Control": "no-cache" }
+    },
+    {
+      "route": "/assets/*",
+      "headers": { "Cache-Control": "public, must-revalidate, max-age=30" }
+    },
+    {
+      "route": "/*.{js,css}",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
+    },
+    {
+      "route": "/*.{map,ico,png,jpg,jpeg,gif,svg,webp,woff,woff2,ttf,eot,txt,json,webmanifest}",
+      "headers": { "Cache-Control": "public, must-revalidate, max-age=30" }
+    },
+    {
+      "route": "/*",
+      "headers": { "Cache-Control": "no-cache" }
     }
   ],
   "navigationFallback": {

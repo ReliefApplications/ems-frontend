@@ -26,6 +26,7 @@ import {
   AppAbility,
   KendoTranslationService,
   AuthInterceptorService,
+  LanguageInterceptorService,
   FormService,
   DatePipe,
 } from '@oort-front/shared';
@@ -198,6 +199,11 @@ export const getBaseHref = () => {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LanguageInterceptorService,
       multi: true,
     },
     {

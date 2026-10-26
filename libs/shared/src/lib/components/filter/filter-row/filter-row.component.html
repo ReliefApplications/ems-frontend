@@ -19,6 +19,22 @@
     </ui-select-menu>
   </div>
   <ng-container *ngIf="field && editor && !hideEditor">
+    <div
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      class="w-32"
+      *ngIf="attributeShowsValueSourceSwitch"
+    >
+      <label>{{ 'common.type.one' | translate }}</label>
+      <ui-select-menu formControlName="valueSource">
+        <ui-select-option value="field">
+          {{ 'common.field.one' | translate }}
+        </ui-select-option>
+        <ui-select-option value="literal">
+          {{ 'common.value.one' | translate }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
     <ng-container
       [ngTemplateOutlet]="editor"
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
@@ -36,6 +52,28 @@
       (contextEditorIsActivated
         ? 'models.dashboard.context.tooltip.useDefaultEditor'
         : 'models.dashboard.context.tooltip.useContextEditor'
+      ) | translate
+    "
+  ></ui-button>
+
+  <!-- TOGGLE DATASET FIELD EDITOR (email notification context) -->
+  <ui-button
+    *ngIf="
+      field &&
+      !canUseContext &&
+      !hideEditor &&
+      !contextEditorIsActivated &&
+      datasetCommonServicesFieldSettings?.datasetBlocks?.length > 0
+    "
+    [isIcon]="true"
+    [disabled]="disabled"
+    icon="change_circle_outline"
+    variant="primary"
+    (click)="toggleContextEditor()"
+    [uiTooltip]="
+      (contextEditorIsActivated
+        ? 'components.queryBuilder.tooltip.filter.select.usePicker'
+        : 'components.queryBuilder.tooltip.filter.select.useExpression'
       ) | translate
     "
   ></ui-button>
@@ -74,7 +112,9 @@
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{
-              !isEmailNotification
+              field.isCommonService && field.graphQLFieldName?.label
+                ? field.graphQLFieldName.label
+                : !isEmailNotification
                 ? field.text || field.name
                 : (this.emailService.replaceUnderscores(field.name) | titlecase)
             }}
@@ -102,7 +142,7 @@
   <ng-template #textEditor>
     <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.value.one' | translate }}</label>
-      <input formControlName="value" type="string" />
+      <input formControlName="value" type="text" />
     </div>
   </ng-template>
 
@@ -148,7 +188,7 @@
           *ngFor="let option of field.options"
           [value]="option.value"
         >
-          {{ option.text }}
+          {{ option.text | sharedLocalize }}
         </ui-select-option>
       </ui-select-menu>
       <ui-select-menu
@@ -164,9 +204,17 @@
           *ngFor="let option of field.options"
           [value]="option.value"
         >
-          {{ option.text }}
+          {{ option.text | sharedLocalize }}
         </ui-select-option>
       </ui-select-menu>
+    </div>
+  </ng-template>
+
+  <!-- ATTRIBUTE EDITOR -->
+  <ng-template #attributeEditor>
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="text" />
     </div>
   </ng-template>
 
@@ -225,6 +273,38 @@
       </ui-select-menu>
     </div>
   </ng-template> -->
+
+  <!-- DATASET TOKEN EDITOR -->
+  <ng-template #datasetTokenEditor>
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'common.value.one' | translate
+      }}</label>
+      <ui-select-menu
+        formControlName="value"
+        [placeholder]="
+          'common.notifications.email.fieldselect.placeholder' | translate
+        "
+      >
+        <ui-select-option
+          *ngFor="let opt of datasetTokenOptions; trackBy: trackByTokenValue"
+          [value]="opt.value"
+        >
+          {{ opt.label | titlecase }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <ui-button
+      *ngIf="contextEditorIsActivated"
+      [isIcon]="true"
+      icon="change_circle_outline"
+      variant="primary"
+      (click)="toggleContextEditor()"
+      [uiTooltip]="
+        'components.queryBuilder.tooltip.filter.select.usePicker' | translate
+      "
+    ></ui-button>
+  </ng-template>
 
   <!-- CONTEXT EDITOR -->
   <ng-template #contextEditor>

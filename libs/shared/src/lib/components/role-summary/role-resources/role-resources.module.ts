@@ -11,6 +11,7 @@ import {
   PaginatorModule,
   DateModule as UiDateModule,
   SelectMenuModule,
+  CheckboxModule,
 } from '@oort-front/ui';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -48,6 +49,7 @@ import { ListFilterComponent } from '../../list-filter/list-filter.component';
     TableModule,
     DateModule,
     ListFilterComponent,
+    CheckboxModule,
   ],
   exports: [RoleResourcesComponent],
 })

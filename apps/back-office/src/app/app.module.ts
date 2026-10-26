@@ -31,6 +31,7 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
   AuthInterceptorService,
+  LanguageInterceptorService,
   AppAbility,
   FormService,
   DatePipe,
@@ -159,6 +160,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LanguageInterceptorService,
       multi: true,
     },
     {

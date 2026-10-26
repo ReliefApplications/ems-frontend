@@ -25,6 +25,7 @@ import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
   QueryResponse,
+  normalizeQuerySort,
 } from '../../../services/query-builder/query-builder.service';
 import {
   CONVERT_RECORD,
@@ -37,10 +38,11 @@ import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
   Record,
+  ValidationError,
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
-import { get, isEqual, isNil } from 'lodash';
+import { get, isEqual, isNil, omit } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -56,11 +58,25 @@ import { ContextService } from '../../../services/context/context.service';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
+import {
+  isDraftVisibility,
+  RecordVisibility,
+} from '../../../models/record-visibility.model';
+import {
+  GridColumnConfigurationMap,
+  GridColumnConfigurationService,
+} from '../../../services/grid-layout/grid-column-configuration.service';
 
 /**
  * Default file name when exporting grid data.
  */
 const DEFAULT_FILE_NAME = 'Records';
+
+/** Draft visibility variables accepted by record queries. */
+interface RecordVisibilityVariables {
+  recordVisibility?: RecordVisibility;
+}
 
 /**
  * Clone the data. Used in order to prevent edition of the grid items directly, and to be able to revert the changes.
@@ -88,10 +104,25 @@ export class CoreGridComponent
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
+  /** Dashboard owning the grid widget. */
+  @Input() dashboardId?: string;
+  /** Stable path of the widget within its dashboard (nested widgets append their container). */
+  @Input() widgetKey?: string;
+  /** Date the selected admin-defined layout was last modified. */
+  @Input() layoutModifiedAt?: string;
 
   /** @returns current grid layout */
   get layout(): any {
     return this.grid?.layout;
+  }
+
+  /** @returns storage key unique to the dashboard, widget, and selected layout. */
+  private get columnConfigurationKey(): string | null {
+    const widgetId = this.widgetKey || this.widget?.id || this.widget?._id;
+    const layoutId = this.settings?.id;
+    return this.dashboardId && widgetId && layoutId
+      ? `${this.dashboardId}:${widgetId}:${layoutId}`
+      : null;
   }
 
   /**
@@ -129,6 +160,10 @@ export class CoreGridComponent
   @Input() canCreateRecords = false;
   /** Whether records can be downloaded */
   @Input() canDownloadRecords = false;
+  /** Whether records can be uploaded */
+  @Input() canUploadRecords = false;
+  /** Whether all record actions must be disabled. */
+  @Input() actionsDisabled = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -201,25 +236,57 @@ export class CoreGridComponent
   /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
+  /**
+   * @returns current field used for sorting. Falls back to the query's
+   * saved default sort, which may be the legacy single {field, order}
+   * object or the current array shape (normalized via normalizeQuerySort).
+   */
   get sortField(): string | null {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].field
-      : this.settings.query?.sort && this.settings.query.sort.field
-      ? this.settings.query.sort.field
-      : null;
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].field;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.field ?? null;
   }
 
   /** @returns current sorting order */
   get sortOrder(): string {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].dir
-      : this.settings.query?.sort?.order || '';
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return this.sort[0].dir;
+    }
+    return normalizeQuerySort(this.settings.query?.sort)[0]?.order ?? '';
+  }
+
+  /**
+   * @returns full ordered list of active sort descriptors (multi-column
+   * sort), mapped to the backend's { field, order } shape. Takes precedence
+   * over sortField/sortOrder server-side when non-empty. Falls back to the
+   * query's saved default sort (single object or array) when the user
+   * hasn't interacted with the grid's column headers yet.
+   */
+  get sortFields(): { field: string; order: string }[] {
+    const active = this.sort
+      .filter((s) => s.dir)
+      .map((s) => ({ field: s.field, order: s.dir as string }));
+    return active.length > 0
+      ? active
+      : normalizeQuerySort(this.settings.query?.sort);
   }
 
   /** @returns grid styling rules */
   get style(): any {
     return this.settings.query?.style || null;
+  }
+
+  /** @returns Draft visibility variables for generated record queries. */
+  public get recordVisibilityVariables(): RecordVisibilityVariables {
+    return this.isDraftGrid
+      ? { recordVisibility: this.settings.recordVisibility }
+      : {};
+  }
+
+  /** @returns True when this grid displays draft records instead of submitted records. */
+  public get isDraftGrid(): boolean {
+    return isDraftVisibility(this.settings?.recordVisibility);
   }
 
   // === FILTERING ===
@@ -243,7 +310,10 @@ export class CoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      // `id` is the Mongo ObjectId — not a useful regex search target.
+      // `incrementalId` is the user-facing record identifier (e.g. Event ID),
+      // so it must remain searchable.
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [
@@ -254,7 +324,20 @@ export class CoreGridComponent
             operator: 'contains',
             value: searchFilters(
               this.search,
-              this.fields.map((field) => field.meta),
+              this.fields
+                // Search visible columns only; composite columns (records
+                // lists, reference data) and related record ids are out of
+                // the search scope
+                .filter(
+                  (field) =>
+                    !field.hidden &&
+                    !field.subFields?.length &&
+                    !field.name.endsWith('.id')
+                )
+                // The grid field name (dotted for related-resource subfields,
+                // e.g. `emergency.name`) must win over the bare meta name, so
+                // that the backend can resolve the record lookup
+                .map((field) => ({ ...field.meta, name: field.name })),
               skippedFields
             ),
           },
@@ -275,6 +358,10 @@ export class CoreGridComponent
   // === LAYOUT CHANGES ===
   /** Whether the layout has changes. */
   public hasLayoutChanges = false;
+  /** Whether user-defined column sizing should replace automatic sizing. */
+  public hasCustomColumnConfiguration = false;
+  /** User column configuration of the selected layout, keyed by column name. */
+  public columnConfiguration: GridColumnConfigurationMap = {};
 
   // === ACTIONS ON SELECTION ===
   /** Selected rows index array */
@@ -290,9 +377,11 @@ export class CoreGridComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${
-      this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}`;
+    const title = resolveLocalizedString(
+      this.settings.title,
+      this.translate.currentLang
+    );
+    return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}`;
   }
 
   /** @returns true if any updated item in the list */
@@ -329,6 +418,10 @@ export class CoreGridComponent
   private environment: any;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Cancels grid requests when the layout changes or the component is destroyed. */
+  private gridRefresh$ = merge(this.cancelRefresh$, this.destroy$);
+  /** Identifies callbacks belonging to the currently selected layout. */
+  private configurationVersion = 0;
 
   /**
    * Main Grid data component to display Records.
@@ -350,6 +443,7 @@ export class CoreGridComponent
    * @param router Angular Router
    * @param el Element reference
    * @param dashboardService Dashboard service
+   * @param gridColumnConfigurationService Grid column configuration service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -367,7 +461,8 @@ export class CoreGridComponent
     private contextService: ContextService,
     private router: Router,
     private el: ElementRef,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private gridColumnConfigurationService: GridColumnConfigurationService
   ) {
     super();
     this.environment = environment;
@@ -402,24 +497,16 @@ export class CoreGridComponent
    * @param changes The changes on the component
    */
   ngOnChanges(changes?: SimpleChanges): void {
-    if (!this.status.error) {
-      if (changes?.settings) {
-        this.configureGrid();
-      }
+    if (changes?.settings || changes?.defaultLayout) {
+      this.configureGrid();
+    } else if (changes?.actionsDisabled) {
+      this.configureActions();
     }
   }
 
-  /**
-   * Configure the grid
-   */
-  public configureGrid(): void {
-    // set context filter
-    this.contextFilters = this.settings.contextFilters
-      ? JSON.parse(this.settings.contextFilters)
-      : this.contextFilters;
-
-    // define row actions
-    this.actions = {
+  /** Applies the configured action policy without rebuilding the data query. */
+  private configureActions(): void {
+    const configuredActions: GridActions = {
       add:
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
@@ -428,6 +515,7 @@ export class CoreGridComponent
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
+      import: get(this.settings, 'actions.import', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
@@ -437,7 +525,59 @@ export class CoreGridComponent
       },
       remove: get(this.settings, 'actions.remove', false),
     };
-    this.editable = this.settings.actions?.inlineEdition;
+    if (this.actionsDisabled) {
+      this.actions = {
+        add: false,
+        update: false,
+        delete: false,
+        history: false,
+        convert: false,
+        export: false,
+        import: false,
+        showDetails: configuredActions.showDetails,
+        navigateToPage: false,
+        navigateSettings: configuredActions.navigateSettings,
+        remove: false,
+      };
+    } else if (this.isDraftGrid) {
+      // Drafts can be resumed, permanently deleted, viewed and exported.
+      // They have no history, cannot be converted, and added or imported
+      // records would not be drafts.
+      this.actions = {
+        ...configuredActions,
+        add: false,
+        history: false,
+        convert: false,
+        import: false,
+      };
+    } else {
+      this.actions = configuredActions;
+    }
+    this.editable =
+      !this.actionsDisabled &&
+      !this.isDraftGrid &&
+      this.settings.actions?.inlineEdition;
+  }
+
+  /**
+   * Configure the grid
+   */
+  public configureGrid(): void {
+    this.cancelRefresh$.next();
+    this.skip = 0;
+    this.status = { error: false };
+    this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
+    // Layout filters are a starting point the user can edit or clear.
+    // Only filters stored in the query itself (settings.query.filter) are fixed.
+    this.filter = this.defaultLayout?.filter || { logic: 'and', filters: [] };
+    const configurationVersion = ++this.configurationVersion;
+    // set context filter
+    this.contextFilters = this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : this.contextFilters;
+
+    this.configureActions();
     if (!isNil(this.settings.actions?.search)) {
       this.searchable = this.settings.actions?.search;
     }
@@ -446,9 +586,6 @@ export class CoreGridComponent
     this.hasLayoutChanges = this.settings.defaultLayout
       ? !isEqual(this.defaultLayout, JSON.parse(this.settings.defaultLayout))
       : true;
-    if (this.defaultLayout?.filter) {
-      this.filter = this.defaultLayout.filter;
-    }
     if (this.defaultLayout?.sort) {
       this.sort = this.defaultLayout.sort;
     }
@@ -474,11 +611,17 @@ export class CoreGridComponent
             filter: this.queryFilter,
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
+            sortFields:
+              this.sortFields.length > 0 ? this.sortFields : undefined,
             styles: this.style,
-            actions: this.settings.customRowActions || null,
+            actions:
+              this.actionsDisabled || this.isDraftGrid
+                ? null
+                : this.settings.customRowActions || null,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
               : undefined,
+            ...this.recordVisibilityVariables,
           },
           fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
@@ -489,7 +632,7 @@ export class CoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+        this.metaQuery.pipe(takeUntil(this.gridRefresh$)).subscribe({
           next: async ({ data }: any) => {
             this.status = {
               error: false,
@@ -502,13 +645,34 @@ export class CoreGridComponent
                 } catch (err) {
                   console.error(err);
                 }
+                if (configurationVersion !== this.configurationVersion) {
+                  return;
+                }
                 const fields = this.settings?.query?.fields || [];
                 const defaultLayoutFields = this.defaultLayout.fields || {};
                 this.fields = this.gridService.getFields(
                   fields,
                   this.metaFields,
                   defaultLayoutFields,
-                  ''
+                  '',
+                  {
+                    disabled: false,
+                    hidden: false,
+                    filter: true,
+                    readOnlyFields:
+                      this.settings?.actions?.readOnlyFields || [],
+                  }
+                );
+                const restoredColumns =
+                  this.gridColumnConfigurationService.restore(
+                    this.columnConfigurationKey,
+                    this.fields,
+                    this.layoutModifiedAt
+                  );
+                this.hasCustomColumnConfiguration = !!restoredColumns;
+                this.columnConfiguration = restoredColumns ?? {};
+                this.fields.sort(
+                  (first, second) => (first.order ?? 0) - (second.order ?? 0)
                 );
                 // Scroll to left
                 if (this.grid) {
@@ -593,22 +757,30 @@ export class CoreGridComponent
       const index = this.updatedItems.findIndex((x) => x.id === item.id);
       this.updatedItems.splice(index, 1, updatedItem);
     } else {
-      this.updatedItems.push({ id: item.id, ...value });
+      updatedItem = { id: item.id, ...value };
+      this.updatedItems.push(updatedItem);
     }
+    // Reflect pending changes on the raw value immediately, so reopening the
+    // inline editor ( seeded from the raw value ) shows them without waiting
+    // for the draft edition round-trip.
+    this.applyPendingChangesToRaw(item, updatedItem);
 
-    // Use the draft option to apply triggers, and then update the data
+    // Use the draft option to apply triggers, and then update the data.
+    // Send all pending ( unsaved ) changes of the row, not only the last
+    // edition, so triggers & display values are computed from the same state
+    // the user sees.
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
-          data: value,
+          data: omit(updatedItem, 'id'),
           draft: true,
         },
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
-        if (data?.editRecord.data) {
+        if (data?.editRecord?.data) {
           const editedData = data.editRecord.data;
           this.apollo
             .query<ResourceQueryResponse>({
@@ -637,6 +809,7 @@ export class CoreGridComponent
                       variables: {
                         id: item.id,
                         data: editedData,
+                        ...this.recordVisibilityVariables,
                       },
                     })
                     .pipe(takeUntil(this.destroy$))
@@ -646,16 +819,20 @@ export class CoreGridComponent
                       );
                       // Update data item element
                       Object.assign(dataItem, get(data, queryName));
-                      // Update data item raw value ( used by inline edition )
-                      dataItem._meta.raw = editedData;
-                      item.saved = false;
-                      const index = this.updatedItems.findIndex(
-                        (x) => x.id === item.id
+                      // Update data item raw value ( used by inline edition ),
+                      // re-applying pending changes on top in case another
+                      // edition happened while this draft was in flight.
+                      dataItem._meta = { ...dataItem._meta, raw: editedData };
+                      this.applyPendingChangesToRaw(
+                        dataItem,
+                        this.updatedItems.find((x) => x.id === item.id) ?? {}
                       );
-                      this.updatedItems.splice(index, 1, {
-                        id: item.id,
-                        ...editedData,
-                      });
+                      item.saved = false;
+                      // updatedItems deliberately keeps only the fields the
+                      // user edited: raw record values ( as returned by the
+                      // draft edition ) can have a different shape than the
+                      // display values, and updatedItems is re-applied on top
+                      // of the displayed rows after each data fetch.
                       this.loadItems();
                     });
                 }
@@ -663,6 +840,31 @@ export class CoreGridComponent
             });
         }
       });
+  }
+
+  /**
+   * Merges pending ( unsaved ) inline changes into the raw value of the given
+   * row, so the inline editor ( which is seeded from the raw value ) opens on
+   * the pending values instead of the last saved ones.
+   * Time fields are skipped: their form value is a timezone-shifted Date that
+   * would be shifted again when seeding the next form group.
+   * The `_meta` object is replaced instead of mutated, as it can be shared
+   * with the `originalItems` backup used to cancel inline changes.
+   *
+   * @param item Grid row item to update.
+   * @param changes Pending changes of the row ( `id` key ignored ).
+   */
+  private applyPendingChangesToRaw(item: any, changes: any): void {
+    const timeFields = this.fields
+      .filter((x) => x.type === 'Time')
+      .map((x) => x.name);
+    item._meta = {
+      ...item._meta,
+      raw: {
+        ...item._meta?.raw,
+        ...omit(changes, ['id', ...timeFields]),
+      },
+    };
   }
 
   /**
@@ -677,43 +879,47 @@ export class CoreGridComponent
         delete item.saved;
         delete item.validationErrors;
       }
+      // Mutations are sent, and answered, in the order of the updated items
+      const editedIds = this.updatedItems.map((x) => x.id);
       return Promise.all(this.promisedChanges()).then((allRes) => {
-        if (allRes) {
-          const hasErrors = allRes.filter((item: any) => {
-            if (item.data.editRecord.validationErrors) {
-              return item.data.editRecord.validationErrors.length;
-            }
-          });
-          if (hasErrors.length > 0) {
-            this.grid?.expandActionsColumn();
-          }
-        }
-        for (const res of allRes) {
-          const resRecord: Record = res.data.editRecord;
-          const updatedIndex = this.updatedItems.findIndex(
-            (x) => x.id === resRecord.id
-          );
-          const item = this.items.find((x) => x.id === resRecord.id);
-          if (resRecord?.validationErrors?.length) {
+        let hasErrors = false;
+        allRes.forEach((res, index) => {
+          const id = editedIds[index];
+          const resRecord: Record | null | undefined = res.data?.editRecord;
+          const updatedIndex = this.updatedItems.findIndex((x) => x.id === id);
+          const item = this.items.find((x) => x.id === id);
+          // The edition can be rejected as a whole ( e.g. because of a blocking
+          // uniqueness rule ): no record is returned then, only the reason, to
+          // display the same way as validation errors
+          const validationErrors = resRecord
+            ? resRecord.validationErrors
+            : this.getEditionErrors(res.errors);
+          if (validationErrors?.length) {
+            hasErrors = true;
             // if the item has an error, save the error with the item object
-            this.updatedItems[updatedIndex].incrementalId =
-              resRecord.incrementalId;
-            this.updatedItems[updatedIndex].validationErrors =
-              resRecord.validationErrors;
-            item.incrementalId = resRecord.incrementalId;
-            item.validationErrors = resRecord.validationErrors;
+            const incrementalId =
+              resRecord?.incrementalId ?? item?.incrementalId ?? id;
+            this.updatedItems[updatedIndex].incrementalId = incrementalId;
+            this.updatedItems[updatedIndex].validationErrors = validationErrors;
+            if (item) {
+              item.incrementalId = incrementalId;
+              item.validationErrors = validationErrors;
+            }
           } else {
             // if no errors, the item has been saved in the database
             // remove the item from updatedItems list
             this.updatedItems.splice(updatedIndex, 1);
             // save the new value of the item in the originalItems list
             const originalIndex = this.originalItems.findIndex(
-              (x) => x.id === resRecord.id
+              (x) => x.id === id
             );
             this.originalItems[originalIndex] = item;
             // add a property to indicate the item is saved
             item.saved = true;
           }
+        });
+        if (hasErrors) {
+          this.grid?.expandActionsColumn();
         }
         this.inlineEdition.emit();
         // the items still in the updatedItems list are the ones with errors
@@ -743,6 +949,27 @@ export class CoreGridComponent
   }
 
   /**
+   * Builds the validation errors to display for a record whose edition has
+   * been rejected by the back-end.
+   *
+   * @param errors GraphQL errors returned by the mutation, if any
+   * @returns validation errors of the record
+   */
+  private getEditionErrors(
+    errors?: readonly { message: string }[]
+  ): ValidationError[] {
+    return [
+      {
+        // The error is about the record, not one of its fields
+        question: '-',
+        errors: errors?.length
+          ? errors.map((x) => x.message)
+          : [this.translate.instant('models.form.notifications.savingFailed')],
+      },
+    ];
+  }
+
+  /**
    * Cancels inline edition without saving.
    */
   public onCancelChanges(): void {
@@ -763,7 +990,7 @@ export class CoreGridComponent
       const data = Object.assign({}, item);
       delete data.id;
       for (const field of this.fields) {
-        if (field.type === 'Time') {
+        if (field.type === 'Time' && data[field.name] instanceof Date) {
           data[field.name] = data[field.name].toLocaleTimeString('en', {
             hour: '2-digit',
             minute: '2-digit',
@@ -797,7 +1024,7 @@ export class CoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      this.dataQuery.valueChanges.pipe(takeUntil(this.gridRefresh$)).subscribe({
         next: ({ data }) => {
           this.loading = false;
           this.status = {
@@ -816,6 +1043,23 @@ export class CoreGridComponent
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
+                const temporaryRecordsCount =
+                  this.settings.query.temporaryRecords?.length || 0;
+                const lastPageSkip = Math.max(
+                  (Math.ceil(
+                    (this.totalCount + temporaryRecordsCount) / this.pageSize
+                  ) -
+                    1) *
+                    this.pageSize,
+                  0
+                );
+                if (this.skip > lastPageSkip) {
+                  this.onPageChange({
+                    skip: lastPageSkip,
+                    take: this.pageSize,
+                  });
+                  return;
+                }
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -826,6 +1070,10 @@ export class CoreGridComponent
                   );
                   if (item) {
                     Object.assign(item, updatedItem);
+                    // Fetched raw values only reflect the last saved state:
+                    // re-apply pending changes so the inline editor ( seeded
+                    // from the raw value ) opens on them.
+                    this.applyPendingChangesToRaw(item, updatedItem);
                     item.saved = false;
                   }
                 }
@@ -890,8 +1138,7 @@ export class CoreGridComponent
    * Reloads data and unselect all rows.
    */
   public reloadData(): void {
-    // TODO = check what to do there
-    this.onPageChange({ skip: 0, take: this.pageSize });
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
     // this.selectedRows = [];
     // this.updatedItems = [];
     this.refresh$.next(true);
@@ -945,6 +1192,25 @@ export class CoreGridComponent
     pageUrl?: string;
     html?: string;
   }): void {
+    const disabledActions = [
+      'add',
+      'edit',
+      'save',
+      'goTo',
+      'update',
+      'history',
+      'convert',
+      'delete',
+      'remove',
+    ];
+    if (this.actionsDisabled && disabledActions.includes(event.action)) {
+      return;
+    }
+    // Inline edition, history and conversion are not available for drafts
+    const draftDisabledActions = ['add', 'edit', 'save', 'history', 'convert'];
+    if (this.isDraftGrid && draftDisabledActions.includes(event.action)) {
+      return;
+    }
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -1060,7 +1326,7 @@ export class CoreGridComponent
           ({ EditorModalComponent }) => {
             this.dialog.open(EditorModalComponent, {
               data: {
-                html: event.item.text[event.field.name],
+                html: event.item._display.text[event.field.name],
                 title: event.field.title,
               },
             });
@@ -1164,6 +1430,7 @@ export class CoreGridComponent
             items.canUpdate,
           ...(!isArray && { template: this.settings.template }),
           parentComponent: this,
+          ...this.recordVisibilityVariables,
         },
         autoFocus: false,
       });
@@ -1192,6 +1459,7 @@ export class CoreGridComponent
       data: {
         recordId: ids.length > 1 ? ids : ids[0],
         template: this.settings.template || null,
+        ...this.recordVisibilityVariables,
       },
       autoFocus: false,
     });
@@ -1229,7 +1497,9 @@ export class CoreGridComponent
             : this.translate.instant('common.row.one'),
       }),
       content: this.translate.instant(
-        'components.form.deleteRow.confirmationMessage',
+        this.isDraftGrid
+          ? 'components.form.deleteRow.draftConfirmationMessage'
+          : 'components.form.deleteRow.confirmationMessage',
         {
           quantity: rowsSelected,
           rowText:
@@ -1248,6 +1518,7 @@ export class CoreGridComponent
             mutation: DELETE_RECORDS,
             variables: {
               ids,
+              hardDelete: this.isDraftGrid,
             },
           })
           .pipe(takeUntil(this.destroy$))
@@ -1441,11 +1712,13 @@ export class CoreGridComponent
       query: this.settings.query,
       sortField: this.sortField,
       sortOrder: this.sortOrder,
+      sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
       format: e.format,
       application: this.applicationService.name,
       fileName: this.fileName,
       email: e.email,
       resource: this.settings.resource,
+      ...this.recordVisibilityVariables,
       // we only export visible fields ( not hidden )
       ...(e.fields === 'visible' && {
         fields: Object.values(currentLayout.fields)
@@ -1512,13 +1785,15 @@ export class CoreGridComponent
         filter: this.queryFilter,
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
+        sortFields: this.sortFields.length > 0 ? this.sortFields : undefined,
         styles: this.style,
+        ...this.recordVisibilityVariables,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
         }),
       })
     )
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.gridRefresh$))
       .subscribe(() => (this.loading = false));
   }
 
@@ -1575,6 +1850,15 @@ export class CoreGridComponent
    * Detects fields changes.
    */
   onColumnChange(): void {
+    const savedColumns = this.gridColumnConfigurationService.save(
+      this.columnConfigurationKey,
+      this.grid?.configurableColumns || [],
+      this.layoutModifiedAt
+    );
+    if (savedColumns) {
+      this.columnConfiguration = savedColumns;
+    }
+    this.hasCustomColumnConfiguration = true;
     this.saveLocalLayout();
   }
 
@@ -1600,6 +1884,9 @@ export class CoreGridComponent
    * Reset the currently cached layout to the default one
    */
   resetDefaultLayout(): void {
+    this.gridColumnConfigurationService.remove(this.columnConfigurationKey);
+    this.hasCustomColumnConfiguration = false;
+    this.columnConfiguration = {};
     this.defaultLayoutReset.emit();
   }
 

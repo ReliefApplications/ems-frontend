@@ -1,0 +1,28 @@
+<ui-dialog size="big">
+  <ng-container ngProjectAs="header">
+    <h1>{{ data.notification.action }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <p class="text-gray-500 text-sm mb-4">
+      {{ data.notification.createdAt | sharedDate : 'short' }}
+    </p>
+    <ng-container *ngIf="safeHtml; else noHtml">
+      <iframe
+        class="notification-html-content w-full border rounded bg-white"
+        title="{{ data.notification.action }}"
+        sandbox=""
+        [srcdoc]="safeHtml"
+      ></iframe>
+    </ng-container>
+    <ng-template #noHtml>
+      <p class="text-gray-700">
+        {{ 'components.notifications.detail.emailSent' | translate }}
+      </p>
+    </ng-template>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="close()" variant="primary">
+      {{ 'common.close' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

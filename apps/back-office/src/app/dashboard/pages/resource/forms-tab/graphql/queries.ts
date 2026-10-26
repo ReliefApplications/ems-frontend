@@ -12,6 +12,7 @@ export const GET_RESOURCE_FORMS = gql`
         createdAt
         recordsCount
         core
+        isPublic
         canUpdate
         canDelete
         canCreateRecords

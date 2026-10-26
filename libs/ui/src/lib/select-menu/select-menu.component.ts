@@ -15,6 +15,7 @@ import {
   Optional,
   Self,
   OnChanges,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
@@ -129,6 +130,7 @@ export class SelectMenuComponent
    * @param viewContainerRef ViewContainerRef
    * @param overlay Overlay
    * @param shadowDomService shadow dom service to handle the current host of the component
+   * @param cdr Change detector reference
    */
   constructor(
     @Optional() @Self() private control: NgControl,
@@ -136,7 +138,8 @@ export class SelectMenuComponent
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private cdr: ChangeDetectorRef
   ) {
     if (this.control) {
       this.control.valueAccessor = this;
@@ -242,6 +245,20 @@ export class SelectMenuComponent
         option.selected = false;
       }
       this.setDisplayTriggerText();
+      // Options declared directly in a template ( without ngFor ) read their
+      // label after this point: the displayed text must then be built again,
+      // otherwise the raw value of the selected option is displayed
+      option.labelReady
+        .pipe(takeUntil(this.destroy$), takeUntil(this.resetSubscriptions$))
+        .subscribe({
+          next: () => {
+            if (option.selected) {
+              this.setDisplayTriggerText();
+              // The view of the select menu is already checked at this point
+              this.cdr.detectChanges();
+            }
+          },
+        });
     });
   }
 
@@ -266,8 +283,7 @@ export class SelectMenuComponent
   /**
    * Record on change
    *
-   * @param fn
-   * event that took place
+   * @param fn callback to call when the value changes
    */
   registerOnChange(fn: (value: any) => void) {
     if (!this.onChange) {
@@ -278,8 +294,7 @@ export class SelectMenuComponent
   /**
    * Record on touch
    *
-   * @param fn
-   * event that took place
+   * @param fn callback to call when the control is touched
    */
   registerOnTouched(fn: () => void) {
     if (!this.onTouch) {

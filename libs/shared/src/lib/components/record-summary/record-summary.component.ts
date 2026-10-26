@@ -14,6 +14,8 @@ export class RecordSummaryComponent {
   @Input() cacheDate?: Date;
   /** Record */
   @Input() record?: Record;
+  /** Whether the history button is displayed. Drafts have no history. */
+  @Input() canShowHistory = true;
   /** Show history event emitter */
   @Output() showHistory = new EventEmitter();
   /** Clear event emitter */

@@ -346,7 +346,7 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
   paste_webkit_styles: 'color font-size',
   image_advtab: true,
   importcss_append: true,
-  height: 600,
+  height: 300,
   image_caption: true,
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',

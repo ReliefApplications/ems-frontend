@@ -15,6 +15,7 @@ export const GET_RESOURCE = gql`
             query
             createdAt
             display
+            recordVisibility
           }
         }
         totalCount
@@ -23,25 +24,6 @@ export const GET_RESOURCE = gql`
         name
         type
       }
-    }
-  }
-`;
-
-/** Graphql request for getting a record by its id */
-export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
-    record(id: $id) {
-      id
-      incrementalId
-      createdAt
-      modifiedAt
-      createdBy {
-        name
-      }
-      modifiedBy {
-        name
-      }
-      data
     }
   }
 `;

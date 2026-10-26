@@ -36,6 +36,19 @@ import { Question } from '../../survey/types';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
 import { FunctionReferenceModalComponent } from './function-reference-modal/function-reference-modal.component';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import {
+  FIELD_HISTORY_ALLOWED_PROPERTIES,
+  FIELD_HISTORY_QUESTION_TYPE,
+} from '../../survey/components/field-history';
+import {
+  FILES_MANAGEMENT_ALLOWED_PROPERTIES,
+  FILES_MANAGEMENT_QUESTION_TYPE,
+} from '../../survey/components/files-management';
+import {
+  FILES_UPLOAD_ALLOWED_PROPERTIES,
+  FILES_UPLOAD_QUESTION_TYPE,
+} from '../../survey/components/files-upload';
 
 /**
  * Array containing the different types of questions.
@@ -65,6 +78,9 @@ const QUESTION_TYPES = [
   'paneldynamic',
 ];
 
+/** Form builder representation of a Field history question. */
+type FieldHistoryQuestion = Question & { field?: string };
+
 /**
  * Allowed properties for a core question in a child form.
  */
@@ -91,6 +107,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
+  // File questions: outdated files display is decided per form
+  'showOutdatedFiles',
 ];
 
 /**
@@ -150,6 +168,7 @@ export class FormBuilderComponent
    * @param formHelpersService Shared form helper service.
    * @param document document
    * @param injector Angular injector
+   * @param autoTranslateService Auto-translate service
    */
   constructor(
     public dialog: Dialog,
@@ -157,7 +176,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document,
-    private injector: Injector
+    private injector: Injector,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -212,6 +232,8 @@ export class FormBuilderComponent
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation when the preview survey is disposed.
     // Dispose the whole creator ( toolbox, property grid, plugins, survey and
     // all of their event handlers ), not only the survey, otherwise the creator
     // graph stays referenced and its memory is never released.
@@ -282,6 +304,8 @@ export class FormBuilderComponent
           )(question);
           question.dragAreaPlaceholder = text;
         });
+
+      this.autoTranslateService.registerAutoTranslation(survey);
     });
     this.surveyCreator.haveCommercialLicense = true;
     // Strip any `pos` artifacts already stored in the form so the loaded model
@@ -314,6 +338,42 @@ export class FormBuilderComponent
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(this.cleanStructure(survey.text));
+    });
+
+    // Always show the per-field "Settings" gear adorner.
+    // By default SurveyJS only shows it when the property-grid sidebar is
+    // collapsed (flyout mode), which depends on the creator panel width. On
+    // wide screens (e.g. Mac) the sidebar stays docked and the gear disappears.
+    // Forcing allowEdit makes the gear visible regardless of sidebar state.
+    this.surveyCreator.onElementAllowOperations.add(
+      (sender: any, options: any) => {
+        const obj = options.obj;
+        if (!obj || !obj.page) {
+          return;
+        }
+        options.allowEdit = true;
+      }
+    );
+    // Questions displaying / placing data of other questions never store a
+    // value of their own: no "required" toggle, restricted property grid
+    const displayOnlyQuestions: Record<string, string[]> = {
+      [FIELD_HISTORY_QUESTION_TYPE]: FIELD_HISTORY_ALLOWED_PROPERTIES,
+      [FILES_UPLOAD_QUESTION_TYPE]: FILES_UPLOAD_ALLOWED_PROPERTIES,
+      [FILES_MANAGEMENT_QUESTION_TYPE]: FILES_MANAGEMENT_ALLOWED_PROPERTIES,
+    };
+    this.surveyCreator.onElementAllowOperations.add((_, options) => {
+      if (displayOnlyQuestions[options.obj?.getType()]) {
+        options.allowChangeRequired = false;
+      }
+    });
+    this.surveyCreator.onShowingProperty.add((_, options) => {
+      const allowedProperties = displayOnlyQuestions[options.obj?.getType()];
+      if (
+        allowedProperties &&
+        !allowedProperties.includes(options.property.name)
+      ) {
+        options.canShow = false;
+      }
     });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
@@ -549,9 +609,12 @@ export class FormBuilderComponent
       );
       if (verifiedQuestions) {
         // If questions verified, search for duplicated value names
+        const dataQuestions = page.questions.filter(
+          (question) => question.getType() !== FIELD_HISTORY_QUESTION_TYPE
+        );
         const duplicatedFields = difference(
-          page.questions,
-          uniqBy(page.questions, 'valueName')
+          dataQuestions,
+          uniqBy(dataQuestions, 'valueName')
         );
         if (duplicatedFields.length > 0) {
           this.snackBar.openSnackBar(
@@ -586,6 +649,16 @@ export class FormBuilderComponent
    * @returns if question name and additional required fields are valid
    */
   private setQuestionNames(question: Question, page: PageModel): boolean {
+    if (question.getType() === FIELD_HISTORY_QUESTION_TYPE) {
+      if ((question as FieldHistoryQuestion).field) {
+        return true;
+      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.history.fieldRequired'),
+        { error: true, duration: 15000 }
+      );
+      return false;
+    }
     // Create the valueName of the element in snake case.
     const valueNameChecked = this.formHelpersService.setValueName(
       question,

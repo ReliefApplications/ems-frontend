@@ -85,7 +85,10 @@ export const createLayerForm = (value?: LayerModel) => {
     // Layer properties
     id: new FormControl(get(value, 'id', null)),
     type: new FormControl(type, Validators.required),
-    name: new FormControl(get(value, 'name', null), Validators.required),
+    name: new FormControl<LocalizedString>(
+      get(value, 'name', ''),
+      localizedRequired
+    ),
     visibility: new FormControl(
       get(value, 'visibility', true),
       Validators.required
@@ -464,8 +467,10 @@ export const createClassBreakInfoForm = (
  */
 export const createPopupInfoForm = (value: any) =>
   fb.group({
-    title: get(value, 'title', ''),
-    description: get(value, 'description', ''),
+    title: new FormControl<LocalizedString>(get(value, 'title', '')),
+    description: new FormControl<LocalizedString>(
+      get(value, 'description', '')
+    ),
     popupElements: fb.array(
       get(value, 'popupElements', []).map((element: PopupElement) =>
         createPopupElementForm(element)
@@ -489,15 +494,17 @@ export const createPopupElementForm = (value: PopupElement): FormGroup => {
     case 'text': {
       return fb.group({
         type: 'text',
-        text: get(value, 'text', ''),
+        text: new FormControl<LocalizedString>(get(value, 'text', '')),
       });
     }
     default:
     case 'fields': {
       return fb.group({
         type: 'fields',
-        title: get(value, 'title', ''),
-        description: get(value, 'description', ''),
+        title: new FormControl<LocalizedString>(get(value, 'title', '')),
+        description: new FormControl<LocalizedString>(
+          get(value, 'description', '')
+        ),
         fields: fb.array(get(value, 'fields', []) ?? []),
       });
     }
@@ -512,7 +519,7 @@ export const createPopupElementForm = (value: PopupElement): FormGroup => {
  */
 export const createFieldsInfoForm = (value: Fields): FormGroup =>
   fb.group({
-    label: get(value, 'label', ''),
+    label: new FormControl<LocalizedString>(get(value, 'label', '')),
     name: get(value, 'name', ''),
     type: get(value, 'type', ''),
   });

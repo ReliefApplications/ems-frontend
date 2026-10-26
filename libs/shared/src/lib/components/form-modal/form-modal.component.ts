@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   IconModule,
@@ -21,7 +22,13 @@ import {
 import { Apollo } from 'apollo-angular';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  firstValueFrom,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
 import { SurveyModel } from 'survey-core';
 import { Form, FormQueryResponse } from '../../models/form.model';
@@ -32,7 +39,6 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { AuthService } from '../../services/auth/auth.service';
 import {
   ConfirmDialogData,
   ConfirmService,
@@ -40,15 +46,27 @@ import {
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
-import addCustomFunctions from '../../utils/custom-functions';
+import {
+  captureFieldChangeInitialData,
+  fireFieldChangeTriggersForRecordUpdate,
+} from '../../survey/triggers/set-value-on-field-change.trigger';
 import { fireOnRecordEditionTriggers } from '../../survey/triggers/on-record-edition.trigger';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 import { getSurveyFormActionButtonLabels } from '../../utils/survey-form-action-labels.util';
 import { shouldConfirmRecordUpdate } from '../../utils/survey-confirm-record-update.util';
+import { shouldLockReadOnlyFieldsOnRecordCreation } from '../../utils/survey-read-only-fields.util';
+import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
+import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
+import { RecordVisibility } from '../../models/record-visibility.model';
+import {
+  areOnlyWarnings,
+  getUniquenessViolations,
+  getValidationModalData,
+} from '../../utils/validation-errors.util';
 
 /**
  * Interface of Dialog data.
@@ -58,9 +76,12 @@ interface DialogData {
   recordId?: string | [];
   prefillRecords?: Record[];
   prefillData?: any;
+  cloneRecordId?: string;
   askForConfirm?: boolean;
   recordData?: any;
   actionButtonCtx?: boolean;
+  recordVisibility?: RecordVisibility;
+  isDraftClone?: boolean;
 }
 /**
  * Defines the default Dialog data
@@ -77,15 +98,17 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['../../style/survey.scss', './form-modal.component.scss'],
   imports: [
     CommonModule,
+    AlertModule,
     IconModule,
     TabsModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
     SpinnerModule,
     SurveyModule,
+    DraftRecordComponent,
+    DraftSaveStatusComponent,
   ],
 })
 export class FormModalComponent
@@ -113,8 +136,8 @@ export class FormModalComponent
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
+  /** Whether the current survey data changed since the last save/load. */
+  private valueChanged = false;
   /** Available pages*/
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
@@ -123,12 +146,42 @@ export class FormModalComponent
   protected isMultiEdition = false;
   /** Evaluated label for the modal save button */
   public saveButtonLabel = '';
+  /** Save as draft button label, evaluated from the survey settings */
+  public saveAsDraftButtonLabel = '';
   /** Temporary storage of files */
   protected temporaryFilesStorage: any = {};
   /** Stored cloned data */
   private prefillClonedData: any;
   /** Stored merged data */
   private prefillMergedData: any;
+  /** Auto-save trigger stream. */
+  private autoSaveSubject = new Subject<void>();
+  /** Whether auto-save should save the form as a draft. */
+  private autoSaveEnabled = false;
+  /** Active auto-save operation, used to avoid duplicate draft creation. */
+  private autoSavePromise: Promise<void> | null = null;
+  /** Whether another auto-save was requested while one was running. */
+  private autoSavePending = false;
+  /** Incremented on every user edit to detect stale auto-save responses. */
+  private autoSaveRevision = 0;
+  /** Invalidates auto-save responses after the active draft changes. */
+  private autoSaveGeneration = 0;
+  /** Time of the latest successful draft save, manual or automatic. */
+  public lastDraftSavedAt?: Date;
+  /** Whether a draft save, manual or automatic, is in progress. */
+  public draftSaving = false;
+
+  /** @returns True when the Save as Draft button should be shown. */
+  public get showSaveAsDraft(): boolean {
+    return !this.data.recordId || !!this.lastDraftRecord;
+  }
+
+  /** @returns True when auto-save can write the current form as a draft. */
+  private get canAutoSaveDraft(): boolean {
+    return (
+      !this.data.isDraftClone && (!this.data.recordId || !!this.lastDraftRecord)
+    );
+  }
 
   /**
    * Display a form instance in a modal.
@@ -138,12 +191,12 @@ export class FormModalComponent
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param autoTranslateService Auto-translate text using Azure Translator
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -151,14 +204,21 @@ export class FormModalComponent
     public dialogRef: DialogRef<FormModalComponent>,
     private apollo: Apollo,
     protected snackBar: SnackbarService,
-    private authService: AuthService,
     private formBuilderService: FormBuilderService,
     protected formHelpersService: FormHelpersService,
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    private autoTranslateService: AutoTranslateService
   ) {
     super();
+    this.autoSaveSubject
+      .pipe(debounceTime(5000), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.autoSaveEnabled) {
+          this.performAutoSave();
+        }
+      });
   }
 
   /**
@@ -218,10 +278,14 @@ export class FormModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id,
+              recordVisibility: this.data.recordVisibility,
             },
           })
         ).then(({ data }) => {
           this.record = data.record;
+          if (this.record?.draft && this.record.id) {
+            this.lastDraftRecord = this.record.id;
+          }
           if (this.data.recordData) {
             this.record.data = { ...this.record.data, ...this.data.recordData };
           }
@@ -288,65 +352,88 @@ export class FormModalComponent
       this.record
     );
 
-    this.updateButtonLabels();
+    this.valueChanged = false;
+    // Programmatic prefill must not create a draft before the user edits.
+    this.autoSaveEnabled = false;
+    // Auto-translation is wired centrally in FormBuilderService.createSurvey;
+    // here we only handle component-specific reactions to value changes.
     this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
+      this.valueChanged = true;
+      this.autoSaveRevision++;
       this.updateButtonLabels();
+      if (this.autoSaveEnabled) {
+        this.autoSaveSubject.next();
+      }
     });
     this.survey.onComplete.add(this.onComplete);
 
-    if (this.prefillMergedData) {
-      // Prefill with merged data from records
-      const cleanedData = omitBy(this.prefillMergedData, isNil);
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    } else if (this.prefillClonedData) {
-      // Prefill with cloned data
-      const resourcesFields = this.survey
-        .getAllQuestions()
-        .filter((q) => q.getType() === 'resources');
-      const resourceNames = new Set(resourcesFields.map((f) => f.name));
-      // Omit nil values and resources questions from prefill data
-      const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
-        return isNil(value) || resourceNames.has(key);
-      });
-      Object.keys(cleanedData).forEach((question) => {
-        this.survey.setValue(question, cleanedData[question]);
-      });
-    }
+    this.updateButtonLabels();
 
-    // After the survey is created, we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
-    if (this.isUpdate && this.record) {
-      if (this.isMultiEdition) {
-        this.survey.data = null;
-      } else {
-        const cleanedData = omitBy(this.record.data, isNil);
+    // Populate the survey programmatically with translation suppressed so that
+    // prefilling / loading an existing record does not trigger translations.
+    this.autoTranslateService.suppressAutoTranslationWhile(this.survey, () => {
+      if (this.prefillMergedData) {
+        // Prefill with merged data from records
+        const cleanedData = omitBy(this.prefillMergedData, isNil);
+        Object.keys(cleanedData).forEach((question) => {
+          this.survey.setValue(question, cleanedData[question]);
+        });
+      } else if (this.prefillClonedData) {
+        // Prefill with cloned data
+        const resourcesFields = this.survey
+          .getAllQuestions()
+          .filter((q) => q.getType() === 'resources');
+        const resourceNames = new Set(resourcesFields.map((f) => f.name));
+        // Omit nil values and resources questions from prefill data
+        const cleanedData = omitBy(this.prefillClonedData, (value, key) => {
+          return isNil(value) || resourceNames.has(key);
+        });
         Object.keys(cleanedData).forEach((question) => {
           this.survey.setValue(question, cleanedData[question]);
         });
       }
-      addCustomFunctions(this.authService);
-      this.survey.showCompletedPage = false;
-      this.form?.fields?.forEach((field) => {
-        if (field.readOnly && this.survey.getQuestionByName(field.name))
-          this.survey.getQuestionByName(field.name).readOnly = true;
-      });
 
-      // Fire once now that the existing record's data is in the survey
-      fireOnRecordEditionTriggers(this.survey);
-    }
+      // After the survey is created, we add common callback to survey events
+      this.formBuilderService.addEventsCallBacksToSurvey(
+        this.survey,
+        this.selectedPageIndex,
+        this.temporaryFilesStorage
+      );
 
-    // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
-    this.updateButtonLabels();
+      if (this.isUpdate && this.record) {
+        if (this.isMultiEdition) {
+          this.survey.data = null;
+        } else {
+          const cleanedData = omitBy(this.record.data, isNil);
+          Object.keys(cleanedData).forEach((question) => {
+            this.survey.setValue(question, cleanedData[question]);
+          });
+        }
+        this.survey.showCompletedPage = false;
+      }
 
+      if (
+        this.isUpdate ||
+        shouldLockReadOnlyFieldsOnRecordCreation(this.survey)
+      ) {
+        this.form?.fields?.forEach((field) => {
+          if (field.readOnly && this.survey.getQuestionByName(field.name))
+            this.survey.getQuestionByName(field.name).readOnly = true;
+        });
+      }
+
+      if (this.isUpdate) {
+        // Fire once now that the existing record's data is in the survey
+        fireOnRecordEditionTriggers(this.survey);
+      }
+
+      // Bulk survey.data changes (e.g. multi-edition) do not fire onValueChanged
+      this.updateButtonLabels();
+    });
+    captureFieldChangeInitialData(this.survey);
+
+    this.valueChanged = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
     this.loading = false;
   }
 
@@ -357,6 +444,7 @@ export class FormModalComponent
   private updateButtonLabels(): void {
     const labels = getSurveyFormActionButtonLabels(this.survey);
     this.saveButtonLabel = labels.modalSaveButtonLabel;
+    this.saveAsDraftButtonLabel = labels.modalSaveAsDraftButtonLabel;
   }
 
   /**
@@ -364,59 +452,117 @@ export class FormModalComponent
    */
   public async submit(): Promise<void> {
     this.saving = true;
-    let uploadErrors;
-    /** If any file attached, first upload them before record creation */
-    if (
-      !isNil(this.temporaryFilesStorage) &&
-      Object.keys(this.temporaryFilesStorage).length
-    ) {
-      try {
-        await this.formHelpersService.uploadFiles(
-          this.survey,
-          this.temporaryFilesStorage,
-          this.form?.id as string
-        );
-      } catch (errors) {
-        /** If there is any upload errors, save them for display */
-        uploadErrors = (errors as { question: string; file: File }[]).map(
-          (error) => {
-            return `${error.question}: ${error.file.name}`;
-          }
-        );
-      }
+    this.autoSaveEnabled = false;
+    if (this.autoSavePromise) {
+      await this.autoSavePromise;
     }
-    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
+    let uploadErrorMessage: string | undefined;
+    /** First upload the pending files of the survey before record creation */
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string
+      );
+    } catch (errors) {
+      /** If there is any upload errors, save them for display */
+      uploadErrorMessage =
+        this.formHelpersService.getUploadErrorMessage(errors);
+    }
+    if (!this.survey?.hasErrors() && isNil(uploadErrorMessage)) {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed') +
-          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        uploadErrorMessage ??
+          this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
       this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
     }
   }
 
   /**
-   * Show errors using ErrorsModalComponent
+   * Show errors using ErrorsModalComponent. When the errors are only
+   * warnings ( e.g. a uniqueness rule with a 'warning' severity ), the user
+   * can choose to save anyway, in which case onConfirm is called to submit
+   * the record again, with validation skipped.
    *
    * @param errors list of validation errors
    * @param incrementalId record incremental id
+   * @param onConfirm called if the user chooses to save despite the warnings
    */
   private async showLocalErrors(
     errors: any[],
-    incrementalId?: string
+    incrementalId?: string,
+    onConfirm?: () => void
   ): Promise<void> {
     const { ErrorsModalComponent } = await import(
       '../ui/core-grid/errors-modal/errors-modal.component'
     );
-    this.dialog.open(ErrorsModalComponent, {
-      data: {
-        incrementalId: incrementalId || this.record?.incrementalId || '',
-        errors: errors,
-      },
+    const dialogRef = this.dialog.open(ErrorsModalComponent, {
+      data: getValidationModalData(
+        errors,
+        incrementalId || this.record?.incrementalId || '',
+        this.translate
+      ),
       autoFocus: false,
     });
+    if (onConfirm && areOnlyWarnings(errors)) {
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        if (res) {
+          this.saving = true;
+          this.autoSaveEnabled = false;
+          onConfirm();
+        }
+      });
+    }
+  }
+
+  /**
+   * Handles the errors returned by a record mutation. Nothing has been saved,
+   * so the modal stays open for the user to fix the record and save it again:
+   * blocking uniqueness violations are listed in the errors modal, other
+   * errors are notified.
+   *
+   * @param errors errors returned by the mutation
+   * @param message notification displayed for errors other than uniqueness
+   * violations
+   */
+  private handleMutationErrors(errors: readonly any[], message: string): void {
+    const violations = getUniquenessViolations(errors);
+    if (violations.length) {
+      this.showLocalErrors(violations);
+    } else {
+      this.snackBar.openSnackBar(message, { error: true });
+    }
+    this.saving = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
+  }
+
+  /**
+   * Handles the validation errors returned when saving a record, if any:
+   * nothing has been saved, so the modal stays open and shows them.
+   *
+   * @param record record returned by the mutation
+   * @param onConfirm called if the user chooses to save despite the warnings
+   * @returns whether there are validation errors
+   */
+  private handleValidationErrors(
+    record: Record | null | undefined,
+    onConfirm: () => void
+  ): boolean {
+    if (!record?.validationErrors?.length) {
+      return false;
+    }
+    this.showLocalErrors(
+      record.validationErrors,
+      record.incrementalId,
+      onConfirm
+    );
+    this.saving = false;
+    this.autoSaveEnabled = this.canAutoSaveDraft;
+    return true;
   }
 
   /**
@@ -425,7 +571,9 @@ export class FormModalComponent
    * @param survey Survey instance.
    */
   public onComplete = (survey: any) => {
-    this.survey?.clear(false);
+    // Leave the completed state, keeping the data and the current page: if the
+    // record cannot be saved, the user goes on editing it where they were
+    this.survey?.clear(false, false);
 
     // If survey has errors, cancel edition
     if (this.survey?.hasErrors()) {
@@ -434,6 +582,7 @@ export class FormModalComponent
         { error: true }
       );
       this.saving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
       return;
     }
 
@@ -455,6 +604,7 @@ export class FormModalComponent
             await this.onUpdate(survey);
           } else {
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
           }
         });
       // Updates the data directly.
@@ -480,12 +630,80 @@ export class FormModalComponent
     // await Promise.allSettled(promises);
     await this.formHelpersService.createTemporaryRecords(survey);
 
+    if (this.data.recordId && !this.isMultiEdition) {
+      fireFieldChangeTriggersForRecordUpdate(this.survey, true);
+    }
+    this.submitRecord(survey, false);
+    survey.showCompletedPage = true;
+  }
+
+  /**
+   * Sends the mutation creating or updating the record(s) with the data of
+   * the survey.
+   *
+   * @param survey current survey
+   * @param skipValidation when true, save even if a non-blocking ( warning )
+   * uniqueness rule is violated: used to submit again after the user confirms
+   * the warning modal.
+   */
+  private submitRecord(survey: any, skipValidation: boolean): void {
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
-        this.updateData(this.data.recordId, survey);
+        this.updateData(this.data.recordId, survey, skipValidation);
       }
+    } else if (this.lastDraftRecord) {
+      this.apollo
+        .mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: this.lastDraftRecord,
+            data: survey.data,
+            template: this.data.template,
+            lang: this.translate.currentLang,
+            updateDraftStatus: false,
+            skipValidation,
+          },
+        })
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.handleMutationErrors(
+                errors,
+                this.translate.instant('common.notifications.error', {
+                  error: errors[0].message,
+                })
+              );
+            } else if (
+              this.handleValidationErrors(data?.editRecord, () =>
+                this.submitRecord(survey, true)
+              )
+            ) {
+              // The draft has not been published
+              return;
+            } else {
+              this.lastDraftRecord = undefined;
+              this.valueChanged = false;
+              this.ngZone.run(() => {
+                this.dialogRef.close({
+                  template: this.data.template,
+                  data: data?.editRecord,
+                } as any);
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.form.display.submissionMessage'
+                  )
+                );
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+            this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
+          },
+        });
     } else {
       this.apollo
         .mutate<AddRecordMutationResponse>({
@@ -493,17 +711,28 @@ export class FormModalComponent
           variables: {
             form: this.data.template,
             data: survey.data,
+            cloneRecordId: this.data.cloneRecordId,
+            skipValidation,
           },
         })
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
-              this.ngZone.run(() => {
-                this.dialogRef.close();
-              });
+              // The record has not been created: the modal stays open, so the
+              // user can fix the record instead of starting over
+              this.handleMutationErrors(
+                errors,
+                this.translate.instant('common.notifications.error', {
+                  error: errors[0].message,
+                })
+              );
+            } else if (
+              this.handleValidationErrors(data?.addRecord, () =>
+                this.submitRecord(survey, true)
+              )
+            ) {
+              // The record has not been created
+              return;
             } else {
               if (this.lastDraftRecord) {
                 const callback = () => {
@@ -530,10 +759,10 @@ export class FormModalComponent
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
           },
         });
     }
-    survey.showCompletedPage = true;
   }
 
   /**
@@ -541,8 +770,10 @@ export class FormModalComponent
    *
    * @param id record id.
    * @param survey current survey.
+   * @param skipValidation when true, save even if a non-blocking ( warning )
+   * uniqueness rule is violated.
    */
-  public updateData(id: any, survey: any): void {
+  public updateData(id: any, survey: any, skipValidation = false): void {
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -550,15 +781,23 @@ export class FormModalComponent
           id,
           data: survey.data,
           template: this.data.template,
+          lang: this.translate.currentLang,
+          ...(this.record?.draft && { updateDraftStatus: false }),
+          skipValidation,
         },
       })
       .subscribe({
         next: ({ errors, data }) => {
-          this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+          this.handleRecordMutationResponse(
+            { data, errors },
+            'editRecord',
+            () => this.updateData(id, survey, true)
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
         },
       });
   }
@@ -596,6 +835,7 @@ export class FormModalComponent
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
         },
       });
   }
@@ -607,10 +847,12 @@ export class FormModalComponent
    * @param response.data response data
    * @param response.errors response errors
    * @param responseType response type
+   * @param onConfirm called if the user chooses to save despite the warnings
    */
   private handleRecordMutationResponse(
     response: { data: any; errors: any },
-    responseType: 'editRecords' | 'editRecord'
+    responseType: 'editRecords' | 'editRecord',
+    onConfirm?: () => void
   ) {
     const { data, errors } = response;
     const type =
@@ -618,14 +860,13 @@ export class FormModalComponent
         ? this.translate.instant('common.record.few')
         : this.translate.instant('common.record.one');
     if (errors) {
-      this.snackBar.openSnackBar(
+      this.handleMutationErrors(
+        errors,
         this.translate.instant('common.notifications.objectNotUpdated', {
           type,
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
+          error: errors[0].message,
+        })
       );
-      this.saving = false;
     } else {
       if (data) {
         if (
@@ -634,9 +875,11 @@ export class FormModalComponent
         ) {
           this.showLocalErrors(
             data.editRecord.validationErrors,
-            data.editRecord.incrementalId
+            data.editRecord.incrementalId,
+            onConfirm
           );
           this.saving = false;
+          this.autoSaveEnabled = this.canAutoSaveDraft;
           return;
         }
         if (responseType === 'editRecords' && Array.isArray(data.editRecords)) {
@@ -649,6 +892,7 @@ export class FormModalComponent
               recordWithErrors.incrementalId
             );
             this.saving = false;
+            this.autoSaveEnabled = this.canAutoSaveDraft;
             return;
           }
         }
@@ -659,6 +903,10 @@ export class FormModalComponent
             value: '',
           })
         );
+        this.valueChanged = false;
+        if (data[responseType]?.draft === false) {
+          this.lastDraftRecord = undefined;
+        }
         this.dialogRef.close({
           template: this.form?.id,
           data: data[responseType],
@@ -820,17 +1068,219 @@ export class FormModalComponent
   }
 
   /**
+   * Saves changed modal data as a draft without showing success toasts.
+   */
+  private performAutoSave(): void {
+    if (this.saving || !this.valueChanged || !this.form?.id) {
+      return;
+    }
+    if (this.autoSavePromise) {
+      this.autoSavePending = true;
+      return;
+    }
+
+    const generation = this.autoSaveGeneration;
+    const draftId = this.lastDraftRecord;
+    this.draftSaving = true;
+    this.autoSavePromise = new Promise<void>((resolve) => {
+      // Picked files are saved in the back-end storage before the draft, so
+      // their data URLs never reach the database
+      this.uploadDraftFiles().then((uploaded) => {
+        if (!uploaded || generation !== this.autoSaveGeneration) {
+          this.finishAutoSave(resolve);
+          return;
+        }
+        // Captured once the files are stored: replacing them by their stored
+        // reference counts as a change of the survey
+        const revision = this.autoSaveRevision;
+        if (draftId) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: draftId,
+                data: this.survey.data,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  draftId,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        } else {
+          this.apollo
+            .mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.form?.id,
+                data: this.survey.data,
+                draft: true,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: ({ errors, data }) => {
+                this.handleAutoSaveResponse(
+                  errors,
+                  data?.addRecord?.id,
+                  revision,
+                  generation,
+                  resolve
+                );
+              },
+              error: (err: unknown) => {
+                this.handleAutoSaveError(err, generation, resolve);
+              },
+            });
+        }
+      });
+    });
+  }
+
+  /**
+   * Saves the picked files of the survey in the back-end storage before an
+   * automatic draft save. They reach their final storage when the record is
+   * submitted.
+   *
+   * @returns True when every picked file is saved.
+   */
+  private async uploadDraftFiles(): Promise<boolean> {
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id as string,
+        { draft: true }
+      );
+      return true;
+    } catch (errors) {
+      this.snackBar.openSnackBar(
+        this.formHelpersService.getUploadErrorMessage(errors),
+        { error: true }
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Handles a draft auto-save mutation response.
+   *
+   * @param errors GraphQL errors, if any.
+   * @param savedDraftId Saved draft id.
+   * @param revision Change revision captured when the auto-save started.
+   * @param generation Active draft generation captured when auto-save started.
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private handleAutoSaveResponse(
+    errors: readonly { message: string }[] | undefined,
+    savedDraftId: string | undefined,
+    revision: number,
+    generation: number,
+    resolve: () => void
+  ): void {
+    if (generation !== this.autoSaveGeneration) {
+      this.finishAutoSave(resolve);
+      return;
+    }
+    if (errors?.length || !savedDraftId) {
+      const message =
+        errors?.[0]?.message ||
+        this.translate.instant('models.form.notifications.savingFailed');
+      this.snackBar.openSnackBar(message, { error: true });
+    } else {
+      if (savedDraftId) {
+        this.lastDraftRecord = savedDraftId;
+      }
+      if (this.autoSaveRevision === revision) {
+        this.valueChanged = false;
+      }
+      this.lastDraftSavedAt = new Date();
+    }
+    this.finishAutoSave(resolve);
+  }
+
+  /**
+   * Handles a draft auto-save transport error.
+   *
+   * @param err Transport error.
+   * @param generation Active draft generation captured when auto-save started.
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private handleAutoSaveError(
+    err: unknown,
+    generation: number,
+    resolve: () => void
+  ): void {
+    if (generation !== this.autoSaveGeneration) {
+      this.finishAutoSave(resolve);
+      return;
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    this.snackBar.openSnackBar(message, { error: true });
+    this.finishAutoSave(resolve);
+  }
+
+  /**
+   * Clears the current auto-save and replays a queued one if needed.
+   *
+   * @param resolve Resolves the current auto-save promise.
+   */
+  private finishAutoSave(resolve: () => void): void {
+    const shouldReplay = this.autoSavePending;
+    this.autoSavePending = false;
+    this.autoSavePromise = null;
+    this.draftSaving = false;
+    resolve();
+    if (shouldReplay && this.autoSaveEnabled) {
+      this.performAutoSave();
+    }
+  }
+
+  /**
    * Saves the current data as a draft record
    */
-  public saveAsDraft(): void {
-    const callback = (details: any) => {
+  public async saveAsDraft(): Promise<void> {
+    this.saving = true;
+    this.autoSaveEnabled = false;
+    if (this.autoSavePromise) {
+      await this.autoSavePromise;
+    }
+    const revision = this.autoSaveRevision;
+    this.draftSaving = true;
+    const callback = (details: { id?: string }) => {
+      const hasNewChanges = this.autoSaveRevision !== revision;
       this.lastDraftRecord = details.id;
+      this.valueChanged = hasNewChanges;
+      this.lastDraftSavedAt = new Date();
+      this.saving = false;
+      this.draftSaving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
+      if (hasNewChanges) {
+        this.performAutoSave();
+      }
+    };
+    const errorCallback = () => {
+      this.saving = false;
+      this.draftSaving = false;
+      this.autoSaveEnabled = this.canAutoSaveDraft;
     };
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form?.id as string,
+      this.temporaryFilesStorage,
       this.lastDraftRecord,
-      callback
+      callback,
+      errorCallback
     );
   }
 
@@ -840,15 +1290,43 @@ export class FormModalComponent
    * @param id if of the draft record loaded
    */
   public onLoadDraftRecord(id: string): void {
+    this.autoSaveGeneration++;
     this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
+    this.valueChanged = false;
+    this.autoSaveEnabled = true;
+    this.lastDraftSavedAt = undefined;
+    this.snackBar.openSnackBar(
+      this.translate.instant('components.form.draftRecords.successLoad')
+    );
   }
+
+  /**
+   * Asks for confirmation before replacing unsaved data with a draft.
+   *
+   * @returns True when the draft picker can open.
+   */
+  public beforeOpenDrafts = async (): Promise<boolean> => {
+    if (!this.valueChanged) {
+      return true;
+    }
+
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.form.update.exit'),
+      content: this.translate.instant('components.form.update.exitMessage'),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    });
+    const value = await firstValueFrom(dialogRef.closed);
+    return !!value;
+  };
 
   /**
    * Clears the cache for the records created by resource questions
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // Auto-translation timers are cleared by the dispose() patch installed in
+    // registerAutoTranslation, so disposing the survey is enough.
     this.survey?.dispose();
   }
 }

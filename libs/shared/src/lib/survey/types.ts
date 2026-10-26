@@ -22,16 +22,32 @@ export interface Question extends SurveyCoreQuestion, GlobalProperties {}
 export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
+  translateField?: string;
+  translateTo?: string;
+  translateIf?: string;
 }
 
 /** File question interface */
-export interface QuestionFile extends QuestionFileModel, GlobalProperties {}
+export interface QuestionFile extends QuestionFileModel, GlobalProperties {
+  /** Let users mark stored files as outdated instead of deleting them */
+  allowOutdatedFiles?: boolean;
+  /** Display outdated files in the question ( only when the above is on ) */
+  showOutdatedFiles?: boolean;
+  /**
+   * Whether the current user can permanently remove stored files ( per-field
+   * role permission, set from the form metadata ). Undefined means allowed.
+   */
+  canDeleteFiles?: boolean;
+}
 
 /** Type for comment question */
 export interface QuestionComment
   extends QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
+  translateField?: string;
+  translateTo?: string;
+  translateIf?: string;
 }
 
 /** Type for all select-based questions */
@@ -46,6 +62,7 @@ export interface QuestionSelectBase
   referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
+  referenceDataListenersWired?: boolean;
   referenceDataVariableMapping?: string;
 }
 

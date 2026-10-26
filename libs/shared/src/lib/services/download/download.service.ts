@@ -8,6 +8,11 @@ import { RestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { Dialog } from '@angular/cdk/dialog';
+import {
+  getUploadReportModalData,
+  UploadReportRow,
+} from '../../utils/validation-errors.util';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -40,12 +45,14 @@ export class DownloadService {
    * @param translate Angular translate service
    * @param restService Shared rest service
    * @param document document
+   * @param dialog Dialog service
    */
   constructor(
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private dialog: Dialog
   ) {}
 
   /**
@@ -312,23 +319,67 @@ export class DownloadService {
     formData.append('excelFile', file, file.name);
     return this.restService.post(path, formData, { headers }).pipe(
       tap({
-        next: () => {
+        next: (res: any) => {
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.ready'
           );
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          // The file was imported, but some rows may duplicate other records
+          this.showUploadReport(res?.warnings, 'warnings');
         },
-        error: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.upload.error'
-          );
+        error: (err: any) => {
+          snackBarSpinner.instance.message = this.getUploadErrorMessage(err);
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          // The file was rejected because of some of its rows
+          this.showUploadReport(err?.details?.errors, 'errors');
         },
       })
     );
+  }
+
+  /**
+   * Lists, in a modal, the rows of an uploaded file violating uniqueness
+   * rules, if any.
+   *
+   * @param rows rows reported by the back-end
+   * @param type whether the rows carry errors ( file rejected ) or warnings ( file imported )
+   */
+  private async showUploadReport(
+    rows: UploadReportRow[] | undefined,
+    type: 'errors' | 'warnings'
+  ): Promise<void> {
+    const data = getUploadReportModalData(rows, type, this.translate);
+    if (!data) {
+      return;
+    }
+    const { ErrorsModalComponent } = await import(
+      '../../components/ui/core-grid/errors-modal/errors-modal.component'
+    );
+    this.dialog.open(ErrorsModalComponent, { data, autoFocus: false });
+  }
+
+  /**
+   * Get the message to display for a failed file upload: the backend's own
+   * translated error text when available (the auth interceptor carries it
+   * through as `error.message`), falling back to a generic message for
+   * network-level failures that carry no usable text (e.g. offline, CORS).
+   *
+   * @param err error thrown by the upload request
+   * @returns message to display to the user
+   */
+  private getUploadErrorMessage(err: any): string {
+    const backendMessage = err?.message;
+    if (
+      typeof backendMessage === 'string' &&
+      backendMessage.trim().length > 0 &&
+      !backendMessage.startsWith('[object ')
+    ) {
+      return backendMessage;
+    }
+    return this.translate.instant('common.notifications.file.upload.error');
   }
 
   /**
@@ -337,17 +388,22 @@ export class DownloadService {
    * @param file The file to upload
    * @param type Either 'file' or 'style'
    * @param entity ID of the entity the file is related to
+   * @param options Upload options
+   * @param options.silent Whether to skip the progress / result snackbars ( e.g. background draft saves )
    * @returns The path of the uploaded file
    */
   uploadBlob(
     file: any,
     type: BlobType,
-    entity: string
+    entity: string,
+    options: { silent?: boolean } = {}
   ): Promise<string | void> {
-    const snackBarRef = this.createLoadingSnackbarRef(
-      'common.notifications.file.upload.processing'
-    );
-    const snackBarInstance = snackBarRef.instance.nestedComponent.instance;
+    const snackBarRef = options.silent
+      ? null
+      : this.createLoadingSnackbarRef(
+          'common.notifications.file.upload.processing'
+        );
+    const snackBarInstance = snackBarRef?.instance.nestedComponent.instance;
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -360,27 +416,33 @@ export class DownloadService {
         next: (res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            snackBarInstance.message = this.translate.instant(
-              'common.notifications.file.upload.ready'
-            );
-            snackBarInstance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            if (snackBarInstance && snackBarRef) {
+              snackBarInstance.message = this.translate.instant(
+                'common.notifications.file.upload.ready'
+              );
+              snackBarInstance.loading = false;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            }
             resolve(path);
           } else {
-            snackBarInstance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarInstance.loading = false;
-            snackBarInstance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            if (snackBarInstance && snackBarRef) {
+              snackBarInstance.message = this.translate.instant(
+                'common.notifications.file.upload.error'
+              );
+              snackBarInstance.loading = false;
+              snackBarInstance.error = true;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            }
             reject();
           }
         },
         error: (error) => {
-          snackBarInstance.message = error.message;
-          snackBarInstance.loading = false;
-          snackBarInstance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          if (snackBarInstance && snackBarRef) {
+            snackBarInstance.message = error.message;
+            snackBarInstance.loading = false;
+            snackBarInstance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          }
           reject();
         },
       });

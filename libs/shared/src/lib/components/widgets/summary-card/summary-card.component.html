@@ -79,6 +79,8 @@
         class="flex-1 h-full w-full"
         [settings]="gridSettings"
         [widget]="widget"
+        [dashboardId]="dashboardId"
+        [widgetKey]="widgetKey"
         (inlineEdition)="refreshCardList()"
       ></shared-grid-widget>
     </div>
@@ -94,7 +96,7 @@
       [placeholder]="'models.widget.sorting.select' | translate"
     >
       <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-        {{ sort.label }}
+        {{ sort.label | sharedLocalize }}
       </ui-select-option>
     </ui-select-menu>
   </div>

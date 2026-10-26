@@ -16,10 +16,9 @@
       [formControl]="contextId"
       [filterable]="true"
       (searchChange)="onSearchChange($event)"
-      path="records"
       valueField="id"
-      textField="data.{{ context.displayField }}"
-      [selectedElements]="contextRecord ? [contextRecord] : []"
+      [textField]="context.displayField"
+      [selectedElements]="selectedRecordElements"
     >
     </ui-graphql-select>
     <ui-button

@@ -38,6 +38,27 @@
         </ui-select-menu>
       </div>
 
+      <!-- Selection of page orientation, only for paged PDF export -->
+      <div
+        *ngIf="
+          data.exportType === 'pdf' && form.get('paperSize')?.value !== 'auto'
+        "
+        uiFormFieldDirective
+        [outline]="false"
+      >
+        <label>{{
+          'common.notifications.export.orientation' | translate
+        }}</label>
+        <ui-select-menu formControlName="orientation">
+          <ui-select-option
+            *ngFor="let orientation of orientations"
+            [value]="orientation.value"
+          >
+            {{ orientation.label | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
       <!-- Whether or not to include headers and footers when exporting-->
       <ui-toggle formControlName="includeHeaderFooter">
         <ng-container ngProjectAs="label">

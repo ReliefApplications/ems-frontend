@@ -58,6 +58,19 @@
         </td>
       </ng-container>
 
+      <ng-container cdkColumnDef="isPublic">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.forms.isPublic' | translate }}
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList *ngIf="element.isPublic">
+            <ui-chip class="!rounded-lg" variant="primary">{{
+              'models.form.isPublic' | translate
+            }}</ui-chip>
+          </div>
+        </td>
+      </ng-container>
+
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
@@ -114,7 +127,8 @@
         'common.createdOn',
         'common.status',
         'common.record.few',
-        'components.forms.isCore'
+        'components.forms.isCore',
+        'components.forms.isPublic'
       ]"
       [actions]="true"
     >

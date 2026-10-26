@@ -31,9 +31,7 @@ export default {
   ],
 } as Meta<ExpansionPanelComponent>;
 
-/**
- *
- */
+/** Sample panels displayed in the stories */
 const panelOptions: PanelOption[] = [
   {
     title: 'Item 1',

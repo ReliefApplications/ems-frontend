@@ -68,8 +68,10 @@ export class GridSettingsFormFactory {
     const formGroup = this.fb.group({
       show: [value && value.show ? value.show : false, Validators.required],
       name: [
-        value && value.name ? value.name : DEFAULT_ACTION_NAME,
-        Validators.required,
+        (value && value.name
+          ? value.name
+          : DEFAULT_ACTION_NAME) as LocalizedString,
+        localizedRequired,
       ],
       selectAll: [value && value.selectAll ? value.selectAll : false],
       selectPage: [value && value.selectPage ? value.selectPage : false],
@@ -123,10 +125,7 @@ export class GridSettingsFormFactory {
         value && value.publish ? Validators.required : null,
       ],
       sendMail: [value && value.sendMail ? value.sendMail : false],
-      distributionList: [
-        get(value, 'distributionList', null),
-        value && value.sendMail ? Validators.required : null,
-      ],
+      distributionList: [get(value, 'distributionList', null)],
       templates: [
         get(value, 'templates', []),
         value && value.sendMail ? Validators.required : null,
@@ -138,10 +137,19 @@ export class GridSettingsFormFactory {
           : [],
         value && value.sendMail ? Validators.required : null
       ),
+      sendSeparateEmail: [get(value, 'sendSeparateEmail', false)],
+      separateEmailFields: this.fb.array(
+        (get(value, 'separateEmailFields', []) as any[]).map((x: any) =>
+          addNewField(x)
+        )
+      ),
       navigateToPage: [
         value && value.navigateToPage ? value.navigateToPage : false,
       ],
     });
+    // Require a separate-email grid action to have at least one per-row field.
+    formGroup.addValidators(this.sendSeparateEmailRecipientValidator);
+    formGroup.updateValueAndValidity();
     // Avoid goToNextStep & goToPreviousStep to coexist
     if (formGroup.get('goToNextStep')?.value) {
       formGroup.get('goToPreviousStep')?.setValue(false);
@@ -159,6 +167,29 @@ export class GridSettingsFormFactory {
       }
     });
     return formGroup;
+  };
+
+  /**
+   * Send-separate-email requires at least one separate-email field (the per-row
+   * recipient source). The distribution list is optional and does not replace it.
+   *
+   * @param group grid action form group
+   * @returns validation errors
+   */
+  sendSeparateEmailRecipientValidator = (
+    group: AbstractControl
+  ): ValidationErrors | null => {
+    const sendMail = group.get('sendMail')?.value;
+    const sendSeparateEmail = group.get('sendSeparateEmail')?.value;
+    if (!sendMail || !sendSeparateEmail) {
+      return null;
+    }
+    const separateEmailFields = group.get('separateEmailFields') as FormArray;
+    const hasSeparateEmailFields = (separateEmailFields?.length ?? 0) > 0;
+    if (!hasSeparateEmailFields) {
+      return { missingRecipientSource: true };
+    }
+    return null;
   };
 
   /**
@@ -262,8 +293,10 @@ export class GridSettingsFormFactory {
       convert: [get(configuration, 'actions.convert', true)],
       update: [get(configuration, 'actions.update', true)],
       inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+      readOnlyFields: [get(configuration, 'actions.readOnlyFields', [])],
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],
+      import: [get(configuration, 'actions.import', false)],
       showDetails: [get(configuration, 'actions.showDetails', true)],
       navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
       navigateSettings: this.fb.group({
@@ -308,8 +341,11 @@ export class GridSettingsFormFactory {
    */
   public createCustomRowActionFormGroup = (value: ActionButton) => {
     const form = this.fb.group({
-      columnLabel: [get(value, 'columnLabel', ''), Validators.required],
-      text: [get(value, 'text', ''), Validators.required],
+      columnLabel: [
+        get(value, 'columnLabel', '') as LocalizedString,
+        localizedRequired,
+      ],
+      text: [get(value, 'text', '') as LocalizedString, localizedRequired],
       hasRoleRestriction: [
         get(value, 'hasRoleRestriction', false),
         Validators.required,
@@ -403,8 +439,14 @@ export class GridSettingsFormFactory {
   public createCustomRowActionFormGroupForEdition = (value: ActionButton) => {
     const form = this.fb.group({
       general: this.fb.group({
-        columnLabel: [get(value, 'columnLabel', ''), Validators.required],
-        buttonText: [get(value, 'text', ''), Validators.required],
+        columnLabel: [
+          get(value, 'columnLabel', '') as LocalizedString,
+          localizedRequired,
+        ],
+        buttonText: [
+          get(value, 'text', '') as LocalizedString,
+          localizedRequired,
+        ],
         hasRoleRestriction: [
           get(value, 'hasRoleRestriction', false),
           Validators.required,

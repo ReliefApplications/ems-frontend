@@ -19,6 +19,8 @@ export interface EmailNotification {
   name: string;
   id: string;
   notificationType: EmailNotificationTypes;
+  /** ISO language code the notification renders its data in (e.g. 'en', 'uk'). */
+  language?: string;
   createdBy: {
     name: string;
     email: string;

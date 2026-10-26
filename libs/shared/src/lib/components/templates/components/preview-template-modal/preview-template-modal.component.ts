@@ -74,6 +74,9 @@ export class PreviewTemplateModalComponent implements OnInit {
     private translate: TranslateService,
     private dialogRef: DialogRef
   ) {
+    this.emailService.gridActionDataQuery = this.data.dataQuery;
+    this.emailService.gridActionSendSeparateEmail =
+      this.data.sendSeparateEmail ?? false;
     this.emailService.disableNextActionBtn = false;
     this.emailService.setDatasetForm();
     this.emailService.isGridAction = true;
@@ -89,6 +92,8 @@ export class PreviewTemplateModalComponent implements OnInit {
         navigateToPage: !isNil(this.data.navigateSettings),
         navigateSettings: this.data.navigateSettings,
         dataQuery: this.data.dataQuery,
+        sendSeparateEmail: this.data.sendSeparateEmail ?? false,
+        separateEmailFields: this.data.separateEmailFields ?? [],
       },
     ];
     this.emailService.emailDistributionList = this.data.distributionListInfo;
@@ -247,6 +252,12 @@ export class PreviewTemplateModalComponent implements OnInit {
         payload.emailDistributionList = previewData.emailDistributionList;
         payload.datasets[0].navigateToPage = previewData?.navigateToPage;
         payload.datasets[0].navigateSettings = previewData?.navigateSettings;
+
+        if (this.data.sendSeparateEmail) {
+          payload.datasets[0].individualEmail = true;
+          payload.datasets[0].individualEmailFields =
+            this.data.separateEmailFields ?? [];
+        }
       }
     }
     this.dialogRef.close({ preventDeletion: true });
@@ -273,11 +284,22 @@ export class PreviewTemplateModalComponent implements OnInit {
    * Method called when clicking on Next.
    */
   next() {
-    if (
+    const toMissing =
       !this.emailService.emailDistributionList ||
-      this.emailService.emailDistributionList?.to?.length === 0
+      this.emailService.emailDistributionList?.to?.length === 0;
+
+    const hasSeparateEmailRecipients =
+      this.emailService.hasSeparateEmailRecipients;
+
+    if (
+      toMissing &&
+      (!this.data.sendSeparateEmail || !hasSeparateEmailRecipients)
     ) {
-      this.snackBar.openSnackBar('To is required to proceed!', {
+      const errorKey =
+        this.data.sendSeparateEmail && !hasSeparateEmailRecipients
+          ? 'common.notifications.email.errors.noRecipientSeparateEmail'
+          : 'common.notifications.email.errors.noRecipient';
+      this.snackBar.openSnackBar(this.translate.instant(errorKey), {
         error: true,
       });
     } else {

@@ -10,6 +10,9 @@ export const EDIT_RECORD = gql`
     $template: ID
     $display: Boolean
     $lang: String
+    $draft: Boolean
+    $updateDraftStatus: Boolean
+    $skipValidation: Boolean
   ) {
     editRecord(
       id: $id
@@ -17,9 +20,13 @@ export const EDIT_RECORD = gql`
       version: $version
       template: $template
       lang: $lang
+      draft: $draft
+      updateDraftStatus: $updateDraftStatus
+      skipValidation: $skipValidation
     ) {
       id
       incrementalId
+      draft
       data(display: $display)
       createdAt
       modifiedAt
@@ -29,6 +36,7 @@ export const EDIT_RECORD = gql`
       validationErrors {
         question
         errors
+        severity
       }
     }
   }
@@ -37,9 +45,24 @@ export const EDIT_RECORD = gql`
 // === ADD RECORD ===
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
-  mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
-    addRecord(form: $form, data: $data) {
+  mutation addRecord(
+    $form: ID!
+    $data: JSON!
+    $display: Boolean
+    $draft: Boolean
+    $cloneRecordId: ID
+    $skipValidation: Boolean
+  ) {
+    addRecord(
+      form: $form
+      data: $data
+      draft: $draft
+      cloneRecordId: $cloneRecordId
+      skipValidation: $skipValidation
+    ) {
       id
+      incrementalId
+      draft
       createdAt
       modifiedAt
       createdBy {
@@ -55,6 +78,11 @@ export const ADD_RECORD = gql`
           }
           data
         }
+      }
+      validationErrors {
+        question
+        errors
+        severity
       }
     }
   }

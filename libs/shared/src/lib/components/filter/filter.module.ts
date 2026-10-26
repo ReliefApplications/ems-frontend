@@ -13,6 +13,7 @@ import {
   TooltipModule,
   SpinnerModule,
 } from '@oort-front/ui';
+import { LocalizePipe } from '../../pipes/localize/localize.pipe';
 
 /**
  * Composite Filter module.
@@ -31,6 +32,7 @@ import {
     FormWrapperModule,
     TooltipModule,
     SpinnerModule,
+    LocalizePipe,
   ],
   exports: [FilterComponent],
 })

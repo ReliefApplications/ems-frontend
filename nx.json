@@ -35,11 +35,7 @@
       ]
     },
     "build-storybook": {
-      "inputs": [
-        "default",
-        "^production",
-        "!{projectRoot}/.storybook/**/*"
-      ]
+      "inputs": ["default", "^production", "!{projectRoot}/.storybook/**/*"]
     }
   },
   "namedInputs": {

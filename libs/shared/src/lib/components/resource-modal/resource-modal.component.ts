@@ -6,6 +6,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   IconModule,
@@ -14,8 +15,9 @@ import {
 } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
+import { DateModule } from '../../pipes/date/date.module';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
 
 /**
  * Factory for creating scroll strategy
@@ -38,16 +40,18 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   styleUrls: ['../form-modal/form-modal.component.scss'],
   imports: [
     CommonModule,
+    AlertModule,
     ButtonModule,
     IconModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     DialogModule,
     SpinnerModule,
     TabsModule,
     SurveyModule,
     DraftRecordComponent,
+    DateModule,
+    DraftSaveStatusComponent,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
@@ -79,6 +83,7 @@ export class ResourceModalComponent extends FormModalComponent {
       this.formHelpersService.saveAsDraft(
         this.survey,
         this.form?.id as string,
+        this.temporaryFilesStorage,
         this.lastDraftRecord,
         callback
       );

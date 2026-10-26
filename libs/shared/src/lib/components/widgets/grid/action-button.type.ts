@@ -1,11 +1,12 @@
 import { Category, Variant } from '@oort-front/ui';
+import { LocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Action button Type
  */
 export type ActionButton = {
-  columnLabel: string;
-  text: string;
+  columnLabel: LocalizedString;
+  text: LocalizedString;
   // Display
   variant: Variant;
   category: Category;

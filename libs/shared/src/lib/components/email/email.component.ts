@@ -147,6 +147,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   ngOnInit(): void {
     this.emailService.showFileUpload = false;
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;
@@ -499,6 +501,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   ) {
     this.emailService.isDistributionListEdit = false;
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
@@ -691,10 +695,16 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       });
     }
 
+    const scheduleData = this.formBuilder.group({
+      scheduleEnabled: emailData.schedule?.scheduleEnabled ?? false,
+      cronValue: new FormControl(emailData.schedule?.cronValue ?? null),
+    });
+
     // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
       notificationType: emailData.notificationType,
+      language: emailData.language ?? null,
       datasets: emailData.datasets?.length
         ? dataArray
         : this.emailService.datasetsForm.controls.datasets,
@@ -702,7 +712,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       subscriptionList: subscriptionListArray,
       restrictSubscription: emailData.restrictSubscription,
       emailLayout: emailData.emailLayout,
-      schedule: emailData.schedule,
+      schedule: scheduleData,
       attachments: emailData.attachments,
     });
 
@@ -894,6 +904,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: new FormControl(null),
       individualEmail: new FormControl(ele.individualEmail),
       individualEmailFields: individualEmailFieldsArray, // Attach individualEmailFields array
+      individualEmailToDistributionList: new FormControl(
+        ele.individualEmailToDistributionList ?? false
+      ),
+      csFilter: this.formBuilder.group({
+        logic: new FormControl(ele.csFilter?.logic || null),
+        filters: this.formBuilder.array(
+          this.getFilterGroup(ele.csFilter?.filters || [])
+        ),
+      }),
       navigateToPage: new FormControl(ele.navigateToPage),
       navigateSettings: this.formBuilder.group({
         title: new FormControl(ele.navigateSettings.title),
@@ -1125,6 +1144,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * used to create new custom template
    */
   createTemplate(): void {
+    this.emailService.gridActionSendSeparateEmail = false;
+    this.emailService.gridActionDataQuery = null;
     this.emailService.showFileUpload = false;
     this.showTemplateCreationWizard = true;
     if (!this.emailService.isCustomTemplateEdit) {
@@ -1138,7 +1159,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   distributionListDialogHandler() {
     const dialogRef = this.dialog.open(DistributionModalComponent, {
-      data: { distributionListNames: this.emailService.distributionListNames },
+      data: {
+        distributionListNames: this.emailService.distributionListNames,
+      },
       disableClose: true,
     });
 
@@ -1156,7 +1179,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const editDistributionListDialogReference = this.dialog.open(
       DistributionModalComponent,
       {
-        data: { distributionListData, isEdit: true },
+        data: {
+          distributionListData,
+          isEdit: true,
+        },
         disableClose: true,
       }
     );
@@ -1354,7 +1380,28 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param name The name of the DL.
    */
-  editDLByName(name: string) {
+  async editDLByName(name: string) {
+    // Always refresh allAvailableDatasetFields from the resource before opening
+    // the DL editor. This ensures the expression-picker dropdown shows ALL
+    // resource fields, not just the selected query fields or stale data from a
+    // previous operation.
+    const datasetsValues =
+      this.emailService.datasetsForm?.get('datasets')?.getRawValue() ?? [];
+    const resourceId = datasetsValues[0]?.resource;
+    if (resourceId) {
+      try {
+        const result = await firstValueFrom(
+          this.emailService.fetchResourceData(resourceId)
+        );
+        const queryName = (result.data as any)?.resource?.queryName;
+        if (queryName) {
+          this.emailService.allAvailableDatasetFields =
+            this.queryBuilder.getFields(queryName);
+        }
+      } catch {
+        // Proceed anyway — dropdown will fall back to query.fields
+      }
+    }
     this.getDistributionDetails(name);
     this.createDL();
   }
@@ -1398,9 +1445,19 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param name The name of the DL.
    */
   getDistributionDetails(name: string) {
-    this.emailService.setDatasetForm();
+    // Reset only emailDistributionList — do NOT call setDatasetForm() here as it
+    // wipes the entire datasetsForm (including SSE dataset config).
+    this.emailService.datasetsForm.setControl(
+      'emailDistributionList',
+      this.emailService.initialiseDistributionList()
+    );
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
     this.emailService.selectedDistributionListName = '';
     this.emailService.isGridAction = false;
+    this.emailService.distributionListSeparate = [];
+    this.emailService.isDistributionListOptional = false;
     this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);

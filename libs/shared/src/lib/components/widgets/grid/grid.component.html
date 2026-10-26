@@ -56,10 +56,19 @@
     (edit)="edit.emit($event)"
     (inlineEdition)="onInlineEdition()"
     [widget]="widget"
-    [canUpdate]="canUpdate"
+    [dashboardId]="dashboardId"
+    [widgetKey]="widgetKey"
+    [layoutModifiedAt]="layout?.modifiedAt"
+    [canUpdate]="canUpdate && !recordActionsDisabled"
     [status]="status"
-    [canCreateRecords]="canCreateRecords"
-    [canDownloadRecords]="canDownloadRecords"
+    [canCreateRecords]="
+      canCreateRecords && !recordActionsDisabled && !isDraftLayout
+    "
+    [canDownloadRecords]="canDownloadRecords && !recordActionsDisabled"
+    [canUploadRecords]="
+      canUploadRecords && !recordActionsDisabled && !isDraftLayout
+    "
+    [actionsDisabled]="recordActionsDisabled"
   ></shared-core-grid>
 </ng-template>
 
@@ -95,7 +104,7 @@
         *ngIf="gridAction.show"
         class="whitespace-nowrap"
       >
-        {{ gridAction.name }}
+        {{ gridAction.name | sharedLocalize }}
       </ui-button>
     </ng-container>
   </div>
@@ -109,7 +118,7 @@
       [placeholder]="'models.widget.sorting.select' | translate"
     >
       <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-        {{ sort.label }}
+        {{ sort.label | sharedLocalize }}
       </ui-select-option>
     </ui-select-menu>
   </div>
@@ -126,6 +135,12 @@
       [value]="layout"
       (selectionChange)="onLayoutChange($event)"
     >
+      <ng-template kendoDropDownListItemTemplate let-dataItem>
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
+      </ng-template>
+      <ng-template kendoDropDownListValueTemplate let-dataItem>
+        {{ dataItem.nameTranslations || dataItem.name | sharedLocalize }}
+      </ng-template>
     </kendo-dropdownlist>
   </ng-container>
 </ng-template>

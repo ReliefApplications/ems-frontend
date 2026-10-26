@@ -1,4 +1,5 @@
 import { Form } from './form.model';
+import { LocalizedString } from './localized-string.model';
 import { Resource } from './resource.model';
 
 /**
@@ -12,9 +13,11 @@ export interface Metadata {
   filter?: { defaultOperator?: string; operators: string[] };
   canSee?: boolean;
   canUpdate?: boolean;
+  /** File fields: whether the user can permanently remove files */
+  canDeleteFiles?: boolean;
   multiSelect?: boolean;
   filterable?: boolean;
-  options?: { text: string; value: any }[];
+  options?: { text: LocalizedString; value: any }[];
   fields?: Metadata[];
   usedIn?: string[];
 }

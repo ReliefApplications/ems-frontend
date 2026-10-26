@@ -9,7 +9,15 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { HttpClient } from '@angular/common/http';
 import get from 'lodash/get';
-import { Observable, Subject, firstValueFrom, takeUntil } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  catchError,
+  defer,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
@@ -145,11 +153,6 @@ export const render = (questionElement: Question, injector: Injector): void => {
   const environment = injector.get('environment');
   const csApiUrl = environment.csApiUrl;
 
-  // Create a new subject in the question
-  // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
-  if (!questionElement.refresh$) {
-    questionElement.refresh$ = new Subject();
-  }
   if (isSelectQuestion(questionElement)) {
     // In SurveyCreator design mode the choices are not displayed in the
     // design surface; running the fetch + visibleChoices cascade there only
@@ -159,157 +162,201 @@ export const render = (questionElement: Question, injector: Injector): void => {
     if (isDesignMode) {
       return;
     }
-    const updateChoices = async () => {
-      questionElement.refresh$.next();
+
+    // Put the rendered control into its loading state
+    const setLoading = () => {
       if (questionElement._instance) {
         questionElement._instance.loading = true;
         questionElement._instance.disabled = true;
         questionElement._instance.toggle(false);
       }
-      const valueName = get(questionElement, 'gqlValueName');
-      const titleName = get(questionElement, 'gqlTitleName');
-
-      // Build & send request
-      const sendRequest = (): Promise<any> => {
-        const url = get(questionElement, 'gqlUrl');
-        const query = get(questionElement, 'gqlQuery');
-        const variables = graphQLVariables(
-          questionElement,
-          'gqlVariableMapping'
-        );
-        // Transform variables to make sure JSON can be passed
-        transformGraphQLVariables(get(questionElement, 'gqlQuery'), variables);
-
-        let observable: Observable<any>;
-
-        if (url.startsWith(csApiUrl)) {
-          // Common Services API call
-          const csApolloClient = apollo.use('csClient');
-          observable = csApolloClient.query({
-            query: gql`
-              ${query}
-            `,
-            variables,
-          });
-        } else {
-          // other API call
-          observable = http.post(url, {
-            query,
-            variables,
-          });
-        }
-        return firstValueFrom(
-          observable.pipe(takeUntil(questionElement.refresh$))
-        );
-      };
-
-      sendRequest()
-        .then((result) => {
-          questionElement.setPropertyValue(
-            '_graphQLVariables',
-            graphQLVariables(questionElement, 'gqlVariableMapping')
-          );
-          const choices = jsonpath
-            .query(result, get(questionElement, 'gqlPath'))
-            .map((x) => ({
-              value: get(x, valueName),
-              text: get(x, titleName),
-            }));
-          const choiceItems = choices.map((choice) => new ItemValue(choice));
-          choiceItems.forEach((item) => {
-            (item as any).locOwner = questionElement;
-          });
-          // Inject items via the internal `choicesFromUrl` slot — the same
-          // one used by SurveyJS's built-in `choicesByUrl`. It is not a
-          // serialized property, but it feeds `visibleChoices` and
-          // `displayValue` through the normal select-base pipeline, so
-          // expressions like `displayValue('q')` resolve to the choice text
-          // rather than the raw value. This also survives the internal
-          // visibleChoices recompute triggered by setQuestionValue below,
-          // which previously wiped a direct `visibleChoices` override.
-          (questionElement as any).choicesFromUrl = choiceItems;
-          // Setting `choices` to [] keeps the items out of the editor's
-          // "Choices" tab / serialized JSON, AND triggers SurveyJS's built-in
-          // `choices` propertyChanged handler which runs `filterItems()` +
-          // `onVisibleChoicesChanged()` for us — a single cascade. We only
-          // force the cascade ourselves when `choices` is already empty (the
-          // assignment then no-ops and would otherwise leave visibleChoices
-          // stale on a refetch).
-          const wasChoicesEmpty =
-            !questionElement.choices || questionElement.choices.length === 0;
-          questionElement.choices = [];
-          if (wasChoicesEmpty) {
-            (questionElement as any).onVisibleChoicesChanged();
-          }
-          // Should remove items that are not part anymore of the list of available choices
-          setQuestionValue(
-            questionElement,
-            questionElement.getPropertyValue('visibleChoices')
-          );
-        })
-        .finally(() => {
-          if (questionElement._instance) {
-            const isDisplay =
-              (questionElement.survey as SurveyModel).mode === 'display';
-            questionElement._instance.loading = false;
-            questionElement._instance.readonly =
-              isDisplay || questionElement.readOnly;
-            questionElement._instance.disabled =
-              isDisplay || questionElement.readOnly;
-          }
-        });
+    };
+    // Restore the control once a request settles (success or error)
+    const resetLoadingState = () => {
+      if (questionElement._instance) {
+        const isDisplay =
+          (questionElement.survey as SurveyModel).mode === 'display';
+        questionElement._instance.loading = false;
+        questionElement._instance.readonly =
+          isDisplay || questionElement.readOnly;
+        questionElement._instance.disabled =
+          isDisplay || questionElement.readOnly;
+      }
     };
 
-    if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
-      updateChoices();
-    }
+    // Build the request for the question's current configuration
+    const buildRequest$ = (): Observable<any> => {
+      const url = get(questionElement, 'gqlUrl');
+      const query = get(questionElement, 'gqlQuery');
+      const variables = graphQLVariables(questionElement, 'gqlVariableMapping');
+      // Transform variables to make sure JSON can be passed
+      transformGraphQLVariables(get(questionElement, 'gqlQuery'), variables);
 
-    // Init linked reference data questions update inside the survey if those question types exists
-    const containsLinkedReferenceDataQuestions = (
-      questionElement.survey as SurveyModel
-    )
-      .getAllQuestions()
-      .find((qu) => qu['gqlVariableMapping']);
-    if (containsLinkedReferenceDataQuestions) {
-      (questionElement.survey as SurveyModel).onValueChanged.add(async () => {
-        // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
-        //
-        // 1. The available choices(visibleChoices property). This has to be updated if the reference data question that it's dependant on has a new value set
-        // 2. The selected choices in the question. If the question's selected choices should be updated/cleared if the dependant reference data question changes it's value.
-        //
-        // As this two update methods could work on their own specific terms, we have one property for each action to handle:
-        // - ['gqlvariableMapping']
-        // Added a few other checks, making sure that the question exists
-        if (
-          questionElement.visible &&
-          questionElement._instance &&
-          questionElement['gqlVariableMapping'] &&
-          questionElement['gqlVariableMapping'] != '{}' &&
-          !isEqual(
-            questionElement._graphQLVariables,
-            graphQLVariables(questionElement, 'gqlVariableMapping')
-          )
-        ) {
-          questionElement.setPropertyValue(
-            '_graphQLVariables',
-            graphQLVariables(questionElement, 'gqlVariableMapping')
-          );
-          updateChoices();
-        }
-      });
-    }
-
-    (questionElement.survey as SurveyModel).onValueChanged.add(() => {
-      if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
-        const choices = questionElement.getPropertyValue('visibleChoices');
-        // Avoid to update if choices not defined yet, otherwise, it removes the value
-        if (choices.length > 0) {
-          setQuestionValue(
-            questionElement,
-            questionElement.getPropertyValue('visibleChoices')
-          );
-        }
+      if (url.startsWith(csApiUrl)) {
+        // Common Services API call
+        return apollo.use('csClient').query({
+          query: gql`
+            ${query}
+          `,
+          variables,
+        });
       }
-    });
+      // other API call
+      return http.post(url, { query, variables });
+    };
+
+    // Apply a fetched result to the question's choices
+    const applyResult = (result: any) => {
+      questionElement.setPropertyValue(
+        '_graphQLVariables',
+        graphQLVariables(questionElement, 'gqlVariableMapping')
+      );
+      const valueName = get(questionElement, 'gqlValueName');
+      const titleName = get(questionElement, 'gqlTitleName');
+      // Build the items in a single pass (value/text/locOwner together).
+      const choiceItems: ItemValue[] = jsonpath
+        .query(result, get(questionElement, 'gqlPath'))
+        .map((x) => {
+          const item = new ItemValue({
+            value: get(x, valueName),
+            text: get(x, titleName),
+          });
+          (item as any).locOwner = questionElement;
+          return item;
+        });
+
+      // Fast path for huge choice lists (~40k items). The widget renders from
+      // `visibleChoices`, so we set it directly and skip the normal update path,
+      // which freezes on big lists: O(n) `getFilteredChoices()` + a deep-compare
+      // of the new array against the old one.
+      //
+      // `isLockVisibleChoices` blocks the recomputes that setting `choicesFromUrl`
+      // / `choices` / the value would otherwise trigger (they'd overwrite our
+      // direct value); it stays on through `setQuestionValue`. Setting [] first
+      // makes each compare O(1) (length mismatch) instead of deep-comparing 40k.
+      //
+      // Trade-off: this skips the filtered-choices cache that survey-core's
+      // `displayValue()` / `getItemByValue()` read, so value→text resolution at
+      // the survey level isn't refreshed. The widget's own rendering is fine.
+      (questionElement as any).isLockVisibleChoices = true;
+      (questionElement as any).choicesFromUrl = choiceItems;
+      questionElement.choices = [];
+      questionElement.setPropertyValue('visibleChoices', []);
+      questionElement.setPropertyValue('visibleChoices', choiceItems);
+
+      // Should remove items that are not part anymore of the list of available choices
+      setQuestionValue(questionElement, choiceItems);
+      (questionElement as any).isLockVisibleChoices = false;
+    };
+
+    const updateChoices = () => questionElement.refresh$.next();
+
+    // Everything below is wired exactly ONCE per question. `onAfterRenderQuestion`
+    // fires on every (re)render, so re-running it would rebuild the entire choice
+    // list and stack duplicate `onValueChanged` listeners — with a large result
+    // set (tens of thousands of items) that repeated work is what froze the UI.
+    // `switchMap` still cancels any request in flight from a previous emission
+    // before starting a new one, so triggering a (re)fetch is just
+    // `refresh$.next()`.
+    if (!questionElement.refresh$) {
+      questionElement.refresh$ = new Subject<void>();
+      const survey = questionElement.survey as SurveyModel;
+      const subscription = questionElement.refresh$
+        .pipe(
+          switchMap(() => {
+            setLoading();
+            // `defer` so a synchronous throw while building the request
+            // (e.g. a missing url) surfaces as an inner error we can catch,
+            // instead of terminating the long-lived outer subscription.
+            return defer(() => buildRequest$()).pipe(
+              map((result) => ({ result })),
+              catchError(() => of(null))
+            );
+          })
+        )
+        .subscribe((payload: { result: any } | null) => {
+          if (payload) {
+            applyResult(payload.result);
+          }
+          resetLoadingState();
+        });
+
+      // Survey-level listeners we add, tracked so `dispose()` can detach them.
+      const detachers: Array<() => void> = [];
+
+      // Refetch this question's choices when a question it depends on changes.
+      const containsLinkedReferenceDataQuestions = survey
+        .getAllQuestions()
+        .find((qu) => qu['gqlVariableMapping']);
+      if (containsLinkedReferenceDataQuestions) {
+        const linkedChoicesHandler = async () => {
+          // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
+          //
+          // 1. The available choices(visibleChoices property). This has to be updated if the reference data question that it's dependant on has a new value set
+          // 2. The selected choices in the question. If the question's selected choices should be updated/cleared if the dependant reference data question changes it's value.
+          //
+          // As this two update methods could work on their own specific terms, we have one property for each action to handle:
+          // - ['gqlvariableMapping']
+          // Added a few other checks, making sure that the question exists
+          if (
+            questionElement.visible &&
+            questionElement._instance &&
+            questionElement['gqlVariableMapping'] &&
+            questionElement['gqlVariableMapping'] != '{}' &&
+            !isEqual(
+              questionElement._graphQLVariables,
+              graphQLVariables(questionElement, 'gqlVariableMapping')
+            )
+          ) {
+            questionElement.setPropertyValue(
+              '_graphQLVariables',
+              graphQLVariables(questionElement, 'gqlVariableMapping')
+            );
+            updateChoices();
+          }
+        };
+        survey.onValueChanged.add(linkedChoicesHandler);
+        detachers.push(() =>
+          survey.onValueChanged.remove(linkedChoicesHandler)
+        );
+      }
+
+      // Keep the selected value(s) reconciled with the available choices.
+      const valueUpdateHandler = () => {
+        if (
+          get(questionElement, 'gqlUrl') &&
+          get(questionElement, 'gqlQuery')
+        ) {
+          const choices = questionElement.getPropertyValue('visibleChoices');
+          // Avoid to update if choices not defined yet, otherwise, it removes the value
+          if (choices.length > 0) {
+            setQuestionValue(
+              questionElement,
+              questionElement.getPropertyValue('visibleChoices')
+            );
+          }
+        }
+      };
+      survey.onValueChanged.add(valueUpdateHandler);
+      detachers.push(() => survey.onValueChanged.remove(valueUpdateHandler));
+
+      // SurveyJS exposes no per-question "destroyed" event, only `dispose()`,
+      // which it calls both when a single question is removed and when the
+      // whole survey is torn down. Wrap it once to cancel any in-flight request
+      // (via `switchMap`), end the subject, and detach the survey listeners so
+      // none of this outlives the question.
+      const disposeQuestion = questionElement.dispose.bind(questionElement);
+      questionElement.dispose = () => {
+        subscription.unsubscribe();
+        questionElement.refresh$.complete();
+        detachers.forEach((detach) => detach());
+        disposeQuestion();
+      };
+
+      // Initial load — once. Subsequent fetches come from the listeners above.
+      if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
+        updateChoices();
+      }
+    }
   }
 };

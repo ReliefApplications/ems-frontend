@@ -1,0 +1,26 @@
+<div uiFormFieldDirective class="!w-full">
+  <label>{{ 'components.queryBuilder.fields.filterByForm' | translate }}</label>
+  <ui-select-menu
+    [ngModel]="selectedFormId"
+    (ngModelChange)="onSelectionChange($event)"
+    [disabled]="disabled || loading"
+  >
+    <ui-select-option *ngFor="let form of forms" [value]="form.id">
+      {{ form.name }}
+    </ui-select-option>
+  </ui-select-menu>
+  <!-- Loading indicator, while forms are fetched -->
+  <ui-spinner *ngIf="loading" size="small" uiSuffix></ui-spinner>
+  <!-- Clear current selection -->
+  <ui-button
+    *ngIf="!loading && selectedFormId"
+    uiSuffix
+    [isIcon]="true"
+    variant="danger"
+    icon="close"
+    size="small"
+    [disabled]="disabled"
+    [uiTooltip]="'common.remove' | translate"
+    (click)="onSelectionChange('')"
+  ></ui-button>
+</div>

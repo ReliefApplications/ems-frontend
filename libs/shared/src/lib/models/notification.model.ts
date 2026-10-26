@@ -11,6 +11,7 @@ export interface Notification {
   content?: any;
   createdAt?: Date;
   channel?: Channel;
+  user?: User;
   seenBy?: User[];
 }
 

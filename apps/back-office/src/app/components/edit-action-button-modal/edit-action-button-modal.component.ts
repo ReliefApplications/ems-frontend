@@ -26,6 +26,9 @@ import {
   Form,
   Application,
   ContentType,
+  LocalizedInputComponent,
+  localizedRequired,
+  LocalizePipe,
   Page,
   INLINE_EDITOR_CONFIG,
   QueryBuilderModule,
@@ -81,6 +84,7 @@ interface DialogData {
     ToggleModule,
     EditorModule,
     EditorControlComponent,
+    LocalizedInputComponent,
     DividerModule,
     TabsModule,
     IconModule,
@@ -89,6 +93,7 @@ interface DialogData {
     FieldMapperComponent,
     QueryBuilderModule,
     AlertModule,
+    LocalizePipe,
   ],
   templateUrl: './edit-action-button-modal.component.html',
   styleUrls: ['./edit-action-button-modal.component.scss'],
@@ -268,7 +273,7 @@ export class EditActionButtonModalComponent
     };
     const form = this.fb.group({
       general: this.fb.group({
-        buttonText: [get(data, 'text', ''), Validators.required],
+        buttonText: [get(data, 'text', ''), localizedRequired],
         hasRoleRestriction: [
           get(data, 'hasRoleRestriction', false),
           Validators.required,

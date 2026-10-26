@@ -80,6 +80,7 @@ export class CalculatedFieldsTabComponent
         resourceFields: this.resource.fields.filter(
           (f: any) => !f.isCalculated
         ),
+        resourceId: this.resource.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -103,6 +104,7 @@ export class CalculatedFieldsTabComponent
         resourceFields: this.resource.fields.filter(
           (f: any) => !f.isCalculated
         ),
+        resourceId: this.resource.id,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

@@ -316,6 +316,7 @@ export class EditorControlComponent
    */
   writeValue(val: string | null): void {
     this.value = val;
+    this.editorContent = val || '';
   }
 
   /**

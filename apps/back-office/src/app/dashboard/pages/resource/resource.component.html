@@ -58,6 +58,15 @@
         'common.record.few' | translate
       }}</ng-container>
     </ui-tab>
+    <ui-tab
+      (click)="selectedTab = 5"
+      routerLink="./validation"
+      [state]="{ resource }"
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.validation.few' | translate
+      }}</ng-container>
+    </ui-tab>
   </ui-tabs>
   <router-outlet></router-outlet>
 </ng-container>

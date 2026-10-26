@@ -142,21 +142,26 @@ export class RoleAutoAssignmentComponent
       });
 
     // Get available user attributes, and add a new field to allow automation based on them
-    const url = '/permissions/attributes';
-    this.restService.get(url).subscribe((res: any) => {
-      if (isArray(res)) {
-        res.forEach((attr: { value: string; text: string }) => {
-          this.fields.push({
-            text: attr.text,
-            name: `{{attributes.${attr.value}}}`,
-            filter: {
-              operators: ['eq'],
-            },
-            editor: 'text',
+    this.restService
+      .get('/permissions/attributes', {
+        params: {
+          enriched: true,
+        },
+      })
+      .subscribe((res: any) => {
+        if (isArray(res)) {
+          res.forEach((attr: { value: string; text: string }) => {
+            this.fields.push({
+              text: attr.text,
+              name: `{{attributes.${attr.value}}}`,
+              filter: {
+                operators: ['eq'],
+              },
+              editor: 'text',
+            });
           });
-        });
-      }
-    });
+        }
+      });
   }
 
   /**

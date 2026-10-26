@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { from, Observable, of } from 'rxjs';
+import { isLocalFileUrl } from './file.utils';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 /** Snackbar duration in ms */
@@ -36,6 +37,18 @@ export interface File {
   name: string;
   type?: string;
   content?: string | DocumentManagementFileContent;
+  /** Marked as outdated by a user, instead of being deleted */
+  outdated?: boolean;
+  /** ISO date of the last time the file was marked as outdated */
+  outdatedAt?: string;
+  /** Language the file was uploaded for ( tagged by the Files upload question ). */
+  lang?: string;
+  /**
+   * Saved in the back-end storage along with a draft record. The file reaches
+   * its final storage ( document management, when configured ) when the
+   * record is submitted.
+   */
+  draft?: boolean;
 }
 
 /**
@@ -115,7 +128,7 @@ export class FileService {
     file: File
   ): Observable<{ url: string; revoke: boolean }> | null {
     if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
+      if (isLocalFileUrl(file.content)) {
         return of({ url: file.content, revoke: false });
       }
       const path = `download/file/${file.content}`;
@@ -159,7 +172,7 @@ export class FileService {
    */
   public download(file: File): void {
     if (typeof file.content === 'string') {
-      if (file.content.startsWith('data')) {
+      if (isLocalFileUrl(file.content)) {
         const downloadLink = this.document.createElement('a');
         downloadLink.href = file.content;
         downloadLink.download = file.name;

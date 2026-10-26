@@ -16,7 +16,14 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
+import {
+  drawDOM,
+  exportPDF,
+  exportImage,
+  geometry,
+  Group,
+  Path,
+} from '@progress/kendo-drawing';
 import { saveAs } from '@progress/kendo-file-saver';
 import {
   debounceTime,
@@ -30,6 +37,36 @@ import {
 } from 'rxjs';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { DashboardExportService } from '../../services/dashboard-export/dashboard-export.service';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../models/localized-string.model';
+
+/** PDF export configuration, as returned by the export modal */
+interface PdfExportConfig {
+  /** Whether to include headers and footers in the PDF. */
+  includeHeaderFooter: boolean;
+  /** Paper size ( 'auto' for a single page fitting all the content ). */
+  paperSize: string;
+  /** Page orientation, only used with a fixed paper size. */
+  orientation?: 'portrait' | 'landscape';
+}
+
+/** Paper sizes ( in points ), portrait orientation */
+const PAPER_SIZES: Record<string, [number, number]> = {
+  A4: [595.28, 841.89],
+};
+/**
+ * Icon fonts used by the PDF export ( see .k-pdf-export in styles ).
+ * Material Symbols are rendered with the Material Icons Outlined font.
+ */
+const PDF_ICON_FONTS = [
+  { selector: '.material-icons', family: 'Material Icons Export' },
+  {
+    selector: '.material-icons-outlined, .material-symbols-outlined',
+    family: 'Material Icons Outlined Export',
+  },
+];
 
 /**
  * Shared dashboard export button.
@@ -52,10 +89,15 @@ import { DashboardExportService } from '../../services/dashboard-export/dashboar
 export class DashboardExportButtonComponent {
   /** Element to export */
   @Input() exporter!: ElementRef;
-  /** Document title */
-  @Input() title?: string;
+  /** Document title (plain string or per-locale map) */
+  @Input() title?: LocalizedString;
   /** Wrapper element where exporter will be put into */
   private wrapper: any;
+
+  /** @returns Document title resolved against the current UI language. */
+  private get resolvedTitle(): string {
+    return resolveLocalizedString(this.title, this.translate.currentLang);
+  }
 
   /**
    * Shared dashboard export button.
@@ -96,12 +138,7 @@ export class DashboardExportButtonComponent {
     dialogRef.closed
       .pipe(
         filter((result) => result !== true && result !== undefined),
-        map((result) => {
-          return result as {
-            includeHeaderFooter: boolean;
-            paperSize: string;
-          };
-        }),
+        map((result) => result as PdfExportConfig),
         tap(() => this.dashboardExportService.isExportingSubject.next(true)),
         switchMap((result) =>
           iif(
@@ -117,7 +154,7 @@ export class DashboardExportButtonComponent {
           )
         )
       )
-      .subscribe(async (result: any) => {
+      .subscribe(async (result) => {
         const snackBarRef = this.createLoadingSnackBar(
           this.translate.instant('common.notifications.export.loading', {
             type: 'PDF',
@@ -136,15 +173,10 @@ export class DashboardExportButtonComponent {
    * Generate and save pdf with given configuration and data
    *
    * @param resultValue PDF configuration.
-   * @param resultValue.includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param resultValue.paperSize PDF size.
    */
-  private async savePdf(resultValue: {
-    includeHeaderFooter: boolean;
-    paperSize: string;
-  }) {
+  private async savePdf(resultValue: PdfExportConfig) {
     const pdfData = await this.pdfDrawer(resultValue);
-    saveAs(pdfData, `${this.title}.pdf`);
+    saveAs(pdfData, `${this.resolvedTitle}.pdf`);
     this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
@@ -152,31 +184,180 @@ export class DashboardExportButtonComponent {
   /**
    * Draw PDF.
    * Create a wrapper to put all elements in it.
+   * With a fixed paper size, content is scaled down to fit the page width
+   * and split into as many pages as needed.
    *
    * @param pdfConfig PDF configuration
-   * @param pdfConfig.includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param pdfConfig.paperSize PDF size.
    * @returns {Promise<string>} PDF data.
    */
-  private async pdfDrawer(pdfConfig: {
-    includeHeaderFooter: boolean;
-    paperSize: string;
-  }): Promise<string> {
+  private async pdfDrawer(pdfConfig: PdfExportConfig): Promise<string> {
     this.createWrapper();
-    const { includeHeaderFooter, paperSize } = pdfConfig;
+    const { includeHeaderFooter, paperSize, orientation } = pdfConfig;
     if (includeHeaderFooter) {
       this.addHeaderAndFooter();
     }
+    const restoreIcons = await this.useIconCodepoints();
 
-    const drawing = await drawDOM(this.wrapper, {
-      paperSize,
-    });
-    const pdfData = await exportPDF(drawing);
+    let pdfData: string;
+    if (paperSize === 'auto') {
+      const drawing = await drawDOM(this.wrapper, { paperSize });
+      pdfData = await exportPDF(drawing);
+    } else {
+      const landscape = orientation === 'landscape';
+      // No margin, as for the 'auto' paper size: content uses the full page
+      const [pageWidth, pageHeight] = this.getPageSize(paperSize, landscape);
+      const scale = this.getPdfScale(pageWidth);
+      // Height of the dashboard box once scaled, taken from the DOM, as
+      // elements sticking out of the box ( fixed or negatively positioned )
+      // would otherwise offset the pages
+      const boxHeight =
+        Math.max(
+          this.wrapper.scrollHeight,
+          this.wrapper.getBoundingClientRect().height
+        ) * scale;
+      // Draw the whole content once, as a single scaled drawing
+      const drawing = await drawDOM(this.wrapper, { scale });
+      // The box can be taller than its content ( e.g. stretched to fill the
+      // screen ), which would add an empty page at the end: stop at the
+      // bottom of what is actually drawn
+      const drawnBottom = drawing.bbox()?.bottomRight().y ?? boxHeight;
+      const pages = this.paginate(
+        drawing,
+        pageWidth,
+        pageHeight,
+        Math.min(boxHeight, drawnBottom)
+      );
+      pdfData = await exportPDF(pages, {
+        multiPage: true,
+        paperSize,
+        landscape,
+      });
+    }
+
+    restoreIcons();
     if (includeHeaderFooter) {
       this.removeHeaderAndFooter();
     }
     this.removeWrapper();
     return pdfData;
+  }
+
+  /**
+   * Replace Material icon names with their codepoint character, for the
+   * time of the export. The PDF engine cannot apply font ligatures, so an
+   * icon name like 'add' would otherwise be drawn as letters.
+   * Also makes sure the embeddable icon fonts are loaded, so the icons are
+   * measured with the right glyphs.
+   *
+   * @returns Function restoring the icon names
+   */
+  private async useIconCodepoints(): Promise<() => void> {
+    const { MATERIAL_ICONS_CODEPOINTS, MATERIAL_ICONS_OUTLINED_CODEPOINTS } =
+      await import('./material-icons-codepoints');
+    const codepoints = [
+      MATERIAL_ICONS_CODEPOINTS,
+      MATERIAL_ICONS_OUTLINED_CODEPOINTS,
+    ];
+    const replaced: { node: Text; text: string }[] = [];
+    PDF_ICON_FONTS.forEach(({ selector }, index) => {
+      this.wrapper.querySelectorAll(selector).forEach((icon: Element) => {
+        icon.childNodes.forEach((node) => {
+          if (node.nodeType !== Node.TEXT_NODE) {
+            return;
+          }
+          const text = node as Text;
+          const codepoint = codepoints[index][text.data.trim()];
+          if (codepoint) {
+            replaced.push({ node: text, text: text.data });
+            // Only change the text node value, so Angular bindings stay valid
+            text.data = String.fromCodePoint(codepoint);
+          }
+        });
+      });
+    });
+    try {
+      await Promise.all(
+        PDF_ICON_FONTS.map(({ family }) =>
+          this.document.fonts.load(`24px "${family}"`)
+        )
+      );
+    } catch {
+      // Fonts are embedded by the PDF engine anyway, only measures may be off
+    }
+    return () => replaced.forEach(({ node, text }) => (node.data = text));
+  }
+
+  /**
+   * Get page size, in points.
+   *
+   * @param paperSize Paper size ( e.g. 'A4' )
+   * @param landscape Whether the page is in landscape orientation
+   * @returns [width, height] in points
+   */
+  private getPageSize(paperSize: string, landscape: boolean): [number, number] {
+    const size = PAPER_SIZES[paperSize.toUpperCase()] ?? PAPER_SIZES['A4'];
+    const [short, long] = [Math.min(...size), Math.max(...size)];
+    return landscape ? [long, short] : [short, long];
+  }
+
+  /**
+   * Get scale to apply so the exported content fits the page width.
+   * Content is never scaled up.
+   *
+   * @param availableWidth Page width, in points
+   * @returns Scale factor, between 0 and 1
+   */
+  private getPdfScale(availableWidth: number): number {
+    // Kendo treats 1 CSS px as 1 pt, so points can be compared to DOM sizes
+    const contentWidth = Math.max(
+      this.wrapper.scrollWidth,
+      this.wrapper.getBoundingClientRect().width
+    );
+    if (!contentWidth || contentWidth <= availableWidth) {
+      return 1;
+    }
+    return availableWidth / contentWidth;
+  }
+
+  /**
+   * Split a drawing into pages.
+   * Each page is a clipped & translated view of the same drawing, so the
+   * DOM is only drawn once.
+   *
+   * @param drawing Drawing of the whole content, origin at its top left
+   * @param contentWidth Page width, in points
+   * @param contentHeight Page height, in points
+   * @param totalHeight Height of the whole content, in points
+   * @returns Group of pages, to export as a multi-page PDF
+   */
+  private paginate(
+    drawing: Group,
+    contentWidth: number,
+    contentHeight: number,
+    totalHeight: number
+  ): Group {
+    const pages = new Group();
+    let top = 0;
+    // Guard against infinite loops with degenerate sizes, and ignore a
+    // remainder of less than a point, which would only produce a blank page
+    while (top + 1 < totalHeight && contentHeight > 0) {
+      const next = top + contentHeight;
+      const page = new Group({
+        clip: Path.fromRect(
+          new geometry.Rect([0, 0], [contentWidth, contentHeight])
+        ),
+      });
+      const view = new Group({
+        transform: geometry.transform().translate(0, -top),
+      });
+      // Share the drawing between pages without re-parenting it,
+      // as Kendo does internally when rendering pages
+      view.children = [drawing];
+      page.append(view);
+      pages.append(page);
+      top = next;
+    }
+    return pages;
   }
 
   /**
@@ -250,7 +431,7 @@ export class DashboardExportButtonComponent {
     const { format, includeHeaderFooter } = resultValue;
     // Draws the Dashboard in its current state
     const pngData = await this.imageDrawer(includeHeaderFooter);
-    saveAs(pngData, `${this.title}.${format}`);
+    saveAs(pngData, `${this.resolvedTitle}.${format}`);
     this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
@@ -294,7 +475,7 @@ export class DashboardExportButtonComponent {
     const dateTime = new Date();
     const dateTimeText =
       dateTime.toLocaleDateString() + ' ' + dateTime.toLocaleTimeString();
-    const pageTitle = this.title;
+    const pageTitle = this.resolvedTitle;
     header.innerHTML = `<span class="float-left">${dateTimeText}</span><span class="block text-center">${pageTitle}</span>`;
 
     // Add URL to footer

@@ -38,7 +38,7 @@
             {{ group.label }}
           </h5>
           <ul class="flex flex-col gap-2">
-            <!-- Function card: signature, then human description, then optional example -->
+            <!-- Function card: signature, then human description, optional docs link, then optional example -->
             <li
               *ngFor="let fn of group.functions"
               class="border border-gray-200 rounded p-2"
@@ -46,7 +46,21 @@
               <code class="text-sm font-mono text-gray-800">{{
                 fn.signature
               }}</code>
-              <p class="text-sm text-gray-700 mt-1">{{ fn.description }}</p>
+              <p class="text-sm text-gray-700 mt-1">
+                {{ fn.description }}
+                <a
+                  *ngIf="fn.docsUrl"
+                  [href]="fn.docsUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary-600 underline"
+                >
+                  {{
+                    'pages.formBuilder.functionReference.functionDocs'
+                      | translate
+                  }}
+                </a>
+              </p>
               <p
                 *ngIf="fn.example"
                 class="text-xs text-gray-500 mt-1 font-mono"

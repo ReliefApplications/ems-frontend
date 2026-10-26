@@ -9,6 +9,8 @@ import { SortDescriptor } from '@progress/kendo-data-query';
 import { sortBy } from 'lodash';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import get from 'lodash/get';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Default file name when exporting grid data.
@@ -64,7 +66,10 @@ export class ReferenceDataGridComponent implements OnInit {
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    const title = get(this.summaryCardComponent, 'widget.settings.title');
+    const title = resolveLocalizedString(
+      get(this.summaryCardComponent, 'widget.settings.title'),
+      this.translate.currentLang
+    );
     return `${title ? title : DEFAULT_FILE_NAME} ${formatDate}`;
   }
 
@@ -73,11 +78,13 @@ export class ReferenceDataGridComponent implements OnInit {
    *
    * @param summaryCardComponent Reference to parent summary card component
    * @param cs Common Services connector
+   * @param translate Translate service
    * @param environment Environment configuration
    */
   constructor(
     @Optional() public summaryCardComponent: SummaryCardComponent,
     private cs: CommonServicesService,
+    private translate: TranslateService,
     @Inject('environment') private environment: any
   ) {}
 

@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FixedWrapperModule, IconModule, TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormComponent } from './form.component';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { ButtonModule } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { DraftSaveStatusComponent } from '../draft-save-status/draft-save-status.component';
 
 /**
  * FormModule is a class used to manage all the modules and components
@@ -20,13 +20,13 @@ import { DraftRecordComponent } from '../draft-record/draft-record.component';
     TabsModule,
     IconModule,
     RecordSummaryModule,
-    FormActionsModule,
     TranslateModule,
     ButtonModule,
     SurveyModule,
     SurveyModule,
     FixedWrapperModule,
     DraftRecordComponent,
+    DraftSaveStatusComponent,
   ],
   exports: [FormComponent],
 })

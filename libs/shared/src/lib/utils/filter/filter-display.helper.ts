@@ -4,6 +4,7 @@ import {
   FilterDescriptor,
   isCompositeFilterDescriptor,
 } from '@progress/kendo-data-query';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 
 /**
  * Get display of filter group
@@ -142,7 +143,7 @@ export const getFilterRowDisplay = (
         break;
       }
     }
-    displayString += getFieldValueDisplay(field, filter.value);
+    displayString += getFieldValueDisplay(field, filter.value, translate);
   }
   return displayString;
 };
@@ -152,18 +153,25 @@ export const getFilterRowDisplay = (
  *
  * @param field active field
  * @param value filter value
+ * @param translate translate service
  * @returns display string of filter field value
  */
-const getFieldValueDisplay = (field: any, value: any): string => {
+const getFieldValueDisplay = (
+  field: any,
+  value: any,
+  translate: TranslateService
+): string => {
+  const localize = (text: any) =>
+    resolveLocalizedString(text, translate.currentLang);
   if (field.options) {
     if (Array.isArray(value)) {
       return field.options.reduce(
         (acc: string[], x: any) =>
-          value.includes(x.value) ? acc.concat([x.text]) : acc,
+          value.includes(x.value) ? acc.concat([localize(x.text)]) : acc,
         []
       );
     } else {
-      return field.options.find((x: any) => x.value === value)?.text || '';
+      return localize(field.options.find((x: any) => x.value === value)?.text);
     }
   } else {
     return value;

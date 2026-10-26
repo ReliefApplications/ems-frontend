@@ -1,4 +1,3 @@
-import { DraftRecord } from './draft-record.model';
 import { Form } from './form.model';
 import { Resource } from './resource.model';
 import { User } from './user.model';
@@ -18,6 +17,7 @@ export interface Record {
   createdAt?: Date;
   modifiedAt?: Date;
   deleted?: boolean;
+  draft?: boolean;
   data?: any;
   form?: Form;
   resource?: Resource;
@@ -26,7 +26,15 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
-  validationErrors?: { question: string; errors: string[] }[];
+  validationErrors?: ValidationError[];
+}
+
+/** Model for a validation error returned when saving a record. */
+export interface ValidationError {
+  question: string;
+  errors: string[];
+  /** Warnings can be bypassed by the user, errors ( default ) cannot. */
+  severity?: 'error' | 'warning';
 }
 
 /** Model for record graphql query response */
@@ -39,19 +47,24 @@ export interface AddRecordMutationResponse {
   addRecord: Record;
 }
 
-/** Model for add draft record graphql mutation response */
-export interface AddDraftRecordMutationResponse {
-  addDraftRecord: Record;
+/** Model for draft records graphql query response */
+export interface DraftRecordSummary {
+  id: string;
+  createdAt: string;
+  modifiedAt: string;
+}
+
+/** Model for draft records graphql query response */
+export interface DraftRecordsQueryResponse {
+  draftRecords: {
+    edges: { node: DraftRecordSummary }[];
+    totalCount: number;
+  };
 }
 
 /** Model for edit record graphql mutation response */
 export interface EditRecordMutationResponse {
   editRecord: Record;
-}
-
-/** Model for edit draft record graphql mutation response */
-export interface EditDraftRecordMutationResponse {
-  editDraftRecord: DraftRecord;
 }
 
 /** Model for delete record graphql mutation response */

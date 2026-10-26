@@ -4,14 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import localForage from 'localforage';
-import { cloneDeep, get, isNil, set, snakeCase } from 'lodash';
+import { get, isNil, omit, set, snakeCase } from 'lodash';
 import { firstValueFrom } from 'rxjs';
-import { PageModel, SurveyModel } from 'survey-core';
+import { PageModel, QuestionFileModel, SurveyModel } from 'survey-core';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import {
-  AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
-  EditDraftRecordMutationResponse,
+  DeleteRecordMutationResponse,
+  EditRecordMutationResponse,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import { AuthService } from '../auth/auth.service';
@@ -24,7 +24,60 @@ import {
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
 import { File, FileService } from '../file/file.service';
-import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import {
+  getFileIcon,
+  isDraftFile,
+  isPendingFile,
+  localUrlToFile,
+  removeFileExtension,
+  revokeFileUrl,
+} from '../file/file.utils';
+import { keepsFilesOnComplete } from '../../survey/components/utils/files-widgets.util';
+import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
+
+/** Display duration of the files upload result snackbar, in ms */
+const SNACKBAR_DURATION = 3000;
+
+/** Details returned after a draft save. */
+interface DraftSaveDetails {
+  id?: string;
+  save: {
+    completed: false;
+    hideNewRecord: true;
+  };
+}
+
+/** Callback executed after a draft save. */
+type DraftSaveCallback = (details: DraftSaveDetails) => void;
+
+/** File that could not be uploaded, with the question it belongs to */
+export interface UploadFileError {
+  question: string;
+  file: { name: string };
+}
+
+/** File of the survey waiting to be uploaded */
+interface PendingUpload {
+  /** File question holding the file */
+  question: QuestionFileModel;
+  /** File value item: a data URL, or a draft file saved in the back-end storage */
+  item: File;
+  /** Raw file picked during the session, if any */
+  raw?: globalThis.File;
+}
+
+/** Files upload options */
+export interface UploadFilesOptions {
+  /**
+   * Draft save: new files go to the back-end storage, flagged as draft files,
+   * and the files already stored are left untouched. On submission ( default ),
+   * new and draft files reach their final storage.
+   */
+  draft?: boolean;
+}
+
+/** Class toggled on HTML questions hiding the links of outdated files. */
+const HIDE_OUTDATED_FILES_CLASS = 'html-question--hide-outdated-files';
 
 /**
  * Shared survey helper service.
@@ -112,25 +165,78 @@ export class FormHelpersService {
   }
 
   /**
-   * Upload asynchronously files to create questions in the form
+   * Message describing a files upload failure, listing the files that could
+   * not be uploaded.
+   *
+   * @param errors Errors thrown by the files upload
+   * @returns Translated message
+   */
+  public getUploadErrorMessage(errors: unknown): string {
+    const message = this.translate.instant(
+      'models.form.notifications.savingFailed'
+    );
+    if (!Array.isArray(errors) || !errors.length) {
+      return message;
+    }
+    const failedFiles = (errors as UploadFileError[]).map(
+      (error) => `${error.question}: ${error.file.name}`
+    );
+    return `${message}\n${failedFiles.join('\n')}`;
+  }
+
+  /**
+   * Uploads the files of the survey that are not in their final storage yet,
+   * and replaces their content in the survey with the storage reference. A
+   * file picked by the user is held as a data URL until uploaded: such a file
+   * must never reach the database.
+   *
+   * - Draft save: picked files are uploaded to the back-end storage ( like
+   *   record files were before document management ) and flagged as draft
+   *   files. Document management is not involved until the submission.
+   * - Submission: picked files are uploaded to document management when it
+   *   is configured, to the back-end storage otherwise. Draft files are
+   *   fetched from the back-end storage and uploaded to document management
+   *   when it is configured; otherwise the back-end storage is their final
+   *   storage and the flag is simply dropped. The properties of the files
+   *   already stored in document management are synced.
+   *
+   * Picked files are uploaded from the raw file kept in the temporary
+   * storage, or rebuilt from their data URL ( e.g. a file restored from a
+   * record saved before its upload ). Copies of the same file ( e.g. default
+   * values shared between questions ) share a single upload. Successful
+   * uploads are applied to the survey even when others fail, so a retry does
+   * not upload them again.
    *
    * @param survey The form in which the files will be updated
-   * @param temporaryFilesStorage Temporary files saved while executing the survey
+   * @param temporaryFilesStorage Raw files picked while executing the survey, per question
    * @param formId Form where to upload the files
+   * @param options Upload options
+   * @throws Files that could not be uploaded ( UploadFileError[] )
    */
   async uploadFiles(
     survey: SurveyModel,
-    temporaryFilesStorage: any,
-    formId: string | undefined
+    temporaryFilesStorage:
+      | Record<string, Array<globalThis.File> | undefined>
+      | undefined
+      | null,
+    formId: string | undefined,
+    options: UploadFilesOptions = {}
   ): Promise<void> {
     if (!formId) {
       throw new Error('Form id is not defined');
     }
-    // Try to update existing files, if required. Update is only about document properties, not about the content of the file itself
-    survey
+    const { draft = false } = options;
+    // On submission, the files of a question whose value is cleared on
+    // completion ( hidden by a condition ) are not saved: no need to upload
+    // them. Drafts save every value.
+    const fileQuestions = survey
       .getAllQuestions()
-      .filter((q) => q.getType() === 'file')
-      .forEach((q) => {
+      .filter(
+        (q) => q.getType() === 'file' && (draft || keepsFilesOnComplete(q))
+      ) as QuestionFileModel[];
+    // Try to update existing files, if required. Update is only about document properties, not about the content of the file itself
+    if (!draft) {
+      fileQuestions.forEach((q) => {
         if (q.value && Array.isArray(q.value)) {
           q.value.forEach(async (file: any) => {
             if (
@@ -144,114 +250,225 @@ export class FormHelpersService {
           });
         }
       });
-    const data = survey.data;
-    const questionsToUpload = Object.keys(temporaryFilesStorage);
-    const failedFilesToUpload: { question: string; file: File }[] = [];
-    // Is using document management system
-    const useDocumentManagement = !!this.environment.csApiUrl;
-    for (const name of questionsToUpload) {
-      const files = temporaryFilesStorage[name];
-      if (!isNil(files)) {
-        for (const [, file] of files.entries()) {
-          // Upload the file using document management system
-          if (useDocumentManagement) {
-            // Avoid already uploaded ones checking if contains an itemId
-            if (
-              isNil(file.content) ||
-              typeof file.content === 'string' ||
-              !('itemId' in file.content)
-            ) {
-              const question = survey.getQuestionByName(name);
-              try {
-                const { driveId, itemId } =
-                  await this.documentManagementService.uploadFile(
-                    file,
-                    question
-                  );
-                if (driveId && itemId) {
-                  const matchingFile = data[name].find(
-                    (x: any) => x.name === file.name
-                  );
-                  if (matchingFile) {
-                    const fileContent = matchingFile.content;
-                    matchingFile.content = {
-                      driveId,
-                      itemId,
-                    };
-                    // Check if any other question is using the same file
-                    survey.getAllQuestions().forEach((question) => {
-                      const questionType = question.getType();
-                      if (
-                        questionType !== 'file' ||
-                        // Only change files that are not in the temporary storage
-                        // meaning their values came from the default values
-                        !!temporaryFilesStorage[question.name]
-                      ) {
-                        return;
-                      }
-                      const files = data[question.name] ?? [];
-                      files.forEach((file: any) => {
-                        if (file && file.content === fileContent) {
-                          file.content = {
-                            driveId,
-                            itemId,
-                          };
-                        }
-                      });
-                    });
-                  }
-                }
-              } catch (error) {
-                failedFilesToUpload.push({ question: name, file });
-              }
-            }
-          } else {
-            // Default behavior, use app builder back-end
-            const path = (await this.downloadService.uploadBlob(
-              file,
-              BlobType.RECORD_FILE,
-              formId
-            )) as string;
-            if (path) {
-              const matchingFile = data[name].find(
-                (x: any) => x.name === file.name
-              );
-              if (matchingFile) {
-                const fileContent = matchingFile.content;
-                matchingFile.content = path;
+    }
+    // Is using document management system: never for drafts
+    const useDocumentManagement = !!this.environment.csApiUrl && !draft;
+    // Progress is reported for all the files at once ( see below ): the
+    // individual uploads stay silent
+    const upload = async (
+      file: globalThis.File,
+      question: QuestionFileModel
+    ): Promise<File['content'] | null> => {
+      if (useDocumentManagement) {
+        const result = await this.documentManagementService.uploadFile(
+          file,
+          question,
+          { silent: true }
+        );
+        return result?.driveId && result?.itemId
+          ? { driveId: result.driveId, itemId: result.itemId }
+          : null;
+      }
+      // Default behavior, use app builder back-end
+      const path = await this.downloadService.uploadBlob(
+        file,
+        BlobType.RECORD_FILE,
+        formId,
+        { silent: true }
+      );
+      return path || null;
+    };
 
-                // Check if any other question is using the same file
-                survey.getAllQuestions().forEach((question) => {
-                  const questionType = question.getType();
-                  if (
-                    questionType !== 'file' ||
-                    // Only change files that are not in the temporary storage
-                    // meaning their values came from the default values
-                    !!temporaryFilesStorage[question.name]
-                  ) {
-                    return;
-                  }
-
-                  const files = data[question.name] ?? [];
-                  files.forEach((file: any) => {
-                    if (file && file.content === fileContent) {
-                      file.content = path;
-                    }
-                  });
-                });
-              }
-            }
-          }
+    // Pending files, the ones picked during the session first so their
+    // copies reuse their upload instead of uploading again
+    const pending: PendingUpload[] = [];
+    fileQuestions.forEach((question) => {
+      // The storage is seeded with the question values: only raw files count
+      const stored = temporaryFilesStorage?.[question.name];
+      const rawFiles = Array.isArray(stored) ? stored : [];
+      const value: File[] = Array.isArray(question.value) ? question.value : [];
+      value.forEach((item) => {
+        if (isPendingFile(item)) {
+          const raw = rawFiles.find(
+            (file) => file instanceof Blob && file.name === item.name
+          );
+          pending.push({ question, item, raw });
+        } else if (
+          !draft &&
+          isDraftFile(item) &&
+          typeof item.content === 'string'
+        ) {
+          // Draft files reach their final storage on submission
+          pending.push({ question, item });
         }
+      });
+    });
+    pending.sort((a, b) => Number(!!b.raw) - Number(!!a.raw));
+
+    // Whether the draft file stays in the back-end storage, without upload
+    const staysInStorage = (item: File) =>
+      isDraftFile(item) && !useDocumentManagement;
+    // Files actually uploaded: copies share an upload, draft files may stay
+    // where they are. Draft saves run in the background ( auto-save ): no
+    // upload feedback
+    const total = this.countUploads(pending, staysInStorage);
+    const progress =
+      !draft && total > 0 ? this.openUploadProgress(total) : null;
+
+    /** Final content per pending content ( data URL or draft file path ) */
+    const resolved = new Map<string, File['content']>();
+    const failedFilesToUpload: UploadFileError[] = [];
+    for (const { question, item, raw } of pending) {
+      const key = item.content as string;
+      // Copy of a file processed already
+      if (!raw && resolved.has(key)) {
+        continue;
+      }
+      let file: { name: string } = { name: item.name };
+      try {
+        let content: File['content'] | null;
+        if (staysInStorage(item)) {
+          // The back-end storage is the final storage of the draft file
+          content = key;
+        } else {
+          file = isDraftFile(item)
+            ? await this.getDraftFile(item)
+            : raw ?? (await localUrlToFile(key, item.name, item.type));
+          content = await upload(file as globalThis.File, question);
+          progress?.next();
+        }
+        if (isNil(content)) {
+          throw new Error(`Upload of ${item.name} failed`);
+        }
+        resolved.set(key, content);
+      } catch {
+        if (!staysInStorage(item)) progress?.next();
+        failedFilesToUpload.push({ question: question.name, file });
       }
     }
-    /** Throw error if any file upload has failed before updating survey */
-    if (failedFilesToUpload.length) {
-      await new Promise((resolve, reject) => {
-        reject(failedFilesToUpload);
+    progress?.done(failedFilesToUpload.length);
+
+    // Replace the processed files by their storage reference, the failed
+    // ones stay as they are
+    fileQuestions.forEach((question) => {
+      const value: File[] = Array.isArray(question.value) ? question.value : [];
+      let changed = false;
+      const updated = value.map((item) => {
+        const content =
+          (isPendingFile(item) || isDraftFile(item)) &&
+          typeof item.content === 'string'
+            ? resolved.get(item.content)
+            : undefined;
+        if (isNil(content)) {
+          return item;
+        }
+        changed = true;
+        const file = { ...omit(item, 'draft'), content };
+        return draft ? { ...file, draft: true } : file;
       });
+      if (changed) {
+        question.value = updated;
+      }
+    });
+    // The uploaded files are referenced by their storage from now on: release
+    // the object URLs of the picked ones
+    resolved.forEach((_, key) => revokeFileUrl({ content: key }));
+    /** Throw error if any file upload has failed */
+    if (failedFilesToUpload.length) {
+      throw failedFilesToUpload;
     }
-    survey.data = cloneDeep(data);
+  }
+
+  /**
+   * Counts the uploads needed by the pending files: copies of a file share a
+   * single upload, and the files kept where they are need none.
+   *
+   * @param pending Pending files
+   * @param skipped Whether a pending file is kept where it is
+   * @returns Number of uploads
+   */
+  private countUploads(
+    pending: PendingUpload[],
+    skipped: (item: File) => boolean
+  ): number {
+    const rawKeys = new Set(
+      pending.filter(({ raw }) => raw).map(({ item }) => item.content)
+    );
+    const copies = new Set(
+      pending
+        .filter(
+          ({ item, raw }) =>
+            !raw && !skipped(item) && !rawKeys.has(item.content)
+        )
+        .map(({ item }) => item.content)
+    );
+    return rawKeys.size + copies.size;
+  }
+
+  /**
+   * Opens the snackbar reporting the progress of a files upload, one file at
+   * a time, then its result.
+   *
+   * @param total Number of files to upload
+   * @returns Progress handle
+   */
+  private openUploadProgress(total: number): {
+    next: () => void;
+    done: (failed: number) => void;
+  } {
+    const message = (current: number) =>
+      this.translate.instant('common.notifications.file.upload.progress', {
+        current,
+        total,
+      });
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      { duration: 0, data: { message: message(1), loading: true } }
+    );
+    const spinner = (): SnackbarSpinnerComponent | undefined =>
+      snackBarRef?.instance?.nestedComponent?.instance;
+    let current = 0;
+    return {
+      next: () => {
+        current = Math.min(current + 1, total);
+        const instance = spinner();
+        // Announce the next file while it uploads
+        if (instance && current < total) {
+          instance.message = message(current + 1);
+        }
+      },
+      done: (failed: number) => {
+        const instance = spinner();
+        if (!instance) return;
+        instance.message = failed
+          ? this.translate.instant('common.notifications.file.upload.failed', {
+              failed,
+              total,
+            })
+          : this.translate.instant(
+              'common.notifications.file.upload.uploaded',
+              { total }
+            );
+        instance.loading = false;
+        instance.error = !!failed;
+        snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      },
+    };
+  }
+
+  /**
+   * Fetches a draft file from the back-end storage, to upload it to its final
+   * storage.
+   *
+   * @param item Draft file value item
+   * @returns Browser file
+   */
+  private async getDraftFile(item: File): Promise<globalThis.File> {
+    const type = item.type || '';
+    const blob = await firstValueFrom(
+      this.downloadService.getFileBlob(`download/file/${item.content}`, type)
+    );
+    return new globalThis.File([blob], item.name, { type });
   }
 
   /**
@@ -291,7 +508,10 @@ export class FormHelpersService {
                         next: ({ data, errors }) => {
                           if (errors) {
                             this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
+                              this.translate.instant(
+                                'common.notifications.error',
+                                { error: errors[0].message }
+                              ),
                               {
                                 error: true,
                               }
@@ -479,7 +699,8 @@ export class FormHelpersService {
     );
     const createTooltip = (htmlElement: Element) => {
       const tooltip = document.createElement('span');
-      tooltip.title = options.question.tooltip || '';
+      // Tooltips support dynamic text ({placeholders}), like titles do
+      tooltip.title = survey.processText(options.question.tooltip || '', true);
       tooltip.innerHTML = '?';
       tooltip.classList.add('survey-title__tooltip');
       htmlElement.appendChild(tooltip);
@@ -518,6 +739,7 @@ export class FormHelpersService {
   ): void => {
     this.addQuestionTooltips(survey, options);
     this.bindHtmlQuestionFileClicks(survey, options);
+    this.applyOutdatedFilesDisplay(options);
   };
 
   /**
@@ -530,6 +752,21 @@ export class FormHelpersService {
     survey.onProcessTextValue.add(this.onProcessTextValue);
     survey.onAfterRenderQuestion.add(this.onAfterRenderQuestion);
   };
+
+  /**
+   * Resolves a named value from the survey. A name may point either to a
+   * question value (in survey.data) or to a survey variable — e.g.
+   * `{resourceQuestion.fileField}` populated from a linked record by the
+   * resource component. survey.data takes precedence, falling back to the
+   * variable so file fields coming from resource context are handled too.
+   *
+   * @param survey current survey
+   * @param name name of the value / variable to resolve
+   * @returns the resolved value, or undefined when absent
+   */
+  private resolveValue(survey: SurveyModel, name: string): any {
+    return get(survey.data, name) ?? survey.getVariable(name);
+  }
 
   /**
    * Substitutes the value of a file question in HTML questions with clickable
@@ -550,13 +787,22 @@ export class FormHelpersService {
     const question =
       survey.getQuestionByValueName(options.name) ||
       survey.getQuestionByName(options.name);
+    const value = this.resolveValue(survey, options.name);
     if (!question || question.getType() !== 'file') {
+      // No file question resolved for this placeholder, but the value may still
+      // be compatible with the file links format (an array of file objects).
+      if (Array.isArray(value) && value.some((file) => this.isFile(file))) {
+        options.value = this.renderFileLinks(options.name, value);
+        options.isExists = true;
+      } else if (!options.isExists && value == null) {
+        // The placeholder points to no field/value at all: render nothing
+        // instead of leaving the raw `{field}` text in the output.
+        options.value = '';
+        options.isExists = true;
+      }
       return;
     }
-    options.value = this.renderFileLinks(
-      options.name,
-      get(survey.data, options.name)
-    );
+    options.value = this.renderFileLinks(options.name, value);
     options.isExists = true;
   };
 
@@ -564,7 +810,9 @@ export class FormHelpersService {
    * Builds the clickable file links markup for a file question value.
    *
    * The `type`/`field`/`index` attributes let onFileClick identify the
-   * file to download or preview when the link is clicked.
+   * file to download or preview when the link is clicked. Files marked as
+   * outdated carry a warning icon and a `data-outdated` attribute, so HTML
+   * questions can hide them ( see applyOutdatedFilesDisplay ).
    *
    * @param fieldName name of the file question ( key in survey data )
    * @param files file question value
@@ -574,20 +822,51 @@ export class FormHelpersService {
     if (!Array.isArray(files)) {
       return '';
     }
+    const outdatedTitle = this.translate.instant(
+      'components.form.file.outdated.tooltip'
+    );
     return files
-      .filter((file) => this.isFile(file))
-      .map(
-        (file, index) =>
+      .map((file, index) => {
+        // Index in the question value, used to resolve the clicked file
+        if (!this.isFile(file)) return '';
+        const outdated = !!(file as File).outdated;
+        const warning = outdated
+          ? `<span class="material-icons" style="display: inline-block; font-size: 16px; line-height: 1; color: #f59e0b; margin-right: 2px; vertical-align: middle" title="${outdatedTitle}">warning</span>`
+          : '';
+        return (
           `<button type="file" field="${fieldName}" index="${index}" ` +
+          (outdated ? `data-outdated="true" ` : '') +
           `style="border: none; padding: 4px 6px; cursor: pointer;" ` +
           `class="k-button k-button-flat k-button-flat-base"` +
           `title="${file.name}">` +
           `<span class="k-icon ${getFileIcon(
             file.name
           )}" style="margin-right: 4px"></span>` +
-          `${removeFileExtension(file.name)}</button>`
-      )
+          `${warning}${removeFileExtension(file.name)}</button>`
+        );
+      })
       .join('');
+  }
+
+  /**
+   * Hides the links of outdated files rendered in an HTML question, unless
+   * the question is configured to display them.
+   *
+   * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
+   */
+  private applyOutdatedFilesDisplay(options: {
+    question: Question;
+    htmlElement: HTMLElement;
+  }): void {
+    if (options.question.getType() !== 'html') {
+      return;
+    }
+    options.htmlElement.classList.toggle(
+      HIDE_OUTDATED_FILES_CLASS,
+      !options.question.getPropertyValue('showOutdatedFiles')
+    );
   }
 
   /**
@@ -613,7 +892,7 @@ export class FormHelpersService {
     // Bind the click handler once per rendered element.
     htmlQuestion.dataset['fileLinksBound'] = 'true';
     htmlQuestion.addEventListener('click', (event) =>
-      this.onFileClick(event, survey.data)
+      this.onFileClick(event, survey)
     );
   };
 
@@ -621,12 +900,13 @@ export class FormHelpersService {
    * Handle click event on a rendered HTML question.
    *
    * Detects clicks on file elements rendered in the question and triggers a
-   * download or preview of the matching file from the survey data.
+   * download or preview of the matching file. The file is resolved from the
+   * survey data or, for resource-context fields, from a survey variable.
    *
    * @param event click event
-   * @param data survey data
+   * @param survey current survey
    */
-  private onFileClick(event: Event, data: unknown): void {
+  private onFileClick(event: Event, survey: SurveyModel): void {
     const target = event?.target as HTMLElement | null;
     if (!target?.getAttribute) {
       return;
@@ -641,7 +921,8 @@ export class FormHelpersService {
     if (!fieldName || index === null) {
       return;
     }
-    const file = get(data, `${fieldName}[${index}]`, null);
+    const files = this.resolveValue(survey, fieldName);
+    const file = Array.isArray(files) ? files[Number(index)] : null;
     if (!this.isFile(file)) {
       return;
     }
@@ -725,19 +1006,37 @@ export class FormHelpersService {
    *
    * @param survey Survey where to add the callbacks
    * @param formId Form id of the survey
+   * @param temporaryFilesStorage Raw files picked while executing the survey, per question
    * @param draftId Draft record id
    * @param callback callback method
+   * @param errorCallback callback method executed when saving fails
    */
-  public saveAsDraft(
+  public async saveAsDraft(
     survey: SurveyModel,
     formId: string,
+    temporaryFilesStorage: Record<string, Array<globalThis.File> | undefined>,
     draftId?: string,
-    callback?: any
-  ): void {
+    callback?: DraftSaveCallback,
+    errorCallback?: () => void
+  ): Promise<void> {
+    // Picked files are saved in the back-end storage before the draft, so
+    // their data URLs never reach the database. They reach their final
+    // storage when the record is submitted.
+    try {
+      await this.uploadFiles(survey, temporaryFilesStorage, formId, {
+        draft: true,
+      });
+    } catch (errors) {
+      this.snackBar.openSnackBar(this.getUploadErrorMessage(errors), {
+        error: true,
+      });
+      errorCallback?.();
+      return;
+    }
     // Check if a draft has already been loaded
     if (!draftId) {
       // Add a new draft record to the database
-      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+      const mutation = this.apollo.mutate<AddRecordMutationResponse>({
         mutation: ADD_DRAFT_RECORD,
         variables: {
           form: formId,
@@ -746,49 +1045,56 @@ export class FormHelpersService {
       });
       mutation.subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            survey.clear(false, true);
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          } else {
-            // localStorage.removeItem(this.storageId);
+          const draftId = data?.addRecord?.id;
+          if (errors?.length || !draftId) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.form.draftRecords.successSave'
-              ),
-              {
-                error: false,
-              }
+              errors?.[0]?.message ||
+                this.translate.instant(
+                  'models.form.notifications.savingFailed'
+                ),
+              { error: true }
             );
+            errorCallback?.();
+            return;
           }
+          // localStorage.removeItem(this.storageId);
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.draftRecords.successSave'),
+            {
+              error: false,
+            }
+          );
           // Callback to emit save but stay in record addition mode
-          if (callback) {
-            callback({
-              id: data?.addDraftRecord.id,
-              save: {
-                completed: false,
-                hideNewRecord: true,
-              },
-            });
-          }
+          callback?.({
+            id: draftId,
+            save: {
+              completed: false,
+              hideNewRecord: true,
+            },
+          });
         },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
         },
       });
     } else {
       // Edit last added draft record in the database
-      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+      const mutation = this.apollo.mutate<EditRecordMutationResponse>({
         mutation: EDIT_DRAFT_RECORD,
         variables: {
           id: draftId,
           data: survey.data,
         },
       });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
+      mutation.subscribe({
+        next: ({ errors }) => {
+          if (errors?.length) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+            errorCallback?.();
+            return;
+          }
           // localStorage.removeItem(this.storageId);
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.draftRecords.successEdit'),
@@ -796,17 +1102,20 @@ export class FormHelpersService {
               error: false,
             }
           );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
+          // Callback to emit save but stay in record addition mode
+          callback?.({
             id: draftId,
             save: {
               completed: false,
               hideNewRecord: true,
             },
           });
-        }
+        },
+        error: (err: unknown) => {
+          const message = err instanceof Error ? err.message : String(err);
+          this.snackBar.openSnackBar(message, { error: true });
+          errorCallback?.();
+        },
       });
     }
   }
@@ -816,19 +1125,35 @@ export class FormHelpersService {
    *
    * @param draftId Id of the draft record to delete
    * @param callback callback method
+   * @param errorCallback callback method called when deletion fails
    */
-  public deleteRecordDraft(draftId: string, callback?: any): void {
+  public deleteRecordDraft(
+    draftId: string,
+    callback?: () => void,
+    errorCallback?: () => void
+  ): void {
     this.apollo
-      .mutate<any>({
+      .mutate<DeleteRecordMutationResponse>({
         mutation: DELETE_DRAFT_RECORD,
         variables: {
           id: draftId,
         },
       })
-      .subscribe(() => {
-        if (callback) {
-          callback();
-        }
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors?.length) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+            errorCallback?.();
+            return;
+          }
+          if (callback) {
+            callback();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          errorCallback?.();
+        },
       });
   }
 

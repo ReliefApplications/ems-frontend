@@ -14,6 +14,8 @@ import {
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { getFileIcon, removeFileExtension } from '../file/file.utils';
+import { TranslateService } from '@ngx-translate/core';
+import { resolveLocalizedString } from '../../models/localized-string.model';
 
 type Shape = 'circle' | 'square';
 
@@ -115,6 +117,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Translate service, source of the active language. */
+  private translate = inject(TranslateService);
   /** Function for replacing aggregation data in html */
   replaceAggregationData = replaceAggregationData;
 
@@ -266,15 +270,16 @@ export class HtmlParserService {
       },
     },
     date: {
-      signature: 'date( value ; format )',
-      call: (value, format) => {
+      signature: 'date( value ; format ; timezone )',
+      call: (value, format, timezone) => {
         try {
           const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
           const spanContent = spanRegex.exec(value)?.[1]?.trim();
           const valueToFormat = !isNil(spanContent) ? spanContent : value;
           const formattedDate = this.datePipe.transform(
             new Date(valueToFormat),
-            format
+            format,
+            timezone || undefined
           ) as string;
           // Replace original value inside the span tag with the formatted value
           if (!isNil(spanContent)) {
@@ -882,13 +887,22 @@ export class HtmlParserService {
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {
+      const lang = this.translate.currentLang;
       // replaces value for labels, if associated option(s) exist(s)
       if (Array.isArray(value)) {
         value = value.map(
-          (x) => options.find((o: any) => o.value == x)?.text || x
+          (x) =>
+            resolveLocalizedString(
+              options.find((o: any) => o.value == x)?.text,
+              lang
+            ) || x
         );
       } else {
-        value = options.find((o: any) => o.value == value)?.text || value;
+        value =
+          resolveLocalizedString(
+            options.find((o: any) => o.value == value)?.text,
+            lang
+          ) || value;
       }
     }
 
@@ -973,24 +987,34 @@ export class HtmlParserService {
       case 'file':
         convertedValue = '';
         if (isArray(value)) {
-          for (let i = 0; value[i]; ) {
+          const outdatedTitle = this.translate.instant(
+            'components.form.file.outdated.tooltip'
+          );
+          // Files marked as outdated are hidden, unless the field is
+          // configured to display them. The index is the one in the
+          // record value, used to identify the file when clicking on button
+          for (let i = 0; value[i]; i++) {
             const file = value[i];
+            if (file.outdated && !field.showOutdatedFiles) continue;
             const fileIcon = getFileIcon(file.name);
             const fileName = this.applyLayoutFormat(
               removeFileExtension(file.name),
               field
             );
+            const outdatedIcon = file.outdated
+              ? `<span class="material-icons" style="display: inline-block; font-size: 16px; line-height: 1; color: #f59e0b; margin-right: 2px; vertical-align: middle" title="${outdatedTitle}">warning</span>`
+              : '';
             convertedValue += `
               <button
                 type="file"
                 class="k-button k-button-flat k-button-flat-base"
                 field="${field.name}"
-                index="${i++}"
+                index="${i}"
                 style="padding: 4px 6px; cursor: pointer; ${style}"
                 title="${file.name}"
               >
                 <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
-                ${fileName}
+                ${outdatedIcon}${fileName}
               </button>
             `
               .replace(/\s+/g, ' ')

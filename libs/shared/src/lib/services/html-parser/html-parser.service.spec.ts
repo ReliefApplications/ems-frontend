@@ -208,6 +208,23 @@ describe('HtmlParserService', () => {
           expect(result).toBe(testCase.result);
         });
       });
+
+      it('uses the local timezone by default (UTC in tests)', () => {
+        const result = dateFunc.call(
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm'
+        );
+        expect(result).toBe('27/11/2024 04:00');
+      });
+
+      it('supports an explicit timezone', () => {
+        const result = dateFunc.call(
+          '2024-11-26T23:00:00.000-05:00',
+          'dd/MM/yyyy HH:mm',
+          '-0500'
+        );
+        expect(result).toBe('26/11/2024 23:00');
+      });
     });
     describe('handles date calculation errors gracefully', () => {
       const fixedDate = new Date(
@@ -357,6 +374,40 @@ describe('HtmlParserService', () => {
       expect(result).toContain('k-button k-button-flat k-button-flat-base');
       expect(result).toContain('k-icon k-i-file-pdf');
       expect(result).toContain('report');
+    });
+    describe('outdated files', () => {
+      const data = {
+        documents: [
+          { name: 'old.pdf', content: 'old-id', outdated: true },
+          { name: 'current.pdf', content: 'current-id' },
+        ],
+      };
+
+      it('hides outdated files by default, keeping the record index of the others', () => {
+        const result = service.parseHtml('<p>{{data.documents}}</p>', {
+          data,
+          fields: [{ name: 'documents', type: 'file' }],
+        });
+
+        expect(result).not.toContain('title="old.pdf"');
+        expect(result).toContain('title="current.pdf"');
+        expect(result).toContain('index="1"');
+        expect(result).not.toContain('index="0"');
+      });
+
+      it('displays outdated files with a warning when the field is configured so', () => {
+        const result = service.parseHtml('<p>{{data.documents}}</p>', {
+          data,
+          fields: [
+            { name: 'documents', type: 'file', showOutdatedFiles: true },
+          ],
+        });
+
+        expect(result).toContain('title="old.pdf"');
+        expect(result).toContain('index="0"');
+        expect(result).toContain('index="1"');
+        expect(result.match(/>warning</g)).toHaveLength(1);
+      });
     });
   });
   describe('Parse HTML with context data', () => {

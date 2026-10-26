@@ -20,6 +20,7 @@ export const GET_FORM_BY_ID = gql`
         automated
         canSee
         canUpdate
+        canDeleteFiles
       }
       canUpdate
     }
@@ -30,10 +31,11 @@ export const GET_FORM_BY_ID = gql`
 
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
-    record(id: $id) {
+  query GetRecordById($id: ID!, $recordVisibility: RecordVisibility) {
+    record(id: $id, recordVisibility: $recordVisibility) {
       id
       incrementalId
+      draft
       data
       createdAt
       modifiedAt
@@ -55,6 +57,7 @@ export const GET_RECORD_BY_ID = gql`
           automated
           canSee
           canUpdate
+          canDeleteFiles
         }
       }
     }

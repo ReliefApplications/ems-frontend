@@ -1,4 +1,5 @@
 import { Category, Variant } from '@oort-front/ui';
+import { LocalizedString } from '../../models/localized-string.model';
 
 /** Field interface for sendNotification action */
 interface Field {
@@ -18,7 +19,7 @@ interface Field {
  * Action button Type
  */
 export type ActionButton = {
-  text: string;
+  text: LocalizedString;
   // Display
   variant: Variant;
   category: Category;

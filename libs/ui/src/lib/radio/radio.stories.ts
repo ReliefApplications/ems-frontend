@@ -37,9 +37,7 @@ export default {
   ],
 } as Meta<RadioComponent>;
 
-/**
- *
- */
+/** Sample radio options displayed in the stories */
 const radioOptions: RadioOption[] = [
   {
     label: 'Email',

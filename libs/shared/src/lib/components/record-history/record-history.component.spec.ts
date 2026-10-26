@@ -19,12 +19,27 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { MenuModule } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { of } from 'rxjs';
+
+/** Number of history entries fetched per page, mirrors the component's own constant */
+const HISTORY_PAGE_SIZE = 20;
 
 describe('RecordHistoryComponent', () => {
   let component: RecordHistoryComponent;
   let fixture: ComponentFixture<RecordHistoryComponent>;
+  let apolloQueryMock: jest.Mock;
 
   beforeEach(async () => {
+    apolloQueryMock = jest.fn().mockReturnValue(
+      of({
+        data: {
+          record: { id: '1', form: {}, resource: {} },
+          recordHistory: [],
+        },
+      })
+    );
+
     await TestBed.configureTestingModule({
       providers: [
         { provide: DialogRef, useValue: {} },
@@ -35,6 +50,7 @@ describe('RecordHistoryComponent', () => {
           },
         },
         { provide: 'environment', useValue: {} },
+        { provide: Apollo, useValue: { query: apolloQueryMock } },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
@@ -67,5 +83,66 @@ describe('RecordHistoryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('loadMoreHistory', () => {
+    it('appends the next page and keeps hasMoreHistory true on a full page', () => {
+      component.history = [];
+      component.hasMoreHistory = true;
+      const fullPage = Array.from({ length: HISTORY_PAGE_SIZE }, () => ({
+        createdAt: new Date(),
+        createdBy: 'tester',
+        changes: [
+          { type: 'modify', field: 'x', displayName: 'X', old: '1', new: '2' },
+        ],
+      }));
+      apolloQueryMock.mockReturnValueOnce(
+        of({ data: { recordHistory: fullPage } })
+      );
+
+      component.loadMoreHistory();
+
+      expect(component.history.length).toBe(HISTORY_PAGE_SIZE);
+      expect(component.hasMoreHistory).toBe(true);
+      expect(component.loadingMore).toBe(false);
+    });
+
+    it('clears hasMoreHistory once a partial page is returned', () => {
+      component.history = [];
+      component.hasMoreHistory = true;
+      const partialPage = [
+        {
+          createdAt: new Date(),
+          createdBy: 'tester',
+          changes: [
+            {
+              type: 'modify',
+              field: 'x',
+              displayName: 'X',
+              old: '1',
+              new: '2',
+            },
+          ],
+        },
+      ];
+      apolloQueryMock.mockReturnValueOnce(
+        of({ data: { recordHistory: partialPage } })
+      );
+
+      component.loadMoreHistory();
+
+      expect(component.history.length).toBe(1);
+      expect(component.hasMoreHistory).toBe(false);
+    });
+
+    it('does nothing when there is no more history to load', () => {
+      component.history = [];
+      component.hasMoreHistory = false;
+      apolloQueryMock.mockClear();
+
+      component.loadMoreHistory();
+
+      expect(apolloQueryMock).not.toHaveBeenCalled();
+    });
   });
 });

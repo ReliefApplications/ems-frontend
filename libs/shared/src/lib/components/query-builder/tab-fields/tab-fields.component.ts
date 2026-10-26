@@ -19,6 +19,7 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { HtmlParserService } from '../../../services/html-parser/html-parser.service';
 import { addNewField } from '../query-builder-forms';
 import { QueryBuilderComponent } from '../query-builder.component';
+import { LayoutFormFields } from './form-filter/form-filter.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -35,6 +36,12 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
+  /** Should display the form filter above the available fields */
+  @Input() showFormFilter = false;
+  /** Forms belonging to the current resource. */
+  @Input() layoutForms: LayoutFormFields[] = [];
+  /** Whether the forms of the current resource are being loaded. */
+  @Input() layoutFormsLoading = false;
   /** Should show limit input */
   @Input() showLimit = false;
   /** Is the column width field displayed */
@@ -52,6 +59,8 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchAvailable = '';
   /** Search on selected fields */
   public searchSelected = '';
+  /** Currently applied form filter. */
+  public selectedFormId = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
   /**
@@ -106,12 +115,106 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   private setSelectedFields() {
     const selectedFields: string[] = this.form.getRawValue().map((x) => x.name);
-    this.availableFields = this.fields
-      .slice()
-      .filter((x) => !selectedFields.includes(x.name));
+    this.availableFields = this.getFilteredFields().filter(
+      (x) => !selectedFields.includes(x.name)
+    );
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
+  }
+
+  /**
+   * Applies the selected form's field order to the available schema fields.
+   *
+   * @returns Fields available under the selected form filter.
+   */
+  private getFilteredFields(): any[] {
+    const selectedForm = this.layoutForms.find(
+      (form) => form.id === this.selectedFormId
+    );
+    if (!selectedForm) return this.fields.slice();
+
+    return selectedForm.fields.reduce<any[]>((result, name) => {
+      const field = this.fields.find((candidate) => candidate.name === name);
+      return field ? [...result, field] : result;
+    }, []);
+  }
+
+  /**
+   * Refreshes the available fields after selecting or clearing a form filter.
+   *
+   * @param formId Selected form id, empty string to clear the filter.
+   */
+  public onFormChange(formId: string): void {
+    this.selectedFormId = formId;
+    this.searchAvailable = '';
+    this.setSelectedFields();
+  }
+
+  /**
+   * Checks whether a field matches a search text ( case insensitive ).
+   * Empty search text matches every field.
+   *
+   * @param field Field to test
+   * @param searchText Search text
+   * @returns True if the field should be displayed
+   */
+  public matchesSearch(field: any, searchText: string): boolean {
+    return (
+      searchText.length < 1 ||
+      field.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
+
+  /**
+   * Available fields matching the current search.
+   *
+   * @returns Available fields currently displayed
+   */
+  public get visibleAvailableFields(): any[] {
+    return this.availableFields.filter((field) =>
+      this.matchesSearch(field, this.searchAvailable)
+    );
+  }
+
+  /**
+   * Selected fields matching the current search.
+   *
+   * @returns Selected fields currently displayed
+   */
+  public get visibleSelectedFields(): any[] {
+    return this.selectedFields.filter((field) =>
+      this.matchesSearch(field, this.searchSelected)
+    );
+  }
+
+  /**
+   * Adds all available fields matching the current search to the selected
+   * fields list.
+   */
+  public addAllFields(): void {
+    for (const field of this.visibleAvailableFields) {
+      this.form.push(addNewField(field, true));
+      this.droppedFields.emit(field);
+    }
+    this.setSelectedFields();
+  }
+
+  /** Removes every selected field matching the current search from the layout. */
+  public removeAllFields(): void {
+    if (this.searchSelected.length < 1) {
+      this.form.clear();
+    } else {
+      // Iterate backwards so removals do not shift the remaining indexes
+      for (let index = this.selectedFields.length - 1; index >= 0; index--) {
+        if (
+          this.matchesSearch(this.selectedFields[index], this.searchSelected)
+        ) {
+          this.form.removeAt(index);
+        }
+      }
+    }
+    this.setSelectedFields();
   }
 
   /**
@@ -148,18 +251,11 @@ export class TabFieldsComponent implements OnInit, OnChanges {
           this.searchSelected,
           event.previousIndex
         );
-        if (this.form.at(index).errors?.invalid) {
-          this.form.removeAt(index);
-          this.selectedFields.splice(index, 1);
-        } else {
-          transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            index,
-            event.currentIndex
-          );
-          this.form.removeAt(index);
-        }
+        // Remove the field from the form, then rebuild both lists so the
+        // field goes back to the available fields ( in current filter order ),
+        // or disappears if it does not exist in the schema anymore
+        this.form.removeAt(index);
+        this.setSelectedFields();
       } else {
         const index = this.getItemIndex(
           this.availableFields,
@@ -197,7 +293,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
       return index;
     } else {
       const filteredList = list.filter((x) =>
-        x.name.toLowerCase().includes(searchText.toLowerCase())
+        this.matchesSearch(x, searchText)
       );
       const item = filteredList[index];
       return list.findIndex((x) => x.name === item.name);

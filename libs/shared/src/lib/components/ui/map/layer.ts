@@ -23,6 +23,10 @@ import {
   LayerSymbol,
   PopupInfo,
 } from '../../../models/layer.model';
+import {
+  LocalizedString,
+  resolveLocalizedString,
+} from '../../../models/localized-string.model';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
@@ -43,6 +47,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Apollo } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GET_LAYOUT } from './graphql/queries';
+import { TranslateService } from '@ngx-translate/core';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -168,7 +173,9 @@ export class Layer implements LayerModel {
   /** Layer id */
   public id!: string;
   /** Layer name */
-  public name!: string;
+  public name!: LocalizedString;
+  /** Translate service for resolving localized strings */
+  private translateService!: TranslateService;
   /** Layer type */
   public type!: LayerType;
 
@@ -296,6 +303,7 @@ export class Layer implements LayerModel {
       this.gridService = injector.get(GridService);
       this.queryBuilder = injector.get(QueryBuilderService);
       this.apollo = injector.get(Apollo);
+      this.translateService = injector.get(TranslateService);
       // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
       try {
         this.dashboardAutomationService = injector.get(
@@ -1315,7 +1323,11 @@ export class Layer implements LayerModel {
       }
     }
     if (html) {
-      html = `<div class="font-bold">${this.name}</div>` + html;
+      html =
+        `<div class="font-bold">${resolveLocalizedString(
+          this.name,
+          this.translateService.currentLang
+        )}</div>` + html;
     }
     return html;
   }

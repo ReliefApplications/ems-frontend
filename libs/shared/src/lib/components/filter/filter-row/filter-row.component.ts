@@ -19,6 +19,29 @@ import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
+import { commonServiceFields } from '../../email/constant';
+
+/** Operators that keep attribute comparisons tied to another record field. */
+const ATTRIBUTE_FIELD_OPERATORS = ['eq', 'neq', 'in', 'notin'];
+
+/** Attribute operators that let the user choose field or text input. */
+const ATTRIBUTE_SWITCHABLE_OPERATORS = ['eq', 'neq', 'in', 'notin'];
+
+/** Operators that compare an attribute against a literal value. */
+const ATTRIBUTE_LITERAL_OPERATORS = [
+  'eq',
+  'neq',
+  'in',
+  'notin',
+  'contains',
+  'doesnotcontain',
+  'startswith',
+  'endswith',
+  'isnull',
+  'isnotnull',
+  'isempty',
+  'isnotempty',
+];
 
 /**
  * Composite filter row.
@@ -42,6 +65,14 @@ export class FilterRowComponent
   @Input() canUseContext = false;
   /** Email Notification Check */
   @Input() isEmailNotification = false;
+  /** Enables attribute filters to switch editor mode based on operator. */
+  @Input() enableAttributeValueSource = false;
+  /**
+   * Per-dataset Common Services field settings for the value editor. When it
+   * carries `datasetBlocks`, the editor offers a picker of that dataset's fields
+   * that inserts `{{Block N.field}}` tokens (resolved per row when the email is sent).
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -51,6 +82,9 @@ export class FilterRowComponent
   booleanEditor!: TemplateRef<any>;
   /** Select field editor template */
   @ViewChild('selectEditor', { static: false }) selectEditor!: TemplateRef<any>;
+  /** Attribute editor template */
+  @ViewChild('attributeEditor', { static: false })
+  attributeEditor!: TemplateRef<any>;
   /** Numeric field editor template */
   @ViewChild('numericEditor', { static: false })
   numericEditor!: TemplateRef<any>;
@@ -59,6 +93,9 @@ export class FilterRowComponent
   /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
+  /** Reference to dataset token editor template */
+  @ViewChild('datasetTokenEditor', { static: false })
+  datasetTokenEditor!: TemplateRef<any>;
   /** In the last operator editor template */
   @ViewChild('inTheLastEditor', { static: false })
   inTheLastEditor!: TemplateRef<any>;
@@ -74,6 +111,7 @@ export class FilterRowComponent
   public contextEditorIsActivated = false;
   /** Time units for filtering. */
   public timeUnits = [
+    { value: 'minutes', label: 'Minutes' },
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },
     { value: 'weeks', label: 'Weeks' },
@@ -86,6 +124,63 @@ export class FilterRowComponent
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
     return this.form.get('value') as UntypedFormControl;
+  }
+
+  /** @returns the attribute value source form control if available. */
+  get valueSourceControl(): UntypedFormControl | null {
+    return (this.form.get('valueSource') as UntypedFormControl) || null;
+  }
+
+  /** @returns whether the attribute value source dropdown should be shown. */
+  get attributeShowsValueSourceSwitch(): boolean {
+    return (
+      !!this.enableAttributeValueSource &&
+      this.field?.editor === 'attribute' &&
+      ATTRIBUTE_SWITCHABLE_OPERATORS.includes(this.form.get('operator')?.value)
+    );
+  }
+
+  /** @returns whether attribute filters should use the field dropdown. */
+  get attributeUsesFieldEditor(): boolean {
+    const operator = this.form.get('operator')?.value;
+
+    if (ATTRIBUTE_SWITCHABLE_OPERATORS.includes(operator)) {
+      return this.valueSourceControl?.value !== 'literal';
+    }
+
+    return false;
+  }
+
+  /**
+   * Dataset token options built from datasetCommonServicesFieldSettings.datasetBlocks.
+   * Memoised field (not a getter) recomputed only when datasetCommonServicesFieldSettings
+   * changes, so the bound *ngFor receives stable references and its option nodes are not
+   * recreated each change-detection cycle (which made the open value picker unclickable).
+   */
+  public datasetTokenOptions: { value: string; label: string }[] = [];
+
+  /** Recomputes datasetTokenOptions from the current datasetCommonServicesFieldSettings. */
+  private computeDatasetTokenOptions(): void {
+    const blocks: { name: string; fields: string[] }[] =
+      this.datasetCommonServicesFieldSettings?.datasetBlocks ?? [];
+    this.datasetTokenOptions = blocks.flatMap((block) =>
+      block.fields.map((field) => ({
+        value: `{{${block.name}.${field}}}`,
+        label: `${block.name} - ${this.emailService.replaceUnderscores(field)}`,
+      }))
+    );
+  }
+
+  /**
+   * trackBy for the dataset token options *ngFor (key on the stable token value).
+   *
+   * @param _index the *ngFor index (unused).
+   * @param opt the dataset token option.
+   * @param opt.value the token value used as the tracking key.
+   * @returns the token value.
+   */
+  public trackByTokenValue(_index: number, opt: { value: string }): string {
+    return opt.value;
   }
 
   /**
@@ -102,17 +197,22 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
+    this.computeDatasetTokenOptions();
     this.form
       .get('field')
       ?.valueChanges?.pipe(takeUntil(this.destroy$))
       .subscribe(async (value) => {
         // remove value
         const selectedField = this.fields.filter((x: any) => x.name == value);
+        const commonServiceField = commonServiceFields.find(
+          (field) => field.key === value
+        );
+        const namePath = commonServiceField?.namePath;
         if (
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.getCsData(value, selectedField[0]);
+          await this.loadCommonServiceOptions(selectedField[0], namePath);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -126,6 +226,13 @@ export class FilterRowComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.setHideEditor(value);
+        if (
+          this.field?.editor === 'attribute' &&
+          this.enableAttributeValueSource
+        ) {
+          this.form.get('value')?.setValue(null);
+          this.setEditor(this.field);
+        }
         // Checks for in the last operator
         if (value === 'inthelast') {
           // Replaces the date editor with in the last
@@ -156,6 +263,14 @@ export class FilterRowComponent
             });
         }
       });
+    this.valueSourceControl?.valueChanges
+      ?.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.attributeShowsValueSourceSwitch) {
+          this.form.get('value')?.setValue(null);
+          this.setEditor(this.field);
+        }
+      });
     if (this.disabled) {
       this.form.disable();
     }
@@ -177,11 +292,6 @@ export class FilterRowComponent
             .filter((x) => x.label === this.form.getRawValue().field)?.[0]?.key
         );
     }
-
-    //Calling the common service function for getting value for Select type of data
-    if (this.field?.isCommonService) {
-      this.field.options = this.getCsData(this.field?.name, this.field);
-    }
   }
 
   /**
@@ -194,21 +304,58 @@ export class FilterRowComponent
     return Array.from({ length: 90 }, (_, i) => i + 1);
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     const initialField = this.form.get('field')?.value;
     if (initialField && this.fields.length > 0) {
+      // For a pre-selected Common Services select field, load its value options
+      // before rendering the editor so the value dropdown is populated on first
+      // paint (otherwise the async options arrive after render and only show on hover).
+      const field = this.fields.find((x: any) => x.name === initialField);
+      if (field?.isCommonService && field?.editor === 'select') {
+        const commonServiceField = commonServiceFields.find(
+          (f) => f.key === field.name
+        );
+        await this.loadCommonServiceOptions(
+          field,
+          commonServiceField?.namePath
+        );
+      }
       this.setField(initialField);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (
+    const fieldsChanged =
       initialField &&
       this.fields.length > 0 &&
-      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue);
+    const contextSettingsChanged =
+      initialField &&
+      this.field &&
+      !isEqual(
+        changes.datasetCommonServicesFieldSettings?.previousValue,
+        changes.datasetCommonServicesFieldSettings?.currentValue
+      );
+
+    // Recompute the memoised token options only when the settings actually change.
+    if (
+      changes.datasetCommonServicesFieldSettings &&
+      !isEqual(
+        changes.datasetCommonServicesFieldSettings.previousValue,
+        changes.datasetCommonServicesFieldSettings.currentValue
+      )
     ) {
+      this.computeDatasetTokenOptions();
+    }
+
+    if (fieldsChanged) {
       this.setField(initialField);
+    } else if (contextSettingsChanged && this.contextEditorIsActivated) {
+      // Settings-only change while an expression editor is shown: re-point the
+      // editor template without rebuilding the row, so an open value picker is
+      // not torn down mid-interaction.
+      this.setEditor(this.field);
     }
 
     if (
@@ -229,11 +376,15 @@ export class FilterRowComponent
    * @param name field name
    * @param init is new field or not
    */
-  private setField(name: string, init?: true) {
+  private setField(name: string, init = false) {
     // get field, and operators
     const nameFragments =
       name.startsWith('{{attributes.') && name.endsWith('}}')
         ? [name]
+        : name.startsWith('$attribute.')
+        ? // Attribute keys can contain dots (e.g. 'country.iso2code'), so
+          // only split on the group prefix
+          ['$attribute', name.substring('$attribute.'.length)]
         : name.split('.');
     let fields = clone(this.fields);
     let field = null;
@@ -244,33 +395,59 @@ export class FilterRowComponent
     }
     if (field) {
       this.field = field;
-      const type = {
-        ...FIELD_TYPES.find(
-          (x) =>
-            x.editor === this.field.editor &&
-            !!this.field.multiSelect === !!x.multiSelect
-        ),
-        ...this.field.filter,
-      };
-      this.operators = FILTER_OPERATORS.filter((x) =>
-        type?.operators?.includes(x.value)
-      );
-      if (init) {
-        /** If type undefined, use as default 'eq' operator and not undefined. */
-        this.form
-          .get('operator')
-          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value, {
-            emitEvent: false,
-          });
-      } else {
-        this.form
-          .get('operator')
-          ?.setValue(this.form.value.operator, { emitEvent: false });
-      }
-      this.setHideEditor(this.form.get('operator')?.value);
+      this.updateFieldOperators(this.field, init);
       // set operator template
       this.setEditor(this.field);
     }
+  }
+
+  /**
+   * Gets the operator configuration for the selected field.
+   *
+   * @param field selected field
+   * @returns field operator configuration
+   */
+  private getFieldConfig(field: any) {
+    if (field.editor === 'attribute' && this.enableAttributeValueSource) {
+      const fieldOperators = field.fieldOperators || ATTRIBUTE_FIELD_OPERATORS;
+      const literalOperators =
+        field.literalOperators || ATTRIBUTE_LITERAL_OPERATORS;
+
+      return {
+        defaultOperator: field.fieldDefaultOperator || 'eq',
+        operators: Array.from(
+          new Set([...fieldOperators, ...literalOperators])
+        ),
+      };
+    }
+
+    return {
+      ...FIELD_TYPES.find(
+        (x) =>
+          x.editor === field.editor && !!field.multiSelect === !!x.multiSelect
+      ),
+      ...field.filter,
+    };
+  }
+
+  /**
+   * Updates the operator list for the selected field.
+   *
+   * @param field selected field
+   * @param init is new field or not
+   */
+  private updateFieldOperators(field: any, init = false): void {
+    const type = this.getFieldConfig(field);
+    const nextOperator =
+      init || !type?.operators?.includes(this.form.get('operator')?.value)
+        ? type?.defaultOperator ?? FILTER_OPERATORS[0].value
+        : this.form.get('operator')?.value;
+
+    this.operators = FILTER_OPERATORS.filter((x) =>
+      type?.operators?.includes(x.value)
+    );
+    this.form.get('operator')?.setValue(nextOperator, { emitEvent: false });
+    this.setHideEditor(nextOperator);
   }
 
   /**
@@ -308,8 +485,27 @@ export class FilterRowComponent
     } else if (this.isDynamicPlaceholderValue(value)) {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
+    } else if (
+      typeof value === 'string' &&
+      value.startsWith('{{') &&
+      value.endsWith('}}') &&
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0
+    ) {
+      // Value saved from the dataset token editor — restore it.
+      this.editor = this.datasetTokenEditor;
+      this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
+        case 'attribute': {
+          if (this.enableAttributeValueSource) {
+            this.editor = this.attributeUsesFieldEditor
+              ? this.selectEditor
+              : this.attributeEditor;
+            break;
+          }
+          this.editor = this.selectEditor;
+          break;
+        }
         case 'text': {
           this.editor = this.textEditor;
           break;
@@ -318,7 +514,6 @@ export class FilterRowComponent
           this.editor = this.booleanEditor;
           break;
         }
-        case 'attribute':
         case 'select': {
           this.editor = this.selectEditor;
           break;
@@ -340,7 +535,7 @@ export class FilterRowComponent
           this.editor = this.textEditor;
         }
       }
-      if (this.disabled) {
+      if (this.disabled || this.hideEditor) {
         this.form.get('value')?.disable();
       } else {
         this.form.get('value')?.enable();
@@ -378,37 +573,46 @@ export class FilterRowComponent
   /** Toggles context editor */
   public toggleContextEditor() {
     this.form.get('value')?.setValue(null);
-    if (this.editor === this.contextEditor) {
+    const hasDatasetBlocks =
+      (this.datasetCommonServicesFieldSettings?.datasetBlocks?.length ?? 0) > 0;
+    if (
+      this.editor === this.contextEditor ||
+      this.editor === this.datasetTokenEditor
+    ) {
       this.setEditor(this.field);
     } else {
-      this.editor = this.contextEditor;
+      this.editor = hasDatasetBlocks
+        ? this.datasetTokenEditor
+        : this.contextEditor;
       this.contextEditorIsActivated = true;
     }
   }
 
   /**
-   * Get CS Data
+   * Loads the Common Services value options for a select field and assigns them
+   * onto the field as a fresh array, so the value dropdown reflects them.
+   * Supports an optional nested path for the display value (user-group filtering).
    *
-   * @param key selected key name
-   * @param selectedField selected field object
+   * @param field selected field object (its name is the reference-data key)
+   * @param path optional nested path to the option value (else uses Name)
    */
-  async getCsData(key: string, selectedField: any) {
-    if (
-      this.emailService?.userTableFields?.filter((x) => x === key).length === 0
-    ) {
-      this.loading = true;
-      await firstValueFrom(this.cs.restRequest(key))
-        .then((data) => {
-          this.loading = false;
-          selectedField.options =
-            data?.value.map((x: any) => ({
-              text: x?.Name,
-              value: x?.Name,
-            })) || [];
-        })
-        .catch((error) => {
-          console.error(`Error while fetching reference data ${key}:`, error);
-        });
+  async loadCommonServiceOptions(field: any, path?: string): Promise<void> {
+    const key = field?.name;
+    // User-table fields are free-text inputs, not select dropdowns — nothing to load.
+    if (!key || this.emailService?.userTableFields?.some((x) => x === key)) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const data = await firstValueFrom(this.cs.restRequest(key));
+      field.options = (data?.value ?? []).map((x: any) => ({
+        text: path ? get(x, path) : x?.Name,
+        value: path ? get(x, path) : x?.Name,
+      }));
+    } catch (error) {
+      console.error(`Error while fetching reference data ${key}:`, error);
+    } finally {
+      this.loading = false;
     }
   }
 }

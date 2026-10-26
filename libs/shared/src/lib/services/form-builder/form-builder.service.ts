@@ -14,6 +14,8 @@ import {
   settings,
   surveyLocalization,
 } from 'survey-core';
+import { QuestionFile } from '../../survey/types';
+import { registerHiddenFileQuestionsValues } from '../../survey/components/utils/files-widgets.util';
 import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
@@ -23,6 +25,14 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
+import { AutoTranslateService } from '../auto-translate/auto-translate.service';
+import { toSurveyLocale } from '../../utils/languages';
+import {
+  createFileUrl,
+  isLocalFileUrl,
+  isPendingFile,
+  revokeFileUrl,
+} from '../file/file.utils';
 
 /**
  * Shared form builder service.
@@ -43,6 +53,7 @@ export class FormBuilderService {
    * @param formHelpersService Shared form helper service.
    * @param injector Angular injector
    * @param documentManagementService Document management service
+   * @param autoTranslateService Field auto-translation service
    * @param environment Environment
    */
   constructor(
@@ -53,6 +64,7 @@ export class FormBuilderService {
     private formHelpersService: FormHelpersService,
     private injector: Injector,
     private documentManagementService: DocumentManagementService,
+    private autoTranslateService: AutoTranslateService,
     @Inject('environment') private environment: any
   ) {}
 
@@ -128,24 +140,32 @@ export class FormBuilderService {
             question.delete();
           } else {
             question.readOnly = disabled || !editable;
+            // File questions: per-field permission to permanently remove files
+            if (f.canDeleteFiles !== undefined) {
+              (question as QuestionFile).canDeleteFiles = !!f.canDeleteFiles;
+            }
           }
         }
       }
     }
-    // set the lang of the survey
-    const surveyLang = localStorage.getItem('surveyLang');
-    if (surveyLang && survey.getUsedLocales().includes(surveyLang)) {
-      survey.locale = surveyLang;
-    } else {
-      const lang = this.translate.currentLang || this.translate.defaultLang;
-      if (survey.getUsedLocales().includes(lang)) {
-        survey.locale = lang;
-      }
+    // Set the lang of the survey
+    const usedLocales = survey.getUsedLocales();
+    // SurveyJS locale codes differ from Angular's for some languages
+    // (e.g. Ukrainian is 'uk' in Angular but 'ua' in SurveyJS).
+    const systemLang = toSurveyLocale(
+      this.translate.currentLang || this.translate.defaultLang
+    );
+    if (systemLang && usedLocales.includes(systemLang)) {
+      // The language the user sees the system in takes priority over their last
+      // manual form-language pick (if the form has a version for that language).
+      survey.locale = systemLang;
     }
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+    // File questions hidden by a Files management question keep their files
+    registerHiddenFileQuestionsValues(survey);
     /** Apply placeholders with limitations to all file type questions */
     survey.onGetQuestionTitle.add((_, options) => {
       if (options.question instanceof QuestionFileModel) {
@@ -158,6 +178,11 @@ export class FormBuilderService {
     });
     // Add record to survey properties
     survey.setPropertyValue('record', record);
+    // Wire field auto-translation onto every survey instance (no-op unless some
+    // question is configured with translateField). Components load data with
+    // autoTranslateService.suppressAutoTranslationWhile(...) to avoid
+    // translating on load.
+    this.autoTranslateService.registerAutoTranslation(survey);
     return survey;
   }
 
@@ -209,17 +234,20 @@ export class FormBuilderService {
   }
 
   /**
-   * Check if given files are valid for given file type question
+   * Check if given files can be added to the given file type question,
+   * regarding its maximum number of files. Files already attached to the
+   * question count, including stored ones and files marked as outdated.
    *
    * @param question File question to apply checks
-   * @param files Uploaded files
+   * @param files Files being uploaded
    * @returns Given files validity against given question
    */
   private checkFileUploadValidity(question: Question, files: File[]) {
     let isValid = true;
     const allowMultiple = question.getPropertyValue('allowMultiple');
     const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
-    if (allowMultiple && files.length > allowedFileNumber) {
+    const attached = Array.isArray(question.value) ? question.value.length : 0;
+    if (allowMultiple && attached + files.length > allowedFileNumber) {
       this.snackBar.openSnackBar(
         this.translate.instant(
           'components.formBuilder.errors.maximumAllowedFiles',
@@ -239,6 +267,7 @@ export class FormBuilderService {
    * @param options Options regarding the files
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    this.releaseClearedFiles(options);
     if (options.question.allowMultiple) {
       // Filtering the temp storage to remove the file based on filename
       if (temporaryFilesStorage[options.name]) {
@@ -263,10 +292,10 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    const isUploadValid = this.checkFileUploadValidity(options.question, [
-      ...options.files,
-      ...(temporaryFilesStorage[options.name] ?? []),
-    ]);
+    const isUploadValid = this.checkFileUploadValidity(
+      options.question,
+      options.files
+    );
     if (!isUploadValid) {
       return;
     }
@@ -277,30 +306,45 @@ export class FormBuilderService {
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }
-    let content: any[] = [];
-    options.files.forEach((file: any) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        content = content.concat([
-          {
-            name: file.name,
-            type: file.type,
-            content: fileReader.result,
-            file,
-          },
-        ]);
-        if (content.length === options.files.length) {
-          options.callback(
-            'success',
-            content.map((fileContent) => ({
-              file: fileContent.file,
-              content: fileContent.content,
-            }))
-          );
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
+    // The question value only holds an object URL of each picked file: the
+    // file content stays on disk until the upload ( a data URL would load it
+    // in memory several times over, which crashes the tab with large files ).
+    options.callback(
+      'success',
+      options.files.map((file: globalThis.File) => ({
+        file,
+        content: createFileUrl(file),
+      }))
+    );
+  }
+
+  /**
+   * Releases the object URLs of the files removed from a file question, unless
+   * another file question of the survey still holds a copy of the file.
+   *
+   * @param options Options of the clear files event
+   */
+  private releaseClearedFiles(options: any): void {
+    type FileItem = { name: string; content?: unknown };
+    const value: FileItem[] = Array.isArray(options.value)
+      ? options.value
+      : options.value
+      ? [options.value]
+      : [];
+    const removed = isNil(options.fileName)
+      ? value
+      : value.filter((file) => file.name === options.fileName);
+    const survey: SurveyModel | undefined = options.question?.survey;
+    const others = (survey?.getAllQuestions() ?? [])
+      .filter((q) => q !== options.question && q instanceof QuestionFileModel)
+      .flatMap((q) => (Array.isArray(q.value) ? q.value : []) as FileItem[]);
+    removed
+      .filter(
+        (file) =>
+          isPendingFile(file) &&
+          !others.some((other) => other.content === file.content)
+      )
+      .forEach((file) => revokeFileUrl(file));
   }
 
   /**
@@ -331,6 +375,7 @@ export class FormBuilderService {
     // Default behavior
     if (typeof options.content === 'string') {
       if (
+        isLocalFileUrl(options.content) ||
         options.content.indexOf('base64') !== -1 ||
         options.content.indexOf('http') !== -1
       ) {

@@ -9,6 +9,7 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
+import { Subject } from 'rxjs';
 
 /**
  * UI Select option component
@@ -36,6 +37,13 @@ export class SelectOptionComponent implements AfterViewInit {
 
   /** Option label */
   label!: string;
+  /**
+   * Emits once the label is read from the content of the option.
+   * The label is only available after the view of the option is initialized,
+   * which happens after the select menu first sets its displayed text when
+   * options are declared directly in a template ( without ngFor ).
+   */
+  labelReady = new Subject<void>();
   /** If current option content should be displayed or not in the UI */
   display = true;
 
@@ -52,6 +60,7 @@ export class SelectOptionComponent implements AfterViewInit {
       this.el.nativeElement
         .querySelector('span')
         .firstChild?.textContent?.trim() ?? '';
+    this.labelReady.next();
   }
 
   /**

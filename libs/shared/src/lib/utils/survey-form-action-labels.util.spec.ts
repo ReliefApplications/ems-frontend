@@ -2,7 +2,9 @@ import { SurveyModel } from 'survey-core';
 import {
   evaluateSurveyActionButtonLabel,
   getSurveyFormActionButtonLabels,
+  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from './survey-form-action-labels.util';
 
@@ -116,6 +118,8 @@ describe('survey form action labels utility', () => {
       expect(getSurveyFormActionButtonLabels(survey)).toEqual({
         saveButtonLabel: 'Save draft',
         modalSaveButtonLabel: 'Save draft',
+        saveAsDraftButtonLabel: '',
+        modalSaveAsDraftButtonLabel: '',
       });
     });
 
@@ -139,6 +143,35 @@ describe('survey form action labels utility', () => {
       expect(getSurveyFormActionButtonLabels(survey)).toEqual({
         saveButtonLabel: 'Save',
         modalSaveButtonLabel: 'Update record',
+        saveAsDraftButtonLabel: '',
+        modalSaveAsDraftButtonLabel: '',
+      });
+    });
+
+    it('falls back to the form save as draft label when the modal label is empty', () => {
+      const survey = createSurveyMock({
+        [SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Keep for later',
+      });
+
+      expect(getSurveyFormActionButtonLabels(survey)).toEqual({
+        saveButtonLabel: '',
+        modalSaveButtonLabel: '',
+        saveAsDraftButtonLabel: 'Keep for later',
+        modalSaveAsDraftButtonLabel: 'Keep for later',
+      });
+    });
+
+    it('uses dedicated modal save as draft labels when they are configured', () => {
+      const survey = createSurveyMock({
+        [SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Keep for later',
+        [SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL]: 'Store draft',
+      });
+
+      expect(getSurveyFormActionButtonLabels(survey)).toEqual({
+        saveButtonLabel: '',
+        modalSaveButtonLabel: '',
+        saveAsDraftButtonLabel: 'Keep for later',
+        modalSaveAsDraftButtonLabel: 'Store draft',
       });
     });
   });

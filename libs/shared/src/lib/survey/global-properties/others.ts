@@ -9,19 +9,28 @@ import {
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import {
+  SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+  SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
   SURVEY_PROP_SAVE_BUTTON_LABEL,
 } from '../../utils/survey-form-action-labels.util';
 import {
   SURVEY_PROP_CONFIRM_RECORD_UPDATE,
   SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
 } from '../../utils/survey-confirm-record-update.util';
+import { SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION } from '../../utils/survey-read-only-fields.util';
+import { registerCustomPropertyHelp } from '../localization';
 import { Question } from '../types';
 
 type SurveyPropertyOwner = {
   getPropertyValue: (propertyName: string) => unknown;
   [key: string]: unknown;
 };
+
+/** Default maximum size per file of a file question, in bytes ( 7MB ) */
+export const DEFAULT_FILE_MAX_SIZE = 7 * 1024 * 1024;
+/** Hard limit of the maximum size per file of a file question, in bytes ( 100MB ) */
+export const FILE_MAX_SIZE_LIMIT = 100 * 1024 * 1024;
 
 /** Property-grid toggle used to reveal modal-specific label overrides. */
 const ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY =
@@ -39,7 +48,10 @@ const ADVANCED_NAVIGATION_LABEL_OVERRIDES_STATE =
 const hasModalActionButtonLabelOverrides = (
   obj?: SurveyPropertyOwner
 ): boolean =>
-  Boolean(obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL));
+  Boolean(
+    obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL) ||
+      obj?.getPropertyValue(SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL)
+  );
 
 /**
  * Whether modal-specific navigation overrides should be visible in the property grid.
@@ -128,10 +140,30 @@ export const init = (environment: any): void => {
     isSerializable: false,
   });
 
+  // Preserve legacy record creation behavior unless explicitly enabled.
+  serializer.addProperty('survey', {
+    name: `${SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION}:boolean`,
+    type: 'boolean',
+    category: 'data',
+    displayName: 'Lock read-only fields on record creation',
+    default: false,
+  });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_LOCK_READ_ONLY_FIELDS_ON_RECORD_CREATION,
+    'By default, fields marked as read-only can be edited while a new record is being created and only become locked when an existing record is edited. Enable this option to keep them read-only during record creation as well.'
+  );
+
   /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
-  /** Size per file is mandatory */
-  serializer.getProperty('file', 'maxSize').isRequired = true;
+  /** Size per file is mandatory, and capped to the limit */
+  const maxSizeProperty = serializer.getProperty('file', 'maxSize');
+  maxSizeProperty.isRequired = true;
+  maxSizeProperty.minValue = 1;
+  maxSizeProperty.maxValue = FILE_MAX_SIZE_LIMIT;
+  registerCustomPropertyHelp(
+    'maxSize',
+    `Maximum size per file, in bytes. Defaults to 7MB (${DEFAULT_FILE_MAX_SIZE}) and cannot exceed 100MB (${FILE_MAX_SIZE_LIMIT}).`
+  );
 
   serializer.addProperty('file', {
     category: 'general',
@@ -165,6 +197,40 @@ export const init = (environment: any): void => {
     minValue: 2,
   });
 
+  // Let users mark stored files as outdated instead of deleting them
+  serializer.addProperty('file', {
+    name: 'allowOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Allow marking files as outdated',
+    default: false,
+    visibleIndex: 11,
+  });
+  registerCustomPropertyHelp(
+    'allowOutdatedFiles',
+    'When enabled, users can mark stored files as outdated instead of deleting them. Outdated files stay attached to the record, are flagged with a warning icon, and still count toward the maximum number of files. Only roles allowed to delete files on this field can remove them permanently.'
+  );
+  serializer.addProperty('file', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: true,
+    dependsOn: 'allowOutdatedFiles',
+    visibleIf: (obj: any) => !!obj?.allowOutdatedFiles,
+    visibleIndex: 12,
+  });
+  // Same option for HTML questions listing files through {field} placeholders
+  serializer.addProperty('html', {
+    name: 'showOutdatedFiles:boolean',
+    category: 'general',
+    displayName: 'Display outdated files',
+    default: false,
+    visibleIndex: 10,
+  });
+  registerCustomPropertyHelp(
+    'showOutdatedFiles',
+    'Display files marked as outdated. Disable it to hide them here while keeping them attached to the record ( they can still be displayed in other forms, grids or widgets ).'
+  );
+
   // Add set value on complete expression to questions
   serializer.addProperty('question', {
     name: 'setValueOnComplete',
@@ -174,17 +240,52 @@ export const init = (environment: any): void => {
     default: '',
   });
 
+  // Mark the form as public: the back-end extracts this flag from the
+  // structure on save, exposing the form on the unauthenticated public routes.
+  serializer.addProperty('survey', {
+    name: 'isPublic:boolean',
+    type: 'boolean',
+    category: 'general',
+    visibleIndex: 49,
+    displayName: 'Public form',
+    default: false,
+  });
+  registerCustomPropertyHelp(
+    'isPublic',
+    'When enabled, the form is accessible without authentication through the public forms application: anyone with the link can open it and submit records.'
+  );
+
+  // Show the "New record" button displayed after submitting a public form,
+  // letting the user submit another record. Read from the structure by the
+  // public forms application.
+  serializer.addProperty('survey', {
+    name: 'showNewRecordButton:boolean',
+    type: 'boolean',
+    category: 'general',
+    dependsOn: 'isPublic',
+    visibleIf: (obj: any) => Boolean(obj?.isPublic),
+    visibleIndex: 50,
+    displayName: 'Show "New record" button',
+    default: true,
+  });
+  registerCustomPropertyHelp(
+    'showNewRecordButton',
+    'When enabled, a "New record" button is displayed once the public form has been submitted, allowing the user to submit another record.'
+  );
+
   // Require a confirmation modal before updating an existing record.
   serializer.addProperty('survey', {
     name: `${SURVEY_PROP_CONFIRM_RECORD_UPDATE}:boolean`,
     type: 'boolean',
     category: 'general',
-    visibleIndex: 50,
+    visibleIndex: 51,
     displayName: 'Confirm before updating a record',
-    description:
-      'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.',
     default: true,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_CONFIRM_RECORD_UPDATE,
+    'When enabled, the user must confirm in a modal before an existing record is updated. Driven by the matching expression in the Logic tab when one is set.'
+  );
   // Expression overriding the confirmation toggle (evaluated as a boolean).
   serializer.addProperty('survey', {
     name: SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
@@ -192,11 +293,13 @@ export const init = (environment: any): void => {
     category: 'logic',
     visibleIndex: 200,
     displayName: 'Confirm before updating a record (expression)',
-    description:
-      'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.',
     default: '',
     isLocalizable: false,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_CONFIRM_RECORD_UPDATE_IF,
+    'When set, its boolean result decides whether the confirmation modal is shown, overriding the toggle in the general settings.'
+  );
 
   // Add custom label expressions for the form action buttons
   serializer.addProperty('survey', {
@@ -205,7 +308,20 @@ export const init = (environment: any): void => {
     category: 'navigation',
     visibleIndex: 100,
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
+  });
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_SAVE_AS_DRAFT_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 101,
+    displayName: 'Save as draft label',
+    default: '',
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
   });
   serializer.addProperty('survey', {
     name: `${ADVANCED_NAVIGATION_LABEL_OVERRIDES_PROPERTY}:boolean`,
@@ -227,12 +343,32 @@ export const init = (environment: any): void => {
     category: 'navigation',
     visibleIndex: 103,
     displayName: 'Modal save label override',
-    description:
-      'Only used when the form is opened in a modal. Falls back to the regular save label if empty.',
     default: '',
-    isLocalizable: false,
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
     visibleIf: shouldShowAdvancedNavigationLabelOverrides,
   });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_MODAL_SAVE_BUTTON_LABEL,
+    'Only used when the form is opened in a modal. Falls back to the regular save label if empty.'
+  );
+  serializer.addProperty('survey', {
+    name: SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
+    type: 'expression',
+    category: 'navigation',
+    visibleIndex: 104,
+    displayName: 'Modal save as draft label override',
+    default: '',
+    // Localizable so admins can author a per-locale expression; the active
+    // locale's expression is resolved at runtime by getSurveyFormActionButtonLabels.
+    isLocalizable: true,
+    visibleIf: shouldShowAdvancedNavigationLabelOverrides,
+  });
+  registerCustomPropertyHelp(
+    SURVEY_PROP_MODAL_SAVE_AS_DRAFT_BUTTON_LABEL,
+    'Only used when the form is opened in a modal. Falls back to the regular save as draft label if empty.'
+  );
 };
 
 /**
@@ -243,6 +379,6 @@ export const init = (environment: any): void => {
 export const render = (question: Question): void => {
   // define the default max size for files
   if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
-    (question as QuestionFileModel).maxSize = 7340032;
+    (question as QuestionFileModel).maxSize = DEFAULT_FILE_MAX_SIZE;
   }
 };

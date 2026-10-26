@@ -17,7 +17,7 @@ export const GET_RESOURCE_RECORDS = gql`
         edges {
           node {
             id
-            data(display: $display)
+            data(display: $display, replaceTranslations: true)
           }
           cursor
         }

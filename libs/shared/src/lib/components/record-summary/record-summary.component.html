@@ -16,6 +16,7 @@
 </div>
 <div class="flex gap-2 items-center" *ngIf="record">
   <ui-button
+    *ngIf="canShowHistory"
     [isIcon]="true"
     icon="history"
     [uiTooltip]="'components.widget.grid.actions.history' | translate"

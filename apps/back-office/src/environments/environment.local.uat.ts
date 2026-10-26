@@ -29,12 +29,18 @@ export const environment: Environment = {
   /* cSpell:disable */
   ...sharedEnvironment,
   production: false,
-  serviceWorker: true,
+  // Keep the service worker disabled for local serving: registering it under
+  // the live-reload dev server causes an infinite reload loop (every rebuild
+  // emits a VERSION_READY, which the app reacts to by reloading). Build a
+  // static bundle and serve it without live-reload to test the PWA locally.
+  serviceWorker: false,
   href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'https://hems-test.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
+  // Default port of a locally served public-forms app (see README)
+  publicFormsUri: 'http://localhost:4200/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr', 'test', 'uk'],
   authConfig,

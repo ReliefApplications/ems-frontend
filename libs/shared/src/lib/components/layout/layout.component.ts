@@ -17,9 +17,7 @@ import { Account, AuthService } from '../../services/auth/auth.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Notification } from '../../models/notification.model';
 import { Dialog } from '@angular/cdk/dialog';
-import { NotificationService } from '../../services/notification/notification.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -29,6 +27,8 @@ import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { ApplicationService } from '../../services/application/application.service';
+import { applyAllowedLanguage } from '../../utils/languages';
 
 /**
  * Component for the main layout of the platform
@@ -109,20 +109,6 @@ export class LayoutComponent
    */
   languages: string[] = [];
 
-  // === NOTIFICATIONS ===
-  /**
-   * Notifications
-   */
-  public notifications: Notification[] = [];
-  /**
-   * Boolean to check if there are more notifications
-   */
-  public hasMoreNotifications = false;
-  /**
-   * Boolean to check if notifications are loading
-   */
-  public loadingNotifications = false;
-
   /** Account information of logged user */
   public account: Account | null;
   /** Currently logged user */
@@ -142,6 +128,12 @@ export class LayoutComponent
   public otherOffice = '';
   /** Environment */
   public environment: any;
+  /**
+   * Languages allowed for the language switch, restricted to the current
+   * application's additional languages in the front office. Null means no
+   * restriction (back office always shows every system language).
+   */
+  public allowedLanguages: string[] | null = null;
 
   // === APP SEARCH ===
   /** Show app search */
@@ -209,7 +201,6 @@ export class LayoutComponent
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
-   * @param notificationService This is the service that handles the notifications.
    * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
@@ -217,19 +208,21 @@ export class LayoutComponent
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
    * @param contextService Shared breadcrumb service
+   * @param applicationService Shared application service, used to restrict
+   * the language switch to the current application's additional languages
    */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService,
     private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private breadcrumbService: BreadcrumbService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private applicationService: ApplicationService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -250,25 +243,28 @@ export class LayoutComponent
     } else {
       this.otherOffice = 'back office';
     }
+    // Only the front office restricts the language switch to the current
+    // application's additional languages - back office always keeps every
+    // system language available.
+    if (this.environment.module === 'frontoffice') {
+      this.applicationService.application$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((application) => {
+          this.allowedLanguages = application
+            ? [
+                this.translate.defaultLang,
+                ...(application.additionalLanguages ?? []),
+              ]
+            : null;
+          // Re-derive the active language for this application, without
+          // touching localStorage - so navigating between applications with
+          // different language support keeps working in both directions.
+          if (this.allowedLanguages) {
+            applyAllowedLanguage(this.translate, this.allowedLanguages);
+          }
+        });
+    }
     this.loadUser();
-    this.notificationService.init();
-    this.notificationService.notifications$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((notifications: Notification[]) => {
-        if (notifications) {
-          this.notifications = notifications;
-        } else {
-          this.notifications = [];
-        }
-      });
-
-    this.notificationService.hasNextPage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.hasMoreNotifications = res;
-        this.loadingNotifications = false;
-      });
-
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view) => {
@@ -398,38 +394,11 @@ export class LayoutComponent
   }
 
   /**
-   * Load more notifications
-   *
-   * @param e Event
-   */
-  public onLoadMoreNotifications(e: any): void {
-    e.stopPropagation();
-    this.notificationService.fetchMore();
-    this.loadingNotifications = true;
-  }
-
-  /**
-   * Marks all the notifications as read
-   */
-  onMarkAllNotificationsAsRead(): void {
-    this.notificationService.markAllAsSeen();
-  }
-
-  /**
-   * Marks notification as seen when clicking on it
-   *
-   * @param notification The notification that was clicked on
-   */
-  onNotificationClick(notification: Notification): void {
-    this.notificationService.markAsSeen(notification);
-  }
-
-  /**
    * Changes current active language.
    *
    * @param language id of the language.
    */
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translate.use(language);
     localStorage.setItem('lang', language);
     if (!localStorage.getItem('date-lang')) {
@@ -447,7 +416,11 @@ export class LayoutComponent
     // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
-      language = this.translate.defaultLang;
+      // fall back to browser language if supported, otherwise app default
+      const browserLang = this.translate.getBrowserLang() ?? '';
+      language = this.languages.includes(browserLang)
+        ? browserLang
+        : this.translate.defaultLang;
     }
     // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {

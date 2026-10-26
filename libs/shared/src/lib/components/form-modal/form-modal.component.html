@@ -5,17 +5,16 @@
         <shared-record-summary
           *ngIf="record"
           [record]="record"
+          [canShowHistory]="!record.draft && !lastDraftRecord"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
-        <shared-form-actions
-          *ngIf="survey"
+        <shared-draft-record
+          *ngIf="showSaveAsDraft"
           [survey]="survey"
-        ></shared-form-actions>
-        <!-- <shared-draft-record
-          [survey]="survey"
-          [formId]="form?.id ?? ''"
+          [form]="form!"
+          [beforeOpenDrafts]="beforeOpenDrafts"
           (loadDraft)="onLoadDraftRecord($event)"
-        ></shared-draft-record> -->
+        ></shared-draft-record>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
@@ -40,12 +39,32 @@
       <div *ngIf="loading; else surveyTmpl" class="h-full flex">
         <ui-spinner class="m-auto block"></ui-spinner>
       </div>
+      <!-- Blocks the whole dialog while the record is saved: nothing can be edited until the back-end answers.
+      Positioned against the dialog itself ( its closest positioned ancestor ), so it is not limited to the scrolled content -->
+      <div
+        *ngIf="saving"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/70 cursor-wait"
+      >
+        <ui-spinner></ui-spinner>
+      </div>
       <ng-template #surveyTmpl>
+        <ui-alert
+          *ngIf="data.isDraftClone"
+          [showIcon]="true"
+          class="block mb-4"
+        >
+          {{ 'components.form.draftRecords.cloneNotice' | translate }}
+        </ui-alert>
         <survey [model]="survey"></survey>
       </ng-template>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
+    <shared-draft-save-status
+      class="mr-auto"
+      [saving]="draftSaving"
+      [savedAt]="lastDraftSavedAt"
+    ></shared-draft-save-status>
     <ui-button [uiDialogClose]>
       {{ 'common.close' | translate }}
     </ui-button>
@@ -56,7 +75,7 @@
         *ngIf="pages.length > 1"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isFirstPage"
+        [disabled]="!survey || survey.isFirstPage || saving"
       >
         {{ 'common.previous' | translate }}
       </ui-button>
@@ -66,14 +85,20 @@
         *ngIf="pages.length > 1"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
-        [disabled]="!survey || survey.isLastPage"
+        [disabled]="!survey || survey.isLastPage || saving"
       >
         {{ 'common.next' | translate }}
       </ui-button>
     </ng-container>
-    <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
-      'components.form.draftRecords.save' | translate
-    }}</ui-button> -->
+    <ui-button
+      *ngIf="showSaveAsDraft"
+      [disabled]="saving"
+      (click)="saveAsDraft()"
+      >{{
+        saveAsDraftButtonLabel ||
+          ('components.form.draftRecords.save' | translate)
+      }}</ui-button
+    >
     <ui-button
       category="secondary"
       variant="primary"

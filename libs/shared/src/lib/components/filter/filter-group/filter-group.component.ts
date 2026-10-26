@@ -31,6 +31,13 @@ export class FilterGroupComponent implements OnChanges {
   @Input() isEmailNotification = false;
   /** Is disabled */
   @Input() disabled = false;
+  /** Enables attribute filters to switch between field and literal values */
+  @Input() enableAttributeValueSource = false;
+  /**
+   * Per-dataset Common Services field settings, forwarded to the filter row's value
+   * editor to drive the `{{Block N.field}}` dataset-field token picker.
+   */
+  @Input() datasetCommonServicesFieldSettings: any;
 
   /**
    * Getter for the filters
@@ -65,6 +72,7 @@ export class FilterGroupComponent implements OnChanges {
       field: '',
       operator: 'eq',
       value: null,
+      ...(this.enableAttributeValueSource ? { valueSource: 'field' } : {}),
       inTheLast: this.fb.group({
         number: [1],
         unit: ['days'],

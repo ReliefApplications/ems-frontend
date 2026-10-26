@@ -18,6 +18,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { LocalizedString } from '../../../models/localized-string.model';
+import { localizedRequired } from '../../../utils/validators/localizedRequired.validator';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -335,7 +337,7 @@ export class SummaryCardSettingsComponent
       const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
-        label: [item.label, Validators.required],
+        label: [item.label as LocalizedString, localizedRequired],
       });
       (this.widgetFormGroup?.get('sortFields') as any).push(row);
     });

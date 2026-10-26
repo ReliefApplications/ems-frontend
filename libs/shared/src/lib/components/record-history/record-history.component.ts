@@ -11,14 +11,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, scan, switchMap, takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { DownloadService } from '../../services/download/download.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { Record, RecordQueryResponse } from '../../models/record.model';
 import {
-  Change,
   RecordHistory,
   RecordHistoryResponse,
 } from '../../models/records-history.model';
@@ -27,30 +26,12 @@ import {
   GET_RECORD_HISTORY_BY_ID,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
-import { startCase, isNil } from 'lodash';
+import { startCase } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
 
-/**
- * Return the type of the old value if existing, else the type of the new value.
- *
- * @param oldVal The previous value
- * @param newVal The next value
- * @returns The type of the value: primitive, object or array
- */
-const getValueType = (
-  oldVal: any,
-  newVal: any
-): 'primitive' | 'object' | 'array' => {
-  if (oldVal) {
-    if (Array.isArray(oldVal)) return 'array';
-    if (oldVal instanceof Object) return 'object';
-    return 'primitive';
-  }
-  if (Array.isArray(newVal)) return 'array';
-  if (newVal instanceof Object) return 'object';
-  return 'primitive';
-};
+/** Number of history entries fetched per page */
+export const HISTORY_PAGE_SIZE = 20;
 
 /**
  * This is a component to access the history of a record
@@ -58,7 +39,10 @@ const getValueType = (
 @Component({
   selector: 'shared-record-history',
   templateUrl: './record-history.component.html',
-  styleUrls: ['./record-history.component.scss'],
+  styleUrls: [
+    './record-history-panels.scss',
+    './record-history.component.scss',
+  ],
 })
 export class RecordHistoryComponent
   extends UnsubscribeComponent
@@ -87,8 +71,12 @@ export class RecordHistoryComponent
   public filterHistory: RecordHistory = [];
   /** Loading state */
   public loading = true;
-  /** Show more state */
-  public showMore = false;
+  /** Loading state for the "load more" pagination action */
+  public loadingMore = false;
+  /** Emits history page load requests; 'reload' restarts from the first page */
+  private page$ = new Subject<'reload' | 'next'>();
+  /** Whether more history entries can be loaded */
+  public hasMoreHistory = false;
   /** Displayed columns array */
   public displayedColumns: string[] = ['position'];
   /** Form group for date filters */
@@ -99,27 +87,6 @@ export class RecordHistoryComponent
   });
   /** Sorted fields */
   public sortedFields: any[] = [];
-  /** Table columns */
-  public displayedColumnsHistory: string[] = [
-    'variable',
-    'date',
-    'time',
-    'person',
-    'action',
-    'originalValue',
-    'modifiedValue',
-  ];
-  /** Translations for chips */
-  translations = {
-    withValue: this.translate.instant('components.history.changes.withValue'),
-    from: this.translate.instant('components.history.changes.from'),
-    to: this.translate.instant('components.history.changes.to'),
-    add: this.translate.instant('components.history.changes.add'),
-    remove: this.translate.instant('components.history.changes.remove'),
-    modify: this.translate.instant('components.history.changes.modify'),
-  };
-  /** Data source for history as a table */
-  historyForTable: any[] = [];
   /** Should view as table */
   viewAsTable = new FormControl(true);
   /** size style */
@@ -159,6 +126,34 @@ export class RecordHistoryComponent
   }
 
   ngOnInit(): void {
+    // Load history pages through a single stream: switchMap cancels any
+    // in-flight request whenever a new page load is triggered
+    this.page$
+      .pipe(
+        scan((page, action) => (action === 'reload' ? 1 : page + 1), 0),
+        switchMap((page) =>
+          this.queryHistoryPage(page).pipe(map((result) => ({ page, result })))
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ page, result: { errors, data } }) => {
+        this.loadingMore = false;
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.history.error', {
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+          if (page === 1) {
+            this.cancel.emit(true);
+          }
+        } else {
+          this.appendHistoryPage(data.recordHistory);
+          this.loading = false;
+        }
+      });
+
     const setSubscription = () => {
       this.apollo
         .query<RecordQueryResponse>({
@@ -173,38 +168,7 @@ export class RecordHistoryComponent
           this.sortedFields = this.sortFields(this.getFields());
         });
 
-      this.apollo
-        .query<RecordHistoryResponse>({
-          query: GET_RECORD_HISTORY_BY_ID,
-          variables: {
-            id: this.id,
-            lang: this.translate.currentLang,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.history.error', {
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-            this.cancel.emit(true);
-          } else {
-            this.history = data.recordHistory.filter(
-              (item) => item.changes.length
-            );
-            this.filterHistory = this.history;
-            this.historyForTable = [];
-            this.history.map((elt) => {
-              elt.changes.map((change) => {
-                this.setHistoryForTableFromChange(change, elt);
-              });
-            });
-            this.loading = false;
-          }
-        });
+      this.reloadHistory();
     };
     if (this.refresh$) {
       // Set subscription to load records
@@ -217,46 +181,115 @@ export class RecordHistoryComponent
       setSubscription();
     }
 
+    // Field and date filters are applied by the API, so the history must be
+    // fetched again from the first page whenever they change
     this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const startDate = this.filters.get('startDate')?.value
-        ? new Date(this.filters.get('startDate')?.value as any)
-        : undefined;
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      const endDate = this.filters.get('endDate')?.value
-        ? new Date(this.filters.get('endDate')?.value as any)
-        : undefined;
-      if (endDate) endDate.setHours(23, 59, 59, 99);
-      this.filterHistory = this.history.filter((item) => {
-        const createdAt = new Date(item.createdAt);
-        return (
-          !startDate ||
-          !endDate ||
-          (createdAt >= startDate && createdAt <= endDate)
-        );
-      });
-
-      const fields: any = this.filters.get('fields')?.value;
-      if (fields.length > 0) {
-        this.filterHistory = this.filterHistory
-          .filter(
-            (item) =>
-              !!item.changes.find((change) => fields.includes(change.field))
-          )
-          .map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.changes = item.changes.filter((change) =>
-              fields.includes(change.field)
-            );
-            return newItem;
-          });
-      }
-      this.historyForTable = [];
-      this.filterHistory.map((elt) => {
-        elt.changes.map((change) => {
-          this.setHistoryForTableFromChange(change, elt);
-        });
-      });
+      this.reloadHistory();
     });
+  }
+
+  /**
+   * Reloads the history from the first page, using the current field filters.
+   */
+  private reloadHistory(): void {
+    this.loading = true;
+    // A reload cancels any in-flight "load more" request
+    this.loadingMore = false;
+    this.history = [];
+    this.page$.next('reload');
+  }
+
+  /**
+   * Queries a single page of the record's history.
+   *
+   * @param page Page to fetch, 1-indexed
+   * @returns Observable of the GraphQL response for that page
+   */
+  private queryHistoryPage(page: number) {
+    const { fromDate, toDate } = this.getDateRange();
+    return this.apollo.query<RecordHistoryResponse>({
+      query: GET_RECORD_HISTORY_BY_ID,
+      variables: {
+        id: this.id,
+        lang: this.translate.currentLang,
+        first: HISTORY_PAGE_SIZE,
+        skip: (page - 1) * HISTORY_PAGE_SIZE,
+        fields: this.filters.get('fields')?.value ?? [],
+        fromDate,
+        toDate,
+      },
+    });
+  }
+
+  /**
+   * Gets the current date range filter, normalized to whole days.
+   * Dates left unset by the user are returned as null.
+   *
+   * @returns The start and end dates of the current filter
+   */
+  private getDateRange(): { fromDate: Date | null; toDate: Date | null } {
+    const startDate = this.filters.get('startDate')?.value;
+    const fromDate = startDate ? new Date(startDate) : null;
+    if (fromDate) fromDate.setHours(0, 0, 0, 0);
+    const endDate = this.filters.get('endDate')?.value;
+    const toDate = endDate ? new Date(endDate) : null;
+    if (toDate) toDate.setHours(23, 59, 59, 999);
+    return { fromDate, toDate };
+  }
+
+  /**
+   * Appends a freshly fetched page of history entries to the current history,
+   * and recomputes the filtered / table views.
+   *
+   * @param recordHistory Page of history entries returned by the API
+   */
+  private appendHistoryPage(recordHistory: RecordHistory): void {
+    const entries = recordHistory.filter((item) => item.changes.length);
+    this.history = this.history.concat(entries);
+    this.hasMoreHistory = recordHistory.length === HISTORY_PAGE_SIZE;
+    this.applyFilters();
+  }
+
+  /**
+   * Loads the next page of history entries, if any, and appends them.
+   */
+  loadMoreHistory(): void {
+    if (this.loadingMore || !this.hasMoreHistory) {
+      return;
+    }
+    this.loadingMore = true;
+    this.page$.next('next');
+  }
+
+  /**
+   * Recomputes filterHistory / historyForTable from the currently loaded
+   * history and the active date / field filters.
+   */
+  private applyFilters(): void {
+    const { fromDate, toDate } = this.getDateRange();
+    this.filterHistory = this.history.filter((item) => {
+      const createdAt = new Date(item.createdAt);
+      // Each bound applies independently, matching the API & export filtering
+      return (
+        (!fromDate || createdAt >= fromDate) && (!toDate || createdAt <= toDate)
+      );
+    });
+
+    const fields: any = this.filters.get('fields')?.value;
+    if (fields?.length > 0) {
+      this.filterHistory = this.filterHistory
+        .filter(
+          (item) =>
+            !!item.changes.find((change) => fields.includes(change.field))
+        )
+        .map((item) => {
+          const newItem = Object.assign({}, item);
+          newItem.changes = item.changes.filter((change) =>
+            fields.includes(change.field)
+          );
+          return newItem;
+        });
+    }
   }
 
   /**
@@ -315,125 +348,6 @@ export class RecordHistoryComponent
   }
 
   /**
-   * Push correct values to historyForTable list
-   *
-   * @param change Change to push
-   * @param filterHistoryElement Filter history element (used for createdAt and createdBy)
-   */
-  setHistoryForTableFromChange(change: Change, filterHistoryElement: any) {
-    this.historyForTable.push({
-      displayName: change.displayName,
-      new: change.new ? JSON.parse(change.new) : undefined,
-      old: change.old ? JSON.parse(change.old) : undefined,
-      type: change.type,
-      createdAt: filterHistoryElement.createdAt,
-      createdBy: filterHistoryElement.createdBy,
-    });
-  }
-
-  /**
-   * Get HTML for type chip
-   *
-   * @param change The field change object
-   * @returns the HTML for the chip
-   */
-  getChipFromChange(change: Change) {
-    switch (change.type) {
-      case 'remove':
-      case 'add':
-        return `
-            <span class="${change.type}-field">
-            ${this.translations[change.type]}
-            </span>
-          `;
-      case 'modify':
-        return `
-            <span class="${change.type}-field">
-            ${this.translations[change.type]}
-            </span>
-          `;
-    }
-  }
-
-  /**
-   * Gets the HTML element from a change object
-   *
-   * @param change The field change object
-   * @returns the innerHTML for the listing
-   */
-  getHTMLFromChange(change: Change) {
-    let oldVal = change.old ? JSON.parse(change.old) : undefined;
-    let newVal = change.new ? JSON.parse(change.new) : undefined;
-
-    const valueType = getValueType(oldVal, newVal);
-
-    if (valueType === 'object') {
-      if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
-      if (newVal) newVal = this.toReadableObjectValue(newVal);
-    }
-
-    if (valueType === 'array') {
-      if (oldVal && !(oldVal[0] instanceof Object)) oldVal = oldVal.join(', ');
-      else if (oldVal) oldVal = this.toReadableObjectValue(oldVal);
-      if (newVal && !(newVal[0] instanceof Object)) newVal = newVal.join(', ');
-      else if (newVal) newVal = this.toReadableObjectValue(newVal);
-    }
-
-    switch (change.type) {
-      case 'remove':
-      case 'add':
-        return `
-          <p>
-            ${this.getChipFromChange(change)}
-            <b> ${change.displayName} </b>
-            ${this.translations.withValue}
-            <b> ${change.type === 'add' ? newVal : oldVal}</b>
-          <p>
-          `;
-      case 'modify':
-        return `
-          <p>
-          ${this.getChipFromChange(change)}
-            <b> ${change.displayName} </b>
-            ${this.translations.from}
-            <b> ${oldVal}</b>
-            ${this.translations.to}
-            <b> ${newVal}</b>
-          <p>
-          `;
-    }
-  }
-
-  /**
-   * Transforms a object in a more readable inline string (or list)
-   *
-   * @param object The object
-   * @returns A 'readable' version of that object, in which the the format key (value1, value2)
-   */
-  toReadableObjectValue(object: any): any {
-    // base case
-    if (typeof object !== 'object') return object;
-
-    // arrays
-    if (Array.isArray(object)) {
-      return object.map((elem) => this.toReadableObjectValue(elem));
-    }
-
-    // objects - non arrays
-    const res: any[] = [];
-    // Prevent errors to be thrown on null objects
-    if (!isNil(object)) {
-      const keys = Object.keys(object);
-      keys.forEach((key, i) => {
-        res.push(
-          `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
-        );
-      });
-    }
-    return res;
-  }
-
-  /**
    * Display a modal to show previous version, and revert to it if user accepts.
    *
    * @param version The version to revert
@@ -466,14 +380,15 @@ export class RecordHistoryComponent
   onDownload(type: string): void {
     const path = `download/form/records/${this.id}/history`;
     const fields: any = this.filters.get('fields')?.value;
+    const { fromDate, toDate } = this.getDateRange();
     const queryString = new URLSearchParams({
       type,
-      from: `${new Date(
-        this.filters.get('startDate')?.value as any
-      ).getTime()}`,
-      to: `${new Date(this.filters.get('endDate')?.value as any).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
+      // Only send the date range when set, so the API does not receive
+      // 0 / NaN timestamps
+      ...(fromDate && { from: `${fromDate.getTime()}` }),
+      ...(toDate && { to: `${toDate.getTime()}` }),
       ...(fields && { fields: fields.join(',') }),
     }).toString();
     this.downloadService.getFile(

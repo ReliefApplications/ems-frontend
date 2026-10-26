@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -13,6 +13,7 @@ import {
   ApplicationService,
   ConfirmService,
   DeleteApplicationMutationResponse,
+  getLanguageNativeName,
   status,
   UnsubscribeComponent,
 } from '@oort-front/shared';
@@ -71,6 +72,15 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public locked: boolean | undefined = undefined;
   /** Is application locked for edition by current user */
   public lockedByUser: boolean | undefined = undefined;
+  /**
+   * Languages that can be picked as "additional languages" for the
+   * application - every system language except the default one, which is
+   * always available.
+   */
+  public availableLanguages: string[] = [];
+
+  /** @returns native name getter, exposed for the template */
+  public readonly getLanguageNativeName = getLanguageNativeName;
 
   /** @returns Application shortcut form field */
   get shortcut(): AbstractControl | null {
@@ -89,6 +99,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog Dialog service
    * @param translate Angular translate service
    * @param layoutService UI layout service
+   * @param environment Environment in which the application runs
    */
   constructor(
     private fb: FormBuilder,
@@ -99,9 +110,13 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: UILayoutService
+    private layoutService: UILayoutService,
+    @Inject('environment') private environment: any
   ) {
     super();
+    this.availableLanguages = (
+      this.environment.availableLanguages ?? []
+    ).filter((lang: string) => lang !== this.translate.defaultLang);
   }
 
   ngOnInit(): void {
@@ -109,8 +124,17 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          // Only (re)build the form when a different application is loaded,
+          // not on every emission - editApplication() re-emits the current
+          // application after each successful save, and rebuilding the form
+          // then would wipe out any edit made in the meantime (and reset the
+          // save button to disabled) if it landed while the user was already
+          // typing the next change.
+          const isNewApplication = this.application?.id !== application.id;
           this.application = application;
-          this.settingsForm = this.createSettingsForm(application);
+          if (!this.settingsForm || isNewApplication) {
+            this.settingsForm = this.createSettingsForm(application);
+          }
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
@@ -133,6 +157,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       hideMenu: [application.hideMenu],
       description: [application.description],
       status: [application.status],
+      additionalLanguages: [application.additionalLanguages ?? []],
     });
     // Make sure top menu and side menu are mutually exclusive
     form.controls.sideMenu.valueChanges
@@ -155,8 +180,49 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
 
   /**
    * Submit settings form.
+   * If any additional language was removed, prompts a confirm modal first,
+   * since that language will disappear from the front-office UI.
    */
   onSubmit(): void {
+    const previousLanguages: string[] =
+      this.application?.additionalLanguages ?? [];
+    const newLanguages: string[] =
+      this.settingsForm?.value.additionalLanguages ?? [];
+    const removedLanguages = previousLanguages.filter(
+      (lang) => !newLanguages.includes(lang)
+    );
+    if (removedLanguages.length > 0) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant(
+          'pages.application.settings.additionalLanguages.confirmRemoval.title'
+        ),
+        content: this.translate.instant(
+          'pages.application.settings.additionalLanguages.confirmRemoval.message',
+          {
+            languages: removedLanguages
+              .map((lang) => this.getLanguageNativeName(lang))
+              .join(', '),
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'danger',
+      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.saveSettings();
+          }
+        });
+    } else {
+      this.saveSettings();
+    }
+  }
+
+  /**
+   * Actually persists the settings form value.
+   */
+  private saveSettings(): void {
     this.applicationService.editApplication(this.settingsForm?.value);
     this.settingsForm?.markAsPristine();
   }

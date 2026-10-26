@@ -3,6 +3,7 @@ import {
   MultiSelectComponent,
 } from '@progress/kendo-angular-dropdowns';
 import { isEqual } from 'lodash';
+import { resolveLocalizedString } from '../../../models/localized-string.model';
 
 /**
  * Default options length displayed in the widgets list
@@ -21,6 +22,9 @@ function updateChoices(
   surveyQuestion: any,
   searchValue: string = ''
 ) {
+  // Survey locale ('' for the default locale), used to resolve choice text
+  // when it is stored as a per-locale map rather than a plain string.
+  const locale = surveyQuestion.survey?.locale;
   const choices: { text: string | undefined | null; value: any }[] = (
     surveyQuestion.visibleChoices || []
   ).map((choice: any) =>
@@ -30,7 +34,7 @@ function updateChoices(
           value: choice,
         }
       : {
-          text: choice.text,
+          text: resolveLocalizedString(choice.text, locale),
           value: choice.value,
         }
   );

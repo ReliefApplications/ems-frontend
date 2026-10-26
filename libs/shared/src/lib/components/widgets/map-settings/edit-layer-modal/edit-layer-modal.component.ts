@@ -33,6 +33,7 @@ import {
 } from 'rxjs';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Fields, LayerModel } from '../../../../models/layer.model';
+import { resolveLocalizedString } from '../../../../models/localized-string.model';
 import { Layout } from '../../../../models/layout.model';
 import {
   ReferenceData,
@@ -150,7 +151,10 @@ export class EditLayerModalComponent
    */
   private get overlays(): OverlayLayerTree {
     return {
-      label: this.form.get('name')?.value || '',
+      label: resolveLocalizedString(
+        this.form.get('name')?.value,
+        this.translate.currentLang
+      ),
       layer: this.currentLayer,
     };
   }
@@ -225,7 +229,10 @@ export class EditLayerModalComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     const overlays: OverlayLayerTree = {
-      label: this.form.get('name')?.value || '',
+      label: resolveLocalizedString(
+        this.form.get('name')?.value,
+        this.translate.currentLang
+      ),
       layer: this.currentLayer,
     };
     //Once we exit the layer editor, destroy the layer and related controls

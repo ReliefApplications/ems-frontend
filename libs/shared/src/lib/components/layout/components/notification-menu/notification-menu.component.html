@@ -1,0 +1,38 @@
+<ui-menu #menu width="w-80">
+  <!-- Header -->
+  <div
+    class="flex items-center justify-between gap-2 px-4 py-3 border-b border-gray-100"
+  >
+    <h3 class="text-lg font-semibold text-gray-800 !m-0">
+      {{ 'components.notifications.title' | translate }}
+    </h3>
+    <ui-button
+      *ngIf="notifications.length > 0"
+      category="tertiary"
+      size="small"
+      icon="check_circle_outline"
+      (click)="markAllAsRead.emit()"
+    >
+      {{ 'components.notifications.readAll' | translate }}
+    </ui-button>
+  </div>
+  <!-- Notification list -->
+  <shared-notification-list
+    [notifications]="notifications"
+    (notificationClick)="onNotificationClick($event)"
+    (markAsSeen)="markAsSeen.emit($event)"
+  ></shared-notification-list>
+  <!-- Load more -->
+  <div *ngIf="hasMore" class="px-4 py-2 border-t border-gray-100">
+    <ui-button
+      category="tertiary"
+      variant="primary"
+      [isBlock]="true"
+      [disabled]="loading"
+      [loading]="loading"
+      (click)="loadMore.emit($event)"
+    >
+      {{ 'common.pagination.loadMore' | translate }}
+    </ui-button>
+  </div>
+</ui-menu>

@@ -125,6 +125,32 @@
         ></ng-container>
       </ui-toggle>
     </div>
+    <!-- Additional languages -->
+    <div uiFormFieldDirective *ngIf="availableLanguages.length > 0">
+      <label class="flex items-center gap-1">
+        {{ 'pages.application.settings.additionalLanguages.text' | translate }}
+        <ui-icon
+          class="cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'pages.application.settings.additionalLanguages.info' | translate
+          "
+        ></ui-icon>
+      </label>
+      <ui-select-menu
+        [multiselect]="true"
+        formControlName="additionalLanguages"
+      >
+        <ui-select-option
+          *ngFor="let lang of availableLanguages"
+          [value]="lang"
+        >
+          {{ getLanguageNativeName(lang) }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </form>
 <!-- Actions -->
