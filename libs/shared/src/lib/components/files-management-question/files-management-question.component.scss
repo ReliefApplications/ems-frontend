@@ -27,3 +27,13 @@
     border-inline-end-width: 0;
   }
 }
+
+// Translations are listed right under the file they translate: a tinted row
+// with a primary-colored edge ties them to it
+:host ::ng-deep kendo-grid tr.files-management-question__translation td {
+  background-color: rgba(0, 0, 0, 0.03);
+
+  &:first-child {
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+}

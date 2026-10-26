@@ -1,3 +1,7 @@
+<p *ngIf="errorMessage" class="k-form-error text-red-600 text-sm m-0 mb-2">
+  {{ errorMessage }}
+</p>
+
 <!-- Scrollable grid with sized columns: scrolls horizontally when narrow,
      the actions column staying in view -->
 <kendo-grid
@@ -7,14 +11,30 @@
   [sort]="sort"
   (sortChange)="onSortChange($event)"
   [scrollable]="'scrollable'"
+  [rowClass]="rowClass"
 >
   <kendo-grid-column
     field="file.name"
     [title]="'components.filesManagement.fileName' | translate"
-    [width]="200"
+    [width]="220"
   >
+    <!-- Translations are indented under the file they translate -->
     <ng-template kendoGridCellTemplate let-dataItem>
-      <span class="inline-flex items-center gap-2">
+      <span
+        class="inline-flex items-center gap-2"
+        [class.pl-4]="dataItem.isTranslation"
+      >
+        <ui-icon
+          *ngIf="dataItem.isTranslation"
+          class="text-gray-500"
+          icon="subdirectory_arrow_right"
+          [size]="18"
+          [uiTooltip]="
+            'components.filesManagement.translationOf'
+              | translate : { name: dataItem.sourceName }
+          "
+          uiTooltipPosition="top"
+        ></ui-icon>
         <span class="k-icon" [ngClass]="dataItem.icon"></span>
         <span [title]="dataItem.file.name">{{ dataItem.file.name }}</span>
       </span>
@@ -70,26 +90,98 @@
       </span>
     </ng-template>
   </kendo-grid-column>
+  <!-- Translations: only when the question allows them. A translation names
+       the file it translates, a translated file lists the languages it is
+       translated in, and files missing a translation say which languages
+       they miss -->
+  <kendo-grid-column
+    *ngIf="translationsEnabled"
+    field="translationLabel"
+    [title]="'components.filesManagement.translations' | translate"
+    [width]="200"
+  >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <div class="flex flex-col gap-0.5">
+        <span
+          *ngIf="dataItem.isTranslation"
+          class="inline-flex items-center gap-1 text-gray-700"
+          [title]="dataItem.sourceName"
+        >
+          <ui-icon icon="link" [size]="18"></ui-icon>
+          {{
+            'components.filesManagement.translationOf'
+              | translate : { name: dataItem.sourceName }
+          }}
+        </span>
+        <span
+          *ngIf="dataItem.translationLanguages.length"
+          class="inline-flex items-center gap-1 text-primary-700"
+          [title]="
+            'components.filesManagement.translationFiles'
+              | translate : { files: dataItem.translationFileNames.join(', ') }
+          "
+        >
+          <ui-icon icon="link" [size]="18"></ui-icon>
+          {{
+            'components.filesManagement.translatedIn'
+              | translate
+                : { languages: dataItem.translationLanguages.join(', ') }
+          }}
+        </span>
+        <span
+          *ngIf="
+            !dataItem.isTranslation &&
+            !dataItem.translationLanguages.length &&
+            dataItem.missingLanguages.length
+          "
+          class="italic text-amber-600"
+        >
+          {{ 'components.filesManagement.notTranslated' | translate }}
+        </span>
+        <span
+          *ngIf="dataItem.missingLanguages.length"
+          class="text-xs text-gray-500"
+        >
+          {{
+            'components.filesManagement.missingTranslations'
+              | translate : { languages: dataItem.missingLanguages.join(', ') }
+          }}
+        </span>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
   <kendo-grid-column
     [title]="'common.actions' | translate"
     [sortable]="false"
-    [width]="140"
+    [width]="translationsEnabled ? 180 : 140"
     [sticky]="true"
   >
-    <!-- Same actions as the file questions -->
+    <!-- Same actions as the file questions, plus the translation one -->
     <ng-template kendoGridCellTemplate let-dataItem>
-      <shared-file-item-actions
-        class="justify-end"
-        [file]="dataItem.file"
-        [outdated]="dataItem.outdated"
-        [showOutdatedWarning]="false"
-        [canDownload]="true"
-        [canOutdate]="dataItem.canOutdate"
-        [canRemove]="dataItem.canRemove"
-        [permanentRemoval]="dataItem.permanentRemoval"
-        [toggleOutdated]="dataItem.toggleOutdated"
-        [removeFile]="dataItem.removeFile"
-      ></shared-file-item-actions>
+      <div class="flex items-center justify-end gap-1">
+        <ui-button
+          *ngIf="dataItem.canTranslate"
+          [isIcon]="true"
+          icon="translate"
+          category="tertiary"
+          variant="primary"
+          size="small"
+          [uiTooltip]="'components.filesManagement.translate' | translate"
+          uiTooltipPosition="top"
+          (click)="dataItem.translate()"
+        ></ui-button>
+        <shared-file-item-actions
+          [file]="dataItem.file"
+          [outdated]="dataItem.outdated"
+          [showOutdatedWarning]="false"
+          [canDownload]="true"
+          [canOutdate]="dataItem.canOutdate"
+          [canRemove]="dataItem.canRemove"
+          [permanentRemoval]="dataItem.permanentRemoval"
+          [toggleOutdated]="dataItem.toggleOutdated"
+          [removeFile]="dataItem.removeFile"
+        ></shared-file-item-actions>
+      </div>
     </ng-template>
   </kendo-grid-column>
   <ng-template kendoGridNoRecordsTemplate>

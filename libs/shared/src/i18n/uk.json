@@ -1112,11 +1112,25 @@
       "field": "Тип документа",
       "fileName": "Назва файлу",
       "language": "Мова",
+      "missingTranslations": "Відсутні: {{languages}}",
       "noLanguage": "Без мови",
+      "notTranslated": "Не перекладено",
       "status": "Статус",
       "statusActive": "Активний",
       "statusOutdated": "Застарілий",
-      "statusPending": "До завантаження"
+      "statusPending": "До завантаження",
+      "translate": "Додати переклад",
+      "translatedIn": "Перекладено: {{languages}}",
+      "translation": {
+        "description": "Завантажте переклад файлу «{{name}}».",
+        "file": "Перекладений файл",
+        "language": "Мова перекладу",
+        "selectFile": "Вибрати файл",
+        "title": "Додати переклад"
+      },
+      "translationFiles": "Переклади: {{files}}",
+      "translationOf": "Переклад файлу «{{name}}»",
+      "translations": "Переклади"
     },
     "filesUpload": {
       "addFiles": "Додати файли",
