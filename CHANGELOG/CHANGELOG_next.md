@@ -1,3 +1,9 @@
+# [2.24.0-rc.30](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.29...v2.24.0-rc.30) (2026-10-26)
+
+### Features
+
+- Enable file translation ([#2955](https://github.com/ReliefApplications/ems-frontend/issues/2955)) ([edf01d7](https://github.com/ReliefApplications/ems-frontend/commit/edf01d72797fd6a65b26c7062e24162849d8d765)), closes [AB#138121](https://github.com/AB/issues/138121)
+
 # [2.24.0-rc.29](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.28...v2.24.0-rc.29) (2026-10-23)
 
 ### Features
