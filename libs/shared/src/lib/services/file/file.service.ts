@@ -44,6 +44,16 @@ export interface File {
   /** Language the file was uploaded for ( tagged by the Files upload question ). */
   lang?: string;
   /**
+   * Key of a file translated through a Files management question, which its
+   * translations point to ( see `translationOf` ).
+   */
+  translationKey?: string;
+  /**
+   * Set on a translation added through a Files management question: the
+   * `translationKey` of the file it translates.
+   */
+  translationOf?: string;
+  /**
    * Saved in the back-end storage along with a draft record. The file reaches
    * its final storage ( document management, when configured ) when the
    * record is submitted.

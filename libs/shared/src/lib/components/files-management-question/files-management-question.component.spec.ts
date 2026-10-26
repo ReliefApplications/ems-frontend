@@ -1,11 +1,21 @@
+import { Dialog } from '@angular/cdk/dialog';
+import { ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { SurveyModel } from 'survey-core';
+import { FilesManagementQuestion } from '../../survey/components/files-management';
+import {
+  ALLOW_TRANSLATIONS_PROPERTY,
+  TRANSLATION_LANGUAGES_PROPERTY,
+} from '../../survey/components/utils/files-widgets.util';
 import { QuestionFile } from '../../survey/types';
+import { FileTranslationModalComponent } from './file-translation-modal/file-translation-modal.component';
 import { FilesManagementQuestionComponent } from './files-management-question.component';
 
 describe('FilesManagementQuestionComponent', () => {
   let survey: SurveyModel;
   let component: FilesManagementQuestionComponent;
+  let dialog: { open: jest.Mock };
 
   /** Files of the attachments question */
   const pending = { name: 'pending.pdf', content: 'data:x', lang: 'fr' };
@@ -29,13 +39,39 @@ describe('FilesManagementQuestionComponent', () => {
     survey.setValue('cover_image', [
       { name: 'cover.png', content: 'cover-id' },
     ]);
-    component = new FilesManagementQuestionComponent({
-      instant: (key: string) => key,
-      currentLang: 'en',
-      defaultLang: 'en',
-    } as unknown as TranslateService);
+    dialog = { open: jest.fn() };
+    component = new FilesManagementQuestionComponent(
+      {
+        instant: (key: string) => key,
+        currentLang: 'en',
+        defaultLang: 'en',
+      } as unknown as TranslateService,
+      { detectChanges: jest.fn() } as unknown as ChangeDetectorRef,
+      dialog as unknown as Dialog,
+      { availableLanguages: ['en', 'fr', 'es'] }
+    );
     component.survey = survey;
   });
+
+  /**
+   * Builds a fake files management question configured for translations.
+   *
+   * @param allowTranslations Whether translations are allowed
+   * @param translationLanguages Translation languages
+   * @returns Fake question
+   */
+  const createQuestion = (
+    allowTranslations: boolean,
+    translationLanguages?: string[]
+  ): FilesManagementQuestion =>
+    ({
+      getPropertyValue: (name: string) =>
+        name === ALLOW_TRANSLATIONS_PROPERTY
+          ? allowTranslations
+          : name === TRANSLATION_LANGUAGES_PROPERTY
+          ? translationLanguages
+          : undefined,
+    } as unknown as FilesManagementQuestion);
 
   /**
    * Gets the attachments question.
@@ -196,5 +232,232 @@ describe('FilesManagementQuestionComponent', () => {
     component.survey = undefined;
     component.refresh();
     expect(component.rows).toEqual([]);
+  });
+
+  describe('translations', () => {
+    const source = {
+      name: 'a.pdf',
+      content: 'id-a',
+      lang: 'en',
+      translationKey: 'k',
+    };
+    const french = {
+      name: 'a-fr.pdf',
+      content: 'id-fr',
+      lang: 'fr',
+      translationOf: 'k',
+    };
+    const untranslated = { name: 'b.pdf', content: 'id-b', lang: 'en' };
+    const outdatedFile = {
+      name: 'old.pdf',
+      content: 'id-old',
+      lang: 'en',
+      outdated: true,
+      outdatedAt: '2026-01-01',
+    };
+
+    beforeEach(() => {
+      // Form translated in French and Spanish
+      survey = new SurveyModel({
+        title: { default: 'Hello', fr: 'Bonjour', es: 'Hola' },
+        elements: [{ type: 'file', name: 'attachments', allowMultiple: true }],
+      });
+      survey.setValue('attachments', [
+        untranslated,
+        source,
+        outdatedFile,
+        french,
+      ]);
+      component.survey = survey;
+      component.question = createQuestion(true, ['fr', 'es']);
+    });
+
+    it('lists every file as usual when the question does not allow translations', () => {
+      component.question = createQuestion(false, ['fr', 'es']);
+      component.refresh();
+
+      expect(component.translationsEnabled).toBe(false);
+      expect(component.rows.map((row) => row.file.name)).toEqual([
+        'b.pdf',
+        'a.pdf',
+        'old.pdf',
+        'a-fr.pdf',
+      ]);
+      expect(
+        component.rows.every(
+          (row) =>
+            !row.canTranslate &&
+            !row.isTranslation &&
+            !row.translationLanguages.length &&
+            !row.missingLanguages.length
+        )
+      ).toBe(true);
+    });
+
+    it('lists each translation under the file it translates, with the translations missing', () => {
+      component.refresh();
+
+      expect(component.translationsEnabled).toBe(true);
+      expect(
+        component.rows.map((row) => [
+          row.file.name,
+          row.isTranslation,
+          row.sourceName,
+          row.translationLanguages,
+          row.translationFileNames,
+          row.missingLanguages,
+          row.canTranslate,
+        ])
+      ).toEqual([
+        ['b.pdf', false, undefined, [], [], ['French', 'Spanish'], true],
+        [
+          'a.pdf',
+          false,
+          undefined,
+          ['French'],
+          ['a-fr.pdf'],
+          ['Spanish'],
+          true,
+        ],
+        ['a-fr.pdf', true, 'a.pdf', [], [], [], false],
+        // Outdated files are not translated anymore
+        ['old.pdf', false, undefined, [], [], [], false],
+      ]);
+      expect(component.rowClass({ dataItem: component.rows[2] })).toEqual({
+        'files-management-question__translation': true,
+      });
+    });
+
+    it('keeps the translations under their file when sorting', () => {
+      component.refresh();
+      component.onSortChange([{ field: 'file.name', dir: 'desc' }]);
+      expect(component.rows.map((row) => row.file.name)).toEqual([
+        'old.pdf',
+        'b.pdf',
+        'a.pdf',
+        'a-fr.pdf',
+      ]);
+
+      component.refresh();
+      expect(component.rows.map((row) => row.file.name)).toEqual([
+        'old.pdf',
+        'b.pdf',
+        'a.pdf',
+        'a-fr.pdf',
+      ]);
+    });
+
+    it('lists a translation whose file is gone as a file of its own', () => {
+      survey.setValue('attachments', [french]);
+      component.refresh();
+      expect(component.rows[0].isTranslation).toBe(false);
+      expect(component.rows[0].missingLanguages).toEqual(['Spanish']);
+      expect(component.rows[0].canTranslate).toBe(true);
+    });
+
+    it('offers no translation in the form builder or in read-only surveys', () => {
+      survey.setDesignMode(true);
+      component.refresh();
+      expect(component.translationsEnabled).toBe(true);
+      expect(component.rows.every((row) => !row.canTranslate)).toBe(true);
+
+      survey.setDesignMode(false);
+      survey.mode = 'display';
+      component.refresh();
+      expect(component.rows.every((row) => !row.canTranslate)).toBe(true);
+    });
+
+    it('adds the picked translation to the file question, pointing to its file', () => {
+      const picked = new File(['x'], 'b-fr.pdf', { type: 'application/pdf' });
+      dialog.open.mockReturnValue({
+        closed: of({ language: 'fr', file: picked }),
+      });
+      const uploadFiles = jest
+        .spyOn(survey, 'uploadFiles')
+        .mockImplementation((_q, _n, files, callback: any) =>
+          callback(
+            'success',
+            files.map((file) => ({ file, content: 'blob:picked' }))
+          )
+        );
+      component.refresh();
+
+      component.rows[0].translate();
+
+      expect(dialog.open).toHaveBeenCalledWith(FileTranslationModalComponent, {
+        data: {
+          file: untranslated,
+          question: attachments(),
+          languages: [
+            { value: 'fr', text: 'French' },
+            { value: 'es', text: 'Spanish' },
+          ],
+          existingCount: 4,
+        },
+      });
+      expect(uploadFiles).toHaveBeenCalledWith(
+        attachments(),
+        'attachments',
+        [picked],
+        expect.any(Function)
+      );
+      const value = survey.getValue('attachments');
+      expect(value).toHaveLength(5);
+      const key = value[0].translationKey;
+      expect(key).toEqual(expect.any(String));
+      expect(value[0]).toEqual({ ...untranslated, translationKey: key });
+      expect(value[4]).toEqual({
+        name: 'b-fr.pdf',
+        type: 'application/pdf',
+        content: 'blob:picked',
+        lang: 'fr',
+        translationOf: key,
+      });
+      expect(component.errorMessage).toBe('');
+
+      // The new translation is listed under its file
+      component.refresh();
+      expect(component.rows.map((row) => row.file.name)).toEqual([
+        'b.pdf',
+        'b-fr.pdf',
+        'a.pdf',
+        'a-fr.pdf',
+        'old.pdf',
+      ]);
+      expect(component.rows[0].translationLanguages).toEqual(['French']);
+      expect(component.rows[0].missingLanguages).toEqual(['Spanish']);
+      expect(component.rows[1].sourceName).toBe('b.pdf');
+    });
+
+    it('does nothing when the modal is cancelled', () => {
+      dialog.open.mockReturnValue({ closed: of(undefined) });
+      const uploadFiles = jest.spyOn(survey, 'uploadFiles');
+      component.refresh();
+
+      component.rows[0].translate();
+
+      expect(uploadFiles).not.toHaveBeenCalled();
+      expect(survey.getValue('attachments')).toHaveLength(4);
+    });
+
+    it('reports a translation that could not be added', () => {
+      dialog.open.mockReturnValue({
+        closed: of({
+          language: 'fr',
+          file: new File(['x'], 'b-fr.pdf', { type: 'application/pdf' }),
+        }),
+      });
+      jest
+        .spyOn(survey, 'uploadFiles')
+        .mockImplementation((_q, _n, _f, callback: any) => callback('error'));
+      component.refresh();
+
+      component.rows[0].translate();
+
+      expect(component.errorMessage).toBe(
+        'components.filesUpload.errors.uploadFailed'
+      );
+      expect(survey.getValue('attachments')).toHaveLength(4);
+    });
   });
 });

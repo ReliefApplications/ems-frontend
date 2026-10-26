@@ -1,4 +1,5 @@
 import { ComponentRef, Injector } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ComponentCollection,
   Question as SurveyQuestion,
@@ -10,11 +11,15 @@ import { FilesManagementQuestionComponent } from '../../components/files-managem
 import { DomService } from '../../services/dom/dom.service';
 import { registerCustomPropertyHelp } from '../localization';
 import {
+  ALLOW_TRANSLATIONS_PROPERTY,
   FILES_MANAGEMENT_QUESTION_TYPE,
+  getLanguageChoices,
   HIDE_FILE_QUESTIONS_PROPERTY,
   observeFileQuestionsValues,
   registerFileQuestionsVisibility,
   syncFileQuestionsVisibility,
+  TRANSLATION_LANGUAGES_PROPERTY,
+  WidgetChoice,
 } from './utils/files-widgets.util';
 import {
   addGridTeardown,
@@ -33,6 +38,8 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
   'title',
   'description',
   HIDE_FILE_QUESTIONS_PROPERTY,
+  ALLOW_TRANSLATIONS_PROPERTY,
+  TRANSLATION_LANGUAGES_PROPERTY,
   'visible',
   'visibleIf',
   'tooltip',
@@ -50,6 +57,10 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
 export interface FilesManagementQuestion extends SurveyQuestion {
   /** Hide the survey's file questions, files being managed here */
   hideFileQuestions?: boolean;
+  /** Let users upload translations of the listed files */
+  allowTranslations?: boolean;
+  /** Languages the files can be translated into, empty for every language of the form */
+  translationLanguages?: string[];
   /** Rendered Angular component */
   filesManagementComponentRef?: ComponentRef<FilesManagementQuestionComponent>;
 }
@@ -60,7 +71,10 @@ export interface FilesManagementQuestion extends SurveyQuestion {
  * download / outdated / remove actions as the file questions. It can also
  * hide the survey's file questions, which then keep storing files and
  * defining their restrictions while the Files upload and Files management
- * questions handle the user interactions.
+ * questions handle the user interactions. It can also let users upload
+ * translations of the listed files, into the languages it is configured
+ * with: the translations are stored in the same file question as the file
+ * they translate ( same restrictions ), linked to it by a shared key.
  *
  * @param injector Parent Angular injector
  * @param componentCollection SurveyJS custom component collection
@@ -70,6 +84,9 @@ export const init = (
   componentCollection: ComponentCollection
 ): void => {
   const domService = injector.get(DomService);
+  const translate = injector.get(TranslateService);
+  const availableLanguages: string[] =
+    injector.get('environment')?.availableLanguages ?? [];
 
   SvgRegistry.registerIconFromSvg(
     FILES_MANAGEMENT_QUESTION_TYPE,
@@ -96,6 +113,42 @@ export const init = (
       registerCustomPropertyHelp(
         HIDE_FILE_QUESTIONS_PROPERTY,
         'Hide the file questions of the form when filling it, so files are only uploaded through Files upload questions and managed through this table. File questions keep storing the files and defining their restrictions ( accepted types, maximum size, number of files ), and stay visible in the form builder.'
+      );
+      Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
+        name: `${ALLOW_TRANSLATIONS_PROPERTY}:boolean`,
+        category: 'general',
+        displayName: 'Allow translations',
+        default: false,
+        visibleIndex: 4,
+      });
+      registerCustomPropertyHelp(
+        ALLOW_TRANSLATIONS_PROPERTY,
+        'Let users upload a translation of the listed files, into the translation languages missing for each file. A translation is stored in the same file question as the file it translates and follows its restrictions ( accepted types, maximum size, number of files ). The table then shows which files are translated and which translations they are linked to. The option belongs to this form only: other forms of the resource keep listing every file as usual.'
+      );
+      Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
+        name: `${TRANSLATION_LANGUAGES_PROPERTY}:multiplevalues`,
+        category: 'general',
+        displayName: 'Translation languages',
+        visibleIndex: 5,
+        dependsOn: [ALLOW_TRANSLATIONS_PROPERTY],
+        visibleIf: (question: FilesManagementQuestion): boolean =>
+          !!question.getPropertyValue(ALLOW_TRANSLATIONS_PROPERTY),
+        choices: (
+          question: FilesManagementQuestion,
+          choicesCallback: (choices: WidgetChoice[]) => void
+        ) => {
+          choicesCallback(
+            getLanguageChoices(
+              question.survey as SurveyModel | undefined,
+              availableLanguages,
+              translate
+            )
+          );
+        },
+      });
+      registerCustomPropertyHelp(
+        TRANSLATION_LANGUAGES_PROPERTY,
+        'Languages the files can be translated into, among the languages of the form: the system language and the languages of the form translations that the system supports. Leave empty to offer all of them.'
       );
     },
     onLoaded: (question: FilesManagementQuestion): void => {

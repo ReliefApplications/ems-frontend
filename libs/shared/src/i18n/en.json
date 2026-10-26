@@ -1112,11 +1112,25 @@
       "field": "Document type",
       "fileName": "File name",
       "language": "Language",
+      "missingTranslations": "Missing: {{languages}}",
       "noLanguage": "No language",
+      "notTranslated": "Not translated",
       "status": "Status",
       "statusActive": "Active",
       "statusOutdated": "Outdated",
-      "statusPending": "To upload"
+      "statusPending": "To upload",
+      "translate": "Add a translation",
+      "translatedIn": "Translated in {{languages}}",
+      "translation": {
+        "description": "Upload the translation of \"{{name}}\".",
+        "file": "Translated file",
+        "language": "Translation language",
+        "selectFile": "Select a file",
+        "title": "Add a translation"
+      },
+      "translationFiles": "Translations: {{files}}",
+      "translationOf": "Translation of \"{{name}}\"",
+      "translations": "Translations"
     },
     "filesUpload": {
       "addFiles": "Add files",

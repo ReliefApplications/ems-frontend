@@ -1,5 +1,6 @@
 import { ComponentRef, Injector } from '@angular/core';
-import { ComponentCollection, SurveyModel } from 'survey-core';
+import { TranslateService } from '@ngx-translate/core';
+import { ComponentCollection, Serializer, SurveyModel } from 'survey-core';
 import { DomService } from '../../services/dom/dom.service';
 import {
   FILES_MANAGEMENT_ALLOWED_PROPERTIES,
@@ -8,8 +9,10 @@ import {
   init,
 } from './files-management';
 import {
+  ALLOW_TRANSLATIONS_PROPERTY,
   FILE_QUESTION_HIDDEN_CLASS,
   shouldHideFileQuestions,
+  TRANSLATION_LANGUAGES_PROPERTY,
 } from './utils/files-widgets.util';
 
 /** Instance surface of the rendered component used by the question. */
@@ -50,6 +53,10 @@ describe('files management question', () => {
     const injector = {
       get: (token: unknown): unknown => {
         if (token === DomService) return domService;
+        if (token === TranslateService)
+          return { currentLang: 'en', defaultLang: 'en' };
+        if (token === 'environment')
+          return { availableLanguages: ['en', 'fr'] };
         throw new Error('Unexpected injection token');
       },
     } as Injector;
@@ -93,10 +100,44 @@ describe('files management question', () => {
     ].forEach((property) =>
       expect(FILES_MANAGEMENT_ALLOWED_PROPERTIES).not.toContain(property)
     );
-    ['title', 'description', 'tooltip', 'hideFileQuestions'].forEach(
-      (property) =>
-        expect(FILES_MANAGEMENT_ALLOWED_PROPERTIES).toContain(property)
+    [
+      'title',
+      'description',
+      'tooltip',
+      'hideFileQuestions',
+      ALLOW_TRANSLATIONS_PROPERTY,
+      TRANSLATION_LANGUAGES_PROPERTY,
+    ].forEach((property) =>
+      expect(FILES_MANAGEMENT_ALLOWED_PROPERTIES).toContain(property)
     );
+  });
+
+  it('offers the languages of the form as translation languages, once translations are allowed', () => {
+    const survey = new SurveyModel({
+      title: { default: 'Hello', fr: 'Bonjour' },
+      elements: [{ type: FILES_MANAGEMENT_QUESTION_TYPE, name: 'management' }],
+    });
+    const question = survey.getQuestionByName(
+      'management'
+    ) as FilesManagementQuestion;
+    const property = Serializer.findProperty(
+      FILES_MANAGEMENT_QUESTION_TYPE,
+      TRANSLATION_LANGUAGES_PROPERTY
+    );
+
+    // Off by default, in every form of a resource
+    expect(question.getPropertyValue(ALLOW_TRANSLATIONS_PROPERTY)).toBe(false);
+    expect(property.visibleIf(question)).toBe(false);
+
+    question.setPropertyValue(ALLOW_TRANSLATIONS_PROPERTY, true);
+    expect(property.visibleIf(question)).toBe(true);
+    const choices = jest.fn();
+    property.getChoices(question, choices);
+    expect(choices).toHaveBeenCalledWith([
+      { value: 'en', text: 'English' },
+      { value: 'fr', text: 'French' },
+    ]);
+    survey.dispose();
   });
 
   it('registers a question whose hide option drives the file questions visibility', () => {

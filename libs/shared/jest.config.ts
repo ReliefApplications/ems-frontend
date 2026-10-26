@@ -57,6 +57,7 @@ export default {
     '<rootDir>/src/lib/components/field-history-question/*.spec.ts',
     '<rootDir>/src/lib/components/files-upload-question/*.spec.ts',
     '<rootDir>/src/lib/components/files-management-question/*.spec.ts',
+    '<rootDir>/src/lib/components/files-management-question/file-translation-modal/*.spec.ts',
     '<rootDir>/src/lib/components/form/form.component.spec.ts',
     '<rootDir>/src/lib/components/widgets/common/tab-actions/*.spec.ts',
     '<rootDir>/src/lib/components/widgets/common/tab-actions/read-only-fields-modal/*.spec.ts',
