@@ -11,6 +11,7 @@ import {
 import {
   ALLOW_TRANSLATIONS_PROPERTY,
   FILE_QUESTION_HIDDEN_CLASS,
+  HIDE_OUTDATED_FILES_PROPERTY,
   shouldHideFileQuestions,
   TRANSLATION_LANGUAGES_PROPERTY,
 } from './utils/files-widgets.util';
@@ -105,6 +106,7 @@ describe('files management question', () => {
       'description',
       'tooltip',
       'hideFileQuestions',
+      HIDE_OUTDATED_FILES_PROPERTY,
       ALLOW_TRANSLATIONS_PROPERTY,
       TRANSLATION_LANGUAGES_PROPERTY,
     ].forEach((property) =>
@@ -127,6 +129,7 @@ describe('files management question', () => {
 
     // Off by default, in every form of a resource
     expect(question.getPropertyValue(ALLOW_TRANSLATIONS_PROPERTY)).toBe(false);
+    expect(question.getPropertyValue(HIDE_OUTDATED_FILES_PROPERTY)).toBe(false);
     expect(property.visibleIf(question)).toBe(false);
 
     question.setPropertyValue(ALLOW_TRANSLATIONS_PROPERTY, true);

@@ -15,6 +15,8 @@ export const FILES_MANAGEMENT_QUESTION_TYPE = 'filesmanagement';
 export const HIDE_FILE_QUESTIONS_PROPERTY = 'hideFileQuestions';
 /** Property of the files upload question restricting the languages offered. */
 export const ALLOWED_LANGUAGES_PROPERTY = 'allowedLanguages';
+/** Property of the files management question hiding the outdated files. */
+export const HIDE_OUTDATED_FILES_PROPERTY = 'hideOutdatedFiles';
 /** Property of the files management question enabling the files translations. */
 export const ALLOW_TRANSLATIONS_PROPERTY = 'allowTranslations';
 /** Property of the files management question listing the translation languages. */
@@ -434,6 +436,46 @@ export const observeFileQuestionsValues = (
       question.unRegisterFunctionOnPropertyValueChanged('value', registration)
     );
 };
+
+/** Key under which the start of the edition is tracked on a survey. */
+const EDITION_START_KEY = '__filesManagementEditionStart';
+
+/**
+ * Timestamp of the start of the current edition of the survey: the first
+ * time it is asked for ( the files management question is loaded or
+ * rendered ). Files marked as outdated since then were marked during this
+ * edition, before the record is saved.
+ *
+ * @param survey Survey being edited
+ * @returns Timestamp ( ms )
+ */
+export const getEditionStart = (survey: SurveyModel | undefined): number => {
+  if (!survey) {
+    return Date.now();
+  }
+  const host = survey as SurveyModel & Record<string, any>;
+  if (!host[EDITION_START_KEY]) {
+    host[EDITION_START_KEY] = Date.now();
+  }
+  return host[EDITION_START_KEY];
+};
+
+/**
+ * Whether a file was marked as outdated during the current edition of the
+ * record: such a file stays listed by a files management question hiding
+ * the outdated files, so the user can still mark it as active before saving.
+ *
+ * @param file File to inspect
+ * @param editionStart Start of the edition ( see {@link getEditionStart} )
+ * @returns True when the file was marked as outdated since the edition started
+ */
+export const isOutdatedDuringEdition = (
+  file: StoredFile,
+  editionStart: number
+): boolean =>
+  !!file.outdated &&
+  !!file.outdatedAt &&
+  new Date(file.outdatedAt).getTime() >= editionStart;
 
 /**
  * Whether a files management question lets users upload translations of the

@@ -31,6 +31,8 @@ import {
   linkTranslation,
   ALLOW_TRANSLATIONS_PROPERTY,
   TRANSLATION_LANGUAGES_PROPERTY,
+  getEditionStart,
+  isOutdatedDuringEdition,
 } from './files-widgets.util';
 
 /** Translate service surface used to display language names */
@@ -677,5 +679,43 @@ describe('files translations', () => {
     expect(updated[0]).toBe(source);
     expect(updated[1]).toBe(french);
     expect(updated[2]).toEqual({ ...translation, translationOf: 'k' });
+  });
+});
+
+describe('outdated files during edition', () => {
+  it('tracks the start of the edition once per survey', () => {
+    const survey = createSurvey();
+    const start = getEditionStart(survey);
+    expect(start).toBeLessThanOrEqual(Date.now());
+    expect(getEditionStart(survey)).toBe(start);
+    expect(getEditionStart(createSurvey())).toBeGreaterThanOrEqual(start);
+    expect(getEditionStart(undefined)).toBeGreaterThanOrEqual(start);
+  });
+
+  it('tells the files marked as outdated since the edition started', () => {
+    const start = Date.parse('2026-10-26T10:00:00.000Z');
+    const file = { name: 'a.pdf', content: 'id' };
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdated: true, outdatedAt: '2026-10-26T10:00:00.000Z' },
+        start
+      )
+    ).toBe(true);
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdated: true, outdatedAt: '2026-10-26T09:59:59.000Z' },
+        start
+      )
+    ).toBe(false);
+    // Legacy outdated files without a date, and active files
+    expect(isOutdatedDuringEdition({ ...file, outdated: true }, start)).toBe(
+      false
+    );
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdatedAt: '2026-10-26T10:00:00.000Z' },
+        start
+      )
+    ).toBe(false);
   });
 });

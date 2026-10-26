@@ -21,7 +21,10 @@ import {
   getMissingTranslationLanguages,
   getTranslationLanguages,
   getTranslations,
+  getEditionStart,
   getTranslationSource,
+  HIDE_OUTDATED_FILES_PROPERTY,
+  isOutdatedDuringEdition,
   linkTranslation,
 } from '../../survey/components/utils/files-widgets.util';
 import { QuestionFile } from '../../survey/types';
@@ -150,6 +153,12 @@ export class FilesManagementQuestionComponent {
    */
   refresh(): void {
     this.translationsEnabled = areTranslationsEnabled(this.question);
+    // Outdated files are left out, except the ones marked as outdated during
+    // this edition: they can still be marked as active before saving
+    const hideOutdated = !!this.question?.getPropertyValue(
+      HIDE_OUTDATED_FILES_PROPERTY
+    );
+    const editionStart = getEditionStart(this.survey);
     const translationLanguages = this.translationsEnabled
       ? getTranslationLanguages(
           this.question,
@@ -174,6 +183,13 @@ export class FilesManagementQuestionComponent {
         }
         const stored = isStoredFile(file);
         const outdated = isOutdatedFile(file);
+        if (
+          outdated &&
+          hideOutdated &&
+          !isOutdatedDuringEdition(file, editionStart)
+        ) {
+          continue;
+        }
         const permanentRemoval = !!question.allowOutdatedFiles && stored;
         // A translation whose source is gone is listed as a file of its own
         const source = this.translationsEnabled

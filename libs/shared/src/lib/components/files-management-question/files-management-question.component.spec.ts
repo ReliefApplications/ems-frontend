@@ -6,6 +6,7 @@ import { SurveyModel } from 'survey-core';
 import { FilesManagementQuestion } from '../../survey/components/files-management';
 import {
   ALLOW_TRANSLATIONS_PROPERTY,
+  HIDE_OUTDATED_FILES_PROPERTY,
   TRANSLATION_LANGUAGES_PROPERTY,
 } from '../../survey/components/utils/files-widgets.util';
 import { QuestionFile } from '../../survey/types';
@@ -226,6 +227,44 @@ describe('FilesManagementQuestionComponent', () => {
       'outdated.docx',
       'pending.pdf',
     ]);
+  });
+
+  it('leaves the outdated files out when the question hides them', () => {
+    component.question = {
+      getPropertyValue: (name: string) =>
+        name === HIDE_OUTDATED_FILES_PROPERTY ? true : undefined,
+    } as unknown as FilesManagementQuestion;
+    component.refresh();
+
+    expect(component.rows.map((row) => row.file.name)).toEqual([
+      'pending.pdf',
+      'active.png',
+      'cover.png',
+    ]);
+    // Still stored in the file question
+    expect(survey.getValue('attachments')).toHaveLength(3);
+  });
+
+  it('keeps the files marked as outdated during the edition, so they can be marked as active again', () => {
+    attachments().allowOutdatedFiles = true;
+    component.question = {
+      getPropertyValue: (name: string) =>
+        name === HIDE_OUTDATED_FILES_PROPERTY ? true : undefined,
+    } as unknown as FilesManagementQuestion;
+    component.refresh();
+
+    component.rows[1].toggleOutdated();
+    component.refresh();
+    expect(component.rows.map((row) => [row.file.name, row.status])).toEqual([
+      ['pending.pdf', 'pending'],
+      ['active.png', 'outdated'],
+      ['cover.png', 'active'],
+    ]);
+
+    component.rows[1].toggleOutdated();
+    component.refresh();
+    expect(component.rows[1].status).toBe('active');
+    expect(survey.getValue('attachments')[1]).toEqual(active);
   });
 
   it('lists nothing without a survey', () => {

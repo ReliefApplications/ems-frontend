@@ -13,8 +13,10 @@ import { registerCustomPropertyHelp } from '../localization';
 import {
   ALLOW_TRANSLATIONS_PROPERTY,
   FILES_MANAGEMENT_QUESTION_TYPE,
+  getEditionStart,
   getLanguageChoices,
   HIDE_FILE_QUESTIONS_PROPERTY,
+  HIDE_OUTDATED_FILES_PROPERTY,
   observeFileQuestionsValues,
   registerFileQuestionsVisibility,
   syncFileQuestionsVisibility,
@@ -38,6 +40,7 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
   'title',
   'description',
   HIDE_FILE_QUESTIONS_PROPERTY,
+  HIDE_OUTDATED_FILES_PROPERTY,
   ALLOW_TRANSLATIONS_PROPERTY,
   TRANSLATION_LANGUAGES_PROPERTY,
   'visible',
@@ -57,6 +60,8 @@ export const FILES_MANAGEMENT_ALLOWED_PROPERTIES = [
 export interface FilesManagementQuestion extends SurveyQuestion {
   /** Hide the survey's file questions, files being managed here */
   hideFileQuestions?: boolean;
+  /** Leave the outdated files out of the table */
+  hideOutdatedFiles?: boolean;
   /** Let users upload translations of the listed files */
   allowTranslations?: boolean;
   /** Languages the files can be translated into, empty for every language of the form */
@@ -115,11 +120,22 @@ export const init = (
         'Hide the file questions of the form when filling it, so files are only uploaded through Files upload questions and managed through this table. File questions keep storing the files and defining their restrictions ( accepted types, maximum size, number of files ), and stay visible in the form builder.'
       );
       Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
+        name: `${HIDE_OUTDATED_FILES_PROPERTY}:boolean`,
+        category: 'general',
+        displayName: 'Hide outdated files',
+        default: false,
+        visibleIndex: 4,
+      });
+      registerCustomPropertyHelp(
+        HIDE_OUTDATED_FILES_PROPERTY,
+        'Leave the files marked as outdated out of the table. They stay stored in their file question and keep appearing wherever that question displays them.'
+      );
+      Serializer.addProperty(FILES_MANAGEMENT_QUESTION_TYPE, {
         name: `${ALLOW_TRANSLATIONS_PROPERTY}:boolean`,
         category: 'general',
         displayName: 'Allow translations',
         default: false,
-        visibleIndex: 4,
+        visibleIndex: 5,
       });
       registerCustomPropertyHelp(
         ALLOW_TRANSLATIONS_PROPERTY,
@@ -129,7 +145,7 @@ export const init = (
         name: `${TRANSLATION_LANGUAGES_PROPERTY}:multiplevalues`,
         category: 'general',
         displayName: 'Translation languages',
-        visibleIndex: 5,
+        visibleIndex: 6,
         dependsOn: [ALLOW_TRANSLATIONS_PROPERTY],
         visibleIf: (question: FilesManagementQuestion): boolean =>
           !!question.getPropertyValue(ALLOW_TRANSLATIONS_PROPERTY),
@@ -154,6 +170,8 @@ export const init = (
     onLoaded: (question: FilesManagementQuestion): void => {
       question.isRequired = false;
       question.hideNumber = true;
+      // Files marked as outdated from now on are marked during this edition
+      getEditionStart(question.survey as SurveyModel | undefined);
     },
     onAfterRender: (
       question: FilesManagementQuestion,
