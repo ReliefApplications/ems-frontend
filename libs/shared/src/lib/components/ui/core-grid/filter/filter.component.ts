@@ -173,8 +173,11 @@ export class GridFilterComponent
    * @param value new filter value
    */
   public handleFilter(value: string): void {
-    this.choices = this.data.filter(
-      (x) => x[this.textField].toLowerCase().indexOf(value.toLowerCase()) !== -1
+    this.choices = (this.data || []).filter(
+      (x) =>
+        `${x[this.textField] ?? ''}`
+          .toLowerCase()
+          .indexOf(value.toLowerCase()) !== -1
     );
   }
 

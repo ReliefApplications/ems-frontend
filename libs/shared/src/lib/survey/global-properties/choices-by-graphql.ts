@@ -270,13 +270,28 @@ export const render = (questionElement: Question, injector: Injector): void => {
             // instead of terminating the long-lived outer subscription.
             return defer(() => buildRequest$()).pipe(
               map((result) => ({ result })),
-              catchError(() => of(null))
+              catchError((error) => {
+                console.error(
+                  `Could not load choices for question "${questionElement.name}":`,
+                  error
+                );
+                return of(null);
+              })
             );
           })
         )
         .subscribe((payload: { result: any } | null) => {
           if (payload) {
-            applyResult(payload.result);
+            try {
+              applyResult(payload.result);
+            } catch (error) {
+              // Unexpected payload shape (e.g. an error page instead of data):
+              // keep the control usable instead of leaving it stuck loading.
+              console.error(
+                `Could not apply choices for question "${questionElement.name}":`,
+                error
+              );
+            }
           }
           resetLoadingState();
         });

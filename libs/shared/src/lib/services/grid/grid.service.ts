@@ -356,46 +356,56 @@ export class GridService {
       meta: IMeta,
       key: string
     ): Promise<void> => {
-      if (meta.choicesByGraphQL) {
-        const url = meta.choicesByGraphQL.url || '';
-        let value: ArrayBuffer | ApolloQueryResult<unknown>;
-        if (url.startsWith(this.environment.csApiUrl)) {
-          const csApolloClient = this.apollo.use('csClient');
-          value = await firstValueFrom(
-            csApolloClient.query({
-              query: gql`
-                ${meta.choicesByGraphQL.query || ''}
-              `,
-            })
-          );
-        } else {
-          value = await this.apiProxyService.buildPostRequest(
-            meta.choicesByGraphQL.url || '',
-            {
-              query: meta.choicesByGraphQL.query,
-            }
-          );
-        }
+      try {
+        if (meta.choicesByGraphQL) {
+          const url = meta.choicesByGraphQL.url || '';
+          let value: ArrayBuffer | ApolloQueryResult<unknown>;
+          if (url.startsWith(this.environment.csApiUrl)) {
+            const csApolloClient = this.apollo.use('csClient');
+            value = await firstValueFrom(
+              csApolloClient.query({
+                query: gql`
+                  ${meta.choicesByGraphQL.query || ''}
+                `,
+              })
+            );
+          } else {
+            value = await this.apiProxyService.buildPostRequest(
+              meta.choicesByGraphQL.url || '',
+              {
+                query: meta.choicesByGraphQL.query,
+              }
+            );
+          }
 
-        const choices = this.extractChoices(value, meta);
-        setWithExpiry(key, choices);
+          const choices = this.extractChoices(value, meta);
+          setWithExpiry(key, choices);
+          metaFields[path] = {
+            ...meta,
+            choices,
+          };
+        }
+        if (meta.choicesByUrl) {
+          const value = await this.apiProxyService.promisedRequestWithHeaders(
+            meta.choicesByUrl.url || ''
+          );
+          const choices = this.extractChoices(value, meta);
+          setWithExpiry(key, choices);
+          metaFields[path] = {
+            ...meta,
+            choices,
+          };
+        }
+      } catch (err) {
+        // The choices source (e.g. Common Services) is unreachable or rejected
+        // the request. Keep the page usable: expose an empty list so filters
+        // and editors still render, and skip the cache so a later load retries.
+        console.error(`Could not load choices for field "${path}":`, err);
         metaFields[path] = {
           ...meta,
-          choices,
+          choices: [],
         };
       }
-      if (meta.choicesByUrl) {
-        const value = await this.apiProxyService.promisedRequestWithHeaders(
-          meta.choicesByUrl.url || ''
-        );
-        const choices = this.extractChoices(value, meta);
-        setWithExpiry(key, choices);
-        metaFields[path] = {
-          ...meta,
-          choices,
-        };
-      }
-      return Promise.resolve();
     };
 
     /**
@@ -464,7 +474,9 @@ export class GridService {
     };
 
     await processMetaFields(metaFields);
-    await Promise.all(promises);
+    // Each fetch handles its own failure, but never let one source abort the
+    // others or reject the whole population.
+    await Promise.allSettled(promises);
   }
 
   /**
