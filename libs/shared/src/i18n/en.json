@@ -3004,8 +3004,9 @@
 			},
 			"host": "Host settings",
 			"notifications": {
-				"authTokenFetched": "Authentication token fetched, ping again to get the actual response.",
 				"pingFailed": "Ping request failed.",
+				"pingForbidden": "You are not allowed to test this API configuration.",
+				"pingInvalidUrl": "The endpoint or the authentication URL is not a public host and cannot be tested.",
 				"pingReceived": "Received positive response from ping request."
 			},
 			"ping": "Try settings",

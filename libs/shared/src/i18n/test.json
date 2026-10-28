@@ -2997,8 +2997,9 @@
 			},
 			"host": "******",
 			"notifications": {
-				"authTokenFetched": "******",
 				"pingFailed": "******",
+				"pingForbidden": "******",
+				"pingInvalidUrl": "******",
 				"pingReceived": "******"
 			},
 			"ping": "******",
