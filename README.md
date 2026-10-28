@@ -195,6 +195,7 @@ subscriptions web socket alike). The host page is responsible for obtaining that
 and storing it there.
 
 Consequences:
+
 - Any script running on the host page can read the token and act as the user against
   the API. The web components must therefore only be embedded on pages controlled by
   the platform operators, with the same level of trust as the back-office / front-office
