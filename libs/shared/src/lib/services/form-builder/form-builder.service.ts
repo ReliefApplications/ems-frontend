@@ -23,6 +23,7 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { DocumentManagementService } from '../document-management/document-management.service';
+import { sanitizeHtml } from '../../utils/sanitize-html';
 
 /**
  * Shared form builder service.
@@ -72,6 +73,11 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
+    // HTML questions, descriptions and completion messages are authored by form
+    // designers: never let them run code in the session of the people filling the form
+    survey.onProcessHtml.add((_, options) => {
+      options.html = sanitizeHtml(options.html);
+    });
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(renderGlobalProperties(this.injector));
     //Add tooltips to questions if exist

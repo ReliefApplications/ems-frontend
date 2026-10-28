@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -325,44 +326,50 @@ export class ApiConfigurationComponent
       });
   }
 
-  /** Send a ping request to test the configuration */
+  /**
+   * Send a ping request to test the configuration.
+   * The back-end answers with the upstream status only, and refuses the request
+   * when the user cannot update the configuration (403) or when the endpoint /
+   * authentication URL is not a public host (400).
+   */
   onPing(): void {
     this.apiProxy
       .buildPingRequest(this.apiForm.getRawValue() as ApiConfiguration)
-      ?.subscribe(
-        (res: any) => {
-          if (res) {
-            if (res.access_token) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'pages.apiConfiguration.notifications.authTokenFetched'
-                )
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'pages.apiConfiguration.notifications.pingReceived'
-                )
-              );
-            }
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'pages.apiConfiguration.notifications.pingFailed'
-              ),
-              { error: true }
-            );
-          }
-        },
-        () => {
+      ?.subscribe({
+        next: (res) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
-              'pages.apiConfiguration.notifications.pingFailed'
+              res
+                ? 'pages.apiConfiguration.notifications.pingReceived'
+                : 'pages.apiConfiguration.notifications.pingFailed'
             ),
+            { error: !res }
+          );
+        },
+        error: (err: HttpErrorResponse) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant(this.getPingErrorKey(err?.status)),
             { error: true }
           );
-        }
-      );
+        },
+      });
+  }
+
+  /**
+   * Get the translation key of the notification to show when a ping request fails.
+   *
+   * @param status HTTP status returned by the back-end
+   * @returns translation key
+   */
+  private getPingErrorKey(status?: number): string {
+    switch (status) {
+      case 403:
+        return 'pages.apiConfiguration.notifications.pingForbidden';
+      case 400:
+        return 'pages.apiConfiguration.notifications.pingInvalidUrl';
+      default:
+        return 'pages.apiConfiguration.notifications.pingFailed';
+    }
   }
 
   /**

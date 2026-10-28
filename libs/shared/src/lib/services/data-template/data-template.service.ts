@@ -8,6 +8,7 @@ import { ApplicationService } from '../application/application.service';
 import { DownloadService } from '../download/download.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
+import { sanitizeHtml } from '../../utils/sanitize-html';
 
 /**
  * Data template service
@@ -91,14 +92,18 @@ export class DataTemplateService {
   ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
+    // The template is authored by application editors and the data by any record creator:
+    // neither may run code in the session of the people viewing the widget
     return this.sanitizer.bypassSecurityTrustHtml(
-      this.htmlParserService.parseHtml(html, {
-        data: options.data,
-        aggregation: options.aggregation,
-        fields: options.fields,
-        pages: this.getPages(application),
-        styles: options.styles,
-      })
+      sanitizeHtml(
+        this.htmlParserService.parseHtml(html, {
+          data: options.data,
+          aggregation: options.aggregation,
+          fields: options.fields,
+          pages: this.getPages(application),
+          styles: options.styles,
+        })
+      )
     );
   }
 

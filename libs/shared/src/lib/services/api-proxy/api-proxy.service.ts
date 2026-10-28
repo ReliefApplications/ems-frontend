@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { RestService } from '../rest/rest.service';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 
@@ -36,27 +36,26 @@ export class ApiProxyService {
   }
 
   /**
-   * Sends a ping request using the passed arguments
+   * Sends a ping request to test an API configuration, as currently edited.
+   *
+   * The back-end only answers with the upstream status, never with the upstream body.
+   * It refuses the request with 403 when the user cannot update the configuration,
+   * and with 400 when the endpoint or the authentication URL is not a public host.
    *
    * @param api Current API configuration
-   * @returns rest service post ping request
+   * @returns rest service post ping request, undefined when no ping url is set
    */
-  public buildPingRequest(api: ApiConfiguration): any {
+  public buildPingRequest(
+    api: ApiConfiguration
+  ): Observable<{ status: number }> | undefined {
     if (api.pingUrl) {
       const url = this.buildPingUrl(api.pingUrl);
       const headers = this.buildHeaders();
-      return this.restService.post(url, api, { headers });
-
-      // if (name) {
-      //   const url = this.buildPingUrl(name, pingUrl);
-      //   const headers = this.buildHeaders();
-      //   if (body) {
-      //     return this.restService.post(this.baseUrl, body, { headers });
-      //   }
-      //   return this.restService.get(url, { headers });
-      // }
-      // return null;
+      return this.restService.post(url, api, { headers }) as Observable<{
+        status: number;
+      }>;
     }
+    return undefined;
   }
 
   /**
@@ -99,6 +98,6 @@ export class ApiProxyService {
     // if (!apiName.endsWith('/') && !pingUrl.startsWith('/')) {
     //   apiName = apiName + '/';
     // }
-    return `${this.baseUrl}/ping/${pingUrl}`;
+    return `${this.baseUrl}ping/${pingUrl}`;
   }
 }

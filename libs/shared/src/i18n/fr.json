@@ -3000,8 +3000,9 @@
 			},
 			"host": "Paramètres de l'hôte",
 			"notifications": {
-				"authTokenFetched": "Jeton d'authentification récupéré, faîtes un autre ping pour obtenir la vraie réponse.",
 				"pingFailed": "La requête ping a échoué.",
+				"pingForbidden": "Vous n'êtes pas autorisé à tester cette configuration d'API.",
+				"pingInvalidUrl": "Le point d'accès ou l'URL d'authentification n'est pas un hôte public et ne peut pas être testé.",
 				"pingReceived": "La requête ping a reçu une réponse positive."
 			},
 			"ping": "Essayer avec ces paramètres",

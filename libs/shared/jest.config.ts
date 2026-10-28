@@ -29,6 +29,8 @@ export default {
   // Manually add valid tests there
   testMatch: [
     '<rootDir>/src/lib/services/context/*.spec.ts',
+    '<rootDir>/src/lib/services/api-proxy/*.spec.ts',
+    '<rootDir>/src/lib/services/auth/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/pipes/asset/*.spec.ts',
     '<rootDir>/src/lib/pipes/gradient/*.spec.ts',

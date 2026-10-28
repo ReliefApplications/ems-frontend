@@ -34,6 +34,7 @@ import { get, isEmpty, isNil, set } from 'lodash';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { Layout } from '../../models/layout.model';
 import { EmailNotification } from '../../models/email-notifications.model';
+import { isSafeUrl } from '../../utils/safe-url';
 
 /**
  * Dashboard action button component.
@@ -154,8 +155,13 @@ export class ActionButtonComponent
       const href = this.contextService.replaceContext(
         this.dataTemplateService.renderLink(this.actionButton.href)
       );
+      // Links are configured by application editors: never run javascript:, data: and similar URLs
+      if (!isSafeUrl(href)) {
+        console.warn(`Action button link refused: ${href}`);
+        return;
+      }
       if (this.actionButton.openInNewTab) {
-        window.open(href, '_blank');
+        window.open(href, '_blank', 'noopener');
       } else {
         if (href?.startsWith('./')) {
           // Navigation inside the app builder
