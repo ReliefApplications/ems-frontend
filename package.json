@@ -187,7 +187,7 @@
     "jest-environment-jsdom": "28.1.1",
     "jest-preset-angular": "~12.2.3",
     "ngx-translate-testing": "6.1.0",
-    "nx": "15.7.2",
+    "nx": "15.9.7",
     "prettier": "^2.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
