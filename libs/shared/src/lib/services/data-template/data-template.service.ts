@@ -9,6 +9,7 @@ import { File, FileService } from '../file/file.service';
 import get from 'lodash/get';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { sanitizeHtml } from '../../utils/sanitize-html';
 
 /**
  * Data template service
@@ -90,14 +91,18 @@ export class DataTemplateService {
   ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
+    // The template is authored by application editors and the data by any record creator:
+    // neither may run code in the session of the people viewing the widget
     return this.sanitizer.bypassSecurityTrustHtml(
-      this.htmlParserService.parseHtml(html, {
-        data: options.data,
-        aggregation: options.aggregation,
-        fields: options.fields,
-        pages: this.getPages(application),
-        styles: options.styles,
-      })
+      sanitizeHtml(
+        this.htmlParserService.parseHtml(html, {
+          data: options.data,
+          aggregation: options.aggregation,
+          fields: options.fields,
+          pages: this.getPages(application),
+          styles: options.styles,
+        })
+      )
     );
   }
 

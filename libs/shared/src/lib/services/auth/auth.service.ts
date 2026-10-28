@@ -8,6 +8,7 @@ import {
   ForcedSubject,
 } from '@casl/ability';
 import { OAuthService } from 'angular-oauth2-oidc';
+import localForage from 'localforage';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import {
@@ -24,6 +25,25 @@ import {
   User,
 } from '../../models/user.model';
 import { GET_PROFILE } from './graphql/queries';
+
+/** localStorage keys holding display preferences rather than user data: kept on logout */
+const PRESERVED_STORAGE_KEYS = ['lang', 'date-lang', 'surveyLang'];
+
+/** localStorage keys managed by angular-oauth2-oidc: cleared by its own logOut, which needs them to end the session */
+const OAUTH_STORAGE_KEYS = [
+  'access_token',
+  'id_token',
+  'refresh_token',
+  'nonce',
+  'expires_at',
+  'id_token_claims_obj',
+  'id_token_expires_at',
+  'id_token_stored_at',
+  'access_token_stored_at',
+  'granted_scopes',
+  'session_state',
+  'PKCE_verifier',
+];
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -252,13 +272,36 @@ export class AuthService {
   }
 
   /**
-   * Cleans user profile, and logout.
+   * Cleans user profile and the data cached in the browser, then logs out.
    */
-  logout(): void {
+  async logout(): Promise<void> {
     this.account = null;
     this.user.next(null);
-    localStorage.removeItem('idtoken');
+    await this.clearLocalData();
     this.oauthService.logOut();
+  }
+
+  /**
+   * Removes the data the application cached in the browser for the logged user,
+   * so nothing is left for the next user of the same machine:
+   * - IndexedDB (localForage): reference data cache, record drafts, dashboard positions;
+   * - localStorage: token, form builder drafts, filters, page sizes, reference data timestamps.
+   * Display preferences (languages) and the OAuth library's own keys are kept,
+   * the latter being cleared by the library when it ends the session.
+   */
+  async clearLocalData(): Promise<void> {
+    Object.keys(localStorage)
+      .filter(
+        (key) =>
+          !PRESERVED_STORAGE_KEYS.includes(key) &&
+          !OAUTH_STORAGE_KEYS.includes(key)
+      )
+      .forEach((key) => localStorage.removeItem(key));
+    try {
+      await localForage.clear();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**

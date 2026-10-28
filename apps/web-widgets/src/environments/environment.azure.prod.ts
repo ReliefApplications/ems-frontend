@@ -12,7 +12,8 @@ const authConfig: AuthConfig = {
   scope:
     'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
   responseType: 'code',
-  showDebugInformation: true,
+  // Never print token responses to the console outside development
+  showDebugInformation: false,
   strictDiscoveryDocumentValidation: false,
 };
 
