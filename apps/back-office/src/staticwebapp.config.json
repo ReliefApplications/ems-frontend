@@ -44,6 +44,11 @@
     ]
   },
   "globalHeaders": {
-    "referrer-policy": "strict-origin-when-cross-origin"
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "content-security-policy": "frame-ancestors 'self'",
+    "x-frame-options": "SAMEORIGIN",
+    "x-content-type-options": "nosniff",
+    "strict-transport-security": "max-age=31536000",
+    "permissions-policy": "camera=(), microphone=(), geolocation=(self), payment=(), usb=()"
   }
 }
