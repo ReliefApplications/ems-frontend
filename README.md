@@ -187,6 +187,26 @@ Then, run:
 
 az storage blob upload-batch --destination {container} --account-name {accountname} --destination-path {path-to-folder-in-container} --source {path-to-folder-locally}
 
+### Trust model of the web components
+
+The web components do not authenticate the user themselves: they read the bearer token
+from the `idtoken` key of the host page's `localStorage` (GraphQL requests and the
+subscriptions web socket alike). The host page is responsible for obtaining that token
+and storing it there.
+
+Consequences:
+
+- Any script running on the host page can read the token and act as the user against
+  the API. The web components must therefore only be embedded on pages controlled by
+  the platform operators, with the same level of trust as the back-office / front-office
+  applications themselves. Never embed them on pages that load third-party scripts you
+  do not control, and apply a strict Content Security Policy on the host page.
+- The host page must remove the `idtoken` key when the user logs out.
+- Only publish a production build of the bundle (`make bundle-widgets project=azure-prod`
+  or the environment of your choice): a development build ships debug code and source
+  maps. The `widgets/app-builder.js` file is a build artefact and is not meant to be
+  committed.
+
 # Common issues
 
 ## Javascript heap out of memory

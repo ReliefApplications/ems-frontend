@@ -33,6 +33,8 @@ export default {
     '<rootDir>/src/lib/services/file/*.spec.ts',
     '<rootDir>/src/lib/services/form-helper/*.spec.ts',
     '<rootDir>/src/lib/services/form-builder/*.spec.ts',
+    '<rootDir>/src/lib/services/api-proxy/*.spec.ts',
+    '<rootDir>/src/lib/services/auth/*.spec.ts',
     '<rootDir>/src/lib/services/html-parser/*.spec.ts',
     '<rootDir>/src/lib/services/grid/*.spec.ts',
     '<rootDir>/src/lib/services/grid-layout/*.spec.ts',

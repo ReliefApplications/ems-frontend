@@ -33,6 +33,7 @@ import {
   isPendingFile,
   revokeFileUrl,
 } from '../file/file.utils';
+import { sanitizeHtml } from '../../utils/sanitize-html';
 
 /**
  * Shared form builder service.
@@ -84,6 +85,11 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
+    // HTML questions, descriptions and completion messages are authored by form
+    // designers: never let them run code in the session of the people filling the form
+    survey.onProcessHtml.add((_, options) => {
+      options.html = sanitizeHtml(options.html);
+    });
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(renderGlobalProperties(this.injector));
     //Add tooltips to questions & render html question file links if exist
