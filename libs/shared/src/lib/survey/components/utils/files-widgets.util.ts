@@ -1,6 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { FileRestrictions } from '@progress/kendo-angular-upload';
 import { Question as SurveyQuestion, SurveyModel } from 'survey-core';
+import { v4 as uuidv4 } from 'uuid';
+import { File as StoredFile } from '../../../services/file/file.service';
 import { getLanguageName, toI18nLocale } from '../../../utils/languages';
 
 /** SurveyJS question type name of a native file upload question. */
@@ -13,6 +15,12 @@ export const FILES_MANAGEMENT_QUESTION_TYPE = 'filesmanagement';
 export const HIDE_FILE_QUESTIONS_PROPERTY = 'hideFileQuestions';
 /** Property of the files upload question restricting the languages offered. */
 export const ALLOWED_LANGUAGES_PROPERTY = 'allowedLanguages';
+/** Property of the files management question hiding the outdated files. */
+export const HIDE_OUTDATED_FILES_PROPERTY = 'hideOutdatedFiles';
+/** Property of the files management question enabling the files translations. */
+export const ALLOW_TRANSLATIONS_PROPERTY = 'allowTranslations';
+/** Property of the files management question listing the translation languages. */
+export const TRANSLATION_LANGUAGES_PROPERTY = 'translationLanguages';
 /** Class toggled on hidden file questions ( see survey.scss ). */
 export const FILE_QUESTION_HIDDEN_CLASS = 'file-question--hidden';
 /** Key under which the file questions visibility handler is tracked on a survey. */
@@ -427,4 +435,176 @@ export const observeFileQuestionsValues = (
     questions.forEach((question) =>
       question.unRegisterFunctionOnPropertyValueChanged('value', registration)
     );
+};
+
+/** Key under which the start of the edition is tracked on a survey. */
+const EDITION_START_KEY = '__filesManagementEditionStart';
+
+/**
+ * Timestamp of the start of the current edition of the survey: the first
+ * time it is asked for ( the files management question is loaded or
+ * rendered ). Files marked as outdated since then were marked during this
+ * edition, before the record is saved.
+ *
+ * @param survey Survey being edited
+ * @returns Timestamp ( ms )
+ */
+export const getEditionStart = (survey: SurveyModel | undefined): number => {
+  if (!survey) {
+    return Date.now();
+  }
+  const host = survey as SurveyModel & Record<string, any>;
+  if (!host[EDITION_START_KEY]) {
+    host[EDITION_START_KEY] = Date.now();
+  }
+  return host[EDITION_START_KEY];
+};
+
+/**
+ * Whether a file was marked as outdated during the current edition of the
+ * record: such a file stays listed by a files management question hiding
+ * the outdated files, so the user can still mark it as active before saving.
+ *
+ * @param file File to inspect
+ * @param editionStart Start of the edition ( see {@link getEditionStart} )
+ * @returns True when the file was marked as outdated since the edition started
+ */
+export const isOutdatedDuringEdition = (
+  file: StoredFile,
+  editionStart: number
+): boolean =>
+  !!file.outdated &&
+  !!file.outdatedAt &&
+  new Date(file.outdatedAt).getTime() >= editionStart;
+
+/**
+ * Whether a files management question lets users upload translations of the
+ * listed files. The option is part of the question, i.e. of each form's own
+ * structure: forms of the same resource enable it independently.
+ *
+ * @param question Files management question
+ * @returns True when the translations are enabled
+ */
+export const areTranslationsEnabled = (
+  question: SurveyQuestion | undefined
+): boolean => !!question?.getPropertyValue(ALLOW_TRANSLATIONS_PROPERTY);
+
+/**
+ * Languages the files can be translated into, as configured on a files
+ * management question ( its "Translation languages" ): among the languages
+ * of the form, every one of them when the question restricts nothing.
+ *
+ * @param question Files management question
+ * @param survey Survey owning the question
+ * @param availableLanguages Languages available in the system ( environment ), default one first
+ * @returns Language codes, in form order
+ */
+export const getTranslationLanguages = (
+  question: SurveyQuestion | undefined,
+  survey: SurveyModel | undefined,
+  availableLanguages: string[]
+): string[] =>
+  restrictLanguages(
+    getSurveyLanguages(survey, availableLanguages),
+    question?.getPropertyValue(TRANSLATION_LANGUAGES_PROPERTY) as
+      | string[]
+      | undefined
+  );
+
+/**
+ * Creates the key a file is translated under, which its translations point to.
+ *
+ * @returns New translation key
+ */
+export const createTranslationKey = (): string => uuidv4();
+
+/**
+ * Finds the file a translation points to.
+ *
+ * @param file Translation to inspect
+ * @param files Every file of the survey
+ * @returns The translated file, undefined when the file is no translation or
+ * its source is gone
+ */
+export const getTranslationSource = (
+  file: StoredFile,
+  files: StoredFile[]
+): StoredFile | undefined =>
+  file.translationOf
+    ? files.find(
+        (candidate) =>
+          candidate !== file &&
+          !!candidate.translationKey &&
+          candidate.translationKey === file.translationOf
+      )
+    : undefined;
+
+/**
+ * Finds the translations of a file: the files pointing to its translation
+ * key, wherever they are held in the survey.
+ *
+ * @param file File to inspect
+ * @param files Every file of the survey
+ * @returns Translations, in survey order ( empty when the file is not translated )
+ */
+export const getTranslations = (
+  file: StoredFile,
+  files: StoredFile[]
+): StoredFile[] =>
+  file.translationKey
+    ? files.filter(
+        (candidate) =>
+          candidate !== file && candidate.translationOf === file.translationKey
+      )
+    : [];
+
+/**
+ * Languages a file still misses a translation for: the translation
+ * languages, minus the language of the file itself and the languages of its
+ * translations. A file without a language can be translated into any
+ * translation language.
+ *
+ * @param file File to inspect
+ * @param translations Translations of the file ( see {@link getTranslations} )
+ * @param translationLanguages Translation languages of the files management question
+ * @returns Missing language codes, in the translation languages order
+ */
+export const getMissingTranslationLanguages = (
+  file: StoredFile,
+  translations: StoredFile[],
+  translationLanguages: string[]
+): string[] => {
+  const covered = new Set(
+    [file, ...translations]
+      .map((item) => item.lang)
+      .filter((lang): lang is string => !!lang)
+  );
+  return translationLanguages.filter((language) => !covered.has(language));
+};
+
+/**
+ * Builds the new value of a file question once a translation of one of its
+ * files is added: the translated file gets a translation key if it has none,
+ * and the translation is appended, pointing to that key. The value is
+ * replaced ( not mutated ) so SurveyJS detects the change, like the native
+ * file question does.
+ *
+ * @param value Current value of the file question
+ * @param source File being translated, as held in the value
+ * @param translation Translated file, tagged with its language
+ * @returns New value of the file question
+ */
+export const linkTranslation = (
+  value: StoredFile[],
+  source: StoredFile,
+  translation: StoredFile
+): StoredFile[] => {
+  const key = source.translationKey || createTranslationKey();
+  return value
+    .map((item) =>
+      item === source && !item.translationKey
+        ? { ...item, translationKey: key }
+        : item
+    )
+    .concat({ ...translation, translationOf: key });
 };

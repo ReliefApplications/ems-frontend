@@ -23,6 +23,16 @@ import {
   keepsFilesOnComplete,
   registerHiddenFileQuestionsValues,
   observeFileQuestionsValues,
+  areTranslationsEnabled,
+  getTranslationLanguages,
+  getMissingTranslationLanguages,
+  getTranslations,
+  getTranslationSource,
+  linkTranslation,
+  ALLOW_TRANSLATIONS_PROPERTY,
+  TRANSLATION_LANGUAGES_PROPERTY,
+  getEditionStart,
+  isOutdatedDuringEdition,
 } from './files-widgets.util';
 
 /** Translate service surface used to display language names */
@@ -544,5 +554,168 @@ describe('file questions values observation', () => {
     expect(() =>
       observeFileQuestionsValues(undefined, 'k', jest.fn())()
     ).not.toThrow();
+  });
+});
+
+describe('files translations', () => {
+  /**
+   * Builds a fake files management question configured for translations.
+   *
+   * @param allowTranslations Whether translations are allowed
+   * @param translationLanguages Translation languages
+   * @returns Fake question
+   */
+  const createQuestion = (
+    allowTranslations: boolean,
+    translationLanguages?: string[]
+  ): SurveyQuestion =>
+    ({
+      getPropertyValue: (name: string) =>
+        name === ALLOW_TRANSLATIONS_PROPERTY
+          ? allowTranslations
+          : name === TRANSLATION_LANGUAGES_PROPERTY
+          ? translationLanguages
+          : undefined,
+    } as unknown as SurveyQuestion);
+
+  const source = {
+    name: 'a.pdf',
+    content: 'id-a',
+    lang: 'en',
+    translationKey: 'k',
+  };
+  const french = {
+    name: 'a-fr.pdf',
+    content: 'id-fr',
+    lang: 'fr',
+    translationOf: 'k',
+  };
+  const orphan = {
+    name: 'b-fr.pdf',
+    content: 'id-b-fr',
+    lang: 'fr',
+    translationOf: 'gone',
+  };
+  const untagged = { name: 'c.pdf', content: 'id-c' };
+
+  it('reads whether a question allows translations', () => {
+    expect(areTranslationsEnabled(createQuestion(true))).toBe(true);
+    expect(areTranslationsEnabled(createQuestion(false))).toBe(false);
+    expect(areTranslationsEnabled(undefined)).toBe(false);
+  });
+
+  it('restricts the form languages to the translation languages, every one of them otherwise', () => {
+    const survey = new SurveyModel({
+      title: { default: 'Hello', fr: 'Bonjour', es: 'Hola' },
+    });
+    const available = ['en', 'fr', 'es'];
+    expect(
+      getTranslationLanguages(
+        createQuestion(true, ['es', 'fr']),
+        survey,
+        available
+      )
+    ).toEqual(['fr', 'es']);
+    expect(
+      getTranslationLanguages(createQuestion(true), survey, available)
+    ).toEqual(['en', 'fr', 'es']);
+    // Translation removed from the form since the languages were set
+    expect(
+      getTranslationLanguages(createQuestion(true, ['de']), survey, available)
+    ).toEqual(['en', 'fr', 'es']);
+    expect(getTranslationLanguages(undefined, undefined, available)).toEqual([
+      'en',
+    ]);
+  });
+
+  it('finds the file a translation points to, and the translations of a file', () => {
+    const files = [source, french, orphan, untagged];
+    expect(getTranslationSource(french, files)).toBe(source);
+    expect(getTranslationSource(orphan, files)).toBeUndefined();
+    expect(getTranslationSource(source, files)).toBeUndefined();
+    expect(getTranslationSource(untagged, files)).toBeUndefined();
+
+    expect(getTranslations(source, files)).toEqual([french]);
+    expect(getTranslations(french, files)).toEqual([]);
+    expect(getTranslations(untagged, files)).toEqual([]);
+  });
+
+  it('lists the translation languages a file still misses', () => {
+    const languages = ['en', 'fr', 'es'];
+    expect(getMissingTranslationLanguages(source, [french], languages)).toEqual(
+      ['es']
+    );
+    expect(getMissingTranslationLanguages(source, [], languages)).toEqual([
+      'fr',
+      'es',
+    ]);
+    // A file without a language can be translated into any language
+    expect(getMissingTranslationLanguages(untagged, [], languages)).toEqual(
+      languages
+    );
+    expect(getMissingTranslationLanguages(source, [french], [])).toEqual([]);
+  });
+
+  it('links a translation to the file it translates, without mutating the value', () => {
+    const value = [orphan, untagged];
+    const translation = { name: 'c-fr.pdf', content: 'blob:c', lang: 'fr' };
+
+    const updated = linkTranslation(value, untagged, translation);
+
+    expect(value).toEqual([orphan, untagged]);
+    expect(untagged).toEqual({ name: 'c.pdf', content: 'id-c' });
+    expect(updated).toHaveLength(3);
+    expect(updated[0]).toBe(orphan);
+    const key = updated[1].translationKey;
+    expect(key).toEqual(expect.any(String));
+    expect(updated[1]).toEqual({ ...untagged, translationKey: key });
+    expect(updated[2]).toEqual({ ...translation, translationOf: key });
+    expect(getTranslationSource(updated[2], updated)).toBe(updated[1]);
+  });
+
+  it('reuses the key of a file already translated', () => {
+    const translation = { name: 'a-es.pdf', content: 'blob:a', lang: 'es' };
+    const updated = linkTranslation([source, french], source, translation);
+    expect(updated[0]).toBe(source);
+    expect(updated[1]).toBe(french);
+    expect(updated[2]).toEqual({ ...translation, translationOf: 'k' });
+  });
+});
+
+describe('outdated files during edition', () => {
+  it('tracks the start of the edition once per survey', () => {
+    const survey = createSurvey();
+    const start = getEditionStart(survey);
+    expect(start).toBeLessThanOrEqual(Date.now());
+    expect(getEditionStart(survey)).toBe(start);
+    expect(getEditionStart(createSurvey())).toBeGreaterThanOrEqual(start);
+    expect(getEditionStart(undefined)).toBeGreaterThanOrEqual(start);
+  });
+
+  it('tells the files marked as outdated since the edition started', () => {
+    const start = Date.parse('2026-10-26T10:00:00.000Z');
+    const file = { name: 'a.pdf', content: 'id' };
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdated: true, outdatedAt: '2026-10-26T10:00:00.000Z' },
+        start
+      )
+    ).toBe(true);
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdated: true, outdatedAt: '2026-10-26T09:59:59.000Z' },
+        start
+      )
+    ).toBe(false);
+    // Legacy outdated files without a date, and active files
+    expect(isOutdatedDuringEdition({ ...file, outdated: true }, start)).toBe(
+      false
+    );
+    expect(
+      isOutdatedDuringEdition(
+        { ...file, outdatedAt: '2026-10-26T10:00:00.000Z' },
+        start
+      )
+    ).toBe(false);
   });
 });

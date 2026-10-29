@@ -1112,11 +1112,25 @@
       "field": "Type de document",
       "fileName": "Nom du fichier",
       "language": "Langue",
+      "missingTranslations": "Manquantes : {{languages}}",
       "noLanguage": "Sans langue",
+      "notTranslated": "Non traduit",
       "status": "Statut",
       "statusActive": "Actif",
       "statusOutdated": "Obsolète",
-      "statusPending": "À téléverser"
+      "statusPending": "À téléverser",
+      "translate": "Ajouter une traduction",
+      "translatedIn": "Traduit en {{languages}}",
+      "translation": {
+        "description": "Téléversez la traduction de « {{name}} ».",
+        "file": "Fichier traduit",
+        "language": "Langue de traduction",
+        "selectFile": "Sélectionner un fichier",
+        "title": "Ajouter une traduction"
+      },
+      "translationFiles": "Traductions : {{files}}",
+      "translationOf": "Traduction de « {{name}} »",
+      "translations": "Traductions"
     },
     "filesUpload": {
       "addFiles": "Ajouter des fichiers",

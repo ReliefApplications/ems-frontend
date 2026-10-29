@@ -1112,11 +1112,25 @@
       "field": "******",
       "fileName": "******",
       "language": "******",
+      "missingTranslations": "****** {{languages}}",
       "noLanguage": "******",
+      "notTranslated": "******",
       "status": "******",
       "statusActive": "******",
       "statusOutdated": "******",
-      "statusPending": "******"
+      "statusPending": "******",
+      "translate": "******",
+      "translatedIn": "****** {{languages}}",
+      "translation": {
+        "description": "****** {{name}} ******",
+        "file": "******",
+        "language": "******",
+        "selectFile": "******",
+        "title": "******"
+      },
+      "translationFiles": "****** {{files}}",
+      "translationOf": "****** {{name}} ******",
+      "translations": "******"
     },
     "filesUpload": {
       "addFiles": "******",

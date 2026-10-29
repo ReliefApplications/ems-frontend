@@ -2,6 +2,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { of, throwError } from 'rxjs';
+
+// populateMetaFields reads / writes the localForage cache, which has no
+// storage driver under jest. Stub it so every source is fetched.
+jest.mock('../../utils/cache-with-expiry', () => ({
+  getListOfKeys: jest.fn().mockResolvedValue([]),
+  getWithExpiry: jest.fn().mockResolvedValue(null),
+  setWithExpiry: jest.fn().mockResolvedValue(undefined),
+}));
 
 import { GridService } from './grid.service';
 import {
@@ -37,6 +46,70 @@ describe('GridService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('populateMetaFields', () => {
+    const csApiUrl = 'https://cs.example/api';
+    /**
+     * Field whose filter choices come from the Common Services GraphQL API.
+     *
+     * @returns fresh meta definition, so each test gets its own object
+     */
+    const csField = () => ({
+      choicesByGraphQL: {
+        url: `${csApiUrl}/graphql`,
+        query: '{ countrys { id name } }',
+        path: '$.data.countrys[*]',
+        value: 'id',
+        text: 'name',
+      },
+    });
+    const csError = new Error(
+      'this user or application does not have access to the graphql endpoint'
+    );
+
+    beforeEach(() => {
+      (service as any).environment = { csApiUrl };
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    });
+
+    it('should resolve with empty choices when Common Services rejects the request', async () => {
+      (service as any).apollo = {
+        use: () => ({ query: () => throwError(() => csError) }),
+      };
+      const metaFields: any = {
+        country: csField(),
+        status: { choices: [{ value: 'open', text: 'Open' }] },
+      };
+
+      await expect(
+        service.populateMetaFields(metaFields)
+      ).resolves.toBeUndefined();
+
+      expect(metaFields.country.choices).toEqual([]);
+      expect(metaFields.status.choices).toEqual([
+        { value: 'open', text: 'Open' },
+      ]);
+      expect(console.error).toHaveBeenCalled();
+    });
+
+    it('should still populate the other sources when one of them fails', async () => {
+      const query = jest
+        .fn()
+        .mockReturnValueOnce(throwError(() => csError))
+        .mockReturnValueOnce(
+          of({ data: { countrys: [{ id: 'FR', name: 'France' }] } })
+        );
+      (service as any).apollo = { use: () => ({ query }) };
+      const metaFields: any = { failing: csField(), working: csField() };
+
+      await service.populateMetaFields(metaFields);
+
+      expect(metaFields.failing.choices).toEqual([]);
+      expect(metaFields.working.choices).toEqual([
+        { value: 'FR', text: 'France' },
+      ]);
+    });
   });
 
   describe('getFields / readOnlyFields', () => {
