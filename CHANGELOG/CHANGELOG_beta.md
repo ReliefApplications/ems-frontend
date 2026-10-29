@@ -1,3 +1,13 @@
+# [2.24.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-beta.1...v2.24.0-beta.2) (2026-10-29)
+
+### Bug Fixes
+
+- Improve loading of choices from external sources in grid widget ([8757ac3](https://github.com/ReliefApplications/ems-frontend/commit/8757ac3fb37d6ca69a695bde97eaabcacfdcd44d))
+
+### Features
+
+- Enable file translation ([#2955](https://github.com/ReliefApplications/ems-frontend/issues/2955)) ([edf01d7](https://github.com/ReliefApplications/ems-frontend/commit/edf01d72797fd6a65b26c7062e24162849d8d765)), closes [AB#138121](https://github.com/AB/issues/138121)
+
 # [2.24.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.23.0...v2.24.0-beta.1) (2026-10-26)
 
 ### Bug Fixes
