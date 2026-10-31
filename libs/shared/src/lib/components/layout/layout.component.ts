@@ -357,7 +357,6 @@ export class LayoutComponent
         .subscribe((value: any) => {
           if (value) {
             this.authService.canLogout.next(true);
-            localStorage.clear();
             this.authService.logout();
           }
         });

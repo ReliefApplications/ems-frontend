@@ -20,6 +20,7 @@ import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
+import { esriTokenFor, withEsriToken } from '../../utils/esri-token';
 import { DOCUMENT } from '@angular/common';
 
 /**
@@ -174,7 +175,7 @@ export class ArcgisService {
                 // ('https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Basemap_labels/VectorTileServer');
                 // one possible issue could be about the projection!
                 const vectorTileLayer = Vector.vectorTileLayer(url, {
-                  token: this.esriApiKey,
+                  token: this.tokenFor(url),
                   opacity,
                   pane,
                 });
@@ -224,7 +225,7 @@ export class ArcgisService {
           case 'ArcGISTiledMapServiceLayer': {
             const tiledMapLayer = Esri.tiledMapLayer({
               url: layer.url,
-              token: this.esriApiKey,
+              token: this.tokenFor(layer.url),
               opacity,
               pane: paneName,
             });
@@ -343,7 +344,7 @@ export class ArcgisService {
                 const pane = map.createPane(layer.id);
                 featureLayer = EsriCluster.featureLayer({
                   url: layer.url,
-                  token: this.esriApiKey,
+                  token: this.tokenFor(layer.url),
                   // If popup is not disabled we want to show the cluster popup, no zoom to bounds
                   zoomToBoundsOnClick: get(
                     layer,
@@ -394,7 +395,7 @@ export class ArcgisService {
                   // todo(arcgis): not working with current options
                   featureLayer = EsriHeat.featureLayer({
                     url: layer.url,
-                    token: this.esriApiKey,
+                    token: this.tokenFor(layer.url),
                     gradient,
                     blur: get(heatOptionsValue, 'blurRadius', 15),
                     radius: get(heatOptionsValue, 'radius', 10),
@@ -469,7 +470,7 @@ export class ArcgisService {
                 case 'simple': {
                   featureLayer = Esri.featureLayer({
                     url: layer.url,
-                    token: this.esriApiKey,
+                    token: this.tokenFor(layer.url),
                     ...{ opacity },
                     ...(get(layer, 'layerDefinition.drawingInfo') && {
                       drawingInfo: layer.layerDefinition.drawingInfo,
@@ -483,7 +484,7 @@ export class ArcgisService {
                 case 'uniqueValue': {
                   featureLayer = Esri.featureLayer({
                     url: layer.url,
-                    token: this.esriApiKey,
+                    token: this.tokenFor(layer.url),
                     ...{ opacity },
                     ...(get(layer, 'layerDefinition.drawingInfo') && {
                       drawingInfo: layer.layerDefinition.drawingInfo,
@@ -502,7 +503,7 @@ export class ArcgisService {
             } else {
               featureLayer = Esri.featureLayer({
                 url: layer.url,
-                token: this.esriApiKey,
+                token: this.tokenFor(layer.url),
                 ...{ opacity },
                 ...(get(layer, 'layerDefinition.drawingInfo') && {
                   drawingInfo: layer.layerDefinition.drawingInfo,
@@ -526,7 +527,7 @@ export class ArcgisService {
         if (layer.url) {
           featureLayer = Esri.featureLayer({
             url: layer.url + '/7',
-            token: this.esriApiKey,
+            token: this.tokenFor(layer.url + '/7'),
             ...{ opacity },
             minZoom: minScaleLevel,
             maxZoom: maxScaleLevel,
@@ -549,7 +550,7 @@ export class ArcgisService {
             if (layer.url) {
               imageMapLayer = (Esri as any).imageMapLayer({
                 url: layer.url,
-                token: this.esriApiKey,
+                token: this.tokenFor(layer.url),
                 minZoom: minScaleLevel,
                 maxZoom: maxScaleLevel,
                 opacity,
@@ -572,7 +573,7 @@ export class ArcgisService {
         const tiledMapLayer = Esri.tiledMapLayer({
           pane: 'tilePane',
           url: layer.url,
-          token: this.esriApiKey,
+          token: this.tokenFor(layer.url),
           opacity,
         });
         // if (layer.itemId) {
@@ -646,13 +647,24 @@ export class ArcgisService {
   }
 
   /**
-   * Make a http get request using the session token.
+   * Make a http get request, with the ArcGIS API key when the host is ArcGIS Online.
+   * Urls come from the web map and may point anywhere: the key is never sent elsewhere.
    *
    * @param path url path
    * @returns requisition promise
    */
   private httpGet(path: string): Promise<any> {
-    return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
+    return this.http.get(withEsriToken(path, this.esriApiKey)).toPromise();
+  }
+
+  /**
+   * Gets the ArcGIS API key to pass to an esri-leaflet layer, only for ArcGIS Online hosts.
+   *
+   * @param url url of the layer, from the web map
+   * @returns the key, or undefined for other hosts
+   */
+  private tokenFor(url: string | undefined): string | undefined {
+    return esriTokenFor(url, this.esriApiKey);
   }
 
   /**

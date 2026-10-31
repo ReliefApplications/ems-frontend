@@ -1,0 +1,135 @@
+# Dependabot configuration
+# Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Commit messages use the "chore(deps)" prefix so semantic-release's commit
+# analyzer does not treat dependency bumps as releasable changes.
+version: 2
+
+updates:
+  # npm dependencies (package.json / package-lock.json)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Paris
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      # Angular, Nx and Kendo must move together: keep their minor/patch bumps in one PR
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - '@angular-eslint/*'
+          - '@schematics/angular'
+          - 'zone.js'
+          - 'rxjs'
+        update-types:
+          - minor
+          - patch
+      nx:
+        patterns:
+          - 'nx'
+          - '@nrwl/*'
+          - '@nx/*'
+        update-types:
+          - minor
+          - patch
+      kendo:
+        patterns:
+          - '@progress/*'
+        update-types:
+          - minor
+          - patch
+      storybook:
+        patterns:
+          - '@storybook/*'
+        update-types:
+          - minor
+          - patch
+      # Everything else: one PR for runtime deps, one for dev deps
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      development-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # The workspace is pinned to Angular 15 / Nx 15 / Kendo 11 / TypeScript 4.9.
+      # Major bumps of the framework stack go through `ng update` / `nx migrate`
+      # as a dedicated upgrade, not through Dependabot PRs.
+      - dependency-name: '@angular/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-devkit/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-eslint/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@schematics/angular'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'zone.js'
+        update-types:
+          ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'rxjs'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'nx'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nrwl/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nx/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@progress/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@storybook/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@typescript-eslint/*'
+        update-types: ['version-update:semver-major']
+      # ESLint 9 drops .eslintrc.json
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      # Jest stack is pinned to what jest-preset-angular 12 supports
+      - dependency-name: jest
+        update-types: ['version-update:semver-major']
+      - dependency-name: jest-environment-jsdom
+        update-types: ['version-update:semver-major']
+      - dependency-name: ts-jest
+        update-types: ['version-update:semver-major']
+      - dependency-name: jest-preset-angular
+        update-types: ['version-update:semver-major']
+      # Apollo Client 4 requires a migration
+      - dependency-name: '@apollo/client'
+        update-types: ['version-update:semver-major']
+      # @types/node tracks the Node version used by the Angular 15 toolchain
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  # Actions used in .github/workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Paris
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - '*'
