@@ -170,6 +170,8 @@ If web-widgets is already built, you can regenerate the bundle without rebuildin
 make build-widgets
 ```
 
+The Azure DevOps pipelines (`.devops/*-CD.yml`) also build and bundle the web components on every run, and publish a `{env}-web-widgets` artifact containing `app-builder.js` together with the `tinymce/` and `i18n/` shared assets, ready to be uploaded to the blob storage.
+
 If you need to upload files to the blob storage where we store shared assets, you can use the az commands.
 First, build the front-office in production mode ( any environment, but same version ).
 Then, run:
