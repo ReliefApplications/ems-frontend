@@ -18,7 +18,9 @@ import {
 } from 'survey-core';
 import { RecordQueryResponse } from '../../models/record.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
+import { catchError, map, of, switchMap } from 'rxjs';
 import {
+  GET_RESOURCE_QUESTION_DRAFT_RECORD,
   GET_RESOURCE_QUESTION_RECORD,
   GET_SHORT_RESOURCE_BY_ID,
 } from '../graphql/queries';
@@ -88,12 +90,24 @@ const addRecordToSurveyContext = (
     setRecordVariables(question, draft);
     return;
   }
-  apollo
-    .query<RecordQueryResponse>({
-      query: GET_RESOURCE_QUESTION_RECORD,
-      variables: { id: recordID },
-      fetchPolicy: 'no-cache',
-    })
+  const queryRecord = (query: typeof GET_RESOURCE_QUESTION_RECORD) =>
+    apollo
+      .query<RecordQueryResponse>({
+        query,
+        variables: { id: recordID },
+        fetchPolicy: 'no-cache',
+      })
+      .pipe(map(({ data }) => data?.record));
+  // A record created from the question, in a form then saved as a draft, is
+  // still a draft when the form is reopened: look it up in the user's drafts
+  queryRecord(GET_RESOURCE_QUESTION_RECORD)
+    .pipe(
+      catchError(() => of(null)),
+      switchMap((record) =>
+        record ? of(record) : queryRecord(GET_RESOURCE_QUESTION_DRAFT_RECORD)
+      ),
+      map((record) => ({ data: { record } }))
+    )
     .subscribe({
       next: ({ data }) => {
         if ((question as any)._recordContextRequest !== requestId) {

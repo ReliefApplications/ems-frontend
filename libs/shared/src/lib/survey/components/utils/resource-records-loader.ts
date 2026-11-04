@@ -4,7 +4,7 @@ import {
 } from '@progress/kendo-data-query';
 import { Apollo, gql } from 'apollo-angular';
 import { chunk, flatten, get, isNil } from 'lodash';
-import { Observable, forkJoin, map, of } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import {
   ChoiceItem,
   ChoicesLoader,
@@ -130,6 +130,7 @@ export const buildResourceRecordsQuery = (
     $sortField: String
     $sortOrder: String
     $display: Boolean
+    $recordVisibility: RecordVisibility
   ) {
     ${queryName}(
       first: $first
@@ -138,6 +139,7 @@ export const buildResourceRecordsQuery = (
       sortField: $sortField
       sortOrder: $sortOrder
       display: $display
+      recordVisibility: $recordVisibility
     ) {
       edges {
         node {
@@ -254,18 +256,46 @@ export const createResourceRecordsLoader = (
       if (ids.length === 0) {
         return of([]);
       }
-      return forkJoin(
-        chunk(ids, IDS_CHUNK_SIZE).map((idsChunk) =>
-          fetch({
-            first: idsChunk.length,
-            skip: 0,
-            filter: {
-              logic: 'and',
-              filters: [{ field: 'ids', operator: 'eq', value: idsChunk }],
-            },
-          }).pipe(map(toItems))
-        )
-      ).pipe(map((results) => flatten(results)));
+      /**
+       * Fetches records by ids, in chunks.
+       *
+       * @param idsToLoad Ids of the records to fetch
+       * @param recordVisibility Visibility of the records, submitted by default
+       * @returns Choice items of the records found
+       */
+      const fetchByIds = (
+        idsToLoad: string[],
+        recordVisibility?: string
+      ): Observable<ChoiceItem[]> =>
+        forkJoin(
+          chunk(idsToLoad, IDS_CHUNK_SIZE).map((idsChunk) =>
+            fetch({
+              first: idsChunk.length,
+              skip: 0,
+              filter: {
+                logic: 'and',
+                filters: [{ field: 'ids', operator: 'eq', value: idsChunk }],
+              },
+              ...(recordVisibility && { recordVisibility }),
+            }).pipe(map(toItems))
+          )
+        ).pipe(map((results) => flatten(results)));
+      // Records created from the question while the form was saved as a
+      // draft are drafts as well: look the missing ones up in the user's
+      // own drafts, or reopening the draft form shows an empty selection
+      return fetchByIds(ids).pipe(
+        switchMap((items) => {
+          const found = new Set(items.map((item) => item.value));
+          const missing = ids.filter((id) => !found.has(id));
+          if (missing.length === 0) {
+            return of(items);
+          }
+          return fetchByIds(missing, 'ownDrafts').pipe(
+            map((drafts) => [...items, ...drafts]),
+            catchError(() => of(items))
+          );
+        })
+      );
     },
   };
 };

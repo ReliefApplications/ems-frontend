@@ -3,6 +3,7 @@ import { Injector, NgZone } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { of, throwError } from 'rxjs';
 import {
+  GET_RESOURCE_QUESTION_DRAFT_RECORD,
   GET_RESOURCE_QUESTION_RECORD,
   GET_SHORT_RESOURCE_BY_ID,
 } from '../graphql/queries';
@@ -103,9 +104,13 @@ const createFakeQuestion = (overrides: any = {}) => {
  * Builds a fake Apollo client answering the resource and record queries.
  *
  * @param records Records returned by the record query, by id
+ * @param drafts Draft records of the user, returned by the draft record query, by id
  * @returns Fake Apollo client, with a jest mock for query
  */
-const createFakeApollo = (records: Record<string, any> = {}) => ({
+const createFakeApollo = (
+  records: Record<string, any> = {},
+  drafts: Record<string, any> = {}
+) => ({
   query: jest.fn(({ query, variables }: any) => {
     if (query === GET_SHORT_RESOURCE_BY_ID) {
       return of({
@@ -121,6 +126,12 @@ const createFakeApollo = (records: Record<string, any> = {}) => ({
     }
     if (query === GET_RESOURCE_QUESTION_RECORD) {
       const record = records[variables.id];
+      return record
+        ? of({ data: { record } })
+        : throwError(() => new Error('not found'));
+    }
+    if (query === GET_RESOURCE_QUESTION_DRAFT_RECORD) {
+      const record = drafts[variables.id];
       return record
         ? of({ data: { record } })
         : throwError(() => new Error('not found'));
@@ -214,6 +225,43 @@ describe('resource question', () => {
     expect(
       apollo.query.mock.calls.filter(
         ([call]: any) => call.query === GET_RESOURCE_QUESTION_RECORD
+      )
+    ).toHaveLength(0);
+  });
+
+  it('looks the record up in the user drafts when it is not submitted', () => {
+    const apollo = createFakeApollo(
+      {},
+      { 'draft-id': { id: 'draft-id', data: { name: 'Draft country' } } }
+    );
+    const component = createComponent(apollo);
+    const { question, variables, setValue } = createFakeQuestion();
+
+    component.onLoaded(question);
+    setValue('draft-id');
+
+    expect(apollo.query).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: GET_RESOURCE_QUESTION_DRAFT_RECORD,
+        variables: { id: 'draft-id' },
+      })
+    );
+    expect(variables['country.name']).toBe('Draft country');
+  });
+
+  it('does not look up the drafts when the record is submitted', () => {
+    const apollo = createFakeApollo({
+      'record-id': { id: 'record-id', data: { name: 'France' } },
+    });
+    const component = createComponent(apollo);
+    const { question, setValue } = createFakeQuestion();
+
+    component.onLoaded(question);
+    setValue('record-id');
+
+    expect(
+      apollo.query.mock.calls.filter(
+        ([call]: any) => call.query === GET_RESOURCE_QUESTION_DRAFT_RECORD
       )
     ).toHaveLength(0);
   });
