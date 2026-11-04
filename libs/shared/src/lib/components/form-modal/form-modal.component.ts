@@ -647,71 +647,24 @@ export class FormModalComponent
    * the warning modal.
    */
   private submitRecord(survey: any, skipValidation: boolean): void {
-    if (this.data.recordId) {
-      if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey);
-      } else {
-        this.updateData(this.data.recordId, survey, skipValidation);
-      }
-    } else if (this.lastDraftRecord) {
-      this.apollo
-        .mutate<EditRecordMutationResponse>({
-          mutation: EDIT_RECORD,
-          variables: {
-            id: this.lastDraftRecord,
-            data: survey.data,
-            template: this.data.template,
-            lang: this.translate.currentLang,
-            updateDraftStatus: false,
-            skipValidation,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.handleMutationErrors(
-                errors,
-                this.translate.instant('common.notifications.error', {
-                  error: errors[0].message,
-                })
-              );
-            } else if (
-              this.handleValidationErrors(data?.editRecord, () =>
-                this.submitRecord(survey, true)
-              )
-            ) {
-              // The draft has not been published
-              return;
-            } else {
-              this.lastDraftRecord = undefined;
-              this.valueChanged = false;
-              this.ngZone.run(() => {
-                this.dialogRef.close({
-                  template: this.data.template,
-                  data: data?.editRecord,
-                } as any);
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.form.display.submissionMessage'
-                  )
-                );
-              });
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.saving = false;
-            this.autoSaveEnabled = this.canAutoSaveDraft;
-          },
-        });
+    if (this.data.recordId && this.isMultiEdition) {
+      this.updateMultipleData(this.data.recordId, survey);
+      // A draft opened from its id is not updated: it is submitted as a new
+      // record, as any other draft
+    } else if (this.data.recordId && !this.record?.draft) {
+      this.updateData(this.data.recordId, survey, skipValidation);
     } else {
+      // When submitting a draft, the record is created from it and the draft
+      // is deleted by the back-end
+      const draftId = this.lastDraftRecord;
       this.apollo
         .mutate<AddRecordMutationResponse>({
           mutation: ADD_RECORD,
           variables: {
-            form: this.data.template,
+            form: this.data.template || this.form?.id,
             data: survey.data,
             cloneRecordId: this.data.cloneRecordId,
+            ...(draftId && { draftId }),
             skipValidation,
           },
         })
@@ -734,15 +687,8 @@ export class FormModalComponent
               // The record has not been created
               return;
             } else {
-              if (this.lastDraftRecord) {
-                const callback = () => {
-                  this.lastDraftRecord = undefined;
-                };
-                this.formHelpersService.deleteRecordDraft(
-                  this.lastDraftRecord,
-                  callback
-                );
-              }
+              this.lastDraftRecord = undefined;
+              this.valueChanged = false;
               this.ngZone.run(() => {
                 this.dialogRef.close({
                   template: this.data.template,
@@ -782,7 +728,6 @@ export class FormModalComponent
           data: survey.data,
           template: this.data.template,
           lang: this.translate.currentLang,
-          ...(this.record?.draft && { updateDraftStatus: false }),
           skipValidation,
         },
       })

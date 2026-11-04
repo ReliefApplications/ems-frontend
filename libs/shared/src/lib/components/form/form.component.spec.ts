@@ -25,7 +25,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { AutoTranslateService } from '../../services/auto-translate/auto-translate.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { AuthService } from '../../services/auth/auth.service';
-import { EDIT_RECORD } from './graphql/mutations';
+import { ADD_RECORD } from './graphql/mutations';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
@@ -148,7 +148,7 @@ describe('FormComponent', () => {
     expect(component.showSaveAsDraft).toBe(false);
   });
 
-  it('should show the completed page after publishing a restored draft', async () => {
+  it('should submit a restored draft as a new record, then show the completed page', async () => {
     component.survey = new SurveyModel({ elements: [] });
     component.survey.showCompletedPage = false;
     jest.spyOn(formHelpersService, 'uploadFiles').mockResolvedValue();
@@ -158,8 +158,8 @@ describe('FormComponent', () => {
     mutate.mockReturnValue(
       of({
         data: {
-          editRecord: {
-            id: 'draft-id',
+          addRecord: {
+            id: 'record-id',
             incrementalId: '1',
             draft: false,
             data: {},
@@ -177,10 +177,10 @@ describe('FormComponent', () => {
 
     expect(mutate).toHaveBeenCalledWith(
       expect.objectContaining({
-        mutation: EDIT_RECORD,
+        mutation: ADD_RECORD,
         variables: expect.objectContaining({
-          id: 'draft-id',
-          updateDraftStatus: false,
+          draftId: 'draft-id',
+          data: component.survey.data,
         }),
       })
     );

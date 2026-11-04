@@ -7,12 +7,14 @@ export const ADD_RECORD = gql`
     $data: JSON!
     $display: Boolean
     $draft: Boolean
+    $draftId: ID
     $skipValidation: Boolean
   ) {
     addRecord(
       form: $form
       data: $data
       draft: $draft
+      draftId: $draftId
       skipValidation: $skipValidation
     ) {
       id
@@ -66,7 +68,6 @@ export const EDIT_RECORD = gql`
     $display: Boolean
     $lang: String
     $draft: Boolean
-    $updateDraftStatus: Boolean
     $skipValidation: Boolean
   ) {
     editRecord(
@@ -76,7 +77,6 @@ export const EDIT_RECORD = gql`
       template: $template
       lang: $lang
       draft: $draft
-      updateDraftStatus: $updateDraftStatus
       skipValidation: $skipValidation
     ) {
       id
