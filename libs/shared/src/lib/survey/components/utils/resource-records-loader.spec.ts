@@ -186,6 +186,62 @@ describe('resource records loader', () => {
         });
     });
 
+    it('looks the records not found up in the user drafts', (done) => {
+      const submittedId = '64b7f0c2e4b0a1a2b3c4d5e6';
+      const draftId = '64b7f0c2e4b0a1a2b3c4d5e7';
+      const apollo = {
+        query: jest.fn(({ variables }: any) =>
+          of({
+            data: {
+              allCountries: {
+                edges:
+                  variables.recordVisibility === 'ownDrafts'
+                    ? [{ node: { id: draftId, name: 'Draft country' } }]
+                    : [{ node: { id: submittedId, name: 'France' } }],
+                totalCount: 1,
+              },
+            },
+          })
+        ),
+      };
+      const loader = createResourceRecordsLoader(apollo as any, {
+        queryName: 'allCountries',
+        field: { name: 'name', type: 'text' },
+      });
+
+      loader.loadByValues([submittedId, draftId]).subscribe((items) => {
+        expect(items).toEqual([
+          { value: submittedId, text: 'France' },
+          { value: draftId, text: 'Draft country' },
+        ]);
+        expect(apollo.query).toHaveBeenCalledTimes(2);
+        const draftCall = apollo.query.mock.calls[1][0] as any;
+        expect(draftCall.variables.recordVisibility).toBe('ownDrafts');
+        expect(draftCall.variables.filter.filters[0].value).toEqual([draftId]);
+        done();
+      });
+    });
+
+    it('does not query the drafts when all records are found', (done) => {
+      const apollo = createFakeApollo(
+        'allCountries',
+        [{ id: '64b7f0c2e4b0a1a2b3c4d5e6', name: 'France' }],
+        1
+      );
+      const loader = createResourceRecordsLoader(apollo as any, {
+        queryName: 'allCountries',
+        field: { name: 'name', type: 'text' },
+      });
+
+      loader.loadByValues(['64b7f0c2e4b0a1a2b3c4d5e6']).subscribe(() => {
+        expect(apollo.query).toHaveBeenCalledTimes(1);
+        expect(
+          (apollo.query.mock.calls[0][0] as any).variables.recordVisibility
+        ).toBeUndefined();
+        done();
+      });
+    });
+
     it('does not query when there is no valid id to load', (done) => {
       const apollo = createFakeApollo('allCountries', []);
       const loader = createResourceRecordsLoader(apollo as any, {
