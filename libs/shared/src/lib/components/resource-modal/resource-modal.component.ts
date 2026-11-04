@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { RecordQueryResponse } from '../../models/record.model';
+import { GET_RESOURCE_QUESTION_DRAFT_RECORD } from '../../survey/graphql/queries';
 import { FormModalComponent } from '../form-modal/form-modal.component';
 // import { v4 as uuidv4 } from 'uuid';
 // import localForage from 'localforage';
@@ -55,6 +58,9 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
+  /** Apollo client, to read back the saved draft record */
+  private readonly draftRecordApollo = inject(Apollo);
+
   /**
    * We override this method to not directly save new records
    *
@@ -68,16 +74,31 @@ export class ResourceModalComponent extends FormModalComponent {
         this.updateData(this.data.recordId, survey);
       }
     } else {
-      const callback = (details: any) => {
+      const close = (data: any) =>
         this.ngZone.run(() => {
           this.dialogRef.close({
             template: this.data.template,
-            data: {
-              id: details.id,
-              data: survey.data,
-            },
+            data: { id: data.id, data: data.data },
           } as any);
         });
+      const callback = (details: any) => {
+        // The answers do not contain the calculated fields (computed by the
+        // back-end), and the question's display field may be one of them:
+        // read the saved draft so the new choice shows its text, not its id
+        this.draftRecordApollo
+          .query<RecordQueryResponse>({
+            query: GET_RESOURCE_QUESTION_DRAFT_RECORD,
+            variables: { id: details.id },
+            fetchPolicy: 'no-cache',
+          })
+          .subscribe({
+            next: ({ data }) =>
+              close({
+                id: details.id,
+                data: { ...survey.data, ...(data?.record?.data || {}) },
+              }),
+            error: () => close({ id: details.id, data: survey.data }),
+          });
       };
 
       this.formHelpersService.saveAsDraft(

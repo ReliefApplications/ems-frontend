@@ -27,6 +27,20 @@ export const GET_RESOURCE_QUESTION_RECORD = gql`
   }
 `;
 
+/**
+ * Graphql request for getting the data of a draft record the current user
+ * just created from a resource question, including its calculated fields,
+ * so the question can display it (its display field may be calculated).
+ */
+export const GET_RESOURCE_QUESTION_DRAFT_RECORD = gql`
+  query GetResourceQuestionDraftRecord($id: ID!) {
+    record(id: $id, recordVisibility: ownDrafts) {
+      id
+      data(calculatedFields: true)
+    }
+  }
+`;
+
 /** Get short resource graphql query definition */
 export const GET_SHORT_RESOURCE_BY_ID = gql`
   query GetShortResourceById($id: ID!) {
