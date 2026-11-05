@@ -8,6 +8,8 @@ export default {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.(html|svg)$',
+      // Transpile each file on its own, without type-checking: much faster
+      isolatedModules: true,
     },
   },
   coverageDirectory: '../../coverage/libs/shared',
