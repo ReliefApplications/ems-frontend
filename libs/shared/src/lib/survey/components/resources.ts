@@ -33,16 +33,22 @@ import {
 } from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { setupResourceChoicesLoader } from './utils/resource-records-loader';
+import {
+  restoreCreatedDraftRecords,
+  setupResourceChoicesLoader,
+} from './utils/resource-records-loader';
 import {
   addGridTeardown,
   destroyGrid,
   registerGridForCleanup,
 } from './utils/grid-cleanup';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
+
+/** Key of the value change callback registered by the grid of a question */
+const GRID_VALUE_CALLBACK_KEY = 'resourcesGrid';
 
 /**
  * Inits the resources question component for survey.
@@ -804,10 +810,26 @@ export const init = (
       }
     };
     question.survey?.onValueChanged.add(onValueChanged);
-    // Release this survey handler when the grid is destroyed.
-    addGridTeardown(grid, () =>
-      question.survey?.onValueChanged.remove(onValueChanged)
+    // Replacing the data of the survey as a whole ( e.g. loading a draft in
+    // the opened form ) does not trigger the survey value changed event: the
+    // value of the question is listened to as well, or the grid would keep
+    // displaying the records selected before
+    const contentQuestion = question.contentQuestion;
+    contentQuestion?.registerFunctionOnPropertyValueChanged(
+      'value',
+      // Once the question itself is up to date
+      () =>
+        Promise.resolve().then(() => setGridInputs(grid.instance, question)),
+      GRID_VALUE_CALLBACK_KEY
     );
+    // Release these handlers when the grid is destroyed.
+    addGridTeardown(grid, () => {
+      question.survey?.onValueChanged.remove(onValueChanged);
+      contentQuestion?.unRegisterFunctionOnPropertyValueChanged(
+        'value',
+        GRID_VALUE_CALLBACK_KEY
+      );
+    });
     return grid;
   };
 
@@ -826,6 +848,27 @@ export const init = (
       question.onSelect.trim().length > 0;
     instance.multiSelect = hasOnSelect ? false : !question.displayOnly;
     instance.selectable = hasOnSelect ? true : !question.displayOnly;
+    // Records created from the question are drafts until the form is
+    // submitted: when the form was saved as a draft then reopened, they are
+    // restored, as the grid only queries submitted records
+    if (
+      question.resource &&
+      !question.displayOnly &&
+      Array.isArray(question.value) &&
+      question.value.length > 0
+    ) {
+      try {
+        const queryName =
+          question._resourceInfo?.queryName ??
+          (await firstValueFrom(getResourceById(question.resource))).data
+            ?.resource?.queryName;
+        if (queryName) {
+          await restoreCreatedDraftRecords(apollo, question, queryName);
+        }
+      } catch {
+        // The grid is displayed without the drafts
+      }
+    }
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);
     if (

@@ -4,7 +4,17 @@ import {
 } from '@progress/kendo-data-query';
 import { Apollo, gql } from 'apollo-angular';
 import { chunk, flatten, get, isNil } from 'lodash';
-import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  firstValueFrom,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
+import { RecordQueryResponse } from '../../../models/record.model';
+import { GET_RESOURCE_QUESTION_DRAFT_RECORD } from '../../graphql/queries';
 import {
   ChoiceItem,
   ChoicesLoader,
@@ -298,6 +308,132 @@ export const createResourceRecordsLoader = (
       );
     },
   };
+};
+
+/**
+ * Finds the drafts of the user among records of a resource.
+ *
+ * @param apollo Apollo client
+ * @param queryName Name of the records query generated for the resource
+ * @param ids Ids of the records
+ * @returns Ids of the records which are drafts of the user
+ */
+export const loadOwnDraftIds = (
+  apollo: Apollo,
+  queryName: string,
+  ids: string[]
+): Observable<string[]> => {
+  if (ids.length === 0) {
+    return of([]);
+  }
+  const query = buildResourceRecordsQuery(queryName, DEFAULT_DISPLAY_FIELD);
+  return forkJoin(
+    chunk(ids, IDS_CHUNK_SIZE).map((idsChunk) =>
+      apollo
+        .query<any>({
+          query,
+          variables: {
+            first: idsChunk.length,
+            skip: 0,
+            filter: {
+              logic: 'and',
+              filters: [{ field: 'ids', operator: 'eq', value: idsChunk }],
+            },
+            recordVisibility: 'ownDrafts',
+          },
+          fetchPolicy: 'no-cache',
+        })
+        .pipe(
+          map(({ data }) =>
+            (get(data, `${queryName}.edges`) || [])
+              .map((edge: any) => edge?.node?.id)
+              .filter((id: any) => !!id)
+          )
+        )
+    )
+  ).pipe(map((results) => flatten(results)));
+};
+
+/**
+ * Restores the records created from a resource(s) question which are still
+ * drafts, when the question is loaded with them: the form was saved as a
+ * draft, then reopened.
+ *
+ * Records created from a question are drafts until the form is submitted.
+ * They are not returned by the records queries of the question ( e.g. its
+ * grid ), which display them from the data kept on the question when they
+ * are created. This data is lost once the form is closed: it is fetched
+ * again, so the drafts are handled as they were when created.
+ *
+ * @param apollo Apollo client
+ * @param question Resource / resources question
+ * @param queryName Name of the records query generated for the resource
+ * @returns Whether drafts were restored
+ */
+export const restoreCreatedDraftRecords = async (
+  apollo: Apollo,
+  question: any,
+  queryName: string
+): Promise<boolean> => {
+  const selected: any[] = Array.isArray(question.value)
+    ? question.value
+    : [question.value];
+  /** Records looked up already: submitted records are not drafts */
+  const checked: Set<string> = (question._checkedDraftIds =
+    question._checkedDraftIds || new Set<string>());
+  const ids = selected.filter(
+    (id) =>
+      typeof id === 'string' &&
+      /^[0-9a-fA-F]{24}$/.test(id) &&
+      !(question.draftData && id in question.draftData) &&
+      !checked.has(id)
+  );
+  if (ids.length === 0) {
+    return false;
+  }
+  ids.forEach((id) => checked.add(id));
+  try {
+    const draftIds = await firstValueFrom(
+      loadOwnDraftIds(apollo, queryName, ids)
+    );
+    const records = await Promise.all(
+      draftIds.map((id) =>
+        firstValueFrom(
+          apollo.query<RecordQueryResponse>({
+            query: GET_RESOURCE_QUESTION_DRAFT_RECORD,
+            variables: { id },
+            fetchPolicy: 'no-cache',
+          })
+        ).then(({ data }) => data?.record)
+      )
+    );
+    const drafts = records.filter((record) => !!record?.id);
+    if (drafts.length === 0) {
+      return false;
+    }
+    const draftData = { ...question.draftData };
+    drafts.forEach((record) => {
+      draftData[record.id as string] = record.data || {};
+    });
+    question.draftData = draftData;
+    const restoredIds = drafts.map((record) => record.id as string);
+    if (Array.isArray(question.value)) {
+      const created: string[] = question.newCreatedRecords || [];
+      question.newCreatedRecords = [
+        ...created,
+        ...restoredIds.filter((id) => !created.includes(id)),
+      ];
+    } else {
+      question.newCreatedRecords = restoredIds[0];
+    }
+    // Form the records are created with
+    question.template = question.template || question.addTemplate;
+    return true;
+  } catch {
+    // Look the records up again next time
+    ids.forEach((id) => checked.delete(id));
+    return false;
+  }
 };
 
 /**

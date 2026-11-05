@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Injector, NgZone } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { DomService } from '../../services/dom/dom.service';
 import { init } from './resources';
 import { processNewCreatedRecords } from './utils';
@@ -267,5 +267,113 @@ describe('resources question', () => {
       'targetCommonService',
       'country-id-123'
     );
+  });
+
+  it('should refresh the grid when the value of the question changes without survey event ( e.g. draft loaded in the form )', async () => {
+    const componentCollection = {
+      add: jest.fn(),
+    };
+    const gridInstance = {
+      configureGrid: jest.fn(),
+      removeRowIds: new Subject<string[]>(),
+      selectionChange: new Subject<unknown>(),
+      settings: {} as any,
+    };
+    const domService = {
+      appendComponentToBody: jest.fn(() => ({
+        instance: gridInstance,
+      })),
+      removeComponentFromBody: jest.fn(),
+    };
+    // No draft among the selected records
+    const apolloMock = {
+      query: jest.fn(() =>
+        of({ data: { allChildren: { edges: [], totalCount: 0 } } })
+      ),
+    };
+    const injector = {
+      get: jest.fn((token: unknown) => {
+        if (token === DomService) {
+          return domService;
+        }
+        if (token === Apollo) {
+          return apolloMock;
+        }
+        if (token === Dialog) {
+          return {};
+        }
+        return null;
+      }),
+    } as unknown as Injector;
+    // The grid displays the records selected in the question
+    mockedProcessNewCreatedRecords.mockImplementation((async (
+      gridQuestion: any
+    ) => ({
+      query: { temporaryRecords: [], selected: [...gridQuestion.value] },
+    })) as any);
+
+    init(injector, componentCollection as any, {} as NgZone, document);
+
+    const component = componentCollection.add.mock.calls[0][0];
+    const content = document.createElement('div');
+    content.className = 'sd-question__content';
+    content.appendChild(document.createElement('div'));
+    const element = document.createElement('div');
+    element.appendChild(content);
+    document.body.appendChild(element);
+
+    const valueCallbacks: Record<string, () => void> = {};
+    const question = {
+      canSearch: false,
+      customFilter: '',
+      displayAsGrid: true,
+      displayOnly: false,
+      getPropertyValue: jest.fn(() => ''),
+      gridFieldsSettings: undefined,
+      onSelect: '',
+      readOnly: false,
+      registerFunctionOnPropertiesValueChanged: jest.fn(),
+      registerFunctionOnPropertyValueChanged: jest.fn(),
+      resource: 'resource-id',
+      _resourceInfo: { queryName: 'allChildren' },
+      contentQuestion: {
+        registerFunctionOnPropertyValueChanged: jest.fn(
+          (name: string, callback: () => void, key: string) => {
+            valueCallbacks[`${name}:${key}`] = callback;
+          }
+        ),
+        unRegisterFunctionOnPropertyValueChanged: jest.fn(),
+      },
+      survey: {
+        mode: 'edit',
+        onValueChanged: {
+          add: jest.fn(),
+          remove: jest.fn(),
+        },
+      },
+      value: [] as string[],
+    };
+
+    component.onAfterRender(question as any, element);
+    await flushAsyncTasks();
+    await flushAsyncTasks();
+    expect(gridInstance.settings.query.selected).toEqual([]);
+
+    // The data of the survey is replaced: no survey value changed event
+    question.value = ['5f1f1f1f1f1f1f1f1f1f1f01'];
+    valueCallbacks['value:resourcesGrid']();
+    await flushAsyncTasks();
+    await flushAsyncTasks();
+
+    expect(question.survey.onValueChanged.add).toHaveBeenCalledTimes(1);
+    expect(gridInstance.settings.query.selected).toEqual([
+      '5f1f1f1f1f1f1f1f1f1f1f01',
+    ]);
+    expect(gridInstance.configureGrid).toHaveBeenCalledTimes(2);
+    // The drafts of the user are looked up among the selected records
+    expect(apolloMock.query).toHaveBeenCalledTimes(1);
+    expect(
+      (apolloMock.query.mock.calls[0] as any[])[0].variables.recordVisibility
+    ).toBe('ownDrafts');
   });
 });
