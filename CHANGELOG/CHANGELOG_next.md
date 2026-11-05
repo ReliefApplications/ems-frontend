@@ -1,3 +1,14 @@
+# [2.24.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.31...v2.24.0-rc.32) (2026-11-05)
+
+### Bug Fixes
+
+- resource question shows draft records selected in a reopened draft form ([#2975](https://github.com/ReliefApplications/ems-frontend/issues/2975)) ([adc2c28](https://github.com/ReliefApplications/ems-frontend/commit/adc2c28519c5fa2c4d2a48b6cc5c61225c14eb1d)), closes [AB#141118](https://github.com/AB/issues/141118)
+- When one creates a new related record, the correct calculated value does not display in the drop-down ([7a2813f](https://github.com/ReliefApplications/ems-frontend/commit/7a2813fa5e7100475be1dc7427bfc798dc1700c9)), closes [AB#141117](https://github.com/AB/issues/141117)
+
+### Features
+
+- **history:** tag translated fields with their target language ([#2976](https://github.com/ReliefApplications/ems-frontend/issues/2976)) ([5fda2e7](https://github.com/ReliefApplications/ems-frontend/commit/5fda2e7474fdb23aa7144cdadaadd9e320619740)), closes [AB#141121](https://github.com/AB/issues/141121)
+
 # [2.24.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.31...v2.24.0-rc.32) (2026-11-04)
 
 ### Bug Fixes
