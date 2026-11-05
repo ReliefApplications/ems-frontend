@@ -120,6 +120,7 @@ describe('FormHelpersService', () => {
 describe('FormHelpersService files upload', () => {
   let service: FormHelpersService;
   let uploadFile: jest.Mock;
+  let getUploadProperties: jest.Mock;
   let updateFile: jest.Mock;
   let uploadBlob: jest.Mock;
   let getFileBlob: jest.Mock;
@@ -138,6 +139,8 @@ describe('FormHelpersService files upload', () => {
   let triggerSnackBar: jest.Mock;
   const stored = { driveId: 'drive', itemId: 'stored-item' };
   const uploaded = { driveId: 'drive', itemId: 'new-item' };
+  /** How the files of a question are uploaded to document management */
+  const documentUpload = { driveId: 'drive', body: { DocumentType: [2] } };
   const draftPath = 'form-id/draft-blob';
   const draftFile = {
     name: 'draft.txt',
@@ -162,6 +165,7 @@ describe('FormHelpersService files upload', () => {
     revokeObjectURL = jest.fn();
     (URL as any).revokeObjectURL = revokeObjectURL;
     uploadFile = jest.fn().mockResolvedValue(uploaded);
+    getUploadProperties = jest.fn().mockResolvedValue(documentUpload);
     updateFile = jest.fn().mockResolvedValue(undefined);
     uploadBlob = jest.fn().mockResolvedValue('form-id/new-blob');
     getFileBlob = jest
@@ -219,7 +223,7 @@ describe('FormHelpersService files upload', () => {
         { provide: DownloadService, useValue: { uploadBlob, getFileBlob } },
         {
           provide: DocumentManagementService,
-          useValue: { uploadFile, updateFile },
+          useValue: { uploadFile, updateFile, getUploadProperties },
         },
         { provide: FileService, useValue: {} },
       ],
@@ -249,18 +253,83 @@ describe('FormHelpersService files upload', () => {
       });
       // Background save: no progress snackbar
       expect(openComponentSnackBar).not.toHaveBeenCalled();
-      // Document management is not involved in drafts
+      // Nothing is uploaded to document management in drafts
       expect(uploadFile).not.toHaveBeenCalled();
       expect(updateFile).not.toHaveBeenCalled();
       expect(getFileBlob).not.toHaveBeenCalled();
+      // Draft files hold how to upload them there, once per question
+      expect(getUploadProperties).toHaveBeenCalledTimes(1);
+      expect(getUploadProperties.mock.calls[0][0].name).toBe('documents');
       expect(survey.getValue('documents')).toEqual([
         {
           name: 'a.txt',
           type: 'text/plain',
           content: 'form-id/new-blob',
           draft: true,
+          upload: documentUpload,
         },
         { name: 'stored.pdf', content: stored },
+        // Saved before draft files held how to upload them
+        { ...draftFile, upload: documentUpload },
+      ]);
+    });
+
+    it('leaves the draft files holding how to upload them as they are', async () => {
+      const files = [
+        { ...draftFile, upload: { driveId: 'other-drive', body: {} } },
+        { name: 'stored.pdf', content: stored },
+      ];
+      const survey = createSurvey({ documents: files });
+
+      await service.uploadFiles(survey, {}, 'form-id', { draft: true });
+
+      expect(getUploadProperties).not.toHaveBeenCalled();
+      expect(uploadBlob).not.toHaveBeenCalled();
+      expect(survey.getValue('documents')).toEqual(files);
+    });
+
+    it('does not save the files of a question when how to upload them is unknown', async () => {
+      getUploadProperties.mockImplementation((question: { name: string }) =>
+        question.name === 'documents'
+          ? Promise.reject(new Error('Could not fetch occurrence'))
+          : Promise.resolve(documentUpload)
+      );
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', content: dataUrl }, draftFile],
+        copies: [{ name: 'b.txt', content: otherDataUrl }],
+      });
+
+      await expect(
+        service.uploadFiles(survey, {}, 'form-id', { draft: true })
+      ).rejects.toEqual([{ question: 'documents', file: { name: 'a.txt' } }]);
+
+      // Only the files of the other question are saved
+      expect(uploadBlob).toHaveBeenCalledTimes(1);
+      expect(survey.getValue('documents')).toEqual([
+        { name: 'a.txt', content: dataUrl },
+        draftFile,
+      ]);
+      expect(survey.getValue('copies')).toEqual([
+        {
+          name: 'b.txt',
+          content: 'form-id/new-blob',
+          draft: true,
+          upload: documentUpload,
+        },
+      ]);
+    });
+
+    it('saves plain draft files without document management', async () => {
+      environment.csApiUrl = undefined;
+      const survey = createSurvey({
+        documents: [{ name: 'a.txt', content: dataUrl }, draftFile],
+      });
+
+      await service.uploadFiles(survey, {}, 'form-id', { draft: true });
+
+      expect(getUploadProperties).not.toHaveBeenCalled();
+      expect(survey.getValue('documents')).toEqual([
+        { name: 'a.txt', content: 'form-id/new-blob', draft: true },
         draftFile,
       ]);
     });
@@ -347,7 +416,8 @@ describe('FormHelpersService files upload', () => {
       const survey = createSurvey({
         documents: [
           { name: 'a.txt', type: 'text/plain', content: dataUrl },
-          draftFile,
+          // Uploaded from its question: how to upload it is not needed anymore
+          { ...draftFile, upload: documentUpload },
           { name: 'legacy.pdf', content: 'form-id/legacy-blob' },
           { name: 'stored.pdf', content: stored },
         ],
@@ -567,7 +637,12 @@ describe('FormHelpersService files upload', () => {
         form: 'form-id',
         data: {
           documents: [
-            { name: 'a.txt', content: 'form-id/new-blob', draft: true },
+            {
+              name: 'a.txt',
+              content: 'form-id/new-blob',
+              draft: true,
+              upload: documentUpload,
+            },
             { name: 'stored.pdf', content: stored },
           ],
         },

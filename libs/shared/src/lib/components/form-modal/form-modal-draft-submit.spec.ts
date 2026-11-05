@@ -1,5 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { NgZone } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -9,6 +10,7 @@ import { AutoTranslateService } from '../../services/auto-translate/auto-transla
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { ResourceModalComponent } from '../resource-modal/resource-modal.component';
 import { FormModalComponent } from './form-modal.component';
 import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 
@@ -92,6 +94,50 @@ describe('FormModalComponent draft submission', () => {
     component.ngOnDestroy();
   });
 
+  it('uploads the files to their final storage before submitting the record', async () => {
+    const { component, apollo, survey, formHelpersService } = createComponent({
+      template: 'form-id',
+    });
+    await component.ngOnInit();
+
+    await component.submit();
+    expect(formHelpersService.uploadFiles).toHaveBeenCalledWith(
+      survey,
+      expect.anything(),
+      'form-id',
+      { draft: false }
+    );
+
+    // Submitting completes the survey, which saves the record
+    await flushPromises();
+    expect(apollo.mutate).toHaveBeenCalledTimes(1);
+    expect(apollo.mutate.mock.calls[0][0].mutation).toBe(ADD_RECORD);
+    component.ngOnDestroy();
+  });
+
+  it('keeps the files of a record created from a resource question as draft files', async () => {
+    const { component, apollo, survey, formHelpersService } = createComponent(
+      { template: 'form-id' },
+      ResourceModalComponent
+    );
+    await component.ngOnInit();
+
+    await component.submit();
+    expect(formHelpersService.uploadFiles).toHaveBeenCalledWith(
+      survey,
+      expect.anything(),
+      'form-id',
+      { draft: true }
+    );
+
+    // Submitting completes the survey, which saves the record as a draft:
+    // nothing is submitted, nor uploaded to the final storage
+    await flushPromises();
+    expect(formHelpersService.saveAsDraft).toHaveBeenCalledTimes(1);
+    expect(apollo.mutate).not.toHaveBeenCalled();
+    component.ngOnDestroy();
+  });
+
   /**
    * Creates the modal, whose mutations succeed.
    *
@@ -99,17 +145,22 @@ describe('FormModalComponent draft submission', () => {
    * @param options.template id of the form to display
    * @param options.recordId id of the record to open
    * @param options.record record returned when querying the opened record
+   * @param componentClass modal to create, the form modal by default
    * @returns the modal component and its mocked dependencies
    */
-  function createComponent(options: {
-    template?: string;
-    recordId?: string;
-    record?: Record<string, any>;
-  }): {
+  function createComponent(
+    options: {
+      template?: string;
+      recordId?: string;
+      record?: Record<string, any>;
+    },
+    componentClass: typeof FormModalComponent = FormModalComponent
+  ): {
     component: FormModalComponent;
     apollo: { query: jest.Mock; mutate: jest.Mock };
     dialogRef: { close: jest.Mock };
     survey: SurveyModel;
+    formHelpersService: { [method: string]: jest.Mock };
   } {
     const survey = new SurveyModel({
       elements: [{ type: 'text', name: 'title' }],
@@ -146,28 +197,37 @@ describe('FormModalComponent draft submission', () => {
     } as unknown as AutoTranslateService;
     const formHelpersService = {
       setEmptyQuestions: jest.fn(),
-      createTemporaryRecords: jest.fn().mockResolvedValue(undefined),
       uploadFiles: jest.fn().mockResolvedValue(undefined),
-    } as unknown as FormHelpersService;
+      getUploadErrorMessage: jest.fn().mockReturnValue('Upload failed'),
+      saveAsDraft: jest.fn(),
+    };
     const dialogRef = { close: jest.fn() };
-    const component = new FormModalComponent(
-      {
-        template: options.template,
-        recordId: options.recordId,
-        askForConfirm: false,
-      },
-      { open: jest.fn() } as unknown as Dialog,
-      dialogRef as unknown as DialogRef<FormModalComponent>,
-      apollo as unknown as Apollo,
-      { openSnackBar: jest.fn() } as unknown as SnackbarService,
-      formBuilderService,
-      formHelpersService,
-      {} as ConfirmService,
-      { instant: (key: string) => key } as unknown as TranslateService,
-      { run: (callback: () => void) => callback() } as NgZone,
-      autoTranslateService
+    // The resource modal injects its own dependencies
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [{ provide: Apollo, useValue: apollo }],
+    });
+    const component = TestBed.runInInjectionContext(
+      () =>
+        new componentClass(
+          {
+            template: options.template,
+            recordId: options.recordId,
+            askForConfirm: false,
+          },
+          { open: jest.fn() } as unknown as Dialog,
+          dialogRef as unknown as DialogRef<FormModalComponent>,
+          apollo as unknown as Apollo,
+          { openSnackBar: jest.fn() } as unknown as SnackbarService,
+          formBuilderService,
+          formHelpersService as unknown as FormHelpersService,
+          {} as ConfirmService,
+          { instant: (key: string) => key } as unknown as TranslateService,
+          { run: (callback: () => void) => callback() } as NgZone,
+          autoTranslateService
+        )
     );
-    return { component, apollo, dialogRef, survey };
+    return { component, apollo, dialogRef, survey, formHelpersService };
   }
 
   /**

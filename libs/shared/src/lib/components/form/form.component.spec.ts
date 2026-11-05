@@ -65,7 +65,6 @@ describe('FormComponent', () => {
           useValue: {
             uploadFiles: jest.fn(),
             setEmptyQuestions: jest.fn(),
-            createTemporaryRecords: jest.fn(),
           },
         },
         {
@@ -152,9 +151,6 @@ describe('FormComponent', () => {
     component.survey = new SurveyModel({ elements: [] });
     component.survey.showCompletedPage = false;
     jest.spyOn(formHelpersService, 'uploadFiles').mockResolvedValue();
-    jest
-      .spyOn(formHelpersService, 'createTemporaryRecords')
-      .mockResolvedValue();
     mutate.mockReturnValue(
       of({
         data: {

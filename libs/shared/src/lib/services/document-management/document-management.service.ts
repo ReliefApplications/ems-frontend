@@ -66,6 +66,15 @@ interface PropertyQueryResponse {
 }
 
 /**
+ * How a file is uploaded to document management: the drive receiving it, and
+ * the document properties sent along with it
+ */
+export interface DocumentUpload {
+  driveId: string;
+  body: Record<string, unknown>;
+}
+
+/**
  * Available properties from the CS API Documentation
  */
 export const CS_DOCUMENTS_PROPERTIES = [
@@ -376,6 +385,54 @@ export class DocumentManagementService {
   }
 
   /**
+   * Gets how the files of a question are uploaded to document management:
+   * the drive receiving them ( the one of the occurrence of the question, the
+   * default one otherwise ), and the document properties set on the question.
+   *
+   * Saved in the draft files, for the back-end to upload them when their
+   * record is submitted.
+   *
+   * @param question File question
+   * @returns Drive and document properties to upload the files with
+   * @throws If the drive cannot be fetched
+   */
+  async getUploadProperties(question: Question): Promise<DocumentUpload> {
+    const body: Record<string, unknown> = {};
+    const occurrenceId = question.getPropertyValue('Occurrence');
+    let driveId = '';
+    // If occurrence, fetch related drive id
+    if (occurrenceId) {
+      const occurrence = (await this.getOccurrenceById(occurrenceId)).data
+        .occurrence;
+      if (occurrence && occurrence.driveid) {
+        driveId = occurrence.driveid;
+        // Set occurrence type if any. OccurrenceType is single select value,
+        // but body receives it as array
+        if (!isNil(occurrence.occurrencetype)) {
+          set(body, 'OccurrenceType', [occurrence.occurrencetype]);
+        }
+      } else {
+        throw new Error('Could not fetch occurrence');
+      }
+    }
+    if (!driveId) {
+      driveId = await firstValueFrom(this.getDriveId());
+    }
+    if (!driveId) {
+      throw new Error('Could not fetch drive');
+    }
+    CS_DOCUMENTS_PROPERTIES.filter(
+      (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
+    ).forEach((prop) => {
+      const value = question.getPropertyValue(prop.bodyKey as string);
+      if (!!value && value.length) {
+        set(body, prop.bodyKey as string, value);
+      }
+    });
+    return { driveId, body };
+  }
+
+  /**
    * Uploads a file
    *
    * @param file file to upload
@@ -409,45 +466,17 @@ export class DocumentManagementService {
       snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
     };
     let fileStream;
-    const bodyFilter = Object.create({});
-    const occurrenceId = question.getPropertyValue('Occurrence');
-    let driveId = '';
-    let occurrenceType: number | undefined = undefined;
+    let upload: DocumentUpload;
     try {
-      // If occurrence, fetch related drive id
-      if (occurrenceId) {
-        const occurrence = (await this.getOccurrenceById(occurrenceId)).data
-          .occurrence;
-        if (occurrence && occurrence.driveid) {
-          driveId = occurrence.driveid;
-          occurrenceType = occurrence.occurrencetype;
-          // Set occurrence type if any
-          if (!isNil(occurrenceType)) {
-            set(bodyFilter, 'OccurrenceType', [occurrenceType]);
-          }
-        } else {
-          throw new Error('Could not fetch occurrence');
-        }
-      }
-      if (!driveId) {
-        driveId = await firstValueFrom(this.getDriveId());
-      }
+      upload = await this.getUploadProperties(question);
       fileStream = await this.transformFileToValidInput(file);
-      CS_DOCUMENTS_PROPERTIES.filter(
-        (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
-      ).forEach((prop) => {
-        const value = question.getPropertyValue(prop.bodyKey as string);
-        // OccurrenceType is single select value, but body receives it as array
-        if (!!value && value.length) {
-          set(bodyFilter, prop.bodyKey as string, value);
-        }
-      });
     } catch (error) {
       notify('common.notifications.file.upload.error', true);
       return null;
     }
+    const driveId = upload.driveId;
     const body = {
-      ...bodyFilter,
+      ...upload.body,
       FileStream: fileStream,
       FileName: file.name,
     };

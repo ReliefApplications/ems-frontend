@@ -126,7 +126,6 @@ describe('FormModalComponent errors when saving a record', () => {
     } as unknown as AutoTranslateService;
     const formHelpersService = {
       setEmptyQuestions: jest.fn(),
-      createTemporaryRecords: jest.fn().mockResolvedValue(undefined),
       uploadFiles: jest.fn().mockResolvedValue(undefined),
     } as unknown as FormHelpersService;
     const dialog = { open: jest.fn().mockReturnValue({ closed: of(null) }) };

@@ -34,7 +34,9 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 }
 
 /**
- * Component to create a record for a resource question without directly saving it
+ * Component to create a record for a resource question without directly
+ * saving it: the record is saved as a draft, and submitted by the back-end
+ * along with the record of the question.
  */
 @Component({
   standalone: true,
@@ -60,6 +62,16 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 export class ResourceModalComponent extends FormModalComponent {
   /** Apollo client, to read back the saved draft record */
   private readonly draftRecordApollo = inject(Apollo);
+
+  /**
+   * A new record is saved as a draft: its files stay draft files until the
+   * record of the question is submitted.
+   *
+   * @returns True if the record is saved as a draft
+   */
+  protected override get submitsAsDraft(): boolean {
+    return !this.data.recordId;
+  }
 
   /**
    * We override this method to not directly save new records

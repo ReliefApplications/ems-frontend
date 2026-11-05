@@ -16,7 +16,10 @@ import {
 import { Question } from '../../survey/types';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
-import { DocumentManagementService } from '../document-management/document-management.service';
+import {
+  DocumentManagementService,
+  DocumentUpload,
+} from '../document-management/document-management.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
   ADD_DRAFT_RECORD,
@@ -75,6 +78,16 @@ export interface UploadFilesOptions {
    */
   draft?: boolean;
 }
+
+/**
+ * Whether a draft file does not hold how to upload it to document
+ * management yet.
+ *
+ * @param item File value item
+ * @returns True if the draft file lacks its upload properties
+ */
+const lacksDocumentUpload = (item: File): boolean =>
+  isDraftFile(item) && typeof item.content === 'string' && !item.upload;
 
 /** Class toggled on HTML questions hiding the links of outdated files. */
 const HIDE_OUTDATED_FILES_CLASS = 'html-question--hide-outdated-files';
@@ -192,7 +205,11 @@ export class FormHelpersService {
    *
    * - Draft save: picked files are uploaded to the back-end storage ( like
    *   record files were before document management ) and flagged as draft
-   *   files. Document management is not involved until the submission.
+   *   files. Nothing is uploaded to document management until the
+   *   submission: when it is configured, each draft file holds how to upload
+   *   it there ( drive and document properties of its question ), for the
+   *   back-end to upload the draft files of the drafts it submits along with
+   *   a record ( records created from a resource question ).
    * - Submission: picked files are uploaded to document management when it
    *   is configured, to the back-end storage otherwise. Draft files are
    *   fetched from the back-end storage and uploaded to document management
@@ -315,11 +332,42 @@ export class FormHelpersService {
     const progress =
       !draft && total > 0 ? this.openUploadProgress(total) : null;
 
+    // With document management, a draft file holds how to upload it there:
+    // the back-end uploads the draft files of the drafts it submits along
+    // with a record ( records created from a resource question )
+    const documentUploads = new Map<QuestionFileModel, DocumentUpload>();
+    /** Questions whose files cannot be saved: how to upload them is unknown */
+    const failedQuestions = new Set<QuestionFileModel>();
+    if (draft && this.environment.csApiUrl) {
+      const questions = fileQuestions.filter((question) =>
+        (Array.isArray(question.value) ? question.value : []).some(
+          (item: File) => isPendingFile(item) || lacksDocumentUpload(item)
+        )
+      );
+      for (const question of questions) {
+        try {
+          documentUploads.set(
+            question,
+            await this.documentManagementService.getUploadProperties(question)
+          );
+        } catch {
+          failedQuestions.add(question);
+        }
+      }
+    }
+
     /** Final content per pending content ( data URL or draft file path ) */
     const resolved = new Map<string, File['content']>();
     const failedFilesToUpload: UploadFileError[] = [];
     for (const { question, item, raw } of pending) {
       const key = item.content as string;
+      if (failedQuestions.has(question)) {
+        failedFilesToUpload.push({
+          question: question.name,
+          file: { name: item.name },
+        });
+        continue;
+      }
       // Copy of a file processed already
       if (!raw && resolved.has(key)) {
         continue;
@@ -351,7 +399,11 @@ export class FormHelpersService {
     // Replace the processed files by their storage reference, the failed
     // ones stay as they are
     fileQuestions.forEach((question) => {
+      if (failedQuestions.has(question)) {
+        return;
+      }
       const value: File[] = Array.isArray(question.value) ? question.value : [];
+      const documentUpload = documentUploads.get(question);
       let changed = false;
       const updated = value.map((item) => {
         const content =
@@ -360,11 +412,22 @@ export class FormHelpersService {
             ? resolved.get(item.content)
             : undefined;
         if (isNil(content)) {
+          // Draft file saved before it held how to upload it
+          if (documentUpload && lacksDocumentUpload(item)) {
+            changed = true;
+            return { ...item, upload: documentUpload };
+          }
           return item;
         }
         changed = true;
-        const file = { ...omit(item, 'draft'), content };
-        return draft ? { ...file, draft: true } : file;
+        const file = { ...omit(item, ['draft', 'upload']), content };
+        return draft
+          ? {
+              ...file,
+              draft: true,
+              ...(documentUpload && { upload: documentUpload }),
+            }
+          : file;
       });
       if (changed) {
         question.value = updated;
@@ -549,88 +612,6 @@ export class FormHelpersService {
       }
     }
     return promises;
-  }
-
-  /**
-   * Create temporary records (from resource/s questions) of passed survey.
-   *
-   * @param survey Survey to get questions from
-   */
-  public async createTemporaryRecords(survey: SurveyModel): Promise<void> {
-    const promises: Promise<any>[] = [];
-    const questions = survey.getAllQuestions();
-    const nestedRecordsToAdd: { draftIds: []; question: Question }[] = [];
-
-    // Callbacks to update the ids of new records
-    const updateIds: {
-      [key in string]: (arg0: string) => void;
-    } = {};
-
-    // Get all nested records to add
-    questions.forEach((question: Question) => {
-      const type = question.getType();
-      if (!['resource', 'resources'].includes(type) || !question.draftData) {
-        return;
-      }
-      const isResource = type === 'resource';
-      const toAdd = (isResource ? [question.value] : question.value).filter(
-        (id: string) => id in question.draftData
-      );
-      nestedRecordsToAdd.push({
-        draftIds: toAdd,
-        question,
-      });
-
-      toAdd.forEach((id: string) => {
-        updateIds[id] = (newId: string) => {
-          question.value = isResource
-            ? newId
-            : question.value.map((x: string) => (x === id ? newId : x));
-        };
-      });
-    });
-    for (const element of nestedRecordsToAdd) {
-      for (const draftId of element.draftIds) {
-        const data = element.question.draftData[draftId];
-        const template = element.question.template;
-        promises.push(
-          firstValueFrom(
-            this.apollo.mutate<AddRecordMutationResponse>({
-              mutation: ADD_RECORD,
-              variables: {
-                form: template,
-                data,
-              },
-            })
-          ).then(({ data }) => {
-            // change the draftId to the new recordId
-            const newId = data?.addRecord?.id;
-            if (!newId) return;
-            updateIds[draftId](newId);
-            // update question.newCreatedRecords too
-            const isResource = element.question.getType() === 'resource';
-            const draftIndex = (
-              isResource
-                ? [element.question.newCreatedRecords]
-                : element.question.newCreatedRecords
-            ).indexOf(draftId);
-            if (draftIndex !== -1) {
-              if (isResource) {
-                element.question.newCreatedRecords = newId;
-              } else {
-                element.question.newCreatedRecords[draftIndex] = newId;
-              }
-            }
-            // delete old temporary/draft record and data
-            this.deleteRecordDraft(draftId);
-            delete element.question.draftData[draftId];
-            return;
-          })
-        );
-      }
-    }
-
-    await Promise.all(promises);
   }
 
   /**

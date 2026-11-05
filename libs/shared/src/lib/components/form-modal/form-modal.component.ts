@@ -448,6 +448,17 @@ export class FormModalComponent
   }
 
   /**
+   * Whether submitting the form saves the record as a draft, instead of
+   * submitting it. Files then stay draft files, in the back-end storage: they
+   * only reach their final storage when the record is actually submitted.
+   *
+   * @returns True if the record is saved as a draft
+   */
+  protected get submitsAsDraft(): boolean {
+    return false;
+  }
+
+  /**
    * Calls the complete method of the survey if no error.
    */
   public async submit(): Promise<void> {
@@ -462,7 +473,8 @@ export class FormModalComponent
       await this.formHelpersService.uploadFiles(
         this.survey,
         this.temporaryFilesStorage,
-        this.form?.id as string
+        this.form?.id as string,
+        { draft: this.submitsAsDraft }
       );
     } catch (errors) {
       /** If there is any upload errors, save them for display */
@@ -627,8 +639,8 @@ export class FormModalComponent
         question.value = result;
       }
     });
-    // await Promise.allSettled(promises);
-    await this.formHelpersService.createTemporaryRecords(survey);
+    // The drafts created from the resource questions are submitted by the
+    // back-end along with the record, and their draft files uploaded
 
     if (this.data.recordId && !this.isMultiEdition) {
       fireFieldChangeTriggersForRecordUpdate(this.survey, true);

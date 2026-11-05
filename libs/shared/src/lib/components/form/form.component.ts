@@ -448,8 +448,8 @@ export class FormComponent
     }
 
     this.formHelpersService.setEmptyQuestions(this.survey);
-    // We wait for the resources questions to update their ids
-    await this.formHelpersService.createTemporaryRecords(this.survey);
+    // The drafts created from the resource questions are submitted by the
+    // back-end along with the record, and their draft files uploaded
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
     fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
     this.submitRecord(false);
