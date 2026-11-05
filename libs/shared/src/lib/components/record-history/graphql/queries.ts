@@ -44,6 +44,7 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
         type
         field
         displayName
+        lang
         old
         new
       }

@@ -19,6 +19,19 @@
   @apply bg-red-200;
 }
 
+.history-lang-tag,
+::ng-deep .history-lang-tag {
+  @apply bg-gray-100 text-gray-700 border border-gray-300;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-left: 0.5em;
+  padding: 0.15rem 0.35rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .history-value,
 ::ng-deep .history-value {
   white-space: pre-wrap;

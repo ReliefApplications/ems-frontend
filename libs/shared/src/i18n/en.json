@@ -1363,6 +1363,7 @@
         "clear": "Clear range"
       },
       "renderError": "Unable to display this change",
+      "translatedValue": "Translated value",
       "unknownField": "Unknown field",
       "useTableMode": "Use table mode"
     },
