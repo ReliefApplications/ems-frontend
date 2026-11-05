@@ -1,8 +1,10 @@
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import {
   createResourceRecordsLoader,
   getChoiceText,
   getDisplayFieldSelection,
+  loadOwnDraftIds,
+  restoreCreatedDraftRecords,
   setupResourceChoicesLoader,
 } from './resource-records-loader';
 
@@ -253,6 +255,153 @@ describe('resource records loader', () => {
         expect(apollo.query).not.toHaveBeenCalled();
         done();
       });
+    });
+  });
+
+  describe('drafts created from a question', () => {
+    const submittedId = '5f1f1f1f1f1f1f1f1f1f1f01';
+    const draftId = '5f1f1f1f1f1f1f1f1f1f1f02';
+    const otherDraftId = '5f1f1f1f1f1f1f1f1f1f1f03';
+
+    /**
+     * Builds a fake Apollo client, knowing the drafts of the user.
+     *
+     * @param drafts Data of the drafts of the user, by id
+     * @returns Fake Apollo client, with a jest mock for query
+     */
+    const createDraftsApollo = (drafts: Record<string, any>) => ({
+      query: jest.fn(({ variables }: any) => {
+        // Record query
+        if (variables.id) {
+          const data = drafts[variables.id];
+          return of({
+            data: { record: data ? { id: variables.id, data } : null },
+          });
+        }
+        // Records query of the resource
+        const ids: string[] = variables.filter.filters[0].value;
+        return of({
+          data: {
+            allStaff: {
+              edges: ids
+                .filter((id) => id in drafts)
+                .map((id) => ({ node: { id } })),
+              totalCount: 0,
+            },
+          },
+        });
+      }),
+    });
+
+    it('finds the drafts of the user among records', (done) => {
+      const apollo = createDraftsApollo({ [draftId]: {} });
+
+      loadOwnDraftIds(apollo as any, 'allStaff', [
+        submittedId,
+        draftId,
+      ]).subscribe((ids) => {
+        expect(ids).toEqual([draftId]);
+        expect(apollo.query).toHaveBeenCalledTimes(1);
+        expect(apollo.query.mock.calls[0][0].variables).toEqual(
+          expect.objectContaining({
+            recordVisibility: 'ownDrafts',
+            filter: {
+              logic: 'and',
+              filters: [
+                { field: 'ids', operator: 'eq', value: [submittedId, draftId] },
+              ],
+            },
+          })
+        );
+        done();
+      });
+    });
+
+    it('restores the drafts selected in a resources question', async () => {
+      const apollo = createDraftsApollo({
+        [draftId]: { name: 'Draft' },
+        [otherDraftId]: { name: 'Other draft' },
+      });
+      const question: any = {
+        value: [submittedId, draftId, otherDraftId, 'not-an-id'],
+        addTemplate: 'template-id',
+      };
+
+      const restored = await restoreCreatedDraftRecords(
+        apollo as any,
+        question,
+        'allStaff'
+      );
+
+      expect(restored).toBe(true);
+      expect(question.draftData).toEqual({
+        [draftId]: { name: 'Draft' },
+        [otherDraftId]: { name: 'Other draft' },
+      });
+      expect(question.newCreatedRecords).toEqual([draftId, otherDraftId]);
+      expect(question.template).toBe('template-id');
+    });
+
+    it('keeps the records created from the question since it was opened', async () => {
+      const apollo = createDraftsApollo({ [draftId]: { name: 'Draft' } });
+      const question: any = {
+        value: [otherDraftId, draftId],
+        draftData: { [otherDraftId]: { name: 'Just created' } },
+        newCreatedRecords: [otherDraftId],
+        template: 'used-template',
+        addTemplate: 'template-id',
+      };
+
+      await restoreCreatedDraftRecords(apollo as any, question, 'allStaff');
+
+      // Only the unknown record is looked up
+      expect(
+        apollo.query.mock.calls[0][0].variables.filter.filters[0].value
+      ).toEqual([draftId]);
+      expect(question.draftData).toEqual({
+        [otherDraftId]: { name: 'Just created' },
+        [draftId]: { name: 'Draft' },
+      });
+      expect(question.newCreatedRecords).toEqual([otherDraftId, draftId]);
+      expect(question.template).toBe('used-template');
+    });
+
+    it('restores the draft selected in a resource question', async () => {
+      const apollo = createDraftsApollo({ [draftId]: { name: 'Draft' } });
+      const question: any = { value: draftId };
+
+      await restoreCreatedDraftRecords(apollo as any, question, 'allStaff');
+
+      expect(question.draftData).toEqual({ [draftId]: { name: 'Draft' } });
+      expect(question.newCreatedRecords).toBe(draftId);
+    });
+
+    it('looks the selected records up once', async () => {
+      const apollo = createDraftsApollo({});
+      const question: any = { value: [submittedId] };
+
+      expect(
+        await restoreCreatedDraftRecords(apollo as any, question, 'allStaff')
+      ).toBe(false);
+      await restoreCreatedDraftRecords(apollo as any, question, 'allStaff');
+
+      expect(apollo.query).toHaveBeenCalledTimes(1);
+      expect(question.draftData).toBeUndefined();
+      expect(question.newCreatedRecords).toBeUndefined();
+    });
+
+    it('looks the selected records up again after a failure', async () => {
+      const apollo = {
+        query: jest.fn(() => throwError(() => new Error('Network error'))),
+      };
+      const question: any = { value: [draftId] };
+
+      expect(
+        await restoreCreatedDraftRecords(apollo as any, question, 'allStaff')
+      ).toBe(false);
+      await restoreCreatedDraftRecords(apollo as any, question, 'allStaff');
+
+      expect(apollo.query).toHaveBeenCalledTimes(2);
     });
   });
 

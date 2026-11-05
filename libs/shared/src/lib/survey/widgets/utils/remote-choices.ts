@@ -135,16 +135,31 @@ export const setupRemoteChoices = (
    * Pins items, so they are always part of the widget data.
    *
    * @param items Items to pin
-   * @returns Whether new items were pinned
+   * @param refresh Whether the items replace the pinned ones of the same
+   * value, when their text differs
+   * @returns Whether the pinned items changed
    */
-  const pin = (items: ChoiceItem[]): boolean => {
-    const known = new Set(pinnedItems.map((x) => keyOf(x.value)));
-    const added = items.filter((x) => !known.has(keyOf(x.value)));
-    if (added.length === 0) {
-      return false;
+  const pin = (items: ChoiceItem[], refresh = false): boolean => {
+    const pinned = new Map(pinnedItems.map((x) => [keyOf(x.value), x]));
+    /** Values of the given items: the first item of a value is the one used */
+    const seen = new Set<string>();
+    let changed = false;
+    for (const item of items) {
+      const key = keyOf(item.value);
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      const current = pinned.get(key);
+      if (!current || (refresh && current.text !== item.text)) {
+        pinned.set(key, item);
+        changed = true;
+      }
     }
-    pinnedItems = [...pinnedItems, ...added];
-    return true;
+    if (changed) {
+      pinnedItems = [...pinned.values()];
+    }
+    return changed;
   };
 
   /**
@@ -250,10 +265,12 @@ export const setupRemoteChoices = (
   };
 
   /**
-   * Pins the choices stored in the question ( e.g. records created from the question ).
+   * Pins the choices stored in the question ( e.g. records created from the
+   * question ). They are the latest version of their records: a record
+   * edited then added again to the question is displayed with its new text.
    */
   const syncQuestionChoices = () => {
-    if (pin(getQuestionChoices(question))) {
+    if (pin(getQuestionChoices(question), true)) {
       publish();
     }
   };

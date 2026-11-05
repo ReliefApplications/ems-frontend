@@ -448,8 +448,8 @@ export class FormComponent
     }
 
     this.formHelpersService.setEmptyQuestions(this.survey);
-    // We wait for the resources questions to update their ids
-    await this.formHelpersService.createTemporaryRecords(this.survey);
+    // The drafts created from the resource questions are submitted by the
+    // back-end along with the record, and their draft files uploaded
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
     fireFieldChangeTriggersForRecordUpdate(this.survey, isRecordUpdate);
     this.submitRecord(false);
@@ -466,16 +466,15 @@ export class FormComponent
     let mutation: any;
     const publishingDraft = !!this.lastDraftRecord;
     const isRecordUpdate = !!(this.record || this.form.uniqueRecord);
-    // If is a restored draft, publish it
+    // If is a restored draft, submit it: the record is created from the
+    // draft, which is then deleted
     if (publishingDraft) {
-      mutation = this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
+      mutation = this.apollo.mutate<AddRecordMutationResponse>({
+        mutation: ADD_RECORD,
         variables: {
-          id: this.lastDraftRecord,
+          form: this.form.id,
           data: this.survey.data,
-          template: this.form.id,
-          lang: this.translate.currentLang,
-          updateDraftStatus: false,
+          draftId: this.lastDraftRecord,
           skipValidation,
         },
       });

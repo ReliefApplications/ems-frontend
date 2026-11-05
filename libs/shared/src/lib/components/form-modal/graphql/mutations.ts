@@ -11,7 +11,6 @@ export const EDIT_RECORD = gql`
     $display: Boolean
     $lang: String
     $draft: Boolean
-    $updateDraftStatus: Boolean
     $skipValidation: Boolean
   ) {
     editRecord(
@@ -21,7 +20,6 @@ export const EDIT_RECORD = gql`
       template: $template
       lang: $lang
       draft: $draft
-      updateDraftStatus: $updateDraftStatus
       skipValidation: $skipValidation
     ) {
       id
@@ -51,6 +49,7 @@ export const ADD_RECORD = gql`
     $display: Boolean
     $draft: Boolean
     $cloneRecordId: ID
+    $draftId: ID
     $skipValidation: Boolean
   ) {
     addRecord(
@@ -58,6 +57,7 @@ export const ADD_RECORD = gql`
       data: $data
       draft: $draft
       cloneRecordId: $cloneRecordId
+      draftId: $draftId
       skipValidation: $skipValidation
     ) {
       id

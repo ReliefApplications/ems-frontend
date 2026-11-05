@@ -48,6 +48,7 @@ export default {
     '<rootDir>/src/lib/components/form/form.component.spec.ts',
     '<rootDir>/src/lib/components/form-modal/form-modal-autosave.spec.ts',
     '<rootDir>/src/lib/components/form-modal/form-modal-save-errors.spec.ts',
+    '<rootDir>/src/lib/components/form-modal/form-modal-draft-submit.spec.ts',
     '<rootDir>/src/lib/components/draft-record-list-modal/*.spec.ts',
     '<rootDir>/src/lib/components/draft-save-status/*.spec.ts',
     '<rootDir>/src/lib/components/ui/core-grid/core-grid.component.spec.ts',

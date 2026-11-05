@@ -4,6 +4,7 @@ import { DownloadService } from '../download/download.service';
 import {
   DocumentManagementFileContent,
   DocumentManagementService,
+  DocumentUpload,
 } from '../document-management/document-management.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -59,6 +60,12 @@ export interface File {
    * record is submitted.
    */
   draft?: boolean;
+  /**
+   * How to upload a draft file to document management, when it is
+   * configured: the back-end uploads the draft files of the drafts it submits
+   * along with a record ( records created from a resource question ).
+   */
+  upload?: DocumentUpload;
 }
 
 /**
