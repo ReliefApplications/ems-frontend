@@ -10,6 +10,12 @@
         class="!text-gray-900 !font-medium max-w-[30vw]"
       >
         {{ element.displayName }}
+        <span
+          *ngIf="element.lang"
+          class="history-lang-tag"
+          [uiTooltip]="'components.history.translatedValue' | translate"
+          >{{ element.lang | uppercase }}</span
+        >
       </td>
     </ng-container>
     <ng-container cdkColumnDef="date">

@@ -7,6 +7,8 @@ export interface Change {
   type: 'add' | 'remove' | 'modify';
   field: string;
   displayName: string;
+  /** Target language of a translated field, if any */
+  lang?: string;
   old?: string;
   new?: string;
 }

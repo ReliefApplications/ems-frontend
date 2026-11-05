@@ -97,6 +97,7 @@ export class RecordHistoryCardsComponent implements OnChanges {
       const values = this.historyValue.getRenderedHistoryValues(change);
       const displayName = this.historyValue.escapeHtml(change.displayName);
       const chip = this.historyValue.getChipFromChange(change);
+      const langTag = this.historyValue.getLangTagFromChange(change);
       const changedValue =
         change.type === 'add' ? values.newHtml : values.oldHtml;
 
@@ -106,7 +107,7 @@ export class RecordHistoryCardsComponent implements OnChanges {
           return `
             <p class="history-change">
               ${chip}
-              <b> ${displayName} </b>
+              <b> ${displayName}${langTag} </b>
               ${this.historyValue.escapeHtml(
                 this.translate.instant('components.history.changes.withValue')
               )}
@@ -117,7 +118,7 @@ export class RecordHistoryCardsComponent implements OnChanges {
           return `
             <p class="history-change">
               ${chip}
-              <b> ${displayName} </b>
+              <b> ${displayName}${langTag} </b>
               ${this.historyValue.escapeHtml(
                 this.translate.instant('components.history.changes.from')
               )}

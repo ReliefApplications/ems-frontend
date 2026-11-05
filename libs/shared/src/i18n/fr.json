@@ -1363,6 +1363,7 @@
         "clear": "Effacer la plage de données"
       },
       "renderError": "Impossible d'afficher ce changement",
+      "translatedValue": "Valeur traduite",
       "unknownField": "Champ inconnu",
       "useTableMode": "Afficher en table"
     },
