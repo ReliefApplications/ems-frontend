@@ -86,6 +86,19 @@ export class RecordHistoryValueService {
   }
 
   /**
+   * Gets the tag telling apart a translated field from its source field,
+   * which usually share the same title.
+   *
+   * @param change The field change object
+   * @returns The HTML of the language tag, or an empty string
+   */
+  getLangTagFromChange(change: Change): string {
+    if (!change.lang) return '';
+    const lang = this.escapeHtml(change.lang.toUpperCase());
+    return `<span class="history-lang-tag">${lang}</span>`;
+  }
+
+  /**
    * Parses, formats and highlights the old/new values of a history change.
    *
    * @param change The field change object

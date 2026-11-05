@@ -9,6 +9,8 @@ import { RecordHistoryValueService } from '../record-history-value.service';
 /** Record history table row with pre-rendered safe HTML values */
 export interface HistoryTableRow {
   displayName: string;
+  /** Target language of a translated field, if any */
+  lang?: string;
   oldHtml?: string;
   newHtml?: string;
   expandable?: boolean;
@@ -109,6 +111,7 @@ export class RecordHistoryTableComponent implements OnChanges {
       const values = this.historyValue.getRenderedHistoryValues(change);
       this.rows.push({
         displayName: change.displayName,
+        lang: change.lang,
         newHtml: values.newHtml,
         oldHtml: values.oldHtml,
         expandable: values.expandable,
@@ -120,6 +123,7 @@ export class RecordHistoryTableComponent implements OnChanges {
     } catch {
       this.rows.push({
         displayName: change.displayName,
+        lang: change.lang,
         renderError: true,
         type: change.type,
         chip: this.historyValue.getChipFromChange(change),

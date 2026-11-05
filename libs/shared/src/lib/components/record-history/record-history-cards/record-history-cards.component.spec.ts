@@ -34,6 +34,31 @@ describe('RecordHistoryCardsComponent', () => {
   });
 
   describe('getHTMLFromChange', () => {
+    it('tags translated fields with their language', () => {
+      const change: Change = {
+        type: 'add',
+        field: 'notes_uk',
+        displayName: 'Notes',
+        lang: 'uk',
+        new: JSON.stringify('тест'),
+      };
+      expect(component.getHTMLFromChange(change)).toContain(
+        '<span class="history-lang-tag">UK</span>'
+      );
+    });
+
+    it('does not tag fields without a language', () => {
+      const change: Change = {
+        type: 'add',
+        field: 'notes',
+        displayName: 'Notes',
+        new: JSON.stringify('test'),
+      };
+      expect(component.getHTMLFromChange(change)).not.toContain(
+        'history-lang-tag'
+      );
+    });
+
     it('renders boolean values correctly, not always "true"', () => {
       const change: Change = {
         type: 'modify',

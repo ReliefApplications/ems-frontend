@@ -54,6 +54,32 @@ describe('RecordHistoryTableComponent', () => {
     );
   });
 
+  it('tags translated fields with their language', () => {
+    component.history = [
+      {
+        createdAt: new Date(),
+        createdBy: 'tester',
+        changes: [
+          { type: 'add', field: 'a', displayName: 'A', new: '"1"' },
+          {
+            type: 'add',
+            field: 'a_uk',
+            displayName: 'A',
+            lang: 'uk',
+            new: '"1"',
+          },
+        ],
+      },
+    ];
+
+    component.ngOnChanges();
+    fixture.detectChanges();
+
+    const tags = fixture.nativeElement.querySelectorAll('.history-lang-tag');
+    expect(tags.length).toBe(1);
+    expect(tags[0].textContent.trim()).toBe('UK');
+  });
+
   it('only renders the displayed columns', () => {
     component.displayedColumns = ['date', 'action'];
     component.history = [
