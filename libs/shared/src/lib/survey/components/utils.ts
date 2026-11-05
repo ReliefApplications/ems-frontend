@@ -192,28 +192,28 @@ export const buildAddButton = (
             //     text: data.data[question.displayField]
             //   });
             // }
+            // A record edited then added again replaces its previous
+            // choice, so it is displayed with its new text
+            const newItem = {
+              value: data.id,
+              text: data.data[question.displayField],
+            };
+            question.contentQuestion.choices = [
+              newItem,
+              ...question.contentQuestion.choices.filter(
+                (choice: any) => (choice?.value ?? choice) !== data.id
+              ),
+            ];
             if (multiselect) {
-              const newItem = {
-                value: data.id,
-                text: data.data[question.displayField],
-              };
-              question.contentQuestion.choices = [
-                newItem,
-                ...question.contentQuestion.choices,
-              ];
-              question.newCreatedRecords = question.newCreatedRecords
-                ? question.newCreatedRecords.concat(data.id)
-                : [data.id];
-              question.value = question.value.concat(data.id);
+              const createdRecords: string[] = question.newCreatedRecords || [];
+              question.newCreatedRecords = createdRecords.includes(data.id)
+                ? createdRecords
+                : createdRecords.concat(data.id);
+              const value: string[] = question.value || [];
+              question.value = value.includes(data.id)
+                ? value
+                : value.concat(data.id);
             } else {
-              const newItem = {
-                value: data.id,
-                text: data.data[question.displayField],
-              };
-              question.contentQuestion.choices = [
-                newItem,
-                ...question.contentQuestion.choices,
-              ];
               question.newCreatedRecords = data.id;
               question.value = data.id;
             }

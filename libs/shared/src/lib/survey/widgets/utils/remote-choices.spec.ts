@@ -293,6 +293,53 @@ describe('remote choices', () => {
     ]);
   });
 
+  it('displays the new text of a question choice edited then added again', () => {
+    const loader = createFakeLoader([[]], 0, [
+      { value: 'selected', text: 'Selected' },
+    ]);
+    const widget = createFakeWidget();
+    const question = createFakeQuestion(loader, 'selected');
+    const remoteChoices = setupRemoteChoices(
+      widget as any,
+      question,
+      new Subject<void>()
+    );
+    question.visibleChoices = [{ value: 'draft', text: 'John Smith' }];
+    remoteChoices.syncQuestionChoices();
+
+    // The record is edited: its new choice is added before the previous one
+    question.visibleChoices = [
+      { value: 'draft', text: 'Jack Smith' },
+      { value: 'draft', text: 'John Smith' },
+    ];
+    remoteChoices.syncQuestionChoices();
+
+    expect(widget.data).toEqual([
+      { value: 'selected', text: 'Selected' },
+      { value: 'draft', text: 'Jack Smith' },
+    ]);
+  });
+
+  it('keeps the text of a selected value fetched again', () => {
+    const selected = [{ value: 'selected', text: 'Selected' }];
+    const loader = createFakeLoader([[]], 0, selected);
+    const widget = createFakeWidget();
+    const question = createFakeQuestion(loader, 'selected');
+    const remoteChoices = setupRemoteChoices(
+      widget as any,
+      question,
+      new Subject<void>()
+    );
+    const data = widget.data;
+
+    remoteChoices.syncQuestionChoices();
+    remoteChoices.ensureSelected();
+
+    // Nothing changed: the widget data is not published again
+    expect(widget.data).toBe(data);
+    expect(widget.data).toEqual(selected);
+  });
+
   it('shows an empty list when the loader fails', () => {
     const loader = {
       load: jest.fn(() => throwError(() => new Error('failure'))),
