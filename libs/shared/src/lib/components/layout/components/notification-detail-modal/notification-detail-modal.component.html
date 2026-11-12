@@ -10,7 +10,8 @@
       <iframe
         class="notification-html-content w-full border rounded bg-white"
         title="{{ data.notification.action }}"
-        sandbox=""
+        sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        (load)="onFrameLoad($event)"
         [srcdoc]="safeHtml"
       ></iframe>
     </ng-container>
