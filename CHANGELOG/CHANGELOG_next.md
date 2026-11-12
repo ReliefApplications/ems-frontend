@@ -1,3 +1,9 @@
+# [2.24.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.32...v2.24.0-rc.33) (2026-11-12)
+
+### Bug Fixes
+
+- links in in-app notifications would not work ([#2978](https://github.com/ReliefApplications/ems-frontend/issues/2978)) ([ea7188b](https://github.com/ReliefApplications/ems-frontend/commit/ea7188b43a70fc92f378b8dc9fe296fa998cfef3))
+
 # [2.24.0-rc.32](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.31...v2.24.0-rc.32) (2026-11-05)
 
 ### Bug Fixes
