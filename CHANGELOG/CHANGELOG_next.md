@@ -1,3 +1,9 @@
+# [2.24.0-rc.34](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.33...v2.24.0-rc.34) (2026-11-13)
+
+### Bug Fixes
+
+- localized text editors would show disabled languages ([4123033](https://github.com/ReliefApplications/ems-frontend/commit/41230338eecbf587d02b91587399bba21c04f5b2))
+
 # [2.24.0-rc.33](https://github.com/ReliefApplications/ems-frontend/compare/v2.24.0-rc.32...v2.24.0-rc.33) (2026-11-12)
 
 ### Bug Fixes
