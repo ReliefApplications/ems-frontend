@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorService } from '../../../../../../services/editor/editor.service';
@@ -11,6 +11,7 @@ import { SpinnerModule } from '@oort-front/ui';
 import {
   SUPPORTED_LOCALES,
   SupportedLocale,
+  getContentLocales,
 } from '../../../../../controls/localized-input/localized-input.component';
 import { LocalizedString } from '../../../../../../models/localized-string.model';
 
@@ -46,9 +47,9 @@ export class TextElementComponent
   /** Is editor loading */
   public editorLoading = true;
   /** List of locales rendered as tabs. */
-  public readonly locales = SUPPORTED_LOCALES;
+  public readonly locales: readonly SupportedLocale[];
   /** Locale currently being edited. */
-  public activeLocale: SupportedLocale = 'en';
+  public activeLocale: SupportedLocale;
   /** Per-locale rich text values. */
   public values: Partial<Record<SupportedLocale, string>> = {};
 
@@ -56,9 +57,15 @@ export class TextElementComponent
    * Popup text element component.
    *
    * @param editorService Shared tinymce editor service
+   * @param environment Injected environment ( available languages )
    */
-  constructor(private editorService: EditorService) {
+  constructor(
+    private editorService: EditorService,
+    @Optional() @Inject('environment') environment: any
+  ) {
     super();
+    this.locales = getContentLocales(environment);
+    this.activeLocale = this.locales[0];
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language

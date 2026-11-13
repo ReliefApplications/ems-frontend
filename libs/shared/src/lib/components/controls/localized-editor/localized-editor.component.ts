@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Inject, Input, Optional, forwardRef } from '@angular/core';
 import {
   ControlValueAccessor,
   FormsModule,
@@ -10,6 +10,7 @@ import { LocalizedString } from '../../../models/localized-string.model';
 import {
   SUPPORTED_LOCALES,
   SupportedLocale,
+  getContentLocales,
 } from '../localized-input/localized-input.component';
 
 /**
@@ -36,10 +37,10 @@ export class LocalizedEditorComponent implements ControlValueAccessor {
   @Input() init: any;
 
   /** List of locales rendered as tabs, exposed for the template. */
-  readonly locales = SUPPORTED_LOCALES;
+  readonly locales: readonly SupportedLocale[];
 
   /** Locale currently visible in the editor. */
-  activeLocale: SupportedLocale = 'en';
+  activeLocale: SupportedLocale;
 
   /** Per-locale HTML drafts. */
   values: Partial<Record<SupportedLocale, string>> = {};
@@ -62,6 +63,16 @@ export class LocalizedEditorComponent implements ControlValueAccessor {
   private onTouched: () => void = () => undefined;
 
   /**
+   * TinyMCE editor with a per-locale tab strip.
+   *
+   * @param environment Injected environment ( available languages )
+   */
+  constructor(@Optional() @Inject('environment') environment: any) {
+    this.locales = getContentLocales(environment);
+    this.activeLocale = this.locales[0];
+  }
+
+  /**
    * @returns HTML for the active locale, or empty string.
    */
   get currentText(): string {
@@ -70,7 +81,9 @@ export class LocalizedEditorComponent implements ControlValueAccessor {
 
   /**
    * Accepts either a plain string (treated as the English entry, for
-   * back-compat with non-localized values) or a per-locale map.
+   * back-compat with non-localized values) or a per-locale map. Values of
+   * locales that are not enabled in the environment are kept, so they are not
+   * lost when the field is saved.
    *
    * @param value Incoming form value.
    */

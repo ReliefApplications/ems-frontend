@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Inject, Input, Optional, forwardRef } from '@angular/core';
 import {
   ControlValueAccessor,
   FormsModule,
@@ -12,6 +12,24 @@ export const SUPPORTED_LOCALES = ['en', 'fr', 'uk'] as const;
 
 /** A locale code from {@link SUPPORTED_LOCALES}. */
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+/**
+ * Locales offered when editing user content: the supported ones that are
+ * enabled in the environment ( `availableLanguages` ). Every supported locale
+ * is offered when the environment does not list any of them.
+ *
+ * @param environment Injected environment, if any.
+ * @returns Locales to render as tabs, in {@link SUPPORTED_LOCALES} order.
+ */
+export const getContentLocales = (
+  environment?: { availableLanguages?: string[] } | null
+): readonly SupportedLocale[] => {
+  const available = environment?.availableLanguages ?? [];
+  const enabled = SUPPORTED_LOCALES.filter((locale) =>
+    available.includes(locale)
+  );
+  return enabled.length ? enabled : SUPPORTED_LOCALES;
+};
 
 /**
  * Single text input with a per-locale tab strip. Lets a user enter different
@@ -39,10 +57,10 @@ export class LocalizedInputComponent implements ControlValueAccessor {
   @Input() placeholder = '';
 
   /** List of locales rendered as tabs, exposed for the template. */
-  readonly locales = SUPPORTED_LOCALES;
+  readonly locales: readonly SupportedLocale[];
 
   /** Locale currently visible in the input. */
-  activeLocale: SupportedLocale = 'en';
+  activeLocale: SupportedLocale;
 
   /** Per-locale text values. */
   values: Partial<Record<SupportedLocale, string>> = {};
@@ -65,8 +83,20 @@ export class LocalizedInputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => undefined;
 
   /**
+   * Single text input with a per-locale tab strip.
+   *
+   * @param environment Injected environment ( available languages )
+   */
+  constructor(@Optional() @Inject('environment') environment: any) {
+    this.locales = getContentLocales(environment);
+    this.activeLocale = this.locales[0];
+  }
+
+  /**
    * Accepts either a plain string (treated as the English entry, for
-   * back-compat with non-localized values) or a per-locale map.
+   * back-compat with non-localized values) or a per-locale map. Values of
+   * locales that are not enabled in the environment are kept, so they are not
+   * lost when the field is saved.
    *
    * @param value Incoming form value.
    */
