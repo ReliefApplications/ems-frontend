@@ -33,7 +33,7 @@
     "@esri/arcgis-rest-portal": "^4.2.0",
     "@esri/arcgis-rest-request": "^4.1.2",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-brands-svg-icons": "^6.4.2",
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@geoman-io/leaflet-geoman-free": "^2.14.2",
     "@ngx-translate/core": "^14.0.0",
